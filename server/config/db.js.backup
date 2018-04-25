@@ -1,0 +1,5 @@
+// config/db.js
+    module.exports = {
+        url : 'mongodb://<login>:<senha>@ds237669.mlab.com:37669/savetv-dev'
+    }
+//pra usar db local,         url : 'mongodb://localhost/NOME DO DB'
