@@ -36,8 +36,11 @@ build/Release
 node_modules/
 jspm_packages/
 
-hide db
+# hide db
+#server/config/db.js
 
+# REST requests file
+rest.http
 
 # Typescript v1 declaration files
 typings/
@@ -59,4 +62,3 @@ typings/
 
 # dotenv environment variables file
 .env
-
