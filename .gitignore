@@ -37,7 +37,7 @@ node_modules/
 jspm_packages/
 
 hide db
-server/config/db.js
+
 
 # Typescript v1 declaration files
 typings/
