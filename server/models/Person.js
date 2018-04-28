@@ -2,7 +2,22 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var PersonSchema = new Schema({
-    // TO DO
+    name: {
+        type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true,
+        default: ''
+    },
+    birthday: {
+        type: Date,
+        required: true
+    },
+    appears_in: [
+        { type: mongoose.Schema.Types.ObjectId, ref: 'Media' }
+    ]
 });
 
 var Person = mongoose.model('Person', PersonSchema);
