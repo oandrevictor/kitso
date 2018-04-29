@@ -103,9 +103,6 @@ var UserSchema = new Schema({
   }
 });
 
-Userchema.post('init', function (user) {
-  this.followes = 'a';
-});
 
 var User = mongoose.model('User', UserSchema);
 
