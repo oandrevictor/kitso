@@ -1,6 +1,10 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+var validateEmail = function(email) {
+    var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    return re.test(email)
+};
 
 var UserSchema = new Schema({
   name: {
@@ -95,19 +99,6 @@ var UserSchema = new Schema({
     default: []
   }
 });
-
-var validateEmail = function(email) {
-    var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    return re.test(email)
-};
-
-UserSchema.methods.following = function (callback) {
-  return this.model('Follows').find({ user: this._id }, callback);
-};
-
-UserSchema.methods.followers = function (callback) {
-  return this.model('Follows').find({ following: this._id }, callback);
-};
 
 Userchema.post('init', function (user) {
   this.followes = 'a';
