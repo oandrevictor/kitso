@@ -17,7 +17,10 @@ var UserSchema = new Schema({
   email: {
     type: String,
     required: true,
-    validate: [validateEmail, 'invalid email']
+    validate: {
+      validator: validateEmail,
+      message: 'Invalid email'
+    }
   },
   password: {
     type: String,
@@ -42,11 +45,21 @@ var UserSchema = new Schema({
       required: true
   },
   following: {
-    type: Array,
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Follows'
+      }
+    ],
     default: []
   },
   followers: {
-    type: Array,
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Follows'
+      }
+    ],
     default: []
   },
   vip: {
@@ -55,13 +68,13 @@ var UserSchema = new Schema({
   },
   watchlist: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Wachlist'
+    ref: 'UserList'
   },
   lists: {
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'List'
+        ref: 'UserList'
       }
     ],
     default: []

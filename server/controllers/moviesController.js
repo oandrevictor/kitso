@@ -1,6 +1,6 @@
 var Movie = require('../models/Movie');
 
-// Todos exemplos
+// Todos filmes
 exports.index = function(req, res) {
     Movie.find({})
     .catch((err) => {
@@ -11,9 +11,9 @@ exports.index = function(req, res) {
     });
 };
 
-// Um exemplo
+// Um filme
 exports.show = function(req, res) {
-    Movie.findById(req.params.example_id)
+    Movie.findById(req.params.movie_id)
     .catch((err) => {
         res.status(400).send(err);
     })
@@ -22,45 +22,45 @@ exports.show = function(req, res) {
     });
 };
 
-// Criar exemplo
+// Criar filme
 exports.create = function(req, res) {
-    var example = new Movie(req.body);
+    var movie = new Movie(req.body);
 
-    example.save()
+    movie.save()
     .catch((err) => {
         res.status(400).send(err);
     })
-    .then((createdExample) => {
+    .then((createdMovie) => {
         res.status(200).send('Movie created.');
     });
 };
 
-// Editar exemplo
+// Editar filme
 exports.update = function(req, res) {
-    Movie.findById(req.params.example_id)
+    Movie.findById(req.params.movie_id)
     .catch((err) => {
         res.status(400).send(err);
     })
-    .then((example) => {
-        example.nome = req.body.nome;
+    .then((movie) => {
+        movie.nome = req.body.nome;
 
-        example.save()
+        movie.save()
         .catch((err) => {
             res.status(400).send(err);
         })
-        .then((updateExample) => {
-            res.status(200).json(updateExample);
+        .then((updatedMovie) => {
+            res.status(200).json(updatedMovie);
         });
     });
 };
 
-// Deletar exemplo
+// Deletar filme
 exports.delete = function(req, res) {
-    Example.remove({ _id: req.params.example_id})
+    Movie.remove({ _id: req.params.movie_id})
     .catch((err) => {
         res.status(400).send(err);
     })
     .then(() => {
-        res.status(200).send('Example removido.');
+        res.status(200).send('Movie removed.');
     });
 };

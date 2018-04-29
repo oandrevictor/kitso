@@ -1,9 +1,10 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var WatchedSchema = new Schema({
+var LikedSchema = new Schema({
   user: {
-    date: Date,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true
   },
   hidden: {
@@ -13,12 +14,13 @@ var WatchedSchema = new Schema({
   },
   media: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'History',
+    ref: 'Media',
     required: true
   },
   date: {
     type: Date,
-    required: true
+    required: true,
+    default: Date.now
   },
   history: {
     type: mongoose.Schema.Types.ObjectId,
@@ -27,6 +29,6 @@ var WatchedSchema = new Schema({
   }
 });
 
-var Watched = mongoose.model('Watched', WatchedSchema);
+var Liked = mongoose.model('Liked', LikedSchema);
 
-module.exports = Watched;
+module.exports = Liked;

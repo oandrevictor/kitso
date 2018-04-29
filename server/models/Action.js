@@ -1,14 +1,13 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var HistorySchema = new Schema({
-  date: {
+var ActionSchema = new Schema({
+  name: {
     date: Date,
     required: true
   },
   action: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Action',
+    type: String,
     required: true
   },
   user: {
@@ -16,13 +15,13 @@ var HistorySchema = new Schema({
     ref: 'User',
     required: true
   },
-  hide: {
-    type: Boolean,
-    default: false,
+  action_type: {
+    type: String,
+    enum: ['rated','watched','followed'],
     required: true
   }
 });
 
-var History = mongoose.model('History', HistorySchema);
+var Action = mongoose.model('Action', ActionSchema);
 
-module.exports = History;
+module.exports = Action;
