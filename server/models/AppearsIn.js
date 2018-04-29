@@ -2,11 +2,11 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var AppearsInSchema = new Schema({
-    person: {
+    _person: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Person'
     },
-    media: {
+    _media: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Media'
     }
