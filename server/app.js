@@ -45,12 +45,15 @@ app.get('/', function (req, res) {
 var exampleRoutes = require('./routes/example');
 app.use('/example', exampleRoutes);
 
+var movieRoutes = require('./routes/movie');
+app.use('/api/movie', movieRoutes);
+
 // start app ===============================================
 // startup our app at http://localhost:8080
-app.listen(port);               
+app.listen(port);
 
-// shoutout to the user                     
+// shoutout to the user
 console.log('Magic happens on port ' + port);
 
-// expose app           
-exports = module.exports = app;                         
+// expose app
+exports = module.exports = app;

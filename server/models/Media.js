@@ -9,27 +9,26 @@ var MediaSchema = new Schema({
     overview: {
         type: String,
         required: true,
-        default: ''
+        default: "No information now, come back soon."
     },
     release_date: {
         type: Date,
         required: true
     },
-    director: { type: mongoose.Schema.Types.ObjectId, ref: 'Person' },
+    directors: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Person' }],
     actors: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Person' }],
     imdb_id: {
         type: String,
         required: true
     },
-    genres: [String],
-    porter: {
+    genres: {
+      type: [String],
+      default: [],
+      required: true
+    },
+    poster: {
         type: String,
         default: 'placeholder'
-    },
-    rating: {
-        type: Number,
-        required: true,
-        default: 0
     }
 });
 
