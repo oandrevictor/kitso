@@ -42,11 +42,21 @@ var UserSchema = new Schema({
       required: true
   },
   following: {
-    type: Array,
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Follows'
+      }
+    ],
     default: []
   },
   followers: {
-    type: Array,
+    type: type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Follows'
+      }
+    ],
     default: []
   },
   vip: {

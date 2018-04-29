@@ -3,7 +3,8 @@ var Schema = mongoose.Schema;
 
 var LikedSchema = new Schema({
   user: {
-    date: Date,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true
   },
   hidden: {
@@ -18,12 +19,13 @@ var LikedSchema = new Schema({
   },
   date: {
     type: Date,
-    required: true
+    required: true,
+    default: Date.now
   },
   history: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'History',
-    required: true
+    required: false
   }
 });
 

@@ -23,7 +23,7 @@ var WatchedSchema = new Schema({
   history: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'History',
-    required: true
+    required: false
   }
 });
 

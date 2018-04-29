@@ -3,7 +3,8 @@ var Schema = mongoose.Schema;
 
 var RatedSchema = new Schema({
   user: {
-    date: Date,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true
   },
   hidden: {
@@ -12,7 +13,8 @@ var RatedSchema = new Schema({
     default: false
   }
   media: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Media',
     required: true
   },
   date: {
@@ -22,7 +24,7 @@ var RatedSchema = new Schema({
   history: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'History',
-    required: true
+    required: false
   },
   rating: {
     type: Number,
