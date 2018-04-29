@@ -7,7 +7,11 @@ var FollowsPageSchema = new Schema({
       required: true
     },
     following: {
-      type: mongoose.Schema.Types.ObjectId, ref: 'Media',
+      type: String,
+      required: true
+    },
+    is_media: {
+      type: Boolean,
       required: true
     }
 });
