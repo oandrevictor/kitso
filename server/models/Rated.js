@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var RatedSchema = new Schema({
-  user: {
+  _user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
@@ -12,7 +12,7 @@ var RatedSchema = new Schema({
     required: true,
     default: false
   },
-  media: {
+  _media: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Media',
     required: true
@@ -21,7 +21,7 @@ var RatedSchema = new Schema({
     type: Date,
     required: true
   },
-  history: {
+  _history: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'History',
     required: false

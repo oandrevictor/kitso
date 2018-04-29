@@ -6,7 +6,7 @@ var ListItem = new Schema({
     type: Number,
     require: true
   },
-  media: {
+  _media: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Media',
   }
@@ -25,8 +25,8 @@ var UserListSchema = new Schema({
     type: Boolean,
     required: true,
     default: true
-  }
-  user: {
+  },
+  _user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true

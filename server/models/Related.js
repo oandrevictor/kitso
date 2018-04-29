@@ -2,20 +2,22 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var RelatedSchema = new Schema({
-    user: {
-      type: mongoose.Schema.Types.ObjectId, ref: 'User',
+    _user: {
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'User',
       required: true
     },
-    news: {
-      type: mongoose.Schema.Types.ObjectId, ref: 'News',
+    _news: {
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'News',
       required: true
     },
-    media: {
+    _media: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Media',
       required: false
     },
-    person: {
+    _person: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Person',
       required: false

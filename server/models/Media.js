@@ -15,8 +15,8 @@ var MediaSchema = new Schema({
         type: Date,
         required: true
     },
-    directors: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Person' }],
-    actors: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Person' }],
+    _directors: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Person' }],
+    _actors: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Person' }],
     imdb_id: {
         type: String,
         required: true

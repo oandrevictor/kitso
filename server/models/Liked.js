@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var LikedSchema = new Schema({
-  user: {
+  _user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
@@ -12,7 +12,7 @@ var LikedSchema = new Schema({
     required: true,
     default: false
   },
-  media: {
+  _media: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Media',
     required: true
@@ -22,7 +22,7 @@ var LikedSchema = new Schema({
     required: true,
     default: Date.now
   },
-  history: {
+  _history: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'History',
     required: false
