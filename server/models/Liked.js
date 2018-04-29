@@ -11,7 +11,7 @@ var LikedSchema = new Schema({
     type: Boolean,
     required: true,
     default: false
-  }
+  },
   media: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Media',
