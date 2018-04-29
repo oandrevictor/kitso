@@ -13,6 +13,11 @@ var HistorySchema = new Schema({
   user: {
     type: Date,
     required: true
+  },
+  hide: {
+    type: Boolean,
+    default: false,
+    required: true
   }
 });
 
