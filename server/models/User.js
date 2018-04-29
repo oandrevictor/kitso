@@ -65,13 +65,13 @@ var UserSchema = new Schema({
   },
   watchlist: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Wachlist'
+    ref: 'UserList'
   },
   lists: {
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'List'
+        ref: 'UserList'
       }
     ],
     default: []
