@@ -17,7 +17,7 @@ var ActionSchema = new Schema({
   },
   action_type: {
     type: String,
-    enum: ['rated','watched','followed']
+    enum: ['rated','watched','followed'],
     required: true
   }
 });

@@ -51,7 +51,7 @@ var UserSchema = new Schema({
     default: []
   },
   followers: {
-    type: type: [
+    type: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Follows'
