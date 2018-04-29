@@ -11,16 +11,16 @@ var WatchedSchema = new Schema({
     required: true,
     default: false
   },
-  media: {
+  _media: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'History',
+    ref: 'Media',
     required: true
   },
   date: {
     type: Date,
     required: true
   },
-  history: {
+  _history: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'History',
     required: false

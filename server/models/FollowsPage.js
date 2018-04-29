@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var FollowsPageSchema = new Schema({
-    user: {
+    _user: {
       type: mongoose.Schema.Types.ObjectId, ref: 'User',
       required: true
     },

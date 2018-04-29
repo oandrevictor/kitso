@@ -39,7 +39,7 @@ var UserSchema = new Schema({
     required: true,
     enum: ['male', 'female', 'other']
   },
-  histoy: {
+  _histoy: {
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -48,7 +48,7 @@ var UserSchema = new Schema({
       default: [],
       required: true
   },
-  following: {
+  _following: {
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -57,7 +57,7 @@ var UserSchema = new Schema({
     ],
     default: []
   },
-  following_pages: {
+  _following_pages: {
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -66,7 +66,7 @@ var UserSchema = new Schema({
     ],
     default: []
   },
-  followers: {
+  _followers: {
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -79,11 +79,11 @@ var UserSchema = new Schema({
     type: Boolean,
     default: false
   },
-  watchlist: {
+  _watchlist: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'UserList'
   },
-  lists: {
+  _lists: {
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -92,7 +92,7 @@ var UserSchema = new Schema({
     ],
     default: []
   },
-  ratings: {
+  _ratings: {
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,

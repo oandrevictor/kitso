@@ -6,12 +6,12 @@ var HistorySchema = new Schema({
     date: Date,
     required: true
   },
-  action: {
+  _action: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Action',
     required: true
   },
-  user: {
+  _user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true

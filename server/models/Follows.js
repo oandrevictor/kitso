@@ -2,11 +2,11 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var FollowsSchema = new Schema({
-    user: {
+    _user: {
       type: mongoose.Schema.Types.ObjectId, ref: 'User',
       required: true
     },
-    following: {
+    _following: {
       type: mongoose.Schema.Types.ObjectId, ref: 'User',
       required: true
     }
