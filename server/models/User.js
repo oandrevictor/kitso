@@ -50,6 +50,15 @@ var UserSchema = new Schema({
     ],
     default: []
   },
+  following_pages: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'FollowsPage'
+      }
+    ],
+    default: []
+  },
   followers: {
     type: [
       {
