@@ -1,3 +1,39 @@
-a {
-  color: blue;
-  cursor: pointer; }
+@import url("https://fonts.googleapis.com/css?family=Roboto:100i,300,400,500,700");
+.home {
+  font-family: 'Roboto', sans-serif;
+  background: black; }
+  .home .main-container {
+    text-align: center;
+    width: 100vw;
+    height: 90vh;
+    background-color: black; }
+    .home .main-container .transparet-background {
+      opacity: 0.7; }
+    .home .main-container h1, .home .main-container h2 {
+      color: #EDEDED; }
+    .home .main-container h2 {
+      font-weight: 100;
+      margin-top: 0px; }
+    .home .main-container .home-buttons {
+      text-align: center; }
+
+.purple-button {
+  background: #8600CA !important;
+  color: white !important;
+  border: #8600CA solid 1px !important; }
+
+.footer {
+  font-family: 'Roboto', sans-serif;
+  width: 100vw;
+  height: 10vh;
+  background: #502274;
+  color: #EDEDED;
+  text-align: center;
+  display: inline-grid;
+  font-weight: 100;
+  font-style: italic; }
+  .footer p {
+    margin-top: auto;
+    margin-bottom: auto; }
+
+/*# sourceMappingURL=style.css.map */
