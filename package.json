@@ -2,10 +2,30 @@
   "name": "savetv",
   "main": "./server/server.js",
   "dependencies": {
-    "express": "~4.5.1",
-    "mongoose": "~4.4.0",
     "body-parser": "~1.4.2",
-    "method-override": "~2.0.2"
+    "express": "~4.5.1",
+    "method-override": "~2.0.2",
+    "mongoose": "~5.0.16",
+    "sass": "^1.3.0"
   },
-  "repository": "https://github.com/oandrevictor/savetv"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oandrevictor/savetv.git"
+  },
+  "description": "necessário:<br /> node (8.9.4)<br /> bower (1.8.2)<br /> mongodb<br /> Express >=4.5<br />",
+  "bugs": {
+    "url": "https://github.com/oandrevictor/savetv/issues"
+  },
+  "homepage": "https://github.com/oandrevictor/savetv#readme",
+  "version": "1.0.0",
+  "devDependencies": {
+    "node-sass": "^4.9.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "sass:compile": "node-sass --include-path sass ./client/css/style.scss ./client/css/style.css",
+    "start": "node ./server/app.js"
+  },
+  "author": "",
+  "license": "ISC"
 }

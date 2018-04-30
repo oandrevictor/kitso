@@ -5,9 +5,8 @@ var express        = require('express');
 var app            = express();
 var bodyParser     = require('body-parser');
 var methodOverride = require('method-override');
-var path = require('path');
-var mongoose = require('mongoose');
-
+var path           = require('path');
+var mongoose       = require('mongoose');
 
 // configuration ===========================================
 
@@ -38,9 +37,13 @@ app.use(methodOverride('X-HTTP-Method-Override'));
 app.use(express.static(path.join(__dirname, '../client')));
 
 // routes ==================================================
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
+
+// Example route
+var exampleRoutes = require('./routes/example');
+app.use('/example', exampleRoutes);
 
 // start app ===============================================
 // startup our app at http://localhost:8080
@@ -51,4 +54,3 @@ console.log('Magic happens on port ' + port);
 
 // expose app           
 exports = module.exports = app;                         
-
