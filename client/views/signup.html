@@ -2,67 +2,79 @@
     <div class="uk-width-large uk-margin uk-align-center">
         <div class="uk-card uk-card-small uk-card-default uk-card-body">
             <h1 class="uk-text-center">SignUp</h1>
-            <form name='signupForm'>
+            <form name="userForm" ng-submit="submitForm()" novalidate>
                 <!--Name Field-->
                 <div class="uk-margin">
-                    <label class="uk-form-label" for="name">Name</label>
+                    <label class="uk-form-label" ng-class="{ 'uk-text-danger' : isInvalid(userForm.name) }" for="name">Name</label>
                     <div class="uk-form-controls">
-                        <input required class="uk-input" id="name" type="text" placeholder="Name">
+                        <input class="uk-input" type="text" id="name" name="name" placeholder="Name"
+                               ng-class="{ 'uk-form-danger' : isInvalid(userForm.name) }"
+                               ng-model="user.name" required>
                     </div>
                 </div>
 
                 <!--Username Field-->
                 <div class="uk-margin">
-                    <label class="uk-form-label" for="username">Username</label>
+                    <label class="uk-form-label" for="username" ng-class="{ 'uk-text-danger' : isInvalid(userForm.username) }">Username</label>
                     <div class="uk-form-controls">
-                        <input required class="uk-input" id="username" type="text" placeholder="Username">
+                        <input class="uk-input" type="text" id="username" name="username" placeholder="Username"
+                               ng-class="{ 'uk-form-danger' : isInvalid(userForm.username) }"
+                               ng-model="user.username" required>
                     </div>
                 </div>
 
                 <!--Email Field-->
                 <div class="uk-margin">
-                    <label class="uk-form-label" for="email">Email</label>
+                    <label class="uk-form-label" for="email" ng-class="{ 'uk-text-danger' : isInvalid(userForm.email) }">Email</label>
                     <div class="uk-form-controls">
-                        <input required class="uk-input" id="email" type="email" placeholder="Email">
+                        <input class="uk-input" type="email" id="email" name="email" placeholder="Email"
+                               ng-class="{ 'uk-form-danger' : isInvalid(userForm.email) }"
+                               ng-model="user.email" required>
                     </div>
                 </div>
 
                 <!--Password Field-->
                 <div class="uk-margin">
-                    <label class="uk-form-label" for="email">Password</label>
+                    <label class="uk-form-label" for="password" ng-class="{ 'uk-text-danger' : isInvalid(userForm.password) }">Password</label>
                     <div class="uk-form-controls">
-                        <input required class="uk-input" id="password" type="password" placeholder="Password">
+                        <input class="uk-input" type="password" id="password" name="password" placeholder="Password"
+                               ng-class="{ 'uk-form-danger' : isInvalid(userForm.password) }" ng-change="resetValidity()"
+                               ng-model="user.password" required>
                     </div>
                 </div>
 
                 <!--Confirm Password Field-->
                 <div class="uk-margin">
-                    <label class="uk-form-label" for="email">Confirm Password</label>
+                    <label class="uk-form-label" for="passwordConfirmation" ng-class="{ 'uk-text-danger' : isInvalid(userForm.passwordConfirmation) }">Confirm Password</label>
                     <div class="uk-form-controls">
-                        <input required class="uk-input" id="password-confirmation"
-                               type="password" placeholder="Confirm your password">
+                        <input class="uk-input" type="password" id="passwordConfirmation" name="passwordConfirmation" placeholder="Confirm your password"
+                               ng-class="{ 'uk-form-danger' : isInvalid(userForm.passwordConfirmation) }" ng-change="resetValidity()"
+                               ng-model="user.passwordConfirmation" required>
                     </div>
                 </div>
 
                 <!--Birth Date-->
                 <div class="uk-margin">
-                    <label class="uk-form-label" for="birthday">Birthday</label>
+                    <label class="uk-form-label" for="birthday" ng-class="{ 'uk-text-danger' : isInvalid(userForm.birthday) }">Birthday</label>
                     <div class="uk-form-controls">
-                        <input required class="uk-input" id="birthday" type="date">
+                        <input class="uk-input" type="date" id="birthday" name="birthday"
+                               ng-class="{ 'uk-form-danger' : isInvalid(userForm.birthday) }"
+                               ng-model="user.birthday" required>
                     </div>
                 </div>
 
                 <!--Genre-->
                 <div class="uk-margin">
-                    <label class="uk-form-label" for="birthday">Genre</label>
-                    <select required class="uk-select" id="form-stacked-select">
+                    <label class="uk-form-label" for="genre" ng-class="{ 'uk-text-danger' : isInvalid(userForm.genre) }">Genre</label>
+                    <select class="uk-select" id="genre" name="genre"
+                            ng-class="{ 'uk-form-danger' : isInvalid(userForm.genre) }"  ng-model="user.genre" required>
                         <option value="">Please select...</option>
                         <option value="male">Male</option>
                         <option value="female">Female</option>
                         <option value="other">Other</option>
                     </select>
                 </div>
-                <button class="uk-button uk-button-signup uk-button-small uk-align-right" ng-disabled="signupForm.$invalid">SignUp</button>
+                <button class="uk-button uk-button-small uk-align-right" ng-class="{ 'uk-button-signup': userForm.$valid }" ng-disabled="userForm.$invalid">SignUp</button>
             </form>
         </div>
     </div>
