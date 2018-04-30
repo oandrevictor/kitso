@@ -1,3 +1,70 @@
-<div class="text-center">
-    <h1>SIGNUP WORKS</h1>
+<div class="uk-grid">
+    <div class="uk-width-large uk-margin uk-align-center">
+        <div class="uk-card uk-card-small uk-card-default uk-card-body">
+            <h1 class="uk-text-center">SignUp</h1>
+            <form name='signupForm'>
+                <!--Name Field-->
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="name">Name</label>
+                    <div class="uk-form-controls">
+                        <input required class="uk-input" id="name" type="text" placeholder="Name">
+                    </div>
+                </div>
+
+                <!--Username Field-->
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="username">Username</label>
+                    <div class="uk-form-controls">
+                        <input required class="uk-input" id="username" type="text" placeholder="Username">
+                    </div>
+                </div>
+
+                <!--Email Field-->
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="email">Email</label>
+                    <div class="uk-form-controls">
+                        <input required class="uk-input" id="email" type="email" placeholder="Email">
+                    </div>
+                </div>
+
+                <!--Password Field-->
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="email">Password</label>
+                    <div class="uk-form-controls">
+                        <input required class="uk-input" id="password" type="password" placeholder="Password">
+                    </div>
+                </div>
+
+                <!--Confirm Password Field-->
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="email">Confirm Password</label>
+                    <div class="uk-form-controls">
+                        <input required class="uk-input" id="password-confirmation"
+                               type="password" placeholder="Confirm your password">
+                    </div>
+                </div>
+
+                <!--Birth Date-->
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="birthday">Birthday</label>
+                    <div class="uk-form-controls">
+                        <input required class="uk-input" id="birthday" type="date">
+                    </div>
+                </div>
+
+                <!--Genre-->
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="birthday">Genre</label>
+                    <select required class="uk-select" id="form-stacked-select">
+                        <option value="">Please select...</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <button class="uk-button uk-button-signup uk-button-small uk-align-right" ng-disabled="signupForm.$invalid">SignUp</button>
+            </form>
+        </div>
+    </div>
 </div>
+
