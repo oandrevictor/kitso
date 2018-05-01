@@ -9,64 +9,29 @@ import requests
     To run with python 3, you can do `python3 populate_db.py`.
 """
 
+global LIMIT_OF_PEOPLE
 
 imdb_interface = IMDb()
 MOVIE_URL = 'http://localhost:8080/api/movie/'
 PERSON_URL = 'http://localhost:8080/api/person/'
+LIMIT_OF_PEOPLE = 5
 cast_per_film = dict()
-director_per_film = dict()
+directors_per_film = dict()
 person_dict = dict()
 filme_db_id = dict()
 top250 = imdb_interface.get_top250_movies()
-top250 = top250[:1]
+top50 = top250[:50]
 
 
 class Person(object):
 
-    def __init__(self, imdbid, db_id, name, birth_date, filmography, is_director):
+    def __init__(self, imdbid, db_id, name, birth_date, filmography):
         self.imdbid = imdbid
         self.db_id = db_id
         self.name = name
         self.birth_date = birth_date
         self.filmography = filmography
-        self.is_director = is_director
-
-def create_person_json(name, description, birthday, filmography_list):
-    return {
-        "name": name,
-        "description": description,
-        "birthday": birthday,
-        "appears_in": filmography_list
-    }
-
-def create_movie_json(imdb_id, movie, cast, directors):
-    return {
-        "name": movie.get('title'),
-        "imdb_id": imdb_id,
-        "release_date": movie.get('year'),
-        "overview": movie.get('plot')[0],
-        "rating": movie.get('rating'),
-        "genres": movie.get('genres'),
-        "poster": movie.get('cover url'),
-        "actors": cast,
-        "directors": directors
-    }
-
-def get_cast_db_ids(cast):
-    name_list = list(map(str, cast))
-    cast_ids = []
-    for name in name_list:
-        m_id = person_dict[name].db_id
-        cast_ids.append(m_id)
-    return cast_ids
-
-def get_directors_db_ids(directors):
-    name_list = list(map(str, directors))
-    directors_ids = []
-    for name in name_list:
-        m_id = person_dict[name].db_id
-        directors_ids.append(m_id)
-    return directors_ids
+ 
 
 def fix_birthday_date(str_date):
     NO_BIRTHDAY_DATE_PROVIDED = ""
@@ -81,6 +46,50 @@ def fix_birthday_date(str_date):
 
     return "-".join(list_date)
 
+def create_person_json(person_imdb):
+    birthday = fix_birthday_date(person_imdb.get('birth date'))
+    return {
+        "name": person_imdb.get('name'),
+        "description": "This is a default description of movie",
+        "birthday": birthday,
+        "appears_in": []
+    }
+
+def create_person_update_json(person_obj):    
+    return {
+        "name": person_obj.name,
+        "description": "This is a default description of movie",
+        "birthday": person_obj.birth_date ,
+        "appears_in": get_movies_db_ids(person_obj.filmography)
+    }
+
+def post(url, json, response_data_key):
+    r = requests.post(url, data=json)
+    response_json = r.json()
+    db_id = response_json['data'][response_data_key]    
+    return db_id
+
+def create_movie_json(imdb_id, movie, cast, directors):
+    return {
+        "name": movie.get('title'),
+        "imdb_id": imdb_id,
+        "release_date": movie.get('year'),
+        "overview": movie.get('plot')[0],
+        "rating": movie.get('rating'),
+        "genres": movie.get('genres'),
+        "poster": movie.get('cover url'),
+        "actors": cast,
+        "directors": directors
+    }
+
+def get_person_db_ids_list(imdb_person_list, person_dict):
+    name_list = list(map(str, imdb_person_list))
+    db_ids_list = []
+    for name in name_list:
+        m_id = person_dict[name].db_id
+        db_ids_list.append(m_id)
+    return db_ids_list
+
 def get_movies_db_ids(movies):
     movies_ids = []
     for movie in movies:
@@ -90,66 +99,61 @@ def get_movies_db_ids(movies):
             movies_ids.append(db_id)
     return movies_ids
 
+def get_movie_cast(imdb_id, movie, cast_per_film):
+    movie_cast = movie.get('cast')[:LIMIT_OF_PEOPLE]
+    cast_per_film[imdb_id] = movie_cast
+    return movie_cast
 
-for m in top250:
+def get_movie_directors(imdb_id, movie, directors_per_film):
+    movie_directors = movie.get('director')
+    directors_per_film[imdb_id] = movie_directors
+    return movie_directors
 
-    movie = imdb_interface.get_movie(m.movieID)
-    movie_cast = movie.get('cast')[:1]
-    cast_per_film[m.movieID] = movie_cast
-    movie_dir = movie.get('director')
-    director_per_film[m.movieID] = movie_dir
-
-    for p in movie_cast:
-
+def create_person_obj(person_imdb, imdbid, db_id, is_actor):
+    name = person_imdb.get('name')
+    birth_date = fix_birthday_date(person_imdb.get('birth date'))
+    filmography_type = 'actor' if is_actor else 'writer'
+    filmography = person_imdb.get('filmography')[0][filmography_type]
+    return Person(imdbid, db_id, name, birth_date, filmography)
+   
+def post_person_imdb_list(imdb_interface, person_imdb_list, PERSON_URL, is_cast):
+    for p in person_imdb_list:
         person_imdb = imdb_interface.get_person(p.personID)
-        name = person_imdb.get('name')
-        birth_date = fix_birthday_date(person_imdb.get('birth date'))
-        filmography = person_imdb.get('filmography')[0]['actor']
+        request_json = create_person_json(person_imdb)
+        db_id = post(PERSON_URL, request_json, response_data_key='personId')
+        person_obj = create_person_obj(person_imdb, p.personID, db_id, is_actor=is_cast)
+        person_dict[person_obj.name] = person_obj    
+   
+def post_create_persons_in_db(imdb_interface, top50, cast_per_film, directors_per_film, person_dict, person_url):
 
-        request_json = create_person_json(name, "This is a default description of movie", birth_date, [])
-        r = requests.post(PERSON_URL, data=request_json)
-        response_json = r.json()
-        db_id = response_json['data']['personId']
+    for m in top50:
 
-        person_obj = Person(p.personID, db_id, name, birth_date, filmography, False)
-        person_dict[name] = person_obj
+        movie = imdb_interface.get_movie(m.movieID)
+        movie_cast = get_movie_cast(m.movieID, movie, cast_per_film)
+        movie_directors = get_movie_directors(m.movieID, movie, directors_per_film)
+        post_person_imdb_list(imdb_interface, movie_cast, person_url, is_cast=True)
+        post_person_imdb_list(imdb_interface, movie_directors, person_url, is_cast=False)
 
-    for p in movie_dir:
+def post_create_movie_in_db(imdb_interface, top50, person_dict, movie_url):
 
-        person_imdb = imdb_interface.get_person(p.personID)
-        name = person_imdb.get('name')
-        birth_date = fix_birthday_date(person_imdb.get('birth date'))
-        filmography = person_imdb.get('filmography')[0]['writer']
+    for m in top50:
 
-        request_json = create_person_json(name, "This is a default description of movie", birth_date, [])
-        r = requests.post(PERSON_URL, data=request_json)
-        response_json = r.json()
-        db_id = response_json['data']['personId']
+        movie = imdb_interface.get_movie(m.movieID)
+        movie_cast = cast_per_film[m.movieID]
+        movie_cast_id = get_person_db_ids_list(movie_cast, person_dict)
+        movie_directors = directors_per_film[m.movieID]
+        movie_directors_id = get_person_db_ids_list(movie_directors, person_dict)
 
-        person_obj = Person(p.personID, db_id, name, birth_date, filmography, True)
-        person_dict[name] = person_obj    
+        request_json = create_movie_json(m.movieID, movie, movie_cast_id, movie_directors_id)
+        db_id = post(movie_url, request_json, response_data_key="movieId")
+        filme_db_id[str(m)] = db_id
 
+def put_update_persons(person_dict, person_url):
+    for person_obj in person_dict.values():
+        request_json = create_person_update_json(person_obj)
+        url = person_url + person_obj.db_id
+        requests.put(url, data=request_json)
 
-for m in top250:
-
-    movie = imdb_interface.get_movie(m.movieID)
-    movie_cast = cast_per_film[m.movieID]
-    movie_cast_id = get_cast_db_ids(movie_cast)
-    movie_directors = director_per_film[m.movieID]
-    movie_directors_id = get_directors_db_ids(movie_directors)
-
-    request_json = create_movie_json(m.movieID, movie, movie_cast_id, movie_directors_id)
-    r = requests.post(MOVIE_URL, data=request_json)
-    response_json = r.json()
-    db_id = response_json['data']['movieId']
-    filme_db_id[str(m)] = db_id
-
-
-for person_obj in person_dict.values():
-
-    name = person_obj.name
-    birth_date = person_obj.birth_date        
-    movies_db_ids = get_movies_db_ids(person_obj.filmography)
-    request_json = create_person_json(name, "This is a default description of movie", birth_date, movies_db_ids)
-    url = PERSON_URL + person_obj.db_id
-    r = requests.put(url, data=request_json)
+post_create_persons_in_db(imdb_interface, top50, cast_per_film, directors_per_film, person_dict, PERSON_URL)
+post_create_movie_in_db(imdb_interface, top50, person_dict, MOVIE_URL)
+put_update_persons(person_dict, PERSON_URL)
