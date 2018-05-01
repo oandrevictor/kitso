@@ -4,7 +4,7 @@ angular.module('SignupController', []).controller('SignupController', function($
 
         if ($scope.userForm.$valid) {
             // SUBMITE REQUEST HERE
-            console.log('Submited');
+            alert('form submited');
         }
     };
 
