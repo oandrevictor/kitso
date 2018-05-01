@@ -31,7 +31,13 @@ exports.create = function(req, res) {
         res.status(400).send(err);
     })
     .then((createdMovie) => {
-        res.status(200).send('Movie created.');
+        res_json = {
+            "message": "Movie created.",
+            "data": {
+                "movieId": createdMovie._id,
+            }            
+        }        
+        res.status(200).send(res_json);
     });
 };
 
