@@ -15,8 +15,8 @@ var PersonSchema = new Schema({
         type: Date,
         required: true
     },
-    appears_in: [
-        { type: mongoose.Schema.Types.ObjectId, ref: 'Media' }
+    _appears_in: [
+        { type: mongoose.Schema.Types.ObjectId, ref: 'AppearsIn' }
     ]
 });
 
