@@ -48,6 +48,9 @@ app.use('/example', exampleRoutes);
 var movieRoutes = require('./routes/movie');
 app.use('/api/movie', movieRoutes);
 
+var userRoutes = require('./routes/user');
+app.use('/api/user', userRoutes);
+
 // start app ===============================================
 // startup our app at http://localhost:8080
 app.listen(port);
