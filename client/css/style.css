@@ -1,6 +1,11 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:100i,300,400,500,700");
 .signup {
-  background: #502274 !important;
+  background: url("/images/blade_runner.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  overflow-y: auto !important;
   height: 100vh;
   font-family: 'Roboto' !important;
   color: #ffffff !important; }
@@ -8,24 +13,28 @@
     background-color: #502274 !important;
     color: #ffffff !important;
     font-weight: bold; }
-  .signup .signup-form {
-    width: 40vw;
-    max-width: 450px;
-    min-width: 300px; }
-  .signup .signup-title {
-    color: #ffffff !important;
-    font-weight: 300;
-    font-family: 'Roboto' !important; }
-  .signup .uk-form-label {
-    color: #502274 !important; }
-  .signup .uk-input {
-    color: #707070;
-    font-weight: 300;
-    border: #f0f0f0 solid 1px; }
-  .signup .uk-form-danger {
-    color: #f0506e;
-    border-color: #f0506e; }
-  .signup .uk-select {
-    font-weight: 300; }
+  .signup .signup-container {
+    margin-top: auto;
+    margin-bottom: auto; }
+    .signup .signup-container .signup-form {
+      height: 100%;
+      max-width: 450px;
+      min-width: 300px;
+      padding-bottom: 0px !important; }
+      .signup .signup-container .signup-form .uk-form-label {
+        color: #502274 !important; }
+      .signup .signup-container .signup-form .uk-input {
+        color: #707070;
+        font-weight: 300;
+        border: #f0f0f0 solid 1px; }
+      .signup .signup-container .signup-form .uk-form-danger {
+        color: #f0506e;
+        border-color: #f0506e; }
+      .signup .signup-container .signup-form .uk-select {
+        font-weight: 300; }
+    .signup .signup-container .signup-title {
+      color: #ffffff !important;
+      font-weight: 300;
+      font-family: 'Roboto' !important; }
 
 /*# sourceMappingURL=style.css.map */

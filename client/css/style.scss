@@ -1,9 +1,13 @@
 
 @import url('https://fonts.googleapis.com/css?family=Roboto:100i,300,400,500,700');
 
-
 .signup {
-  background: #502274 !important;
+  background: url('/images/blade_runner.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  overflow-y: auto !important;
   height: 100vh;
   font-family: 'Roboto' !important;
   color: #ffffff !important;
@@ -13,32 +17,39 @@
     font-weight: bold;
   }
 
-  .signup-form {
-    width: 40vw;
-    max-width: 450px;
-    min-width: 300px;
+  .signup-container {
+    margin-top: auto;
+    margin-bottom: auto;
 
-  }
+    .signup-form {
+      height: 100%;
+      max-width: 450px;
+      min-width: 300px;
+      padding-bottom: 0px!important;
 
-  .signup-title {
-    color: #ffffff !important;
-    font-weight: 300;
-    font-family: 'Roboto' !important;
-  }
-  .uk-form-label {
-    color: #502274 !important;
-  }
-  .uk-input {
-    color: #707070;
-    font-weight: 300;
-    border: #f0f0f0 solid 1px;
-  }
-  .uk-form-danger {
-    color: #f0506e;
-    border-color: #f0506e;
-  }
-  .uk-select {
-    font-weight: 300;
+      .uk-form-label {
+        color: #502274 !important;
+      }
+      .uk-input {
+        color: #707070;
+        font-weight: 300;
+        border: #f0f0f0 solid 1px;
+      }
+      .uk-form-danger {
+        color: #f0506e;
+        border-color: #f0506e;
+      }
+      .uk-select {
+        font-weight: 300;
+      }
+    }
+
+    .signup-title {
+      color: #ffffff !important;
+      font-weight: 300;
+      font-family: 'Roboto' !important;
+    }
+
   }
 
 }
