@@ -2,7 +2,19 @@ a {
   color: blue;
   cursor: pointer; }
 
-.uk-button-signup {
-  background-color: #502274;
-  color: #ffffff;
-}
+.signup {
+  background: #502274 !important;
+  height: 100vh; }
+  .signup .uk-button-signup {
+    background-color: #502274 !important;
+    color: #ffffff !important;
+    font-weight: bold; }
+  .signup .signup-form {
+    width: 40vw;
+    max-width: 450px;
+    min-width: 300px; }
+  .signup .signup-title {
+    color: #502274 !important;
+    font-weight: bold; }
+
+/*# sourceMappingURL=style.css.map */

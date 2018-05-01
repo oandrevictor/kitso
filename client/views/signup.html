@@ -1,7 +1,8 @@
-<div class="uk-grid">
+<div class="uk-grid signup uk-cover-container">
+  <img src="/images/mother.jpg" uk-cover>
     <div class="uk-width-large uk-margin uk-align-center">
-        <div class="uk-card uk-card-small uk-card-default uk-card-body">
-            <h1 class="uk-text-center">SignUp</h1>
+        <div class="uk-card uk-card-small uk-card-default uk-card-body uk-position-center signup-form">
+            <h1 class="uk-text-center signup-title">SignUp</h1>
             <form name="userForm" ng-submit="submitForm()" novalidate>
                 <!--Name Field-->
                 <div class="uk-margin">
@@ -65,7 +66,7 @@
 
                 <!--Genre-->
                 <div class="uk-margin">
-                    <label class="uk-form-label" for="genre" ng-class="{ 'uk-text-danger' : isInvalid(userForm.genre) }">Genre</label>
+                    <label class="uk-form-label" for="gender" ng-class="{ 'uk-text-danger' : isInvalid(userForm.genre) }">Genre</label>
                     <select class="uk-select" id="genre" name="genre"
                             ng-class="{ 'uk-form-danger' : isInvalid(userForm.genre) }"  ng-model="user.genre" required>
                         <option value="">Please select...</option>
@@ -74,9 +75,8 @@
                         <option value="other">Other</option>
                     </select>
                 </div>
-                <button class="uk-button uk-button-small uk-align-right" ng-class="{ 'uk-button-signup': userForm.$valid }" ng-disabled="userForm.$invalid">SignUp</button>
+                <button class="uk-button uk-button-small uk-align-center" ng-class="{ 'uk-button-signup': userForm.$valid }" ng-disabled="userForm.$invalid">SignUp</button>
             </form>
         </div>
     </div>
 </div>
-
