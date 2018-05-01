@@ -23,8 +23,10 @@
                                ng-class="{ 'uk-form-danger' : isInvalid(userForm.username) }"
                                ng-model="user.username" ng-minlength="4" ng-maxlength="12" required>
                     </div>
-                    <label class="uk-text-small uk-text-danger uk-align-right" for="username" ng-show="((isInvalid(userForm.username)) && (userForm.username.$$classCache['ng-valid-minlength'] && userForm.username.$$classCache['ng-valid-maxlength']))" >* Username can't be blank</label>
-                    <label class="uk-text-small uk-text-danger uk-align-right" for="username" ng-show="((isInvalid(userForm.username)) && !(userForm.username.$$classCache['ng-valid-minlength'] && userForm.username.$$classCache['ng-valid-maxlength']))">* Username must be between 4 and 12 characters long</label>
+                    <label class="uk-text-small uk-text-danger uk-align-right" for="username"
+                           ng-show="((isInvalid(userForm.username)) && (userForm.username.$$classCache['ng-valid-minlength'] && userForm.username.$$classCache['ng-valid-maxlength']))" >* Username can't be blank</label>
+                    <label class="uk-text-small uk-text-danger uk-align-right uk-text-right" for="username"
+                           ng-show="((isInvalid(userForm.username)) && !(userForm.username.$$classCache['ng-valid-minlength'] && userForm.username.$$classCache['ng-valid-maxlength']))">* Username must be 4 to 12 characters</label>
                 </div>
 
                 <!--Email Field-->
@@ -35,8 +37,10 @@
                                ng-class="{ 'uk-form-danger' : isInvalid(userForm.email) }"
                                ng-model="user.email" required>
                     </div>
-                    <label class="uk-text-small uk-text-danger uk-align-right" for="email" ng-show="((isInvalid(userForm.email)) && (userForm.email.$$classCache['ng-valid-email']))" >* Email can't be blank</label>
-                    <label class="uk-text-small uk-text-danger uk-align-right" for="email" ng-show="((isInvalid(userForm.email)) && !(userForm.email.$$classCache['ng-valid-email']))" >* Email is not valid</label>
+                    <label class="uk-text-small uk-text-danger uk-align-right" for="email"
+                           ng-show="((isInvalid(userForm.email)) && (userForm.email.$$classCache['ng-valid-email']))" >* Email can't be blank</label>
+                    <label class="uk-text-small uk-text-danger uk-align-right" for="email"
+                           ng-show="((isInvalid(userForm.email)) && !(userForm.email.$$classCache['ng-valid-email']))" >* Email is not valid</label>
                 </div>
 
                 <!--Password Field-->
@@ -47,7 +51,8 @@
                                ng-class="{ 'uk-form-danger' : isInvalid(userForm.password) }" ng-change="resetValidity()"
                                ng-model="user.password" required>
                     </div>
-                    <label class="uk-text-small uk-text-danger uk-align-right" for="passwordConfirmation" ng-show="isInvalid(userForm.password) && (!userForm.password.$$classCache['ng-invalid-password'])" >* Password can't be blank</label>
+                    <label class="uk-text-small uk-text-danger uk-align-right" for="passwordConfirmation"
+                           ng-show="isInvalid(userForm.password) && (!userForm.password.$$classCache['ng-invalid-password'])" >* Password can't be blank</label>
                 </div>
 
                 <!--Confirm Password Field-->
@@ -58,8 +63,10 @@
                                ng-class="{ 'uk-form-danger' : isInvalid(userForm.passwordConfirmation) }" ng-change="resetValidity()"
                                ng-model="user.passwordConfirmation" required>
                     </div>
-                    <label class="uk-text-small uk-text-danger uk-align-right" for="passwordConfirmation" ng-show="isInvalid(userForm.passwordConfirmation) && (!userForm.passwordConfirmation.$$classCache['ng-invalid-password-confirmation'])" >* Password confirmation can't be blank</label>
-                    <label class="uk-text-small uk-text-danger uk-align-right" for="passwordConfirmation" ng-show="isInvalid(userForm.passwordConfirmation) && (userForm.passwordConfirmation.$$classCache['ng-invalid-password-confirmation'])" >* Passwords don't match</label>
+                    <label class="uk-text-small uk-text-danger uk-align-right" for="passwordConfirmation"
+                           ng-show="isInvalid(userForm.passwordConfirmation) && (!userForm.passwordConfirmation.$$classCache['ng-invalid-password-confirmation'])" >* Password confirmation can't be blank</label>
+                    <label class="uk-text-small uk-text-danger uk-align-right" for="passwordConfirmation"
+                           ng-show="isInvalid(userForm.passwordConfirmation) && (userForm.passwordConfirmation.$$classCache['ng-invalid-password-confirmation'])" >* Passwords don't match</label>
                 </div>
 
                 <!--Birth Date-->
@@ -70,8 +77,10 @@
                                ng-class="{ 'uk-form-danger' : isInvalid(userForm.birthday) }"
                                ng-model="user.birthday" required>
                     </div>
-                    <label class="uk-text-small uk-text-danger uk-align-right" for="birthday" ng-show="((isInvalid(userForm.birthday)) && (userForm.birthday.$$classCache['ng-valid-date']))" >* Birthday can't be blank</label>
-                    <label class="uk-text-small uk-text-danger uk-align-right" for="birthday" ng-show="((isInvalid(userForm.birthday)) && (userForm.birthday.$$classCache['ng-invalid-date']))" >* Birthday is not valid</label>
+                    <label class="uk-text-small uk-text-danger uk-align-right" for="birthday"
+                           ng-show="((isInvalid(userForm.birthday)) && (userForm.birthday.$$classCache['ng-valid-date']))" >* Birthday can't be blank</label>
+                    <label class="uk-text-small uk-text-danger uk-align-right" for="birthday"
+                           ng-show="((isInvalid(userForm.birthday)) && (userForm.birthday.$$classCache['ng-invalid-date']))" >* Birthday is not valid</label>
                 </div>
 
                 <!--Gender-->
@@ -84,7 +93,8 @@
                         <option value="female">Female</option>
                         <option value="other">Other</option>
                     </select>
-                    <label class="uk-text-small uk-text-danger uk-align-right" for="birthday" ng-show="(isInvalid(userForm.gender))" >* You must select a gender</label>
+                    <label class="uk-text-small uk-text-danger uk-align-right" for="birthday"
+                           ng-show="(isInvalid(userForm.gender))" >* You must select a gender</label>
                 </div>
                 <button class="uk-button uk-button-small uk-align-center" ng-class="{ 'uk-button-signup': userForm.$valid }" ng-disabled="userForm.$invalid">SignUp</button>
             </form>
