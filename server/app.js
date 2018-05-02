@@ -51,6 +51,9 @@ app.use('/api/movie', movieRoutes);
 var personRoutes = require('./routes/person');
 app.use('/api/person', personRoutes);
 
+var userRoutes = require('./routes/user');
+app.use('/api/user', userRoutes);
+
 // start app ===============================================
 // startup our app at http://localhost:8080
 app.listen(port);

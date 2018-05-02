@@ -39,7 +39,7 @@ var UserSchema = new Schema({
     required: true,
     enum: ['male', 'female', 'other']
   },
-  _histoy: {
+  _history: {
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,
