@@ -1,3 +1,40 @@
-a {
-  color: blue;
-  cursor: pointer; }
+@import url("https://fonts.googleapis.com/css?family=Roboto:100i,300,400,500,700");
+.login {
+  background: url("/images/lalaland.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  overflow-y: auto !important;
+  height: 100vh;
+  font-family: 'Roboto' !important;
+  color: #ffffff !important; }
+  .login .uk-button-login {
+    background-color: #502274 !important;
+    color: #ffffff !important;
+    font-weight: bold; }
+  .login .login-container {
+    margin-top: auto;
+    margin-bottom: auto; }
+    .login .login-container .login-form {
+      height: 100%;
+      max-width: 450px;
+      min-width: 300px;
+      padding-bottom: 0px !important; }
+      .login .login-container .login-form .uk-form-label {
+        color: #502274 !important; }
+      .login .login-container .login-form .uk-input {
+        color: #707070;
+        font-weight: 300;
+        border: #f0f0f0 solid 1px; }
+      .login .login-container .login-form .uk-form-danger {
+        color: #f0506e;
+        border-color: #f0506e; }
+      .login .login-container .login-form .uk-select {
+        font-weight: 300; }
+    .login .login-container .login-title {
+      color: #ffffff !important;
+      font-weight: 300;
+      font-family: 'Roboto' !important; }
+
+/*# sourceMappingURL=style.css.map */

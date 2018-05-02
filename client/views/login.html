@@ -1,0 +1,35 @@
+<div class="login">
+    <div class="uk-width-large uk-margin uk-container login-container">
+      <h1 class="uk-text-center login-title">Login</h1>
+
+        <div class="uk-card uk-card-small uk-card-default uk-card-body login-form uk-container-center">
+            <form name="userForm" ng-submit="submitForm()" novalidate>
+                
+                <!--Username Field-->
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="username" ng-class="{ 'uk-text-danger' : isInvalid(userForm.username) }">Username</label>
+                    <div class="uk-form-controls">
+                        <input class="uk-input" type="text" id="username" name="username" placeholder="Username"
+                               ng-class="{ 'uk-form-danger' : isInvalid(userForm.username) }"
+                               ng-model="user.username" required>
+                    </div>
+                    <label class="uk-text-small uk-text-danger uk-align-right" for="username"
+                           ng-show="isInvalid(userForm.username)" >* Username can't be blank</label>
+                </div>
+
+                <!--Password Field-->
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="password" ng-class="{ 'uk-text-danger' : isInvalid(userForm.password) }">Password</label>
+                    <div class="uk-form-controls">
+                        <input class="uk-input" type="password" id="password" name="password" placeholder="Password"
+                               ng-class="{ 'uk-form-danger' : isInvalid(userForm.password) }" ng-change="resetValidity()"
+                               ng-model="user.password" required>
+                    </div>
+                    <label class="uk-text-small uk-text-danger uk-align-right" ng-show="isInvalid(userForm.password)" >* Password can't be blank</label>
+                </div>
+
+                <button class="uk-button uk-button-small uk-align-center" ng-class="{ 'uk-button-login': userForm.$valid }" ng-disabled="userForm.$invalid">Login</button>
+            </form>
+        </div>
+    </div>
+</div>
