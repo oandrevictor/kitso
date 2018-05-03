@@ -4,10 +4,10 @@
 
         <div class="uk-card uk-card-small uk-card-default uk-card-body login-form uk-container-center">
             <form name="userForm" ng-submit="submitForm()" novalidate>
-                
+
                 <!--Username Field-->
-                <div uk-grid>                 
-                  <div class="uk-width-expand uk-margin">
+                <div uk-grid>
+                  <div class="uk-width-10 uk-margin-small uk-margin-top">
                     <div><label class="uk-form-label" for="username" ng-class="{ 'uk-text-danger' : isInvalid(userForm.username) }">Username</label></div>
                     <div class="uk-width-1-1 uk-inline uk-form-controls">
                     <span class="uk-form-icon" uk-icon="icon: user"></span>
@@ -18,11 +18,10 @@
                     <div><label class="uk-text-small uk-text-danger uk-align-right" for="username"
                            ng-show="isInvalid(userForm.username)" >* Username can't be blank</label></div>
                 </div>
-                </div>
 
                 <!--Password Field-->
-                <div uk-grid>
-                  <div class="uk-width-expand uk-margin">
+
+                  <div class="uk-width-10 uk-margin-small">
                     <div><label class="uk-form-label" for="password" ng-class="{ 'uk-text-danger' : isInvalid(userForm.password) }">Password</label></div>
                     <div class="uk-width-1-1 uk-inline uk-form-controls">
                     <span class="uk-form-icon" uk-icon="icon: lock"></span>
@@ -33,7 +32,7 @@
                     <div><label class="uk-text-small uk-text-danger uk-align-right" ng-show="isInvalid(userForm.password)" >* Password can't be blank</label></div>
                 </div>
                 </div>
-                
+
                 <button class="uk-button uk-button-small uk-align-center" ng-class="{ 'uk-button-login': userForm.$valid }" ng-disabled="userForm.$invalid">Login</button>
                 <hr>
                 <button class="uk-button uk-button-link uk-align-center uk-text-capitalize">Forgot password?</button>
