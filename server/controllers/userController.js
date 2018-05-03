@@ -27,8 +27,6 @@ exports.show = function(req, res) {
 exports.create = function(req, res) {
     var user = new User(req.body);
 
-    //user.password = user.generateHash(req.body.password);
-
     bcrypt.hash(req.body.password, 10, function(err, hash) {
         if (err) {
             res.status(400).send(err);
