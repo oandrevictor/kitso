@@ -6,32 +6,38 @@
             <form name="userForm" ng-submit="submitForm()" novalidate>
                 
                 <!--Username Field-->
-                <div class="uk-margin">
-                    <label class="uk-form-label" for="username" ng-class="{ 'uk-text-danger' : isInvalid(userForm.username) }">Username</label>
-                    <div class="uk-form-controls">
+                <div uk-grid>                 
+                  <div class="uk-width-expand uk-margin">
+                    <div><label class="uk-form-label" for="username" ng-class="{ 'uk-text-danger' : isInvalid(userForm.username) }">Username</label></div>
+                    <div class="uk-width-1-1 uk-inline uk-form-controls">
+                    <span class="uk-form-icon" uk-icon="icon: user"></span>
                         <input class="uk-input" type="text" id="username" name="username" placeholder="Username"
                                ng-class="{ 'uk-form-danger' : isInvalid(userForm.username) }"
                                ng-model="user.username" required>
                     </div>
-                    <label class="uk-text-small uk-text-danger uk-align-right" for="username"
-                           ng-show="isInvalid(userForm.username)" >* Username can't be blank</label>
+                    <div><label class="uk-text-small uk-text-danger uk-align-right" for="username"
+                           ng-show="isInvalid(userForm.username)" >* Username can't be blank</label></div>
+                </div>
                 </div>
 
                 <!--Password Field-->
-                <div class="uk-margin">
-                    <label class="uk-form-label" for="password" ng-class="{ 'uk-text-danger' : isInvalid(userForm.password) }">Password</label>
-                    <div class="uk-form-controls">
+                <div uk-grid>
+                  <div class="uk-width-expand uk-margin">
+                    <div><label class="uk-form-label" for="password" ng-class="{ 'uk-text-danger' : isInvalid(userForm.password) }">Password</label></div>
+                    <div class="uk-width-1-1 uk-inline uk-form-controls">
+                    <span class="uk-form-icon" uk-icon="icon: lock"></span>
                         <input class="uk-input" type="password" id="password" name="password" placeholder="Password"
                                ng-class="{ 'uk-form-danger' : isInvalid(userForm.password) }" ng-change="resetValidity()"
                                ng-model="user.password" required>
                     </div>
-                    <label class="uk-text-small uk-text-danger uk-align-right" ng-show="isInvalid(userForm.password)" >* Password can't be blank</label>
+                    <div><label class="uk-text-small uk-text-danger uk-align-right" ng-show="isInvalid(userForm.password)" >* Password can't be blank</label></div>
                 </div>
-
+                </div>
+                
                 <button class="uk-button uk-button-small uk-align-center" ng-class="{ 'uk-button-login': userForm.$valid }" ng-disabled="userForm.$invalid">Login</button>
                 <hr>
-                <button class="uk-button uk-button-link uk-align-center uk-text-capitalize uk-button-forgot">Forgot password?</button>
-                <p align="center" class="uk-text-muted">New to Kitso? <button class="uk-button uk-button-link uk-text-lowercase uk-button-create">Create an account</button></p>
+                <button class="uk-button uk-button-link uk-align-center uk-text-capitalize">Forgot password?</button>
+                <p align="center" style="margin-top: 5px; margin-bottom: 10px" class="uk-text-muted">New to Kitso? <button class="uk-button uk-button-link uk-text-lowercase">Create an account</button></p>
             </form>
         </div>
     </div>
