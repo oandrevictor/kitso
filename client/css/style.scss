@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:100i,300,400,500,700');
 
 .login {
-  background: url('/images/lalalandjpg');
+  background: url('/images/lalaland.jpg');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -15,6 +15,10 @@
     background-color: #502274 !important;
     color: #ffffff !important;
     font-weight: bold;
+  }
+
+  .uk-link-text{
+  	color: #502274 !important;
   }
 
   .login-container {

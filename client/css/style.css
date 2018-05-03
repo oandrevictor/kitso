@@ -13,11 +13,8 @@
     background-color: #502274 !important;
     color: #ffffff !important;
     font-weight: bold; }
-  .login .uk-button-link {
-    color: #502274 !important;
-    font-family: 'Roboto' !important;
-    margin-top: 5px;
-    margin-bottom: 5px; }
+  .login .uk-link-text {
+    color: #502274 !important; }
   .login .login-container {
     margin-top: auto;
     margin-bottom: auto; }
