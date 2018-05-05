@@ -1,5 +1,4 @@
-angular.module('savetv', ['ngRoute', 'appRoutes', 'MainController', 'SignupController', 'LoginController']);
-
+angular.module('kitso', ['ngRoute', 'appRoutes']);
 angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
 
     $routeProvider
