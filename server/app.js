@@ -17,21 +17,21 @@ var MongoStore     = require('connect-mongo')(session);
 var db = require('./config/db');
 
 // set our port
-var port = process.env.PORT || 8080; 
+var port = process.env.PORT || 8080;
 
-// connect to our mongoDB database 
+// connect to our mongoDB database
 // (uncomment after you enter in your own credentials in config/db.js)
-mongoose.connect(db.url); 
+mongoose.connect(db.url);
 
 // Passport and sessions
 require('./config/passport')(passport);
 
-app.use(session({  
+app.use(session({
   store: new MongoStore({
     mongooseConnection: mongoose.connection,
     ttl: 30 * 60 // = 30 minutos de sessão
   }),
-  secret: '12345', // Colocar nas variaveis de ambiente do heroku em producao (process.env.nomeDaVariavel)
+  secret: process.env.SESSION_SECRET, // Colocar nas variaveis de ambiente do heroku em producao (process.env.nomeDaVariavel)
   resave: false,
   saveUninitialized: false
 }));
