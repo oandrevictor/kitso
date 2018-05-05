@@ -1,37 +1,35 @@
-angular.module('AuthService').factory('AuthService', ['$q', '$timeout', '$http',
-    function ($q, $timeout, $http) {
+var kitso = angular.module('kitso');
 
-        // create user variable
-        var user = null;
+kitso.service('AuthService', ['$q', '$http', function ($q, $http) {
+    const url = '/api/user/';
 
-        // return available functions for use in the controllers
-        return ({
-            register: register
-        });
+    // return available functions for use in the controllers
+    return ({
+        register: register
+    });
 
-        function register(user) {
+    function register(user) {
 
-            // create a new instance of deferred
-            var deferred = $q.defer();
+        // create a new instance of deferred
+        var deferred = $q.defer();
 
-            if (user.password === user.conf_pass) {
+        if (user.password === user.conf_pass) {
 
-                $http.post('/api/user/', user)
-                    .success(function (data, status) {
-                        if (status === 200 && data.status) {
-                            deferred.resolve();
-                        } else {
-                            deferred.reject();
-                        }
-                    })
-                    .error(function (data) {
+            $http.post('/api/user/', user)
+                .then(function (data) {
+                    if (data.status === 200) {
+                        deferred.resolve();
+                    } else {
                         deferred.reject();
-                    });
-            } else {
-                deferred.reject();
-            }      
-            
-            return deferred.promise;
-        }
+                    }
+                })
+                .catch(function (error) {
+                    deferred.reject(error.data);
+                });
+        } else {
+            deferred.reject();
+        }      
+        
+        return deferred.promise;
     }
-]);
+}]);
