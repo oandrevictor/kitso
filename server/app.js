@@ -7,6 +7,9 @@ var bodyParser     = require('body-parser');
 var methodOverride = require('method-override');
 var path           = require('path');
 var mongoose       = require('mongoose');
+var passport       = require('passport');
+var session        = require('express-session');
+var MongoStore     = require('connect-mongo')(session);
 
 // configuration ===========================================
 
@@ -19,6 +22,22 @@ var port = process.env.PORT || 8080;
 // connect to our mongoDB database
 // (uncomment after you enter in your own credentials in config/db.js)
 mongoose.connect(db.url);
+
+// Passport and sessions
+require('./config/passport')(passport);
+
+app.use(session({
+  store: new MongoStore({
+    mongooseConnection: mongoose.connection,
+    ttl: 30 * 60 // = 30 minutos de sessão
+  }),
+  secret: process.env.SESSION_SECRET, // Colocar nas variaveis de ambiente do heroku em producao (process.env.nomeDaVariavel)
+  resave: false,
+  saveUninitialized: false
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // get all data/stuff of the body (POST) parameters
 // parse application/json
@@ -49,9 +68,15 @@ app.get('/login', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
 
-// Example route
+// Api routes
 var exampleRoutes = require('./routes/example');
 app.use('/example', exampleRoutes);
+
+var movieRoutes = require('./routes/movie');
+app.use('/api/movie', movieRoutes);
+
+var userRoutes = require('./routes/user');
+app.use('/api/user', userRoutes);
 
 // start app ===============================================
 // startup our app at http://localhost:8080
