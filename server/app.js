@@ -67,9 +67,15 @@ app.get('/login', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
 
-// Example route
+// Api routes
 var exampleRoutes = require('./routes/example');
 app.use('/example', exampleRoutes);
+
+var movieRoutes = require('./routes/movie');
+app.use('/api/movie', movieRoutes);
+
+var userRoutes = require('./routes/user');
+app.use('/api/user', userRoutes);
 
 // start app ===============================================
 // startup our app at http://localhost:8080

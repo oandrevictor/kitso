@@ -13,7 +13,7 @@ router.get('/logout', authController.logout);
 
 router.get('/:user_id', userController.show);
 
-router.post('/signup', userController.create);
+router.post('/', userController.create);
 
 router.post('/login', passport.authenticate('local', { failureRedirect: '/login' }), authController.login);
 
