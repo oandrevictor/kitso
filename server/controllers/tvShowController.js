@@ -1,8 +1,8 @@
-var Movie = require('../models/Movie');
+var Show = require('../models/TvShow');
 
-// Todos filmes
+// Todas as séries
 exports.index = function(req, res) {
-    Movie.find({})
+    Show.find({})
     .catch((err) => {
         res.status(400).send(err);
     })
@@ -11,9 +11,9 @@ exports.index = function(req, res) {
     });
 };
 
-// Um filme
+// Uma série
 exports.show = function(req, res) {
-    Movie.findById(req.params.movie_id)
+    Show.findById(req.params.show_id)
     .catch((err) => {
         res.status(400).send(err);
     })
@@ -22,45 +22,54 @@ exports.show = function(req, res) {
     });
 };
 
-// Criar filme
+// Criar série
 exports.create = function(req, res) {
-    var movie = new Movie(req.body);
+    var show = new Show(req.body);
 
-    movie.save()
+    show.save()
     .catch((err) => {
         res.status(400).send(err);
     })
-    .then((createdMovie) => {
-        res.status(200).send('Movie created.');
+    .then((createdShow) => {
+        res.status(200).send('Show created.');
     });
 };
 
-// Editar filme
+// Editar série
 exports.update = function(req, res) {
-    Movie.findById(req.params.movie_id)
+    Show.findById(req.params.show_id)
     .catch((err) => {
         res.status(400).send(err);
     })
-    .then((movie) => {
-        movie.nome = req.body.nome;
+    .then((show) => {
+        if (req.body.name) show.name = req.body.name;
+        if (req.body.overview) show.overview = req.body.overview;
+        if (req.body.release_date) show.release_date = req.body.release_date;
+        if (req.body._directors) show._directors = req.body._directors;
+        if (req.body._actors) show._actors = req.body._actors;
+        if (req.body.imdb_id) show.imdb_id = req.body.imdb_id;
+        if (req.body.genres) show.genres = req.body.genres;
+        if (req.body.poster) show.poster = req.body.poster;
+        if (req.body.seasons) show.seasons = req.body.seasons;
+        
 
-        movie.save()
+        show.save()
         .catch((err) => {
             res.status(400).send(err);
         })
-        .then((updatedMovie) => {
-            res.status(200).json(updatedMovie);
+        .then((updatedShow) => {
+            res.status(200).json(updatedShow);
         });
     });
 };
 
-// Deletar filme
+// Deletar série
 exports.delete = function(req, res) {
-    Movie.remove({ _id: req.params.movie_id})
+    Show.remove({ _id: req.params.show_id})
     .catch((err) => {
         res.status(400).send(err);
     })
     .then(() => {
-        res.status(200).send('Movie removed.');
+        res.status(200).send('Show removed.');
     });
 };
