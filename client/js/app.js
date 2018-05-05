@@ -1,4 +1,4 @@
-angular.module('savetv', ['ngRoute', 'appRoutes', 'MainController', 'LoginController']);
+angular.module('savetv', ['ngRoute', 'appRoutes', 'MainController', 'SignupController', 'LoginController']);
 
 angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
 
@@ -9,7 +9,10 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
             templateUrl: 'views/home.html',
             controller: 'MainController'
         })
-
+        .when('/signup', {
+            templateUrl: 'views/signup.html',
+            controller: 'SignupController'
+        })
         // login page
         .when('/login', {
             templateUrl: 'views/login.html',

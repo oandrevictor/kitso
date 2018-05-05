@@ -40,6 +40,10 @@ app.use(express.static(path.join(__dirname, '../client')));
 app.get('/', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
+app.get('/signup', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
 app.get('/login', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
@@ -50,10 +54,10 @@ app.use('/example', exampleRoutes);
 
 // start app ===============================================
 // startup our app at http://localhost:8080
-app.listen(port);               
+app.listen(port);
 
-// shoutout to the user                     
+// shoutout to the user
 console.log('Magic happens on port ' + port);
 
-// expose app           
-exports = module.exports = app;                         
+// expose app
+exports = module.exports = app;
