@@ -65,3 +65,6 @@ typings/
 
 # IDEA files
 .idea/
+
+# Sass
+client/css/.sass-cache/

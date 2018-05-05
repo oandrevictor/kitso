@@ -23,6 +23,7 @@ var UserSchema = new Schema({
   email: {
     type: String,
     required: true,
+    unique: true,
     validate: {
       validator: validateEmail,
       message: 'Invalid email'
