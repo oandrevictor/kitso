@@ -1,4 +1,6 @@
-angular.module('LoginController', []).controller('LoginController', function($scope) {
+var kitso = angular.module('kitso');
+
+kitso.controller('LoginController', function($scope) {
     $scope.submitForm = function() {
 
         if ($scope.userForm.$valid) {

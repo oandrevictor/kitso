@@ -1,4 +1,6 @@
-angular.module('SignupController', []).controller('SignupController', ['$scope, AuthService', function($scope, AuthService) {
+var kitso = angular.module('kitso');
+
+kitso.controller('SignupController', function($scope) {
     $scope.submitForm = function() {
         this.checkPassword();
 
