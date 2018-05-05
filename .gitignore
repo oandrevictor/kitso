@@ -37,7 +37,7 @@ node_modules/
 jspm_packages/
 
 # hide db
-#server/config/db.js
+server/config/db.js
 
 # REST requests file
 rest.http
