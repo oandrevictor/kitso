@@ -1,10 +1,27 @@
-angular.module('SignupController', []).controller('SignupController', function($scope) {
+angular.module('SignupController', []).controller('SignupController', ['$scope, AuthService', function($scope, AuthService) {
     $scope.submitForm = function() {
         this.checkPassword();
 
         if ($scope.userForm.$valid) {
-            // SUBMITE REQUEST HERE
-            alert('form submited');
+            var user = {
+                name: userForm.name,
+                username: userForm.userForm,
+                email: userForm.email,
+                password: userForm.password,
+                conf_pass: userForm.passwordConfirmation,
+                birthday: userForm.birthday,
+                gender: userForm.gender
+            }
+
+            AuthService.register(user)
+                // handle success
+                .then(function () {
+                    alert('User successfully registred.');
+                })
+                // handle error
+                .catch(function () {
+                    alert('Something went wrong.');
+                });
         }
     };
 
@@ -28,4 +45,4 @@ angular.module('SignupController', []).controller('SignupController', function($
             $scope.userForm.passwordConfirmation.$setValidity('passwordConfirmation', true);
         }
     }
-});
+}]);
