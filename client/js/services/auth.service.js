@@ -9,12 +9,10 @@ kitso.service('AuthService', ['$q', '$http', function ($q, $http) {
     });
 
     function register(user) {
-
         // create a new instance of deferred
         var deferred = $q.defer();
 
         if (user.password === user.conf_pass) {
-
             $http.post('/api/user/', user)
                 .then(function (data) {
                     if (data.status === 200) {

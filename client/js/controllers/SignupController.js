@@ -13,7 +13,7 @@ kitso.controller('SignupController', ['$scope', '$location', '$timeout', 'AuthSe
                 conf_pass: $scope.userForm.passwordConfirmation.$modelValue,
                 birthday: $scope.userForm.birthday.$modelValue,
                 gender: $scope.userForm.gender.$modelValue
-            }
+            };
             
             AuthService.register(user)
                 // handle success
@@ -27,14 +27,12 @@ kitso.controller('SignupController', ['$scope', '$location', '$timeout', 'AuthSe
                     $timeout(function() {
                         $location.path('/login');
                         }, 1500);
-
                 })
                 // handle error
                 .catch(function (error) {
                     var dangerMessage = 'Something went wrong...';
 
-                    if (error.code == 11000) {
-
+                    if (error.code === 11000) {
                         if (error.errmsg.includes('username_1')) {
                             dangerMessage = 'Username already in use';
                         } else if (error.errmsg.includes('email_1')) {
@@ -53,8 +51,7 @@ kitso.controller('SignupController', ['$scope', '$location', '$timeout', 'AuthSe
                             timeout: 2500
                         });
                     }
-                });
-            
+                });   
         }
     };
 
