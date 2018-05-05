@@ -40,35 +40,36 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // get all data/stuff of the body (POST) parameters
-// parse application/json 
-app.use(bodyParser.json()); 
+// parse application/json
+app.use(bodyParser.json());
 
 // parse application/vnd.api+json as json
-app.use(bodyParser.json({ type: 'application/vnd.api+json' })); 
+app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true })); 
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // override with the X-HTTP-Method-Override header in the request. simulate DELETE/PUT
-app.use(methodOverride('X-HTTP-Method-Override')); 
+app.use(methodOverride('X-HTTP-Method-Override'));
 
 // set the static files location /public/img will be /img for users
 app.use(express.static(path.join(__dirname, '../client')));
 
-// routes ==================================================
+// Cliente Routes  ==================================================
 app.get('/', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+app.get('/signup', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
+app.get('/login', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
 
 // Example route
 var exampleRoutes = require('./routes/example');
 app.use('/example', exampleRoutes);
-
-var movieRoutes = require('./routes/movie');
-app.use('/api/movie', movieRoutes);
-
-var userRoutes = require('./routes/user');
-app.use('/api/user', userRoutes);
 
 // start app ===============================================
 // startup our app at http://localhost:8080
