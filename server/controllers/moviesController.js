@@ -42,7 +42,15 @@ exports.update = function(req, res) {
         res.status(400).send(err);
     })
     .then((movie) => {
-        movie.nome = req.body.nome;
+        if (req.body.name) movie.name = req.body.name;
+        if (req.body.overview) movie.overview = req.body.overview;
+        if (req.body.release_date) movie.release_date = req.body.release_date;
+        if (req.body._directors) movie._directors = req.body._directors;
+        if (req.body._actors) movie._actors = req.body._actors;
+        if (req.body.imdb_id) movie.imdb_id = req.body.imdb_id;
+        if (req.body.genres) movie.genres = req.body.genres;
+        if (req.body.poster) movie.poster = req.body.poster;
+        if (req.body.isBoxOffice) movie.isBoxOffice = req.body.isBoxOffice;
 
         movie.save()
         .catch((err) => {

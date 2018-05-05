@@ -59,6 +59,7 @@ app.use(express.static(path.join(__dirname, '../client')));
 app.get('/', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
+
 app.get('/signup', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
@@ -76,6 +77,9 @@ app.use('/api/movie', movieRoutes);
 
 var userRoutes = require('./routes/user');
 app.use('/api/user', userRoutes);
+
+var tvShowRoutes = require('./routes/tvShow');
+app.use('/api/tvShow', tvShowRoutes);
 
 // start app ===============================================
 // startup our app at http://localhost:8080
