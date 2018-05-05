@@ -11,6 +11,8 @@
       opacity: 0.7; }
     .home .main-container h1, .home .main-container h2 {
       color: #EDEDED; }
+    .home .main-container h1 {
+      font-weight: 500; }
     .home .main-container h2 {
       font-weight: 100;
       margin-top: 0px; }
