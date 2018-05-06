@@ -47,7 +47,7 @@ exports.update = function(req, res) {
         person.name = req.body.name;
         person.description = req.body.description;
         person.birthday = req.body.birthday;
-        person.appears_in = req.body.appears_in;
+        person._appears_in = req.body._appears_in;
         person.save()
         .catch((err) => {
             res.status(400).send(err);
