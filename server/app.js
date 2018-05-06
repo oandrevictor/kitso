@@ -54,6 +54,9 @@ app.use('/api/person', personRoutes);
 var appearsInRoutes = require('./routes/appearsin');
 app.use('/api/appears_in', appearsInRoutes);
 
+var userRoutes = require('./routes/user');
+app.use('/api/user', userRoutes);
+
 // start app ===============================================
 // startup our app at http://localhost:8080
 app.listen(port);
