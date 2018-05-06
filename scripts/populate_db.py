@@ -1,7 +1,7 @@
 # coding: utf-8
 from imdb import IMDb
 import requests
-
+import configparser
 
 """
     To run this scripts, you will need to install imdb package and run with python 3.
@@ -12,9 +12,16 @@ import requests
 global LIMIT_OF_PEOPLE
 
 imdb_interface = IMDb()
-MOVIE_URL = 'http://localhost:8080/api/movie/'
-PERSON_URL = 'http://localhost:8080/api/person/'
-APPEARSIN_url = 'http://localhost:8080/api/appears_in/'
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+MOVIE_URL = config['DEFAULT']['URL'] + '/api/movie/'
+PERSON_URL = config['DEFAULT']['URL'] + '/api/person/'
+APPEARSIN_URL = config['DEFAULT']['URL'] + '/api/appears_in/'
+
+print(MOVIE_URL, PERSON_URL, APPEARSIN_URL)
+exit 
+
 LIMIT_OF_PEOPLE = 5
 cast_per_film = dict()
 directors_per_film = dict()
@@ -171,5 +178,5 @@ def put_update_persons(person_dict, person_url):
 
 post_create_persons_in_db(imdb_interface, top50, cast_per_film, directors_per_film, person_dict, PERSON_URL)
 post_create_movie_in_db(imdb_interface, top50, person_dict, MOVIE_URL)
-post_create_appearsin_in_db(person_dict, APPEARSIN_url)
+post_create_appearsin_in_db(person_dict, APPEARSIN_URL)
 put_update_persons(person_dict, PERSON_URL)
