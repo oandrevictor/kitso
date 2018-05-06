@@ -1,4 +1,5 @@
 var passport = require('passport');
+var _        = require('underscore');
 
 exports.login = function(req, res, next) {
   passport.authenticate('local', function(err, user, info) {
@@ -27,9 +28,11 @@ exports.logout = function(req, res) {
 }
 
 exports.status = function(req, res) {
-  if (req.user) {
-      res.status(200).send(true);
-  } else {
-      res.status(400).send(false);
-  }
+  var user = req.user;
+	if (user) {
+    user = _.omit(user.toJSON(), 'password');
+		res.status(200).send({user: user, status: true});
+	} else {
+		res.status(200).send({status: false});
+	}
 }
