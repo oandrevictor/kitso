@@ -11,6 +11,6 @@ exports.status = function(req, res) {
 	if (req.user) {
 		res.status(200).send({user: req.user, status: true});
 	} else {
-		res.status(400).send({user: req.user, status: false});
+		res.status(200).send({status: false});
 	}
 }
