@@ -51,6 +51,9 @@ app.use('/api/movie', movieRoutes);
 var personRoutes = require('./routes/person');
 app.use('/api/person', personRoutes);
 
+var appearsInRoutes = require('./routes/appearsin');
+app.use('/api/appears_in', appearsInRoutes);
+
 // start app ===============================================
 // startup our app at http://localhost:8080
 app.listen(port);
