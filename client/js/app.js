@@ -17,6 +17,11 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
             templateUrl: 'views/login.html',
             controller: 'LoginController'
         })
+        // user home
+        .when('/home', {
+            templateUrl: 'views/userHome.html',
+            controller: 'HomeController'
+        })
 
     $locationProvider.html5Mode(true);
 
