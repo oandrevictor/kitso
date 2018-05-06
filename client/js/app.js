@@ -26,6 +26,12 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
             controller: 'HomeController',
             access: { restricted: true }
         })
+        // edit profile
+        .when('/profile', {
+            templateUrl: 'views/profile.html',
+            controller: 'ProfileController',
+            access: { restricted: true }
+        })
         .otherwise({
           redirectTo: '/'
         });
