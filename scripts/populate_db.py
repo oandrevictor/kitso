@@ -125,9 +125,7 @@ def post_person_imdb_list(imdb_interface, person_imdb_list, PERSON_URL, is_cast)
         person_dict[person_obj.name] = person_obj    
    
 def post_create_persons_in_db(imdb_interface, top50, cast_per_film, directors_per_film, person_dict, person_url):
-
     for m in top50:
-
         movie = imdb_interface.get_movie(m.movieID)
         movie_cast = get_movie_cast(m.movieID, movie, cast_per_film)
         movie_directors = get_movie_directors(m.movieID, movie, directors_per_film)
@@ -135,9 +133,7 @@ def post_create_persons_in_db(imdb_interface, top50, cast_per_film, directors_pe
         post_person_imdb_list(imdb_interface, movie_directors, person_url, is_cast=False)
 
 def post_create_movie_in_db(imdb_interface, top50, person_dict, movie_url):
-
     for m in top50:
-
         movie = imdb_interface.get_movie(m.movieID)
         movie_cast = cast_per_film[m.movieID]
         movie_cast_id = get_person_db_ids_list(movie_cast, person_dict)
