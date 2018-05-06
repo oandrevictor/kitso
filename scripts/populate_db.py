@@ -52,7 +52,7 @@ def create_person_json(person_imdb):
         "name": person_imdb.get('name'),
         "description": "This is a default description of movie",
         "birthday": birthday,
-        "appears_in": []
+        "_appears_in": []
     }
 
 def create_person_update_json(person_obj):    
@@ -60,7 +60,7 @@ def create_person_update_json(person_obj):
         "name": person_obj.name,
         "description": "This is a default description of movie",
         "birthday": person_obj.birth_date ,
-        "appears_in": get_movies_db_ids(person_obj.filmography)
+        "_appears_in": get_movies_db_ids(person_obj.filmography)
     }
 
 def post(url, json, response_data_key):
@@ -78,8 +78,8 @@ def create_movie_json(imdb_id, movie, cast, directors):
         "rating": movie.get('rating'),
         "genres": movie.get('genres'),
         "poster": movie.get('cover url'),
-        "actors": cast,
-        "directors": directors
+        "_actors": cast,
+        "_directors": directors
     }
 
 def get_person_db_ids_list(imdb_person_list, person_dict):
