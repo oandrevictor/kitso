@@ -112,7 +112,7 @@ def get_movie_directors(imdb_id, movie, directors_per_film):
 def create_person_obj(person_imdb, imdbid, db_id, is_actor):
     name = person_imdb.get('name')
     birth_date = fix_birthday_date(person_imdb.get('birth date'))
-    filmography_type = 'actor' if is_actor else 'writer'
+    filmography_type = list(person_imdb.get('filmography')[0].keys())[0]
     filmography = person_imdb.get('filmography')[0][filmography_type]
     return Person(imdbid, db_id, name, birth_date, filmography)
    
