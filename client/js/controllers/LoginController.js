@@ -24,28 +24,13 @@ kitso.controller('LoginController', ['$scope', '$location', '$timeout', 'AuthSer
                 })
                 // handle error
                 .catch(function (error) {
-                    var dangerMessage = 'Something went wrong...';
-                    console.log(error.code);
+                    var dangerMessage = error.err;
 
-                    if (error.code === 11000) {
-                        if (error.errmsg.includes('username_1')) {
-                            dangerMessage = 'Username already in use';
-                        } else if (error.errmsg.includes('email_1')) {
-                            dangerMessage = 'Email already in use';
-                        }
-
-                        UIkit.notification({
-                            message: '<span uk-icon=\'icon: check\'></span> ' + dangerMessage,
-                            status: 'danger',
-                            timeout: 2500
-                        });
-                    } else {
-                        UIkit.notification({
-                            message: '<span uk-icon=\'icon: check\'></span> ' + dangerMessage,
-                            status: 'danger',
-                            timeout: 2500
-                        });
-                    }
+                    UIkit.notification({
+                        message: '<span uk-icon=\'icon: check\'></span> ' + dangerMessage,
+                        status: 'danger',
+                        timeout: 2500
+                    });
                 });   
         };
     };
@@ -60,3 +45,16 @@ kitso.controller('LoginController', ['$scope', '$location', '$timeout', 'AuthSer
         }
     }
 }]);
+
+kitso.run(function ($rootScope, $location, $route, AuthService) {
+  $rootScope.$on('$routeChangeStart',
+    function (event, next, current) {
+        AuthService.getStatus()
+        .then(function(){
+            if (next.access.restricted && !AuthService.isLogged()) {
+                $location.path('/login');
+                $route.reload();
+            }
+        });
+    });
+});

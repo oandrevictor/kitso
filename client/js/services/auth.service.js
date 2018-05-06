@@ -9,7 +9,8 @@ kitso.service('AuthService', ['$q', '$http', function ($q, $http) {
         register: register,
         login: login,
         getStatus: getStatus,
-        isLogged: isLogged
+        isLogged: isLogged,
+        logout: logout
     });
 
     function register(user) {
@@ -43,6 +44,26 @@ kitso.service('AuthService', ['$q', '$http', function ($q, $http) {
             .then(function (data) {
                 if (data.status === 200) {
                     deferred.resolve();
+                } else {
+                    deferred.reject();
+                }
+            })
+            .catch(function (error) {
+                deferred.reject(error.data);
+            });
+
+        return deferred.promise;
+    }
+
+    function logout() {
+        // create a new instance of deferred
+        var deferred = $q.defer();
+
+        $http.get('/api/user/logout')
+            .then(function (data) {
+                if (data.status === 200) {
+                    deferred.resolve();
+                    user = {status: false};
                 } else {
                     deferred.reject();
                 }
