@@ -14,6 +14,7 @@ global LIMIT_OF_PEOPLE
 imdb_interface = IMDb()
 MOVIE_URL = 'http://localhost:8080/api/movie/'
 PERSON_URL = 'http://localhost:8080/api/person/'
+APPEARSIN_url = 'http://localhost:8080/api/appears_in/'
 LIMIT_OF_PEOPLE = 5
 cast_per_film = dict()
 directors_per_film = dict()
@@ -31,7 +32,11 @@ class Person(object):
         self.name = name
         self.birth_date = birth_date
         self.filmography = filmography
- 
+        self.appears_in_db_ids = []
+    
+    def add_appearsin(self, appearsin_id):
+        self.appears_in_db_ids.append(appearsin_id)
+     
 
 def fix_birthday_date(str_date):
     NO_BIRTHDAY_DATE_PROVIDED = ""
@@ -58,9 +63,15 @@ def create_person_json(person_imdb):
 def create_person_update_json(person_obj):    
     return {
         "name": person_obj.name,
-        "description": "This is a default description of movie",
+        "description": "This is a default description of person",
         "birthday": person_obj.birth_date ,
-        "_appears_in": get_movies_db_ids(person_obj.filmography)
+        "_appears_in": person_obj.appears_in_db_ids
+    }
+
+def create_appearsin_json(person_id, media_id):
+    return {
+        '_person': person_id,
+        '_media': media_id        
     }
 
 def post(url, json, response_data_key):
@@ -144,6 +155,14 @@ def post_create_movie_in_db(imdb_interface, top50, person_dict, movie_url):
         db_id = post(movie_url, request_json, response_data_key="movieId")
         filme_db_id[str(m)] = db_id
 
+def post_create_appearsin_in_db(person_dict, appearsin_url):
+    for person_obj in person_dict.values():
+        movies_ids = get_movies_db_ids(person_obj.filmography)
+        for movie_id in movies_ids:
+            request_json = create_appearsin_json(person_obj.db_id, movie_id)
+            appearsin_id = post(appearsin_url, json=request_json, response_data_key="appearsInId")
+            person_obj.add_appearsin(appearsin_id)
+    
 def put_update_persons(person_dict, person_url):
     for person_obj in person_dict.values():
         request_json = create_person_update_json(person_obj)
@@ -152,4 +171,5 @@ def put_update_persons(person_dict, person_url):
 
 post_create_persons_in_db(imdb_interface, top50, cast_per_film, directors_per_film, person_dict, PERSON_URL)
 post_create_movie_in_db(imdb_interface, top50, person_dict, MOVIE_URL)
+post_create_appearsin_in_db(person_dict, APPEARSIN_url)
 put_update_persons(person_dict, PERSON_URL)
