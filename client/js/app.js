@@ -33,3 +33,20 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
     $locationProvider.html5Mode(true);
 
 }]);
+
+angular.module('kitso').run(function ($rootScope, $location, $route, AuthService) {
+    $rootScope.$on('$routeChangeStart', function (event, next, current) {
+        AuthService.getStatus()
+        .then(() => {
+            if (next.access.restricted && !AuthService.isLogged()) {
+                $location.path('/login');
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: check\'></span> You need to be logged in to access this page',
+                    status: 'warning',
+                    timeout: 2500
+                });
+                $route.reload();
+            }
+        });
+    });
+});

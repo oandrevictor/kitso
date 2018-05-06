@@ -45,16 +45,3 @@ kitso.controller('LoginController', ['$scope', '$location', '$timeout', 'AuthSer
         }
     }
 }]);
-
-kitso.run(function ($rootScope, $location, $route, AuthService) {
-  $rootScope.$on('$routeChangeStart',
-    function (event, next, current) {
-        AuthService.getStatus()
-        .then(function(){
-            if (next.access.restricted && !AuthService.isLogged()) {
-                $location.path('/login');
-                $route.reload();
-            }
-        });
-    });
-});

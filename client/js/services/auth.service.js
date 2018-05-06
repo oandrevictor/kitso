@@ -2,7 +2,7 @@ var kitso = angular.module('kitso');
 
 kitso.service('AuthService', ['$q', '$http', function ($q, $http) {
 
-    var user = null;
+    var user = {status: false};
 
     // return available functions for use in the controllers
     return ({
@@ -80,16 +80,16 @@ kitso.service('AuthService', ['$q', '$http', function ($q, $http) {
         var deferred = $q.defer();
 
         $http.get('/api/user/status')
-            .then(function (data) {
-                console.log(data);
-                if (data.status === 200) {
+            .then(function (response) {
+                if (response.status === 200) {
                     deferred.resolve();
-                    user = data;
+                    user = response.data;
                 } else {
                     deferred.reject();
                 }
             })
             .catch(function (error) {
+                user = error.data;
                 deferred.reject(error.data);
             });
 
