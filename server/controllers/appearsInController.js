@@ -33,7 +33,7 @@ exports.create = function(req, res) {
                 "appearsInId": createdAppearsIn._id,
             }            
         }
-        res.status(200).send(res_json);
+        res.status(200).json(res_json);
     });
 };
 
@@ -43,8 +43,8 @@ exports.update = function(req, res) {
         res.status(400).send(err);
     })
     .then((appearsin) => {
-        appearsin._person = req.body._person;
-        appearsin._media = req.body._media;
+        if (req.body._person) appearsin._person = req.body._person;
+        if (req.body._media) appearsin._media = req.body._media;
         appearsin.save()
         .catch((err) => {
             res.status(400).send(err);

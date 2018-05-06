@@ -37,7 +37,7 @@ exports.create = function(req, res) {
                 "movieId": createdMovie._id,
             }            
         }        
-        res.status(200).send(res_json);
+        res.status(200).json(res_json);
     });
 };
 

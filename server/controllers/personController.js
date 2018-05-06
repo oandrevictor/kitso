@@ -34,7 +34,7 @@ exports.create = function(req, res) {
                 "personId": createdPerson._id,
             }            
         }
-        res.status(200).send(res_json);
+        res.status(200).json(res_json);
     });
 };
 
@@ -44,10 +44,10 @@ exports.update = function(req, res) {
         res.status(400).send(err);
     })
     .then((person) => {
-        person.name = req.body.name;
-        person.description = req.body.description;
-        person.birthday = req.body.birthday;
-        person._appears_in = req.body._appears_in;
+        if (req.body.name) person.name = req.body.name;
+        if (req.body.description) person.description = req.body.description;
+        if (req.body.birthday) person.birthday = req.body.birthday;
+        if (req.body._appears_in) person._appears_in = req.body._appears_in;
         person.save()
         .catch((err) => {
             res.status(400).send(err);
