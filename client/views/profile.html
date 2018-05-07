@@ -114,9 +114,65 @@
                         </div>
                         
                         <button class="uk-button uk-button-small uk-align-center" ng-class="{ 'uk-button-save-changes': editForm.$valid }" ng-disabled="editForm.$invalid">Save Changes</button>
-                        <hr class="uk-divider-icon">
-                        <button class="uk-button uk-button-danger uk-button-small uk-align-center">Delete Account</button>
                     </form>
+
+                    <hr class="uk-divider-icon">
+
+                    <!-- Delete Account -->
+                    <button class="uk-button uk-button-danger uk-button-small uk-align-center" uk-toggle="target: #modal-delete1">Delete Account</button>
+                    <div id="modal-delete1" uk-modal>
+                        <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+                                <button class="uk-modal-close-default" type="button" uk-close></button>
+                            <h2 class="uk-modal-title uk-text-bold uk-text-danger">Delete Account</h2>
+                            <p>This is a <strong>permanent</strong> action. Are you <strong>sure</strong>?</p>
+                            <div class="uk-modal-footer">
+                                <p class="uk-text-right">
+                                    <button class="uk-button uk-button-danger uk-text-bold" type="button" uk-toggle="target: #modal-delete2">NEXT</button>
+                                    <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="modal-delete2" uk-modal>
+                        <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+                                <button class="uk-modal-close-default" type="button" uk-close></button>
+                            <h2 class="uk-modal-title uk-text-bold uk-text-danger">Delete Account</h2>
+                            <p>Please input your password and the confirmation text.</p>
+
+                           
+                           <form name="deleteForm">
+                               <!--Password Field-->
+                                <div class="uk-margin">
+                                    <label class="uk-form-label" for="password" ng-class="{ 'uk-text-danger' : isInvalid(deleteForm.password) }">Password</label>
+                                    <div class="uk-form-controls">
+                                        <input class="uk-input" type="password" id="password" name="password" placeholder="Password"
+                                        ng-class="{ 'uk-form-danger' : isInvalid(deleteForm.password) }" ng-change="resetValidity()"
+                                            ng-model="delete.password" required>
+                                    </div>
+                                    <label class="uk-text-small uk-text-danger uk-align-right" for="passwordConfirmation"
+                                        ng-show="isInvalid(deleteForm.password) && (!deleteForm.password.$$classCache['ng-invalid-password'])" >* Password can't be blank</label>
+                                </div>
+                                <!-- Confirmation text -->
+                                <div class="uk-margin">
+                                    <label class="uk-form-label" ng-class="{ 'uk-text-danger' : isInvalid(deleteForm.text) }" for="text">I know this is a permanent action</label>
+                                    <div class="uk-form-controls">
+                                        <input class="uk-input" type="text" id="text" name="text" placeholder="I know this is a permanent action"
+                                            ng-class="{ 'uk-form-danger' : isInvalid(deleteForm.text) }"
+                                            ng-model="delete.text" required>
+                                    </div>
+                                    <label class="uk-text-small uk-text-danger uk-align-right" for="text" ng-show="isInvalid(deleteForm.text)">* Please input the exact confirmation text.</label>
+                                </div>
+                           </form>
+                            
+                            <div class="uk-modal-footer">
+                                <p class="uk-text-right">
+                                    <button class="uk-button uk-button-danger uk-text-bold" type="button" ng-click="deleteAccount()">DELETE</button>
+                                    <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Delete Account -->
                 </li>
             </ul>
         </div>

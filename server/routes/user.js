@@ -20,6 +20,6 @@ router.put('/password/:user_id', userController.updatePassword);
 
 router.put('/:user_id', userController.update);
 
-router.delete('/:user_id', userController.delete);
+router.post('/delete/:user_id', userController.delete);
 
 module.exports = router;

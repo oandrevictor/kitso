@@ -117,12 +117,14 @@ exports.delete = function(req, res) {
         if (user.validPassword(req.body.password)) {
             User.remove({ _id: req.params.user_id})
             .catch((err) => {
-                res.status(400).send(err);
+                res.status(400).send({status: 400, message: err});
             })
             .then(() => {
                 req.logout();
                 res.status(200).send('User removed.');
             });
+        } else {
+            return res.status(401).json({status: 401, message: 'Wrong password'});
         }
     });
 };

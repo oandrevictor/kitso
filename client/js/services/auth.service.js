@@ -128,10 +128,11 @@ kitso.service('AuthService', ['$q', '$http', function ($q, $http) {
         return deferred.promise;
     }
 
-    function deleteUser(id) {
+    function deleteUser(id, password) {
         var deferred = $q.defer();
+        var body = {password: password};
 
-        $http.delete('/api/user/' + user._id)
+        $http.post('/api/user/delete/' + id, body)
             .then(function (response) {
                 if (response.status === 200) {
                     deferred.resolve();

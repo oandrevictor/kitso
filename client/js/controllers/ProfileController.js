@@ -43,29 +43,50 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthS
     };
 
     $scope.deleteAccount = function() {
-        AuthService.deleteUser(user._id)
+        if ($scope.deleteForm.$valid && $scope.confirmationText($scope.delete.text)) {
+            AuthService.deleteUser($scope.user._id, $scope.delete.password)
             .then(() => {
                 UIkit.notification({
                     message: '<span uk-icon=\'icon: check\'></span> Account deleted. Good Bye :(',
-                    status: 'danger',
+                    status: 'success',
                     timeout: 2500
                 });
 
                 $timeout(function() {
+                    UIkit.modal('#modal-delete2').hide();
                     $location.path('/login');
                     }, 1500);
             })
             .catch((error) => {
-                UIkit.notification({
-                    message: "<span uk-icon=\'icon: check\'></span> We can't delete your account right now. Please contact the support.",
-                    status: 'warning',
-                    timeout: 2500
-                });
+                if (error.status == 401) {
+                    UIkit.notification({
+                        message: "<span uk-icon=\'icon: check\'></span> Wrong password.",
+                        status: 'danger',
+                        timeout: 2000
+                    });
+                } else {
+                    UIkit.notification({
+                        message: "<span uk-icon=\'icon: check\'></span> We can't delete your account right now. Please contact the support.",
+                        status: 'warning',
+                        timeout: 2500
+                    });
+                }
             });
+        } else {
+            UIkit.notification({
+                message: "<span uk-icon=\'icon: check\'></span> Please input both the password and the exact confirmation text.",
+                status: 'warning',
+                timeout: 2500
+            });
+        }
     };
 
     $scope.isInvalid = function (field) {
         return (field.$invalid && !field.$pristine);
     };
+
+    $scope.confirmationText = function(text) {
+        return text === 'I know this is a permanent action';
+    }
 
 }]);
