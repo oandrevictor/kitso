@@ -19,9 +19,6 @@ MOVIE_URL = config['DEFAULT']['URL'] + '/api/movie/'
 PERSON_URL = config['DEFAULT']['URL'] + '/api/person/'
 APPEARSIN_URL = config['DEFAULT']['URL'] + '/api/appears_in/'
 
-print(MOVIE_URL, PERSON_URL, APPEARSIN_URL)
-exit 
-
 LIMIT_OF_PEOPLE = 5
 cast_per_film = dict()
 directors_per_film = dict()
