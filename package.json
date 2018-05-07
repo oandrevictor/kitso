@@ -29,7 +29,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "sass:compile": "node-sass --include-path sass ./client/css/style.scss ./client/css/style.css",
-    "start": "SESSION_SECRET='101toppers' node ./server/app.js"
+    "start": "node ./server/app.js"
   },
   "author": "",
   "license": "ISC"
