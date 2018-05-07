@@ -5,7 +5,7 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthS
 
 	$scope.submitForm = function() {
         
-        if ($scope.userForm.$valid) {
+        if ($scope.editForm.$valid) {
             AuthService.editUser($scope.user)
                 // handle success
                 .then(function () {
