@@ -111,7 +111,7 @@ kitso.service('AuthService', ['$q', '$http', function ($q, $http) {
     
     function editUser(user) {
         var deferred = $q.defer();
-
+        console.log(user);
         $http.put('/api/user/' + user._id, user)
             .then(function (response) {
                 if (response.status === 200) {

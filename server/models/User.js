@@ -42,6 +42,11 @@ var UserSchema = new Schema({
     required: true,
     enum: ['male', 'female', 'other']
   },
+  description: {
+    type: String,
+    maxlength: 240,
+    default: "No description."
+  },
   _history: {
     type: [
       {

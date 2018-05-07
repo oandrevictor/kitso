@@ -58,6 +58,7 @@ exports.update = function(req, res) {
         if (req.body.email) user.email = req.body.email;
         if (req.body.birthday) user.birthday = req.body.birthday;
         if (req.body.gender) user.gender = req.body.gender;
+        if (req.body.description) user.description = req.body.description;
         if (req.body._history) user._history = req.body._history;
         if (req.body._following) user._following = req.body._following;
         if (req.body._following_pages) user._following_pages = req.body._following_pages;

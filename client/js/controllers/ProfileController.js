@@ -9,6 +9,7 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthS
             AuthService.editUser($scope.user)
                 // handle success
                 .then(function () {
+                    $scope.toggleDescriptionArea();
                     UIkit.notification({
                         message: '<span uk-icon=\'icon: check\'></span> User successfully edited.',
                         status: 'success',
@@ -87,6 +88,12 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthS
 
     $scope.confirmationText = function(text) {
         return text === 'I know this is a permanent action';
+    }
+
+    //$scope.descriptionArea = false;
+    $scope.toggleDescriptionArea = function() {
+        $scope.descriptionArea = !$scope.descriptionArea;
+        console.log($scope.descriptionArea);
     }
 
 }]);

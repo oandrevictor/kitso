@@ -19,7 +19,7 @@ kitso.controller('LoginController', ['$scope', '$location', '$timeout', 'AuthSer
                     });
 
                     $timeout(function() {
-                        $location.path('/home');
+                        $location.path('/profile');
                         }, 1500);
                 })
                 // handle error
