@@ -83,6 +83,12 @@ app.use('/example', exampleRoutes);
 var movieRoutes = require('./routes/movie');
 app.use('/api/movie', movieRoutes);
 
+var personRoutes = require('./routes/person');
+app.use('/api/person', personRoutes);
+
+var appearsInRoutes = require('./routes/appearsin');
+app.use('/api/appears_in', appearsInRoutes);
+
 var userRoutes = require('./routes/user');
 app.use('/api/user', userRoutes);
 

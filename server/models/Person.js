@@ -13,7 +13,7 @@ var PersonSchema = new Schema({
     },
     birthday: {
         type: Date,
-        required: true
+        required: false
     },
     _appears_in: [
         { type: mongoose.Schema.Types.ObjectId, ref: 'AppearsIn' }
