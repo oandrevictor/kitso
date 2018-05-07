@@ -93,7 +93,6 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthS
     //$scope.descriptionArea = false;
     $scope.toggleDescriptionArea = function() {
         $scope.descriptionArea = !$scope.descriptionArea;
-        console.log($scope.descriptionArea);
     }
 
 }]);
