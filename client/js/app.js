@@ -9,6 +9,7 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
             controller: 'MainController',
             access: { restricted: false }
         })
+        // signup page
         .when('/signup', {
             templateUrl: 'views/signup.html',
             controller: 'SignupController',
@@ -20,13 +21,13 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
             controller: 'LoginController',
             access: { restricted: false }
         })
-        // user home
+        // user home page
         .when('/home', {
             templateUrl: 'views/userHome.html',
             controller: 'HomeController',
             access: { restricted: true }
         })
-        // edit profile
+        // profile page
         .when('/profile', {
             templateUrl: 'views/profile.html',
             controller: 'ProfileController',

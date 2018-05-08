@@ -42,6 +42,11 @@ var UserSchema = new Schema({
     required: true,
     enum: ['male', 'female', 'other']
   },
+  description: {
+    type: String,
+    maxlength: 240,
+    default: "No description."
+  },
   _history: {
     type: [
       {
@@ -107,7 +112,7 @@ var UserSchema = new Schema({
 });
 
 UserSchema.methods.generateHash = function(password) {
-  return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+  return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null);
 };
 
 UserSchema.methods.validPassword = function(password) {
