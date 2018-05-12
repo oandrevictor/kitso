@@ -147,6 +147,14 @@ html, body {
     margin-top: -50px;
     margin-bottom: auto;
     font-weight: 300; }
+    .profile .profile-container .button-switcher {
+      text-align: right; }
+      .profile .profile-container .button-switcher .uk-button {
+        padding: 0 15px;
+        border-color: transparent;
+        color: #ccc; }
+      .profile .profile-container .button-switcher .uk-button-default.uk-active, .profile .profile-container .button-switcher .uk-button-default:active .uk-icon {
+        color: #333; }
     .profile .profile-container .uk-switcher p {
       margin-bottom: 0px; }
     .profile .profile-container .uk-switcher .uk-text-muted {
@@ -160,6 +168,18 @@ html, body {
     .profile .profile-container .uk-width-1-2 p {
       margin-bottom: 0px;
       width: 300px; }
+    .profile .profile-container .uk-list-divider > li:nth-child(n+2) {
+      border-top: 1px solid #f7f7f7; }
+    .profile .profile-container .uk-card-primary {
+      background: #fff;
+      box-shadow: none; }
+      .profile .profile-container .uk-card-primary .uk-text {
+        color: #666; }
+      .profile .profile-container .uk-card-primary .uk-text-muted {
+        color: #999 !important; }
+      .profile .profile-container .uk-card-primary .uk-card-body {
+        padding-left: 0px;
+        padding-top: 5px; }
   .profile .profile-image {
     border-style: solid; }
   .profile .profile-name {

@@ -10,7 +10,7 @@
         <div class="uk-card uk-card-small uk-card-default uk-card-body uk-container-center">
             <ul class="uk-tab" data-uk-tab="{connect:'#tab-id'}">
                 <li><a href="">Overview</a></li>
-                <li class="uk-disabled"><a>History</a></li>
+                <li><a>History</a></li>
                 <li class="uk-disabled"><a>Ranking</a></li>
                 <li class="uk-disabled"><a>Following</a></li>
                 <li class="uk-disabled"><a>Followers</a></li>
@@ -35,7 +35,7 @@
                         </form>
                     </div>
 
-                    <p class="uk-text-small uk-text-muted" align="center">June 30 | Male</p>
+                    <p class="uk-text-small uk-text-muted uk-text-capitalize" align="center">{{ user.birthday | date}} | {{ user.gender }}</p>
                     <hr class="uk-divider-icon">
                     <div uk-grid>
                         <div class="uk-width-1-2">
@@ -50,7 +50,68 @@
                         </div>
                     </div>
                 </li>
-                <li>History Content Here</li>
+                <li>
+                    <div uk-switcher="animation: uk-animation-fade" class="button-switcher">
+                        <button class="uk-button uk-button-default" type="button" uk-icon="grid"></button>
+                        <button class="uk-button uk-button-default" type="button" uk-icon="list"></button>
+                    </div>
+
+                    <ul class="uk-switcher uk-margin">
+                        <li>
+                            <div class="uk-child-width-1-3@m" uk-grid>
+                                <div>
+                                    <div class="uk-card uk-card-primary">
+                                        <div class="uk-card-media-top">
+                                            <img src="images/b99.jpg" alt="">
+                                        </div>
+                                        <div class="uk-card-body">
+                                            <p class="uk-text">Brooklyn 99</p>
+                                            <p class="uk-text-small uk-text-muted">Rated: 5 stars | 12 days ago</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="uk-card uk-card-primary">
+                                        <div class="uk-card-media-top">
+                                            <img src="images/avatar.jpg" alt="">
+                                        </div>
+                                        <div class="uk-card-body">
+                                            <p class="uk-text">Avatar</p>
+                                            <p class="uk-text-small uk-text-muted">Rated: 5 stars | 12 days ago</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="uk-card uk-card-primary">
+                                        <div class="uk-card-media-top">
+                                            <img src="images/avatar.jpg" alt="">
+                                        </div>
+                                        <div class="uk-card-body">
+                                            <p class="uk-text">Avatar</p>
+                                            <p class="uk-text uk-text-small uk-text-muted">Watched | 12 days ago</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <ul class="uk-list uk-list-divider">
+                                <li>Brooklyn 99
+                                    <br>
+                                    <p class="uk-text-small uk-text-muted">Rated: 5 stars | 12 days ago</p>
+                                </li>
+                                <li>Avatar
+                                    <br>
+                                    <p class="uk-text-small uk-text-muted">Rated: 5 stars | 12 days ago</p>
+                                </li>
+                                <li>Avatar
+                                    <br>
+                                    <p class="uk-text-small uk-text-muted">Watched | 12 days ago</p>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
                 <li>Ranking Content Here</li>
                 <li>Following Content Here</li>
                 <li>Followers Content Here</li>

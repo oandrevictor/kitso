@@ -198,6 +198,20 @@ html, body {
     margin-bottom: auto;
     font-weight: 300;
 
+    .button-switcher{
+       text-align: right;
+
+       .uk-button{
+            padding: 0 15px;
+            border-color: transparent;
+            color: #ccc;
+       }
+
+       .uk-button-default.uk-active, .uk-button-default:active .uk-icon{
+    	   color: #333;
+		}
+    }
+
     .uk-switcher {
      p{
       margin-bottom: 0px;
@@ -222,6 +236,28 @@ html, body {
    	  	margin-bottom: 0px;
    	  	width: 300px
    	  }
+    }
+
+    .uk-list-divider>li:nth-child(n+2) {
+       border-top: 1px solid #f7f7f7;
+    }
+
+    .uk-card-primary{
+       background: #fff;
+       box-shadow: none;
+
+       .uk-text{
+          color: #666;
+       }
+
+       .uk-text-muted{
+          color: #999 !important;
+       }
+
+       .uk-card-body{
+          padding-left: 0px;
+          padding-top: 5px;
+       }
     }
   }
   .profile-image {
