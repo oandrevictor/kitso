@@ -2,11 +2,19 @@
   "name": "savetv",
   "main": "./server/server.js",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "~1.4.2",
+    "connect-mongo": "^2.0.1",
+    "dotenv": "^5.0.1",
     "express": "~4.5.1",
+    "express-session": "^1.15.6",
     "method-override": "~2.0.2",
     "mongoose": "~5.0.16",
-    "sass": "^1.3.0"
+    "node-sass": "^4.9.0",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "sass": "^1.3.0",
+    "underscore": "^1.9.0"
   },
   "repository": {
     "type": "git",
@@ -18,9 +26,7 @@
   },
   "homepage": "https://github.com/oandrevictor/savetv#readme",
   "version": "1.0.0",
-  "devDependencies": {
-    "node-sass": "^4.9.0"
-  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "sass:compile": "node-sass --include-path sass ./client/css/style.scss ./client/css/style.css",

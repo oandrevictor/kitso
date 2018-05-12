@@ -1,0 +1,192 @@
+<div class="profile">
+    <!--Cover Content-->
+    <div class="uk-background-cover" align="center">
+            <img class="profile-image" src="/images/user_photo.jpg" width="140" height="140">
+            <p class="uk-text-large profile-name">{{ user.name }}</p>
+            <p class="uk-text-small profile-username">@{{ user.username }}</p>
+    </div>
+    <!--Card Content-->
+    <div class="uk-width-xxlarge uk-container profile-container">
+        <div class="uk-card uk-card-small uk-card-default uk-card-body uk-container-center">
+            <ul class="uk-tab" data-uk-tab="{connect:'#tab-id'}">
+                <li><a href="">Overview</a></li>
+                <li class="uk-disabled"><a>History</a></li>
+                <li class="uk-disabled"><a>Ranking</a></li>
+                <li class="uk-disabled"><a>Following</a></li>
+                <li class="uk-disabled"><a>Followers</a></li>
+                <li><a>Settings</a></li>
+            </ul>
+            <ul id="tab-id" class="uk-switcher uk-margin">
+                <li><a href="#" id="overview" data-uk-switcher-item="next"></a>
+                    <p class="uk-text-large" ng-init="descriptionArea=false">About 
+                        <a class="uk-icon-button" uk-icon="pencil" ng-click="toggleDescriptionArea()" ng-hide="descriptionArea"></a>
+                        <a uk-icon="check" class="uk-icon-button uk-button-save-changes" ng-hide="!descriptionArea" ng-click="submitForm()"></a>
+                        <a uk-icon="close" class="uk-icon-button" ng-hide="!descriptionArea" ng-click="toggleDescriptionArea()"></a>
+                    </p>
+                    <p class="uk-text-small" align="center" ng-if="!descriptionArea">
+                        {{ user.description }}
+                    </p>
+                    <div class="uk-margin" ng-if="descriptionArea">
+                        <form name="editForm" ng-submit="submitForm()" novalidate>
+                            <textarea maxlength="240" class="uk-textarea" placeholder="Description" ng-model="user.description">
+                                {{ user.description }}
+                            </textarea>
+                            
+                        </form>
+                    </div>
+
+                    <p class="uk-text-small uk-text-muted" align="center">June 30 | Male</p>
+                    <hr class="uk-divider-icon">
+                    <div uk-grid>
+                        <div class="uk-width-1-2">
+                            <p>Favorite Movie
+                            <a class="uk-link-text uk-text-uppercase uk-align-right" href="">See Ranking</a>
+                            </p>
+                            <img src="/images/fantasticbeats.jpg" width="300" height="400">
+                        </div>
+                        <div class="uk-width-1-2">
+                            <p>Watched Genres</p>
+                            <img src="/images/watched.jpg" width="300" height="400">
+                        </div>
+                    </div>
+                </li>
+                <li>History Content Here</li>
+                <li>Ranking Content Here</li>
+                <li>Following Content Here</li>
+                <li>Followers Content Here</li>
+                <li>
+                    <a href="#" id="settings" data-uk-switcher-item="next"></a>
+                    <p class="uk-text-large">Settings</p>
+                    <form name="editForm" ng-submit="submitForm()" novalidate>
+                        <!--Name Field-->
+                        <div class="uk-margin">
+                            <label class="uk-form-label" ng-class="{ 'uk-text-danger' : isInvalid(editForm.name) }" for="name">Name</label>
+                            <div class="uk-form-controls">
+                                <input class="uk-input" type="text" id="name" name="name" placeholder="Name"
+                                    ng-class="{ 'uk-form-danger' : isInvalid(editForm.name) }"
+                                    ng-model="user.name" required>
+                            </div>
+                            <label class="uk-text-small uk-text-danger uk-align-right" for="name" ng-show="isInvalid(editForm.name)">* Name can't be blank</label>
+                        </div>
+
+                        <!--Username Field-->
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="username" ng-class="{ 'uk-text-danger' : isInvalid(editForm.username) }">Username</label>
+                            <div class="uk-form-controls">
+                                <input class="uk-input" type="text" id="username" name="username" placeholder="Username"
+                                    ng-class="{ 'uk-form-danger' : isInvalid(editForm.username) }"
+                                    ng-model="user.username" ng-minlength="4" ng-maxlength="12" required>
+                            </div>
+                            <label class="uk-text-small uk-text-danger uk-align-right" for="username"
+                                ng-show="((isInvalid(editForm.username)) && (editForm.username.$$classCache['ng-valid-minlength'] && editForm.username.$$classCache['ng-valid-maxlength']))" >* Username can't be blank</label>
+                            <label class="uk-text-small uk-text-danger uk-align-right uk-text-right" for="username"
+                                ng-show="((isInvalid(editForm.username)) && !(editForm.username.$$classCache['ng-valid-minlength'] && editForm.username.$$classCache['ng-valid-maxlength']))">* Username must be 4 to 12 characters</label>
+                        </div>
+
+                        <!--Email Field-->
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="email" ng-class="{ 'uk-text-danger' : isInvalid(editForm.email) }">Email</label>
+                            <div class="uk-form-controls">
+                                <input class="uk-input" type="email" id="email" name="email" placeholder="Email"
+                                    ng-class="{ 'uk-form-danger' : isInvalid(editForm.email) }"
+                                    ng-model="user.email" required>
+                            </div>
+                            <label class="uk-text-small uk-text-danger uk-align-right" for="email"
+                                ng-show="((isInvalid(editForm.email)) && (editForm.email.$$classCache['ng-valid-email']))" >* Email can't be blank</label>
+                            <label class="uk-text-small uk-text-danger uk-align-right" for="email"
+                                ng-show="((isInvalid(editForm.email)) && !(editForm.email.$$classCache['ng-valid-email']))" >* Email is not valid</label>
+                        </div>
+
+                        <!--Birth Date-->
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="birthday" ng-class="{ 'uk-text-danger' : isInvalid(editForm.birthday) }">Birthday</label>
+                            <div class="uk-form-controls">
+                                <input class="uk-input" type="date" id="birthday" name="birthday"
+                                    ng-class="{ 'uk-form-danger' : isInvalid(editForm.birthday) }"
+                                    ng-model="user.birthday" required>
+                            </div>
+                            <label class="uk-text-small uk-text-danger uk-align-right" for="birthday"
+                                ng-show="((isInvalid(editForm.birthday)) && (editForm.birthday.$$classCache['ng-valid-date']))" >* Birthday can't be blank</label>
+                            <label class="uk-text-small uk-text-danger uk-align-right" for="birthday"
+                                ng-show="((isInvalid(editForm.birthday)) && (editForm.birthday.$$classCache['ng-invalid-date']))" >* Birthday is not valid</label>
+                        </div>
+
+                        <!--Gender-->
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="gender" ng-class="{ 'uk-text-danger' : isInvalid(editForm.gender) }">Gender</label>
+                            <select class="uk-select" id="gender" name="gender"
+                                    ng-class="{ 'uk-form-danger' : isInvalid(editForm.gender) }"  ng-model="user.gender" required>
+                                <option value="">Please select...</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <label class="uk-text-small uk-text-danger uk-align-right" for="birthday"
+                                ng-show="(isInvalid(editForm.gender))" >* You must select a gender</label>
+                        </div>
+                        
+                        <button class="uk-button uk-button-small uk-align-center" ng-class="{ 'uk-button-save-changes': editForm.$valid }" ng-disabled="editForm.$invalid">Save Changes</button>
+                    </form>
+
+                    <hr class="uk-divider-icon">
+
+                    <!-- Delete Account -->
+                    <button class="uk-button uk-button-danger uk-button-small uk-align-center" uk-toggle="target: #modal-delete1">Delete Account</button>
+                    <div id="modal-delete1" uk-modal>
+                        <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+                                <button class="uk-modal-close-default" type="button" uk-close></button>
+                            <h2 class="uk-modal-title uk-text-bold uk-text-danger">Delete Account</h2>
+                            <p>This is a <strong>permanent</strong> action. Are you <strong>sure</strong>?</p>
+                            <div class="uk-modal-footer">
+                                <p class="uk-text-right">
+                                    <button class="uk-button uk-button-danger uk-text-bold" type="button" uk-toggle="target: #modal-delete2">NEXT</button>
+                                    <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="modal-delete2" uk-modal>
+                        <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+                                <button class="uk-modal-close-default" type="button" uk-close></button>
+                            <h2 class="uk-modal-title uk-text-bold uk-text-danger">Delete Account</h2>
+                            <p>Please input your password and the confirmation text.</p>
+
+                           
+                           <form name="deleteForm">
+                               <!--Password Field-->
+                                <div class="uk-margin">
+                                    <label class="uk-form-label" for="password" ng-class="{ 'uk-text-danger' : isInvalid(deleteForm.password) }">Password</label>
+                                    <div class="uk-form-controls">
+                                        <input class="uk-input" type="password" id="password" name="password" placeholder="Password"
+                                        ng-class="{ 'uk-form-danger' : isInvalid(deleteForm.password) }" ng-change="resetValidity()"
+                                            ng-model="delete.password" required>
+                                    </div>
+                                    <label class="uk-text-small uk-text-danger uk-align-right" for="passwordConfirmation"
+                                        ng-show="isInvalid(deleteForm.password) && (!deleteForm.password.$$classCache['ng-invalid-password'])" >* Password can't be blank</label>
+                                </div>
+                                <!-- Confirmation text -->
+                                <div class="uk-margin">
+                                    <label class="uk-form-label" ng-class="{ 'uk-text-danger' : isInvalid(deleteForm.text) }" for="text">I know this is a permanent action</label>
+                                    <div class="uk-form-controls">
+                                        <input class="uk-input" type="text" id="text" name="text" placeholder="I know this is a permanent action"
+                                            ng-class="{ 'uk-form-danger' : isInvalid(deleteForm.text) }"
+                                            ng-model="delete.text" required>
+                                    </div>
+                                    <label class="uk-text-small uk-text-danger uk-align-right" for="text" ng-show="isInvalid(deleteForm.text)">* Please input the exact confirmation text.</label>
+                                </div>
+                           </form>
+                            
+                            <div class="uk-modal-footer">
+                                <p class="uk-text-right">
+                                    <button class="uk-button uk-button-danger uk-text-bold" type="button" ng-click="deleteAccount()">DELETE</button>
+                                    <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Delete Account -->
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

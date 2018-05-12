@@ -1,4 +1,6 @@
-angular.module('MainController', []).controller('MainController', function($scope) {
+var kitso = angular.module('kitso');
+
+kitso.controller('MainController', function($scope) {
 
     $scope.tagline = 'You watch, we save it!';
 

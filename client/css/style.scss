@@ -1,4 +1,239 @@
-a {
-  color: blue;
-  cursor: pointer;
+
+@import url('https://fonts.googleapis.com/css?family=Roboto:100i,300,400,500,700');
+
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.home {
+  font-family: 'Roboto', sans-serif;
+  background: black;
+  .main-container {
+    text-align: center;
+    width: 100vw;
+    height: 90vh;
+    background-color: black;
+    .transparet-background{
+      opacity: 0.7;
+    }
+
+    h1, h2 {
+      color: #EDEDED;
+    }
+    h1 {
+      font-weight: 500;
+    }
+
+    h2 {
+      font-weight: 100;
+      margin-top: 0px;
+    }
+
+    .home-buttons {
+      text-align: center;
+    }
+  }
+}
+
+.purple-button {
+  background: #8600CA !important;
+  color: white !important;
+  border: #8600CA solid 1px !important;
+}
+
+.footer {
+  font-family: 'Roboto', sans-serif;
+  width: 100vw;
+  height: 10vh;
+  background: #502274;
+  color: #EDEDED;
+  text-align: center;
+  display: inline-grid;
+  font-weight: 100;
+  font-style: italic;
+  p {
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+}
+
+.login {
+  background: url('/images/lalaland.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  overflow-y: auto !important;
+  height: 90vh;
+  font-family: 'Roboto' !important;
+  color: #ffffff !important;
+  .uk-button-login {
+    background-color: #502274 !important;
+    color: #ffffff !important;
+    font-weight: bold;
+  }
+
+  .uk-link-text{
+  	color: #502274 !important;
+  }
+
+  .login-container {
+    margin-top: auto;
+    margin-bottom: auto;
+
+    .login-form {
+      height: 100%;
+      max-width: 450px;
+      min-width: 300px;
+      padding-bottom: 0px!important;
+
+      .uk-form-label {
+        color: #502274 !important;
+      }
+      .uk-input {
+        color: #707070;
+        font-weight: 300;
+        border: #f0f0f0 solid 1px;
+      }
+      .uk-form-danger {
+        color: #f0506e;
+        border-color: #f0506e;
+      }
+      .uk-select {
+        font-weight: 300;
+      }
+    }
+
+    .login-title {
+      color: #ffffff !important;
+      font-weight: 300;
+      font-family: 'Roboto' !important;
+    }
+
+  }
+}
+
+
+.signup {
+  background: url('/images/blade_runner.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  overflow-y: auto !important;
+  height: 90vh;
+  font-family: 'Roboto' !important;
+  color: #ffffff !important;
+  .uk-button-signup {
+    background-color: #502274 !important;
+    color: #ffffff !important;
+    font-weight: bold;
+  }
+
+  .signup-container {
+    margin-top: auto;
+    margin-bottom: auto;
+
+    .signup-form {
+      height: 100%;
+      max-width: 450px;
+      min-width: 300px;
+      padding-bottom: 0px!important;
+
+      .uk-form-label {
+        color: #502274 !important;
+      }
+      .uk-input {
+        color: #707070;
+        font-weight: 300;
+        border: #f0f0f0 solid 1px;
+      }
+      .uk-form-danger {
+        color: #f0506e;
+        border-color: #f0506e;
+      }
+      .uk-select {
+        font-weight: 300;
+      }
+    }
+
+    .signup-title {
+      color: #ffffff !important;
+      font-weight: 300;
+      font-family: 'Roboto' !important;
+    }
+  }
+}
+
+.profile {
+  font-family: 'Roboto' !important;
+  .uk-background-cover {
+    background: url("/images/hogwarts.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    overflow-y: auto !important;
+    height: 50%;
+    display: block;
+    color: #ffffff !important;
+    padding-bottom: 0px !important;
+    padding-top: 4%;
+  }
+  .uk-button-save-changes {
+    background-color: #502274 !important;
+    color: #ffffff !important;
+    font-weight: bold;
+  }
+
+  .uk-link-text{
+  	color: #502274 !important;
+  	font-size: 0.575rem;
+  	margin-left: 0px;
+  	margin-bottom: 0px;
+  	padding-top: 4px;
+  }
+  .profile-container {
+    margin-top: -50px;
+    margin-bottom: auto;
+    font-weight: 300;
+
+    .uk-switcher {
+     p{
+      margin-bottom: 0px;
+     }
+     .uk-text-muted{
+      margin-bottom: 10px;
+      margin-top: 5px;
+      font-size: 13px;
+     }
+
+     .uk-divider-icon {
+      margin-top: 0px;
+     }
+    }
+
+    .uk-tab>.uk-active>a {
+     border-color: #8600ca !important;
+	}
+
+    .uk-width-1-2{
+   	  p{
+   	  	margin-bottom: 0px;
+   	  	width: 300px
+   	  }
+    }
+  }
+  .profile-image {
+    border-style: solid;
+  }
+  .profile-name {
+    text-shadow: 1px 1px 2px black, 0 0 1em #000000, 0 0 0.2em #000000;
+    margin: 2px;
+  }
+  .profile-username {
+    text-shadow: 1px 1px 2px black, 0 0 1em #000000, 0 0 0.2em #000000;
+    margin-top: 2px;
+    margin-bottom: 80px;
+  }
 }
