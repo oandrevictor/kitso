@@ -76,6 +76,10 @@ app.get('/profile', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
 
+app.get('/tvshow/:id', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
 // Api routes
 var exampleRoutes = require('./routes/example');
 app.use('/example', exampleRoutes);

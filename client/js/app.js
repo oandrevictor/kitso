@@ -33,6 +33,11 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
             controller: 'ProfileController',
             access: { restricted: true }
         })
+        .when('/tvshow/:tvshow_id', {
+            templateUrl: 'views/tvshow.html',
+            controller: 'TvShowController',
+            access: { restricted: true }
+        })
         .otherwise({
           redirectTo: '/'
         });
