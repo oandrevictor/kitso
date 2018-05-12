@@ -11,17 +11,6 @@ exports.index = function(req, res) {
     });
 };
 
-// Todos as ações de um usuário
-exports.byUser = function(req, res) {
-    Action.find({ _user: req.param.user })
-    .catch((err) => {
-        res.status(400).send(err);
-    })
-    .then((result) => {
-        res.status(200).json(result);
-    });
-};
-
 // Uma ação
 exports.show = function(req, res) {
     Action.findById(req.params.action_id)

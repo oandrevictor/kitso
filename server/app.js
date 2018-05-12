@@ -95,6 +95,9 @@ app.use('/api/user', userRoutes);
 var tvShowRoutes = require('./routes/tvShow');
 app.use('/api/tvShow', tvShowRoutes);
 
+var actionRoutes = require('./routes/action');
+app.use('/api/action', actionRoutes);
+
 // start app ===============================================
 // startup our app at http://localhost:8080
 app.listen(port);
