@@ -10,7 +10,7 @@ var mongoose       = require('mongoose');
 var passport       = require('passport');
 var session        = require('express-session');
 var MongoStore     = require('connect-mongo')(session);
-
+var dotenv         = require('dotenv').load();
 // configuration ===========================================
 
 // config files
