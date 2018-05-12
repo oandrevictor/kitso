@@ -2,10 +2,6 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var ActionSchema = new Schema({
-  name: {
-    date: Date,
-    required: true
-  },
   action: {
     type: String,
     required: true
