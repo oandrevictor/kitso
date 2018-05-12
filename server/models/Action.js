@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var ActionSchema = new Schema({
-  action: {
+  _action: {
     type: String,
     required: true
   },
