@@ -13,4 +13,10 @@ kitso.controller('MovieController', ['$scope', '$location', '$timeout', 'MovieSe
                 timeout: 2500
             });
         });
+
+  var markAsWatched = function(){
+    // Enviar chamada para WatchedService
+    // Watched Service deve chamar a rota backend
+  }
+
 }]);
