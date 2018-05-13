@@ -19,6 +19,26 @@ exports.index = async function(req, res) {
     })
 };
 
+exports.is_watched = async function(req, res) {
+    let user_id = req.query.user_id;
+    let media_id = req.query.media_id;
+    try {
+        let user_did_watched = await user_has_watched(user_id, media_id);
+        if (user_did_watched.length > 0) {
+            res_json = {
+                "is_watched": true,
+                "watched_id": user_did_watched[0]._id      
+            } 
+            res.status(200).json(res_json);            
+        } else {
+            json_not_watched = {"is_watched": false};
+            res.status(200).json(json_not_watched);
+        }
+    } catch (err) {
+        res.status(400).json(err);
+    }
+}
+
 exports.create = async function(req, res) {
     var watched = new Watched(req.body);
     let user_id = watched._user;
@@ -127,4 +147,8 @@ var inject_media_json = async function(watched_obj) {
 
 var get_media_obj = async function(media_id) {
     return Media.findById(media_id).exec(); 
+}
+
+var user_has_watched = async function(user_id, media_id) {
+    return Watched.find({_user: user_id, _media: media_id}).exec();
 }

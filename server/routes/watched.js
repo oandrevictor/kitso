@@ -5,6 +5,9 @@ var watchedController = require('../controllers/watchedController');
 
 router.get('/user/:user_id', watchedController.index);
 
+//is_watched?user_id=user_id&media_id=media_id
+router.get('/is_watched', watchedController.is_watched);
+
 router.post('/', watchedController.create);
 
 router.put('/:watched_id', watchedController.update);
