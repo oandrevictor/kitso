@@ -4,6 +4,17 @@ var User = require('../models/User');
 
 const WATCHED_ACTION_TYPE = "watched";
 
+exports.index = function(req, res) {
+    let user_id = req.params.user_id;
+    Watched.find({_user: user_id})
+    .catch((err) => {
+        res.status(400).send(err);
+    })
+    .then((watched_list) => {
+        res.status(200).json(watched_list);
+    });
+};
+
 exports.create = async function(req, res) {
     var watched = new Watched(req.body);
     let user_id = watched._user;
@@ -38,7 +49,6 @@ exports.delete = async function(req, res) {
         res.status(200).json(createdWatched);
     });
 };
-
 
 var create_action = async function(user_id, watched_id) {
     var action = new Action({
