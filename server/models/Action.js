@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var ActionSchema = new Schema({
-  name: {
+  date: {
     type: Date,
     required: true
   },
@@ -20,7 +20,7 @@ var ActionSchema = new Schema({
     enum: ['rated','watched','followed'],
     required: true
   },
-  hide: {
+  hidden: {
     type: Boolean,
     default: false,
     required: true

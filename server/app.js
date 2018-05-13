@@ -92,6 +92,9 @@ app.use('/api/appears_in', appearsInRoutes);
 var userRoutes = require('./routes/user');
 app.use('/api/user', userRoutes);
 
+var watchedRoutes = require('./routes/watched');
+app.use('/api/watched', watchedRoutes);
+
 var tvShowRoutes = require('./routes/tvShow');
 app.use('/api/tvShow', tvShowRoutes);
 
