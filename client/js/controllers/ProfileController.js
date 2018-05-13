@@ -1,7 +1,11 @@
 var kitso = angular.module('kitso');
 
 kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthService', function($scope, $location, $timeout, AuthService) {
-    $scope.user = AuthService.getUser();
+     AuthService.getStatus()
+        .then(() => {
+            $scope.user = AuthService.getUser();
+        });
+
 	$scope.submitForm = function() {
         
         if ($scope.editForm.$valid) {

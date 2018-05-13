@@ -33,6 +33,11 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
             controller: 'ProfileController',
             access: { restricted: true }
         })
+        .when('/tvshow/:tvshow_id', {
+            templateUrl: 'views/tvshow.html',
+            controller: 'TvShowController',
+            access: { restricted: true }
+        })
         // movie page
         .when('/movie/:movie_id', {
             templateUrl: 'views/movie.html',
@@ -55,6 +60,14 @@ angular.module('kitso').run(function ($rootScope, $location, $route, AuthService
                 $location.path('/login');
                 UIkit.notification({
                     message: '<span uk-icon=\'icon: check\'></span> You need to be logged in to access this page',
+                    status: 'warning',
+                    timeout: 2500
+                });
+                $route.reload();
+            } else if (!next.access.restricted && AuthService.isLogged()) {
+                $location.path('/profile');
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: check\'></span> To log in/register, you need to log out first.',
                     status: 'warning',
                     timeout: 2500
                 });

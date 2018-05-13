@@ -55,7 +55,7 @@ exports.update = function(req, res) {
         if (req.body._actors) movie._actors = req.body._actors;
         if (req.body.imdb_id) movie.imdb_id = req.body.imdb_id;
         if (req.body.genres) movie.genres = req.body.genres;
-        if (req.body.poster) movie.poster = req.body.poster;
+        if (req.body.images) movie.images = req.body.images;
         if (req.body.isBoxOffice) movie.isBoxOffice = req.body.isBoxOffice;
 
         movie.save()
