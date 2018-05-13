@@ -32,7 +32,7 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
             templateUrl: 'views/profile.html',
             controller: 'ProfileController',
             access: { restricted: true }
-        }
+        })
         .when('/tvshow/:tvshow_id', {
             templateUrl: 'views/tvshow.html',
             controller: 'TvShowController',
