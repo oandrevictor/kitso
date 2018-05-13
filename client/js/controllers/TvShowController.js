@@ -13,5 +13,4 @@ kitso.controller("TvShowController", ['$scope', '$routeParams', 'TvShowService',
             });
         });
 
-    console.log($scope.tvshow);
 }]);

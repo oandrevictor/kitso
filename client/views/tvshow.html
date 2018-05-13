@@ -1,3 +1,61 @@
-<code>
-    <pre>{{ tvshow | json }}</pre>
-</code>
+<div class="movie">
+    <!--Cover Content-->
+    <div class="uk-background-cover" align="center">
+        <div class="uk-width-xxlarge">
+            <div class="title">{{ tvshow.name }}</div>
+
+        </div>
+    </div>
+
+    <div class="uk-width-xxlarge content">
+        <div class="uk-width-3-4">
+            <b>Directed by</b> {{ tvshow.directors || 'Director' }}
+            <br /> Year:
+            <b> {{ tvshow.release_date | date: 'yyyy' }}</b> | Genres:
+            <b ng-repeat="genre in tvshow.genres">{{ genre }}</b>
+            <div class="rating">
+                <span uk-icon="icon: star; ratio: 2"></span>
+                <div class="rating-value"> 7.2</div>
+            </div>
+        </div>
+        <div class="left-bar uk-width-1-4">
+            <img class="poster" src="/images/It_Follows_(poster).jpg" />
+            <button class="uk-button uk-button-default watch-button">
+            <span uk-icon="icon: check;"></span> Mark as watched</button>
+        </div>
+        
+
+        <div class="section sinopsis">
+            <div class="section-title">
+                Overview
+            </div>
+            <p>
+                {{ tvshow.overview }}
+            </p>
+        </div>
+        <div class="section">
+            <div class="section-title">
+                Cast
+            </div>
+            <div uk-grid>
+                <div class="cast-info">
+                    <img class="cast-image" src="/images/person-placeholder.png" />
+                    <p class="cast-name">Angelina Jolie</p>
+                </div>
+                <div class="cast-info">
+                    <img class="cast-image" src="/images/person-placeholder.png" />
+                    <p class="cast-name">Jean-Claude Van Damme</p>
+                </div>
+                <div class="cast-info">
+                    <img class="cast-image" src="/images/person-placeholder.png" />
+                    <p class="cast-name">Angelina Jolie</p>
+                </div>
+                <div class="cast-info">
+                    <img class="cast-image" src="/images/person-placeholder.png" />
+                    <p class="cast-name">Angelina Jolie</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

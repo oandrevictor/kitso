@@ -27,6 +27,10 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
                         timeout: 2500
                     });
                 });  
-	};
+    };
+    
+    $scope.isLogged = function() {
+		return AuthService.isLogged();
+	}
 
 }]);
