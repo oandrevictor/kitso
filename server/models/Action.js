@@ -20,7 +20,7 @@ var ActionSchema = new Schema({
     enum: ['rated','watched','followed'],
     required: true
   },
-  hide: {
+  hidden: {
     type: Boolean,
     default: false,
     required: true
