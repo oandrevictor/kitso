@@ -2,28 +2,48 @@ var kitso = angular.module('kitso');
 
 kitso.service('WatchedService', ['$q','$http', function ($q, $http) {
 
-    var isWatched = false;
+    var watched = false;
     var watcheds = {};
 
     // return available functions for use in the controllers
     return ({
-        markAsWatched: markAsWatched,
-        markAsNotWatched: markAsNotWatched,
-        getIsWatched: getIsWatched
+      getAllWatched: getAllWatched,
+      markAsWatched: markAsWatched,
+      markAsNotWatched: markAsNotWatched,
+      isWatched: isWatched
     });
 
-    function markAsWatched(userId, mediaId) {
+    function getAllWatched(userId){
+      var deferred = $q.defer();
+      $http.post('/api/watched/user', userId)
+          .then((response) => {
+            if (response.status === 200) {
+                  deferred.resolve(response.data);
+              } else {
+                  deferred.reject();
+              }
+          })
+          .catch((error) => {
+              deferred.reject(error.data);
+          });
+
+      return deferred.promise;
+    }
+
+
+    function markAsWatched(userId, mediaId, date = moment()) {
         var deferred = $q.defer();
 
         var data = {
             "_user": userId,
-            "_media": mediaId
+            "_media": mediaId,
+            "date" : date
         };
 
         $http.post('/api/watched/', data)
             .then((response) => {
                 if (response.status === 200) {
-                    deferred.resolve();
+                    deferred.resolve(response.data);
                 } else {
                     deferred.reject();
                 }
@@ -35,10 +55,10 @@ kitso.service('WatchedService', ['$q','$http', function ($q, $http) {
         return deferred.promise;
     }
 
-    function markAsNotWatched(mediaId) {
+    function markAsNotWatched(watchedId) {
         var deferred = $q.defer();
 
-        $http.delete('/api/watched/' + mediaId)
+        $http.delete('/api/watched/' + watchedId)
             .then((response) => {
                 if (response.status === 200) {
                     deferred.resolve();
@@ -52,42 +72,19 @@ kitso.service('WatchedService', ['$q','$http', function ($q, $http) {
 
         return deferred.promise;
     }
-
-    function getWatcheds(userId) {
-        var deferred = $q.defer();
-
-        $http.get('/api/watched/' + userId)
-            .then((response) => {
-                if (response.status === 200) {
-                    watcheds = response.data;
-                    deferred.resolve();
-                } else {
-                    deferred.reject();
-                }
-            })
-            .catch((error) => {
-                deferred.reject(error.data);
-            });
-
-        return deferred.promise;
-    }
-
 
     function isWatched(userId, mediaId) {
         var deferred = $q.defer();
+        var data = {
+          user_id: userId,
+          media_id: mediaId
+        }
 
-        $http.get('/api/watched/'+ userId)
+        $http.get('/api/watched/is_watched/', data)
             .then((response) => {
                 if (response.status === 200) {
-                    watcheds = response.data;
-
-                    for (var i = 0; i < watched.length; i++) {
-                      if (watcheds[i]['_id'] === mediaId) {
-                        isWatched = true;
-                      }
-                    }
-
-                    deferred.resolve();
+                    watched = response.data.is_watched;
+                    deferred.resolve(response.data);
                 } else {
                     deferred.reject();
                 }
@@ -99,7 +96,4 @@ kitso.service('WatchedService', ['$q','$http', function ($q, $http) {
         return deferred.promise;
     }
 
-    function getIsWatched() {
-      return isWatched;
-    }
 }]);
