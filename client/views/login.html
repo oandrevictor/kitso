@@ -52,11 +52,17 @@
                 <h2 class="uk-modal-title uk-text-bold uk-text-danger">Recover password</h2>
             </div>
             <div class="uk-modal-body">
-                <p>Please input your account e-mail address.</p>
+                <p>Please input your account e-mail address and your new password.</p>
                 <div class="uk-margin">
                     <label class="uk-form-label" for="email">Email</label>
                     <div class="uk-form-controls">
                         <input class="uk-input" type="email" id="email" name="email" ng-model="recoverEmailAddress" placeholder="Email" required>
+                    </div>
+                </div>
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="new-password">New password</label>
+                    <div class="uk-form-controls">
+                        <input class="uk-input" type="password" id="new-password" name="new-password" ng-model="newPassword" placeholder="New password" required>
                     </div>
                 </div>
             </div>

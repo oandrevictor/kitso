@@ -12,8 +12,7 @@ kitso.service('AuthService', ['$q', '$http', function ($q, $http) {
         getUser: getUser,
         isLogged: isLogged,
         logout: logout,
-        deleteUser: deleteUser,
-        recoverPassword: recoverPassword
+        deleteUser: deleteUser
     });
 
     function register(user) {
@@ -126,9 +125,5 @@ kitso.service('AuthService', ['$q', '$http', function ($q, $http) {
             });
 
         return deferred.promise;
-    }
-
-    function recoverPassword() {
-        
     }
 }]);

@@ -46,10 +46,16 @@ kitso.controller('LoginController', ['$scope', '$location', '$timeout', 'AuthSer
     }
 
     $scope.recoverEmailAddress = '';
+    $scope.newPassword = '';
 
     $scope.recoverPassword = function() {
         UserService.findByEmail({ email: $scope.recoverEmailAddress })
-            .then(() => {
+            .then((user) => {
+                var updatedUser = {
+                    _id: user._id,
+                    new_password: $scope.newPassword
+                };
+                UserService.editUser(updatedUser);
                 UserService.sendPasswordRecoverEmail({ email: $scope.recoverEmailAddress })
                     .then(() => {
                         UIkit.notification({
