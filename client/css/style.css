@@ -180,6 +180,8 @@ html, body {
       .profile .profile-container .uk-card-primary .uk-card-body {
         padding-left: 0px;
         padding-top: 5px; }
+    .profile .profile-container .uk-list ul .uk-iconnav {
+      padding-left: 0px; }
   .profile .profile-image {
     border-style: solid; }
   .profile .profile-name {
