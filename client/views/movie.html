@@ -22,7 +22,7 @@
               <img class="poster" src="/images/changeling-poster.jpeg" />
               <button ng-hide="movie.watched" ng-click="markAsWatched(movie._id)" class="uk-button uk-button-default watch-button" ng-click="onChangeWatched()">
               <span uk-icon="icon: check;"></span> Mark as watched</button>
-              <button ng-show="movie.watched" ng-click="markAsNotWatched(movie.watched._id)" class="uk-button uk-button-default watch-button" ng-click="onChangeWatched()">
+              <button ng-show="movie.watched" ng-click="markAsNotWatched(movie.watched_id)" class="uk-button uk-button-default watch-button" ng-click="onChangeWatched()">
               <span uk-icon="icon: check;"></span> Watched </button>
           </div>
 
