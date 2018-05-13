@@ -12,8 +12,8 @@ kitso.service('AuthService', ['$q', '$http', function ($q, $http) {
         getUser: getUser,
         isLogged: isLogged,
         logout: logout,
-        editUser: editUser,
-        deleteUser: deleteUser
+        deleteUser: deleteUser,
+        recoverPassword: recoverPassword
     });
 
     function register(user) {
@@ -108,25 +108,6 @@ kitso.service('AuthService', ['$q', '$http', function ($q, $http) {
     function isLogged() {
         return user.status;
     }
-    
-    function editUser(user) {
-        var deferred = $q.defer();
-        
-        $http.put('/api/user/' + user._id, user)
-            .then(function (response) {
-                if (response.status === 200) {
-                    user.user = response.data;
-                    deferred.resolve();
-                } else {
-                    deferred.reject();
-                }
-            })
-            .catch(function (error) {
-                deferred.reject(error.data);
-            });
-
-        return deferred.promise;
-    }
 
     function deleteUser(id, password) {
         var deferred = $q.defer();
@@ -145,5 +126,9 @@ kitso.service('AuthService', ['$q', '$http', function ($q, $http) {
             });
 
         return deferred.promise;
+    }
+
+    function recoverPassword() {
+        
     }
 }]);

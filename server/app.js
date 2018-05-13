@@ -80,6 +80,9 @@ app.get('/profile', function (req, res) {
 var exampleRoutes = require('./routes/example');
 app.use('/example', exampleRoutes);
 
+var emailRoutes = require('./routes/email');
+app.use('/api/email', emailRoutes);
+
 var movieRoutes = require('./routes/movie');
 app.use('/api/movie', movieRoutes);
 

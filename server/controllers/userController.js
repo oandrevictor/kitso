@@ -24,6 +24,17 @@ exports.show = function(req, res) {
     });
 };
 
+exports.findByEmail = function (req, res) {
+    User.findOne({email: req.body.email})
+    .catch((err) => {
+        res.status(400).send(err);
+    })
+    .then((result) => {
+        if (result) res.status(200).json(result);
+        else res.status(400).json('User not found.');
+    });
+}
+
 // Criar usuário
 exports.create = function(req, res) {
     var user = new User(req.body);

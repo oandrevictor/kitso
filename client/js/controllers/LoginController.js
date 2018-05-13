@@ -1,6 +1,6 @@
 var kitso = angular.module('kitso');
 
-kitso.controller('LoginController', ['$scope', '$location', '$timeout', 'AuthService', function($scope, $location, $timeout, AuthService) {
+kitso.controller('LoginController', ['$scope', '$location', '$timeout', 'AuthService', 'UserService', function($scope, $location, $timeout, AuthService, UserService) {
 
     $scope.submitForm = function() {
         var user = {
@@ -43,5 +43,35 @@ kitso.controller('LoginController', ['$scope', '$location', '$timeout', 'AuthSer
         if ($scope.userForm.$submitted) {
             $scope.userForm.password.$setValidity('password', true);
         }
+    }
+
+    $scope.recoverEmailAddress = '';
+
+    $scope.recoverPassword = function() {
+        UserService.findByEmail({ email: $scope.recoverEmailAddress })
+            .then(() => {
+                UserService.sendPasswordRecoverEmail({ email: $scope.recoverEmailAddress })
+                    .then(() => {
+                        UIkit.notification({
+                            message: '<span uk-icon=\'icon: check\'></span> Recover email sent. Please verify your email.',
+                            status: 'success',
+                            timeout: 2000
+                        });
+                    })
+                    .catch((error) => {
+                        UIkit.notification({
+                            message: '<span uk-icon=\'icon: check\'></span> ' + error,
+                            status: 'danger',
+                            timeout: 2000
+                        });
+                    });
+            })
+            .catch((error) => {
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: check\'></span> ' + error,
+                    status: 'danger',
+                    timeout: 2000
+                });
+            });
     }
 }]);
