@@ -28,20 +28,40 @@
     <script src="js/controllers/LoginController.js"></script>
     <script src="js/controllers/HomeController.js"></script>
     <script src="js/controllers/ProfileController.js"></script>
+    <script src="js/controllers/MovieController.js"></script>
+
 
     <!-- Services -->
     <script src="js/services/auth.service.js"></script>
-    
+    <script src="js/services/movie.service.js"></script>
+
+    <script src="js/lib/moment.js"></script>
+
 </head>
 <body ng-app="kitso" ng-controller="MainController">
+  <div class="toolbar">
+    <div class="logo"> Kitso</div>
+    <div class= "options" ng-controller="HomeController">
+      <button ng-show="isLogged()" class="uk-button uk-button-default options"><span uk-icon="menu"></span></button>
+
+      <div uk-dropdown="pos: bottom-right	">
+        <ul class="uk-nav uk-dropdown-nav">
+            <li><a href="/profile">Profile</a></li>
+            <li class="uk-nav-divider"></li>
+            <li><a ng-click="logout()">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
 <div>
 
     <!-- ANGULAR DYNAMIC CONTENT -->
     <div ng-view class="kitso-content"></div>
 
-</div>
-<div class="footer">
-  <p> Kitso © 101 Toppers. Todos os direitos reservados. </p>
+    <div class="footer">
+      <p> Kitso © 101 Toppers. Todos os direitos reservados. </p>
+    </div>
+
 </div>
 </body>
 </html>

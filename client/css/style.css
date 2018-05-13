@@ -28,6 +28,51 @@ html, body {
   color: white !important;
   border: #8600CA solid 1px !important; }
 
+.toolbar {
+  font-family: 'Roboto', sans-serif;
+  width: 60vw;
+  height: 6vh;
+  min-height: 60px;
+  background: #502274;
+  color: #EDEDED;
+  display: inline-grid;
+  font-weight: 100;
+  font-style: italic;
+  padding-left: 20vw;
+  padding-right: 20vw;
+  display: flex; }
+  .toolbar .uk-dropdown {
+    min-width: 120px !important;
+    background: #502274;
+    color: white; }
+    .toolbar .uk-dropdown a {
+      color: white; }
+      .toolbar .uk-dropdown a:hover {
+        color: #ebebeb; }
+  .toolbar p {
+    margin-top: auto;
+    margin-bottom: auto; }
+  .toolbar .logo {
+    display: inline-block;
+    float: left;
+    margin-top: auto;
+    margin-bottom: auto;
+    font-weight: 700;
+    font-size: 24px;
+    font-style: initial; }
+  .toolbar .options {
+    margin-left: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+    color: white;
+    width: 30px;
+    border: solid 0px; }
+    .toolbar .options a {
+      font-style: initial; }
+      .toolbar .options a:hover {
+        text-decoration: none;
+        font-weight: 500; }
+
 .footer {
   font-family: 'Roboto', sans-serif;
   width: 100vw;
@@ -169,5 +214,84 @@ html, body {
     text-shadow: 1px 1px 2px black, 0 0 1em #000000, 0 0 0.2em #000000;
     margin-top: 2px;
     margin-bottom: 80px; }
+
+.movie {
+  font-family: 'Roboto' !important; }
+  .movie .uk-background-cover {
+    z-index: -1;
+    background: url("/images/changeling.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    overflow-y: auto !important;
+    height: 30vh;
+    display: block;
+    color: #ffffff !important;
+    padding-bottom: 0px !important;
+    padding-top: 4%;
+    position: relative; }
+  .movie .title {
+    bottom: 10px;
+    position: absolute;
+    font-size: 4vh;
+    font-weight: 100;
+    margin-left: auto;
+    margin-right: auto; }
+  .movie .sinopsis {
+    text-align: justify;
+    width: 540px; }
+  .movie .rating {
+    float: right;
+    margin-top: -100px;
+    color: white;
+    font-size: 28px;
+    font-weight: 100;
+    padding-right: 20px;
+    display: flex; }
+    .movie .rating .rating-value {
+      display: inline;
+      font-size: 30px;
+      padding-left: 8px; }
+  .movie .left-bar {
+    float: right;
+    margin-top: -140px; }
+  .movie .watch-button {
+    display: block;
+    width: 191px;
+    border: 1px solid #FFFFFF;
+    font-size: 10px !important; }
+  .movie .poster {
+    box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
+    border: 4px solid white; }
+  .movie .section {
+    margin-top: 8px;
+    margin-bottom: 4px; }
+    .movie .section .cast-info {
+      width: 156px;
+      display: flex; }
+      .movie .section .cast-info .cast-image {
+        height: 100px; }
+      .movie .section .cast-info .cast-name {
+        padding-left: 6px;
+        display: block;
+        margin-top: auto;
+        margin-bottom: auto; }
+  .movie .section-title {
+    font-size: 2.5vh;
+    color: #773095;
+    font-weight: 100; }
+  .movie p {
+    margin-top: 0px;
+    font-size: 14px; }
+
+.content {
+  padding-top: 20px;
+  margin-left: auto;
+  margin-right: auto; }
+
+.uk-badge {
+  border-radius: 0px !important; }
+  .uk-badge.purple {
+    background: #502274; }
 
 /*# sourceMappingURL=style.css.map */

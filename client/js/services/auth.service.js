@@ -34,8 +34,8 @@ kitso.service('AuthService', ['$q', '$http', function ($q, $http) {
                 });
         } else {
             deferred.reject();
-        }      
-        
+        }
+
         return deferred.promise;
     }
 

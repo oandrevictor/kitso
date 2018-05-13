@@ -33,6 +33,12 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
             controller: 'ProfileController',
             access: { restricted: true }
         })
+        // movie page
+        .when('/movie/:movie_id', {
+            templateUrl: 'views/movie.html',
+            controller: 'MovieController',
+            access: { restricted: true }
+        })
         .otherwise({
           redirectTo: '/'
         });
