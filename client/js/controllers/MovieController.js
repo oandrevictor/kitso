@@ -2,7 +2,7 @@ var kitso = angular.module('kitso');
 
 kitso.controller('MovieController', ['$scope', '$location', '$timeout', 'MovieService', 'WatchedService', '$routeParams', function($scope, $location, $timeout, MovieService, WatchedService, $routeParams) {
     $scope.user = AuthService.getUser();
-    var isWatched = false;
+    var watched = false;
 
     MovieService.loadMovie($routeParams.movie_id)
         .then(() => {
@@ -19,7 +19,7 @@ kitso.controller('MovieController', ['$scope', '$location', '$timeout', 'MovieSe
 
     WatchedService.isWatched($scope.user._id, $routeParams.movie_id)
         .then(() => {
-            this.isWatched = WatchedService.getIsWatched();
+            this.watched = WatchedService.getIsWatched();
         })
         .catch((error) => {
             UIkit.notification({
@@ -30,7 +30,7 @@ kitso.controller('MovieController', ['$scope', '$location', '$timeout', 'MovieSe
         });
 
     var onChangeWatched = function() {
-      if (this.isWatched) {
+      if (this.watched) {
         this.markAsNotWatched;
       } else {
         this.markAsWatched;
@@ -40,7 +40,7 @@ kitso.controller('MovieController', ['$scope', '$location', '$timeout', 'MovieSe
     var markAsWatched = function(){
         WatchedService.markAsWatched($scope.user._id, $routeParams.movie_id)
         .then(() => {
-            this.isWatched = true;
+            this.watched = true;
         })
         .catch((error) => {
             UIkit.notification({
@@ -54,7 +54,7 @@ kitso.controller('MovieController', ['$scope', '$location', '$timeout', 'MovieSe
     var markAsNotWatched = function(){
         WatchedService.markAsNotWatched($routeParams.movie_id)
         .then(() => {
-            this.isWatched = false;
+            this.watched = false;
         })
         .catch((error) => {
             UIkit.notification({

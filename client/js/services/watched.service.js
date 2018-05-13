@@ -23,7 +23,6 @@ kitso.service('WatchedService', ['$q','$http', function ($q, $http) {
         $http.post('/api/watched/', data)
             .then((response) => {
                 if (response.status === 200) {
-                    movie = response.data;
                     deferred.resolve();
                 } else {
                     deferred.reject();
@@ -57,7 +56,7 @@ kitso.service('WatchedService', ['$q','$http', function ($q, $http) {
     function getWatcheds(userId) {
         var deferred = $q.defer();
 
-        $http.get('/api/watched/' + id)
+        $http.get('/api/watched/' + userId)
             .then((response) => {
                 if (response.status === 200) {
                     watcheds = response.data;
@@ -77,13 +76,13 @@ kitso.service('WatchedService', ['$q','$http', function ($q, $http) {
     function isWatched(userId, mediaId) {
         var deferred = $q.defer();
 
-        $http.get('/api/watched/'+ id)
+        $http.get('/api/watched/'+ userId)
             .then((response) => {
                 if (response.status === 200) {
                     watcheds = response.data;
 
                     for (var i = 0; i < watched.length; i++) {
-                      if (watched[i]['_id'] === mediaId) {
+                      if (watcheds[i]['_id'] === mediaId) {
                         isWatched = true;
                       }
                     }
