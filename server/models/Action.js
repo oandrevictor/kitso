@@ -3,10 +3,10 @@ var Schema = mongoose.Schema;
 
 var ActionSchema = new Schema({
   name: {
-    date: Date,
+    type: Date,
     required: true
   },
-  action: {
+  _action: {
     type: String,
     required: true
   },
@@ -18,6 +18,11 @@ var ActionSchema = new Schema({
   action_type: {
     type: String,
     enum: ['rated','watched','followed'],
+    required: true
+  },
+  hide: {
+    type: Boolean,
+    default: false,
     required: true
   }
 });
