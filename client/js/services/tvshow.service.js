@@ -36,7 +36,7 @@ kitso.service('TvShowService', ['$q', '$http', function ($q, $http) {
     function updateTvShow(tvShow) {
         var deferred = $q.defer();
   
-        $http.put('/api/movie/' + tvShow._id, tvShow)
+        $http.put('/api/tvshow/' + tvShow._id, tvShow)
             .then(function (response) {
                 if (response.status === 200) {
                     tvshow = response.data;
