@@ -5,14 +5,13 @@
         <div class="title">{{movie.name}}
           <span ng-show="movie.isBoxOffice" class="uk-badge purple">In teathers</span>
         </div>
-
       </div>
     </div>
     <div class="uk-width-xxlarge content">
       <div class="uk-width-3-4">
-              <b>Directed by</b> {{ tvshow.directors }}
+              <b>Directed by</b> {{ movie.directors }}
               <br /> Year:
-              <b> {{ release_date_formated }}</b> | Genres:
+              <b>{{ release_date_formated }}</b> | Genres:
               <b ng-repeat="genre in movie.genres">{{ genre }}</b>
               <div class="rating">
                   <span uk-icon="icon: star; ratio: 2"></span>
