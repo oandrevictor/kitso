@@ -32,10 +32,16 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
             templateUrl: 'views/profile.html',
             controller: 'ProfileController',
             access: { restricted: true }
-        })
+        }
         .when('/tvshow/:tvshow_id', {
             templateUrl: 'views/tvshow.html',
             controller: 'TvShowController',
+            access: { restricted: true }
+        })
+        // movie page
+        .when('/movie/:movie_id', {
+            templateUrl: 'views/movie.html',
+            controller: 'MovieController',
             access: { restricted: true }
         })
         .otherwise({
