@@ -42,6 +42,7 @@ exports.update = function(req, res) {
         res.status(400).send(err);
     })
     .then((action) => {
+        if (req.body.name) action.name = req.body.name;
         if (req.body._action) action._action = req.body._action;
         if (req.body._user) action._user = req.body._user;
         if (req.body.action_type) action_type = req.body.action_type;

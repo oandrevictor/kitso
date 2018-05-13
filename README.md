@@ -1,4 +1,4 @@
-# savetv
+# Kitso
 necessário:<br />
 node (8.9.4)<br />
 bower (1.8.2)<br />
