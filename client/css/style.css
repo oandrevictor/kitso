@@ -284,6 +284,74 @@ html, body {
     margin-top: 0px;
     font-size: 14px; }
 
+.tvshow {
+  font-family: 'Roboto' !important; }
+  .tvshow .uk-background-cover {
+    z-index: -1;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    overflow-y: auto !important;
+    height: 30vh;
+    display: block;
+    color: #ffffff !important;
+    padding-bottom: 0px !important;
+    padding-top: 4%;
+    position: relative; }
+  .tvshow .title {
+    bottom: 10px;
+    position: absolute;
+    font-size: 4vh;
+    font-weight: 100;
+    margin-left: auto;
+    margin-right: auto; }
+  .tvshow .sinopsis {
+    text-align: justify;
+    width: 540px; }
+  .tvshow .rating {
+    float: right;
+    margin-top: -100px;
+    color: white;
+    font-size: 28px;
+    font-weight: 100;
+    padding-right: 20px;
+    display: flex; }
+    .tvshow .rating .rating-value {
+      display: inline;
+      font-size: 30px;
+      padding-left: 8px; }
+  .tvshow .left-bar {
+    float: right;
+    margin-top: -140px; }
+  .tvshow .watch-button {
+    display: block;
+    width: 191px;
+    border: 1px solid #FFFFFF;
+    font-size: 10px !important; }
+  .tvshow .poster {
+    box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
+    border: 4px solid white; }
+  .tvshow .section {
+    margin-top: 8px;
+    margin-bottom: 4px; }
+    .tvshow .section .cast-info {
+      width: 156px;
+      display: flex; }
+      .tvshow .section .cast-info .cast-image {
+        height: 100px; }
+      .tvshow .section .cast-info .cast-name {
+        padding-left: 6px;
+        display: block;
+        margin-top: auto;
+        margin-bottom: auto; }
+  .tvshow .section-title {
+    font-size: 2.5vh;
+    color: #773095;
+    font-weight: 100; }
+  .tvshow p {
+    margin-top: 0px;
+    font-size: 14px; }
+
 .content {
   padding-top: 20px;
   margin-left: auto;

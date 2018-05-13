@@ -33,4 +33,23 @@ kitso.service('TvShowService', ['$q', '$http', function ($q, $http) {
         return tvshow;
     }
 
+    function updateTvShow(tvShow) {
+        var deferred = $q.defer();
+  
+        $http.put('/api/movie/' + tvShow._id, tvShow)
+            .then(function (response) {
+                if (response.status === 200) {
+                    tvshow = response.data;
+                    deferred.resolve(tvshow);
+                } else {
+                    deferred.reject();
+                }
+            })
+            .catch(function (error) {
+                deferred.reject(error.data);
+            });
+  
+        return deferred.promise;
+      }
+
 }]);

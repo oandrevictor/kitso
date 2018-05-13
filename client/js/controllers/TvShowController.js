@@ -4,6 +4,7 @@ kitso.controller("TvShowController", ['$scope', '$routeParams', 'TvShowService',
     TvShowService.loadTvShow($routeParams.tvshow_id)
         .then(() => {
             $scope.tvshow = TvShowService.getTvShow();
+            console.log($scope.tvshow)
         })
         .catch((error) => {
             UIkit.notification({
@@ -12,5 +13,5 @@ kitso.controller("TvShowController", ['$scope', '$routeParams', 'TvShowService',
                 timeout: 2500
             });
         });
-
+        
 }]);
