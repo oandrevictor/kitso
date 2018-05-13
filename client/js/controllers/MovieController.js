@@ -3,7 +3,8 @@ var kitso = angular.module('kitso');
 kitso.controller('MovieController', ['$scope', '$location', '$timeout', 'MovieService','$routeParams', function($scope, $location, $timeout, MovieService, $routeParams) {
   MovieService.loadMovie($routeParams.movie_id)
         .then(() => {
-            $scope.movie = MovieService.getTvShow();
+            $scope.movie = MovieService.getMovie();
+            $scope.release_date_formated = moment($scope.release_date).format('DD/MM/YYYY');
         })
         .catch((error) => {
             UIkit.notification({

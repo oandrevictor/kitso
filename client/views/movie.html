@@ -2,27 +2,35 @@
     <!--Cover Content-->
     <div class="uk-background-cover" align="center">
       <div class="uk-width-xxlarge">
-        <div class="title">Movie Title         <span class="uk-badge purple">In teathers</span>
-</div>
+        <div class="title">{{movie.name}}
+          <span ng-show="movie.isBoxOffice" class="uk-badge purple">In teathers</span>
+        </div>
 
       </div>
     </div>
     <div class="uk-width-xxlarge content">
-      <b>Directed by</b> Director <br />
-      Year: <b> 2012</b>  | Genres: <b>Genre, Genre, Such a Genre.</b>
-      <div class="left-bar">
-        <img class="poster" src="/images/changeling-poster.jpeg"/>
-        <button class="uk-button uk-button-default watch-button"> <span uk-icon="icon: check;"></span> Mark as watched</button>
-      </div>
-      <div class="rating"><span uk-icon="icon: star; ratio: 2"></span> <div class="rating-value"> 7.2</div> </div>
-
+      <div class="uk-width-3-4">
+              <b>Directed by</b> {{ tvshow.directors }}
+              <br /> Year:
+              <b> {{ release_date_formated }}</b> | Genres:
+              <b ng-repeat="genre in movie.genres">{{ genre }}</b>
+              <div class="rating">
+                  <span uk-icon="icon: star; ratio: 2"></span>
+                  <div class="rating-value"> 7.2</div>
+              </div>
+          </div>
+          <div class="left-bar uk-width-1-4">
+              <img class="poster" src="/images/changeling-poster.jpeg" />
+              <button class="uk-button uk-button-default watch-button">
+              <span uk-icon="icon: check;"></span> Mark as watched</button>
+          </div>
 
       <div class="section sinopsis">
         <div class="section-title">
           Sinopse
         </div>
         <p>
-          In Los Angeles in 1928, single mother Christine Collins returns home to discover her nine-year-old son, Walter, is missing. Reverend Gustav Briegleb publicizes Christine's plight and rails against the Los Angeles Police Department (LAPD) for its incompetence, corruption and the extrajudicial punishment meted out by its "Gun Squad" led by Chief James E. Davis. Several months after Walter's disappearance, the LAPD tells Christine that the boy has been found alive. Believing the positive publicity will negate recent criticism of the department, the LAPD organizes a public reunion.
+          {{movie.overview}}
         </p>
       </div>
     <div class="section">
