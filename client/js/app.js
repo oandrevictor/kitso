@@ -34,7 +34,7 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
             access: { restricted: true }
         })
         // movie page
-        .when('/movie/:id', {
+        .when('/movie/:movie_id', {
             templateUrl: 'views/movie.html',
             controller: 'MovieController',
             access: { restricted: true }

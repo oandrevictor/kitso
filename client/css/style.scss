@@ -42,6 +42,65 @@ html, body {
   border: #8600CA solid 1px !important;
 }
 
+
+.toolbar {
+  font-family: 'Roboto', sans-serif;
+  width: 60vw;
+  height: 6vh;
+  min-height: 60px;
+  background: #502274;
+  color: #EDEDED;
+  display: inline-grid;
+  font-weight: 100;
+  font-style: italic;
+  padding-left: 20vw;
+  padding-right: 20vw;
+  display: flex;
+
+  .uk-dropdown {
+    min-width: 120px !important;
+    background: #502274;
+    color: white;
+    a {
+      color: white;
+      &:hover {
+        color: #ebebeb;
+      }
+    }
+  }
+
+  p {
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  .logo {
+    display: inline-block;
+    float: left;
+    margin-top: auto;
+    margin-bottom: auto;
+    font-weight: 700;
+    font-size: 24px;
+    font-style: initial;
+  }
+
+  .options {
+    margin-left: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+    color: white;
+    width: 30px;
+    border: solid 0px;
+    a {
+      font-style: initial;
+      &:hover {
+        text-decoration: none;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
 .footer {
   font-family: 'Roboto', sans-serif;
   width: 100vw;
@@ -302,6 +361,21 @@ html, body {
   .section {
     margin-top: 8px;
     margin-bottom: 4px;
+
+    .cast-info{
+      width: 156px;
+      display: flex;
+
+      .cast-image {
+        height: 100px;
+      }
+      .cast-name {
+        padding-left: 6px;
+        display: block;
+        margin-top: auto;
+        margin-bottom: auto;
+      }
+    }
   }
   .section-title {
     font-size: 2.5vh;
@@ -318,4 +392,11 @@ html, body {
   padding-top: 20px;
   margin-left: auto;
   margin-right: auto;
+}
+
+.uk-badge {
+  border-radius: 0px !important;
+  &.purple {
+    background: #502274;
+  }
 }
