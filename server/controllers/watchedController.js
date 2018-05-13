@@ -1,18 +1,22 @@
 var Watched = require('../models/Watched');
 var Action = require('../models/Action');
 var User = require('../models/User');
+var Media = require('../models/Media');
 
 const WATCHED_ACTION_TYPE = "watched";
 
-exports.index = function(req, res) {
+exports.index = async function(req, res) {
     let user_id = req.params.user_id;
-    Watched.find({_user: user_id})
-    .catch((err) => {
-        res.status(400).send(err);
+    let watched_list, promises;
+    try {
+        watched_list = await find_user_watched_list(user_id);
+        promises = watched_list.map(inject_media_json);
+    } catch (err) {
+        res.status(400).json(err);
+    }
+    Promise.all(promises).then(function(results) {
+        res.status(200).json(results);
     })
-    .then((watched_list) => {
-        res.status(200).json(watched_list);
-    });
 };
 
 exports.create = async function(req, res) {
@@ -42,7 +46,7 @@ exports.update = async function(req, res) {
     if (req.body.date) {
         watched.date = req.body.date;
     }
-    
+
     watched.save()
     .catch((err) => {
         res.status(400).send(err);
@@ -51,7 +55,6 @@ exports.update = async function(req, res) {
         res.status(200).json(updateWatched);
     });
 };
-
 
 exports.delete = async function(req, res) {
     let watched_id = req.params.watched_id;
@@ -108,4 +111,20 @@ var delete_action_from_user_history = async function(user_id, action_id) {
 
 var find_watched_obj = async function(watched_id) {
     return Watched.findById(watched_id).exec(); 
+}
+
+var find_user_watched_list = async function(user_id) {
+    return Watched.find({_user: user_id}).exec();
+}
+
+var inject_media_json = async function(watched_obj) {
+    let media_id = watched_obj._media;
+    let media_obj = await get_media_obj(media_id);
+    let watched_with_full_media = watched_obj;
+    watched_with_full_media._media = media_obj
+    return watched_with_full_media;
+}
+
+var get_media_obj = async function(media_id) {
+    return Media.findById(media_id).exec(); 
 }
