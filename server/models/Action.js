@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var ActionSchema = new Schema({
-  name: {
+  date: {
     type: Date,
     required: true
   },
