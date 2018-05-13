@@ -1,7 +1,10 @@
-var kitso = angular.module('kitso');
+ var kitso = angular.module('kitso');
 
-kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthService', 'UserService', function($scope, $location, $timeout, AuthService, UserService) {
-    $scope.user = AuthService.getUser();
+kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthService', function($scope, $location, $timeout, AuthService) {
+     AuthService.getStatus()
+        .then(() => {
+            $scope.user = AuthService.getUser();
+        });
 
 	$scope.submitForm = function() {
         

@@ -1,7 +1,7 @@
 var kitso = angular.module('kitso');
 
 kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthService', function($scope, $location, $timeout, AuthService) {
-	
+
 	$scope.logout = function() {
 		AuthService.logout()
                 // handle success
@@ -26,7 +26,10 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
                         status: 'danger',
                         timeout: 2500
                     });
-                });  
+                });
 	};
 
+	$scope.isLogged = function() {
+		return AuthService.isLogged();
+	}
 }]);

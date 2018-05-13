@@ -76,6 +76,13 @@ app.get('/profile', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
 
+app.get('/tvshow/:id', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+app.get('/movie/:id', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
 // Api routes
 var exampleRoutes = require('./routes/example');
 app.use('/example', exampleRoutes);
@@ -95,8 +102,14 @@ app.use('/api/appears_in', appearsInRoutes);
 var userRoutes = require('./routes/user');
 app.use('/api/user', userRoutes);
 
+var watchedRoutes = require('./routes/watched');
+app.use('/api/watched', watchedRoutes);
+
 var tvShowRoutes = require('./routes/tvShow');
 app.use('/api/tvShow', tvShowRoutes);
+
+var actionRoutes = require('./routes/action');
+app.use('/api/action', actionRoutes);
 
 // start app ===============================================
 // startup our app at http://localhost:8080

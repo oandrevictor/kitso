@@ -1,0 +1,58 @@
+<div class="tvshow">
+    <!--Cover Content-->
+    <div class="uk-background-cover" align="center" style="background-image: url({{ tvshow.images.cover }})">
+        <div class="uk-width-xxlarge">
+            <div class="title">{{ tvshow.name }}</div>
+
+        </div>
+    </div>
+
+    <div class="uk-width-xxlarge content">
+        <div class="uk-width-3-4">
+            <b>Directed by</b> {{ tvshow.directors || 'Director' }}
+            <br /> Year:
+            <b> {{ tvshow.release_date | date: 'yyyy' }}</b> | Genres:
+            <b ng-repeat="genre in tvshow.genres">{{ genre }}</b>
+            <div class="rating">
+                <span uk-icon="icon: star; ratio: 2"></span>
+                <div class="rating-value"> 8.3</div>
+            </div>
+        </div>
+        <div class="left-bar uk-width-1-4">
+            <img class="poster" src=" {{ tvshow.images.poster }}" />
+            <button class="uk-button uk-button-default watch-button">
+            <span uk-icon="icon: check;"></span> Mark as watched</button>
+        </div>
+        
+
+        <div class="section sinopsis">
+            <div class="section-title">
+                Overview
+            </div>
+            <p>
+                {{ tvshow.overview }}
+            </p>
+        </div>
+        <div class="section">
+            <div class="section-title">
+                Cast
+            </div>
+            <div uk-grid>
+                <!-- <div class="cast-info" ng-repeat="person in tvshow.actors">
+                    <img class="cast-image" src="{{ person.image }}" />
+                    <p class="cast-name">{{ person.name }}</p>
+                </div> Quando tiver persons na serie.-->
+                <div class="cast-info">
+                    <img class="cast-image" src="https://ia.media-imdb.com/images/M/MV5BMTkwODE2MDg5N15BMl5BanBnXkFtZTcwNDM3MDQ0OA@@._V1_UY317_CR5,0,214,317_AL_.jpg" />
+                    <p class="cast-name">Maika Monroe</p>
+                </div>
+                <div class="cast-info">
+                    <img class="cast-image" src="https://ia.media-imdb.com/images/M/MV5BMTg4MzcwMjcyN15BMl5BanBnXkFtZTgwODAxMzg3NzE@._V1_UY317_CR25,0,214,317_AL_.jpg" />
+                    <p class="cast-name">Keir Gilchrist</p>
+                </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
