@@ -30,6 +30,29 @@ exports.create = async function(req, res) {
     });
 };
 
+exports.update = async function(req, res) {
+    let watched_id = req.params.watched_id;
+    try {
+        let watched = await find_watched_obj(watched_id);
+    } catch (err) { 
+        // if there is no watched with informed id
+        res.status(400).send(err);
+    }
+    
+    if (req.body.date) {
+        watched.date = req.body.date;
+    }
+    
+    watched.save()
+    .catch((err) => {
+        res.status(400).send(err);
+    })
+    .then((updateWatched) => {
+        res.status(200).json(updateWatched);
+    });
+};
+
+
 exports.delete = async function(req, res) {
     let watched_id = req.params.watched_id;
     try {
