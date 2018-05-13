@@ -81,7 +81,7 @@ kitso.service('AuthService', ['$q', '$http', function ($q, $http) {
     function getUser() {
         var auxUser = user.user;
         auxUser.birthday = new Date(auxUser.birthday);
-        return user.user;
+        return auxUser;
     }
 
     function getStatus() {
