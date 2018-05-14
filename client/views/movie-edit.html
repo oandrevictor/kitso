@@ -1,0 +1,56 @@
+<div class="movie">
+  <!--Cover Content-->
+  <div class="uk-background-cover" align="center">
+    <div class="uk-width-xxlarge">
+      <div class="title">
+        Edit Movie - {{movie.name}}
+      </div>
+    </div>
+  </div>
+
+  <div class="uk-width-xxlarge content">
+    <div class="left-bar uk-width-1-4">
+      <img class="poster" src="{{movie.images['poster']}}"/>
+      <button class="uk-button uk-button-default watch-button" ng-click="saveMovie()">
+        <span uk-icon="icon: check;"></span> Save page</button>
+    </div>
+
+    <div class="uk-width-3-4">
+      <div class="uk-margin">
+        <label class="uk-form-label">Movie tilte</label>
+        <input class="uk-input" type="text" ng-model="movie.name">
+      </div>
+
+      <div class="uk-margin">
+        <label class="uk-form-label">Overview</label>
+        <textarea class="uk-textarea" rows="3" ng-model="movie.overview"></textarea>
+      </div>
+
+      <div class="uk-margin">
+        <label class="uk-form-label">Directed by</label>
+        <input class="uk-input" type="text" ng-model="movie._directors" disabled>
+      </div>
+
+      <div class="uk-margin">
+        <label class="uk-form-label">Year</label>
+        <input class="uk-input" type="date" ng-model="movie.release_date">
+      </div>
+
+      <div class="uk-margin">
+        <label class="uk-form-label">Genres</label>
+        <input class="uk-input" type="text" ng-model="movie.genres">
+      </div>
+
+      <div class="uk-margin">
+        <label class="uk-form-label">Post Image URL</label>
+        <input class="uk-input" type="text" ng-model="movie.images['poster']">
+      </div>
+
+      <div class="uk-margin">
+        <label class="uk-form-label">Cover Image URL</label>
+        <input class="uk-input" type="text" ng-model="movie.images['cover']">
+      </div>
+
+    </div>
+  </div>
+</div>
