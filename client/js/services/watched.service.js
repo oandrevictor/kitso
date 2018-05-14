@@ -43,6 +43,7 @@ kitso.service('WatchedService', ['$q','$http', function ($q, $http) {
         $http.post('/api/watched/', data)
             .then((response) => {
                 if (response.status === 200) {
+                  response.data.watched_id = response.data._id
                     deferred.resolve(response.data);
                 } else {
                     deferred.reject();

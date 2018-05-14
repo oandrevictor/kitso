@@ -20,10 +20,12 @@
         </div>
         <div class="left-bar uk-width-1-4">
             <img class="poster" src=" {{ tvshow.images.poster }}" />
-            <button class="uk-button uk-button-default watch-button">
+            <button ng-hide="tvshow.watched" ng-click="markAsWatched(tvshow._id)" class="uk-button uk-button-default watch-button">
             <span uk-icon="icon: check;"></span> Mark as watched</button>
+            <button ng-show="tvshow.watched" ng-click="markAsNotWatched(tvshow.watched.watched_id)" class="uk-button uk-button-default watch-button watched">
+            <span uk-icon="icon: check;"></span> Watched (undo) </button>
         </div>
-        
+
 
         <div class="section sinopsis">
             <div class="section-title">

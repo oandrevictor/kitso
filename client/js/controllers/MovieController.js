@@ -5,7 +5,6 @@ kitso.controller('MovieController',
 function($scope, $location, $timeout, MovieService, WatchedService, $routeParams, AuthService) {
     $scope.user = AuthService.getUser();
 
-
     MovieService.loadMovie($routeParams.movie_id)
         .then(() => {
             $scope.movie = MovieService.getMovie();

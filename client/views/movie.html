@@ -20,9 +20,9 @@
           </div>
           <div class="left-bar uk-width-1-4">
               <img class="poster" ng-src="{{movie.images.poster}}" />
-              <button ng-hide="movie.watched" ng-click="markAsWatched(movie._id)" class="uk-button uk-button-default watch-button" ng-click="onChangeWatched()">
+              <button ng-hide="movie.watched" ng-click="markAsWatched(movie._id)" class="uk-button uk-button-default watch-button">
               <span uk-icon="icon: check;"></span> Mark as watched</button>
-              <button ng-show="movie.watched" ng-click="markAsNotWatched(movie.watched.watched_id)" class="uk-button uk-button-default watch-button watched" ng-click="onChangeWatched()">
+              <button ng-show="movie.watched" ng-click="markAsNotWatched(movie.watched.watched_id)" class="uk-button uk-button-default watch-button watched">
               <span uk-icon="icon: check;"></span> Watched (undo) </button>
           </div>
 
