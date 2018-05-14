@@ -352,6 +352,11 @@ html, body {
     width: 191px;
     border: 1px solid #FFFFFF;
     font-size: 10px !important;
+
+    &.watched {
+      color: white;
+      background: #773095;
+    }
   }
   .poster {
     box-shadow: 0 0px 10px rgba(0,0,0,0.1);

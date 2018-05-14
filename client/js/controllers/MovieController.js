@@ -4,7 +4,6 @@ kitso.controller('MovieController',
 ['$scope', '$location', '$timeout', 'MovieService', 'WatchedService', '$routeParams', 'AuthService',
 function($scope, $location, $timeout, MovieService, WatchedService, $routeParams, AuthService) {
     $scope.user = AuthService.getUser();
-    $scope.currentMovie =
 
 
     MovieService.loadMovie($routeParams.movie_id)
@@ -13,6 +12,8 @@ function($scope, $location, $timeout, MovieService, WatchedService, $routeParams
             $scope.release_date_formated = moment($scope.release_date).format('DD/MM/YYYY');
             WatchedService.isWatched($scope.user._id ,$routeParams.movie_id).then((watched) => {
                 $scope.movie.watched = watched;
+                if (! watched.watched_id)
+                  $scope.movie.watched = false;
             }).catch((error) => {
               UIkit.notification({
                   message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
@@ -43,7 +44,7 @@ function($scope, $location, $timeout, MovieService, WatchedService, $routeParams
         });
     }
 
-    var markAsNotWatched = function(watchedId){
+    $scope.markAsNotWatched = function(watchedId){
         WatchedService.markAsNotWatched(watchedId)
         .then(() => {
             $scope.movie.watched = false;
