@@ -19,4 +19,8 @@ kitso.controller('MovieController', ['$scope', '$location', '$timeout', 'MovieSe
     // Watched Service deve chamar a rota backend
   }
 
+  $scope.editionMode = function () {
+    $location.path('movie/edit/' + $routeParams.movie_id);
+  }
+
 }]);

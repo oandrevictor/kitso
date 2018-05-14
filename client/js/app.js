@@ -44,6 +44,11 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
             controller: 'MovieController',
             access: { restricted: true }
         })
+        .when('/movie/edit/:movie_id', {
+            templateUrl: 'views/movie-edit.html',
+            controller: 'MovieEditController',
+            access: { restricted: true }
+        })
         .otherwise({
           redirectTo: '/'
         });
