@@ -9,7 +9,7 @@
     </div>
     <div class="uk-width-xxlarge content">
       <div class="uk-width-3-4">
-              <b>Directed by</b> {{ movie._directors }}
+              <b>Directed by</b> {{ movie.directors }}
               <br /> Year:
               <b>{{ release_date_formated }}</b> | Genres:
               <b ng-repeat="genre in movie.genres">{{ genre }}</b>
@@ -19,11 +19,11 @@
               </div>
           </div>
           <div class="left-bar uk-width-1-4">
-              <img class="poster" src="{{movie.images['poster']}}"/>
+              <img class="poster" src="/images/changeling-poster.jpeg" />
               <button class="uk-button uk-button-default watch-button">
               <span uk-icon="icon: check;"></span> Mark as watched</button>
-              <button class="uk-button uk-button-default watch-button">
-              <span uk-icon="icon: pencil;" ng-click="editionMode()"></span> Edit page</button>
+              <button class="uk-button uk-button-default watch-button" ng-click="editionMode()">
+              <span uk-icon="icon: pencil;"></span> Edit movie</button>
           </div>
 
       <div class="section sinopsis">
