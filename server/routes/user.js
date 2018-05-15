@@ -18,7 +18,7 @@ router.post('/login', authController.login);
 
 router.post('/email', userController.findByEmail);
 
-router.get('/password/:email', userController.updatePassword);
+router.post('/password/:email', userController.updatePassword);
 
 router.put('/:user_id', userController.update);
 
