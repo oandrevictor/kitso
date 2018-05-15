@@ -8,7 +8,7 @@ function($scope, $location, $timeout, MovieService, WatchedService, $routeParams
     MovieService.loadMovie($routeParams.movie_id)
         .then(() => {
             $scope.movie = MovieService.getMovie();
-            $scope.release_date_formated = moment($scope.movie.release_date).format('DD/MM/YYYY');
+            $scope.release_date_formated = moment($scope.release_date).format('YYYY');
             WatchedService.isWatched($scope.user._id ,$routeParams.movie_id).then((watched) => {
                 $scope.movie.watched = watched;
                 if (! watched.watched_id)
@@ -56,4 +56,8 @@ function($scope, $location, $timeout, MovieService, WatchedService, $routeParams
             });
         });
     }
+  $scope.editionMode = function () {
+    $location.path('movie/edit/' + $routeParams.movie_id);
+  }
+
 }]);

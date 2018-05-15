@@ -7,7 +7,8 @@ kitso.service('MovieService', ['$q','$http', function ($q, $http) {
     // return available functions for use in the controllers
     return ({
         loadMovie: loadMovie,
-        getMovie: getMovie
+        getMovie: getMovie,
+        updateMovie: updateMovie
     });
 
     function loadMovie(id) {

@@ -38,10 +38,20 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
             controller: 'TvShowController',
             access: { restricted: true }
         })
+        .when('/tvshow/edit/:tvshow_id', {
+            templateUrl: 'views/tvshow-edit.html',
+            controller: 'TvShowEditController',
+            access: { restricted: true }
+        })
         // movie page
         .when('/movie/:movie_id', {
             templateUrl: 'views/movie.html',
             controller: 'MovieController',
+            access: { restricted: true }
+        })
+        .when('/movie/edit/:movie_id', {
+            templateUrl: 'views/movie-edit.html',
+            controller: 'MovieEditController',
             access: { restricted: true }
         })
         .otherwise({

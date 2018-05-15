@@ -24,6 +24,8 @@
             <span uk-icon="icon: check;"></span> Mark as watched</button>
             <button ng-show="tvshow.watched" ng-click="markAsNotWatched(tvshow.watched.watched_id)" class="uk-button uk-button-default watch-button watched">
             <span uk-icon="icon: check;"></span> Watched (undo) </button>
+            <button class="uk-button uk-button-default watch-button" ng-click="editionMode()">
+            <span uk-icon="icon: pencil;"></span> Edit TvShow</button>
         </div>
 
 
