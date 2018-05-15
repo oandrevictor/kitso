@@ -3,7 +3,11 @@ var kitso = angular.module('kitso');
 kitso.controller('MovieController',
 ['$scope', '$location', '$timeout', 'MovieService', 'WatchedService', '$routeParams', 'AuthService',
 function($scope, $location, $timeout, MovieService, WatchedService, $routeParams, AuthService) {
-    $scope.user = AuthService.getUser();
+    AuthService.getStatus().then(function(){
+      $scope.user = AuthService.getUser;
+    }).catch(function(){
+
+    })
 
     MovieService.loadMovie($routeParams.movie_id)
         .then(() => {
