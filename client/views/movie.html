@@ -1,6 +1,6 @@
 <div class="movie">
     <!--Cover Content-->
-    <div class="uk-background-cover" align="center">
+    <div class="uk-background-cover" align="center" style="background-image: url({{ movie.images.cover }})">
       <div class="uk-width-xxlarge">
         <div class="title">{{movie.name}}
           <span ng-show="movie.isBoxOffice" class="uk-badge purple">In teathers</span>
@@ -22,6 +22,8 @@
               <img class="poster" src="/images/changeling-poster.jpeg" />
               <button class="uk-button uk-button-default watch-button">
               <span uk-icon="icon: check;"></span> Mark as watched</button>
+              <button class="uk-button uk-button-default watch-button" ng-click="editionMode()">
+              <span uk-icon="icon: pencil;"></span> Edit movie</button>
           </div>
 
       <div class="section sinopsis">

@@ -1,6 +1,6 @@
 var kitso = angular.module('kitso');
 
-kitso.controller("TvShowController", ['$scope', '$routeParams', 'TvShowService', function($scope, $routeParams, TvShowService) {
+kitso.controller("TvShowController", ['$scope', '$location', '$timeout', '$routeParams', 'TvShowService', function($scope, $location, $timeout, $routeParams, TvShowService) {
     TvShowService.loadTvShow($routeParams.tvshow_id)
         .then(() => {
             $scope.tvshow = TvShowService.getTvShow();
@@ -13,5 +13,9 @@ kitso.controller("TvShowController", ['$scope', '$routeParams', 'TvShowService',
                 timeout: 2500
             });
         });
-        
+
+    $scope.editionMode = function () {
+        $location.path('tvshow/edit/' + $routeParams.tvshow_id);
+    }
+
 }]);

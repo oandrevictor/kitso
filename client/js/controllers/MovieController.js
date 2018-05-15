@@ -4,7 +4,7 @@ kitso.controller('MovieController', ['$scope', '$location', '$timeout', 'MovieSe
   MovieService.loadMovie($routeParams.movie_id)
         .then(() => {
             $scope.movie = MovieService.getMovie();
-            $scope.release_date_formated = moment($scope.release_date).format('DD/MM/YYYY');
+            $scope.release_date_formated = moment($scope.release_date).format('YYYY');
         })
         .catch((error) => {
             UIkit.notification({
@@ -17,6 +17,10 @@ kitso.controller('MovieController', ['$scope', '$location', '$timeout', 'MovieSe
   var markAsWatched = function(){
     // Enviar chamada para WatchedService
     // Watched Service deve chamar a rota backend
+  }
+
+  $scope.editionMode = function () {
+    $location.path('movie/edit/' + $routeParams.movie_id);
   }
 
 }]);

@@ -79,7 +79,16 @@ app.get('/profile', function (req, res) {
 app.get('/tvshow/:id', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
+
+app.get('/tvshow/edit/:id', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
 app.get('/movie/:id', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
+app.get('/movie/edit/:id', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
 
