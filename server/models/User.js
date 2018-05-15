@@ -51,7 +51,7 @@ var UserSchema = new Schema({
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'History'
+        ref: 'Action'
       }],
       default: [],
       required: true

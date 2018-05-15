@@ -18,7 +18,7 @@
             </ul>
             <ul id="tab-id" class="uk-switcher uk-margin">
                 <li><a href="#" id="overview" data-uk-switcher-item="next"></a>
-                    <p class="uk-text-large" ng-init="descriptionArea=false">About 
+                    <p class="uk-text-large" ng-init="descriptionArea=false">About
                         <a class="uk-icon-button" uk-icon="pencil" ng-click="toggleDescriptionArea()" ng-hide="descriptionArea"></a>
                         <a uk-icon="check" class="uk-icon-button uk-button-save-changes" ng-hide="!descriptionArea" ng-click="submitForm()"></a>
                         <a uk-icon="close" class="uk-icon-button" ng-hide="!descriptionArea" ng-click="toggleDescriptionArea()"></a>
@@ -31,7 +31,7 @@
                             <textarea maxlength="240" class="uk-textarea" placeholder="Description" ng-model="user.description">
                                 {{ user.description }}
                             </textarea>
-                            
+
                         </form>
                     </div>
 
@@ -271,7 +271,7 @@
                             <label class="uk-text-small uk-text-danger uk-align-right" for="birthday"
                                 ng-show="(isInvalid(editForm.gender))" >* You must select a gender</label>
                         </div>
-                        
+
                         <button class="uk-button uk-button-small uk-align-center" ng-class="{ 'uk-button-save-changes': editForm.$valid }" ng-disabled="editForm.$invalid">Save Changes</button>
                     </form>
 
@@ -298,7 +298,7 @@
                             <h2 class="uk-modal-title uk-text-bold uk-text-danger">Delete Account</h2>
                             <p>Please input your password and the confirmation text.</p>
 
-                           
+
                            <form name="deleteForm">
                                <!--Password Field-->
                                 <div class="uk-margin">
@@ -322,7 +322,7 @@
                                     <label class="uk-text-small uk-text-danger uk-align-right" for="text" ng-show="isInvalid(deleteForm.text)">* Please input the exact confirmation text.</label>
                                 </div>
                            </form>
-                            
+
                             <div class="uk-modal-footer">
                                 <p class="uk-text-right">
                                     <button class="uk-button uk-button-danger uk-text-bold" type="button" ng-click="deleteAccount()">DELETE</button>
