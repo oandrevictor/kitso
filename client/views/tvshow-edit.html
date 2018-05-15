@@ -1,0 +1,56 @@
+<div class="tvshow">
+  <!--Cover Content-->
+  <div class="uk-background-cover" align="center">
+    <div class="uk-width-xxlarge">
+      <div class="title">
+        Edit TvShow - {{tvshow.name}}
+      </div>
+    </div>
+  </div>
+
+  <div class="uk-width-xxlarge content">
+    <div class="left-bar uk-width-1-4">
+      <img class="poster" src="{{tvshow.images['poster']}}"/>
+      <button class="uk-button uk-button-default watch-button" ng-click="saveTvShow()">
+        <span uk-icon="icon: check;"></span> Save page</button>
+    </div>
+
+    <div class="uk-width-3-4">
+      <div class="uk-margin">
+        <label class="uk-form-label">TvShow title</label>
+        <input class="uk-input" type="text" ng-model="tvshow.name">
+      </div>
+
+      <div class="uk-margin">
+        <label class="uk-form-label">Overview</label>
+        <textarea class="uk-textarea" rows="3" ng-model="tvshow.overview"></textarea>
+      </div>
+
+      <div class="uk-margin">
+        <label class="uk-form-label">Directed by</label>
+        <input class="uk-input" type="text" ng-model="tvshow._directors" disabled>
+      </div>
+
+      <div class="uk-margin">
+        <label class="uk-form-label">Year</label>
+        <input class="uk-input" type="date" ng-model="tvshow.release_date">
+      </div>
+
+      <div class="uk-margin">
+        <label class="uk-form-label">Genres</label>
+        <input class="uk-input" type="text" ng-model="tvshow.genres">
+      </div>
+
+      <div class="uk-margin">
+        <label class="uk-form-label">Post Image URL</label>
+        <input class="uk-input" type="text" ng-model="tvshow.images['poster']">
+      </div>
+
+      <div class="uk-margin">
+        <label class="uk-form-label">Cover Image URL</label>
+        <input class="uk-input" type="text" ng-model="tvshow.images['cover']">
+      </div>
+
+    </div>
+  </div>
+</div>
