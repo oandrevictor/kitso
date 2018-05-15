@@ -4,7 +4,7 @@ kitso.controller('MovieController', ['$scope', '$location', '$timeout', 'MovieSe
   MovieService.loadMovie($routeParams.movie_id)
         .then(() => {
             $scope.movie = MovieService.getMovie();
-            $scope.release_date_formated = moment($scope.release_date).format('DD/MM/YYYY');
+            $scope.release_date_formated = moment($scope.release_date).format('YYYY');
         })
         .catch((error) => {
             UIkit.notification({

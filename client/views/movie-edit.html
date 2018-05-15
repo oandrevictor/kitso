@@ -32,8 +32,11 @@
       </div>
 
       <div class="uk-margin">
-        <label class="uk-form-label">Year</label>
-        <input class="uk-input" type="date" ng-model="movie.release_date">
+        <label class="uk-form-label">Release Date</label>
+        <div class="uk-form-controls">
+            <input class="uk-input" type="date" id="release_date" name="release_date"
+                   ng-model="movie.release_date" required>
+        </div>
       </div>
 
       <div class="uk-margin">
@@ -42,7 +45,7 @@
       </div>
 
       <div class="uk-margin">
-        <label class="uk-form-label">Post Image URL</label>
+        <label class="uk-form-label">Poster Image URL</label>
         <input class="uk-input" type="text" ng-model="movie.images['poster']">
       </div>
 

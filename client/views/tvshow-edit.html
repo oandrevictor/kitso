@@ -1,6 +1,6 @@
 <div class="tvshow">
   <!--Cover Content-->
-  <div class="uk-background-cover" align="center">
+  <div class="uk-background-cover" align="center" style="background-image: url({{ tvshow.images.cover }})">
     <div class="uk-width-xxlarge">
       <div class="title">
         Edit TvShow - {{tvshow.name}}
@@ -32,8 +32,11 @@
       </div>
 
       <div class="uk-margin">
-        <label class="uk-form-label">Year</label>
-        <input class="uk-input" type="date" ng-model="tvshow.release_date">
+        <label class="uk-form-label">Release Date</label>
+        <div class="uk-form-controls">
+            <input class="uk-input" type="date" id="release_date" name="release_date"
+                   ng-model="tvshow.release_date" required>
+        </div>
       </div>
 
       <div class="uk-margin">

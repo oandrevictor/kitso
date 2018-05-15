@@ -1,6 +1,6 @@
 <div class="movie">
     <!--Cover Content-->
-    <div class="uk-background-cover" align="center">
+    <div class="uk-background-cover" align="center" style="background-image: url({{ movie.images.cover }})">
       <div class="uk-width-xxlarge">
         <div class="title">{{movie.name}}
           <span ng-show="movie.isBoxOffice" class="uk-badge purple">In teathers</span>
