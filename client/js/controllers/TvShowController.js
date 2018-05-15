@@ -54,8 +54,6 @@ kitso.controller("TvShowController", ['$scope', '$location', '$timeout', '$route
         });
     }
 
-}]);
-
     $scope.editionMode = function () {
         $location.path('tvshow/edit/' + $routeParams.tvshow_id);
     }
