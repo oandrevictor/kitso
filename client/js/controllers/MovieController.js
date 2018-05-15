@@ -3,14 +3,11 @@ var kitso = angular.module('kitso');
 kitso.controller('MovieController',
 ['$scope', '$location', '$timeout', 'MovieService', 'WatchedService', '$routeParams', 'AuthService',
 function($scope, $location, $timeout, MovieService, WatchedService, $routeParams, AuthService) {
-    AuthService.getStatus().then(function(){
-      $scope.user = AuthService.getUser;
-    }).catch(function(){
-
-    })
 
     MovieService.loadMovie($routeParams.movie_id)
         .then(() => {
+          AuthService.getStatus().then(function(){
+            $scope.user = AuthService.getUser;
             $scope.movie = MovieService.getMovie();
             $scope.release_date_formated = moment($scope.release_date).format('YYYY');
             WatchedService.isWatched($scope.user._id ,$routeParams.movie_id).then((watched) => {
@@ -24,6 +21,11 @@ function($scope, $location, $timeout, MovieService, WatchedService, $routeParams
                   timeout: 2500
               });
             });
+          }).catch(function(){
+
+          })
+
+
         })
         .catch((error) => {
             UIkit.notification({
