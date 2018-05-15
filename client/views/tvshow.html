@@ -9,7 +9,7 @@
 
     <div class="uk-width-xxlarge content">
         <div class="uk-width-3-4">
-            <b>Directed by</b> {{ tvshow.directors || 'Director' }}
+            <b>Directed by</b> {{ 'Directors' }}
             <br /> Year:
             <b> {{ tvshow.release_date | date: 'yyyy' }}</b> | Genres:
             <b ng-repeat="genre in tvshow.genres">{{ genre }}</b>
