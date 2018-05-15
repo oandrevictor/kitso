@@ -7,7 +7,7 @@ function($scope, $location, $timeout, MovieService, WatchedService, $routeParams
     MovieService.loadMovie($routeParams.movie_id)
         .then(() => {
           AuthService.getStatus().then(function(){
-            $scope.user = AuthService.getUser;
+            $scope.user = AuthService.getUser();
             $scope.movie = MovieService.getMovie();
             $scope.release_date_formated = moment($scope.release_date).format('YYYY');
             WatchedService.isWatched($scope.user._id ,$routeParams.movie_id).then((watched) => {
