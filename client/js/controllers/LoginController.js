@@ -47,8 +47,10 @@ kitso.controller('LoginController', ['$scope', '$location', '$timeout', 'AuthSer
 
     $scope.recoverEmailAddress = '';
     $scope.newPassword = '';
+    $scope.recover = false;
 
     $scope.recoverPassword = function() {
+        $scope.recover = true;
         UserService.findByEmail({ email: $scope.recoverEmailAddress })
             .then((user) => {
                 var updatedUser = {
@@ -63,6 +65,8 @@ kitso.controller('LoginController', ['$scope', '$location', '$timeout', 'AuthSer
                             status: 'success',
                             timeout: 2000
                         });
+                        $scope.recover = false;
+                        UIkit.modal('#my-id').hide();
                     })
                     .catch((error) => {
                         UIkit.notification({
@@ -70,6 +74,7 @@ kitso.controller('LoginController', ['$scope', '$location', '$timeout', 'AuthSer
                             status: 'danger',
                             timeout: 2000
                         });
+                        $scope.recover = false;
                     });
             })
             .catch((error) => {
@@ -78,6 +83,7 @@ kitso.controller('LoginController', ['$scope', '$location', '$timeout', 'AuthSer
                     status: 'danger',
                     timeout: 2000
                 });
+                $scope.recover = false;
             });
     }
 }]);

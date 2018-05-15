@@ -20,7 +20,7 @@ var email = {
 exports.sendPasswordRecoverEmail = function(req, res) {
     email.to = req.body.email;
     //Mudar esse html pra ficar bonitinho no email e coloca o link do site no heroku
-    email.html = '<a href="http://www.localhost:8080/api/user/password/' + req.body.email + '"> Clique aqui! </a>';
+    email.html = 'Click on the link below to update your password to your new password:<br/><a href="http://www.localhost:8080/api/user/password/' + req.body.email + '"> Update Password </a><br/>Please do not reply to this email.';
 
     transport.sendMail(email)
       .catch((err) => {
