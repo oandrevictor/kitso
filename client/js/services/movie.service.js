@@ -26,7 +26,6 @@ kitso.service('MovieService', ['$q','$http', function ($q, $http) {
             .catch((error) => {
                 deferred.reject(error.data);
             });
-
         return deferred.promise;
     }
 
