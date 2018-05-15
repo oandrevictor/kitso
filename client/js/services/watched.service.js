@@ -10,12 +10,13 @@ kitso.service('WatchedService', ['$q','$http', function ($q, $http) {
       getAllWatched: getAllWatched,
       markAsWatched: markAsWatched,
       markAsNotWatched: markAsNotWatched,
-      isWatched: isWatched
+      isWatched: isWatched,
+      updateWatched: updateWatched
     });
 
     function getAllWatched(userId){
       var deferred = $q.defer();
-      $http.get('/api/watched/user', userId)
+      $http.get('/api/watched/user/' + userId)
           .then((response) => {
             if (response.status === 200) {
                   deferred.resolve(response.data);
@@ -55,6 +56,31 @@ kitso.service('WatchedService', ['$q','$http', function ($q, $http) {
 
         return deferred.promise;
     }
+
+
+    function updateWatched(watched) {
+        var deferred = $q.defer();
+        var date = watched.date;
+
+        var data = {
+            "date" : date
+        };
+
+        $http.put('/api/watched/' + watched._id, data)
+            .then((response) => {
+                if (response.status === 200) {
+                    deferred.resolve(response.data);
+                } else {
+                    deferred.reject();
+                }
+            })
+            .catch((error) => {
+                deferred.reject(error.data);
+            });
+
+        return deferred.promise;
+    }
+
 
     function markAsNotWatched(watchedId) {
         var deferred = $q.defer();

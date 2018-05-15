@@ -27,9 +27,9 @@ exports.is_watched = async function(req, res) {
         if (user_did_watched.length > 0) {
             res_json = {
                 "is_watched": true,
-                "watched_id": user_did_watched[0]._id      
-            } 
-            res.status(200).json(res_json);            
+                "watched_id": user_did_watched[0]._id
+            }
+            res.status(200).json(res_json);
         } else {
             json_not_watched = {"is_watched": false};
             res.status(200).json(json_not_watched);
@@ -42,10 +42,10 @@ exports.is_watched = async function(req, res) {
 exports.create = async function(req, res) {
     var watched = new Watched(req.body);
     let user_id = watched._user;
-    let action = await create_action(user_id, watched._id);  
+    let action = await create_action(user_id, watched._id);
     watched._action = action._id;
     await add_action_to_user_history(user_id, action._id);
-    watched.save()    
+    watched.save()
     .catch((err) => {
         res.status(400).send(err);
     })
@@ -57,12 +57,12 @@ exports.create = async function(req, res) {
 exports.update = async function(req, res) {
     let watched_id = req.params.watched_id;
     try {
-        let watched = await find_watched_obj(watched_id);
-    } catch (err) { 
+        var watched = await find_watched_obj(watched_id);
+    } catch (err) {
         // if there is no watched with informed id
         res.status(400).send(err);
     }
-    
+
     if (req.body.date) {
         watched.date = req.body.date;
     }
@@ -82,12 +82,12 @@ exports.delete = async function(req, res) {
         let watched = await find_watched_obj(watched_id);
         let user_id = watched._user;
         let action_id = watched._action;
-        delete_action(action_id);  
+        delete_action(action_id);
         delete_action_from_user_history(user_id, action_id);
     } catch (err) {
         res.status(400).send(err);
     }
-    Watched.remove({ _id: watched_id})  
+    Watched.remove({ _id: watched_id})
     .catch((err) => {
         res.status(400).send(err);
     })
@@ -110,7 +110,7 @@ var delete_action = function(action_id) {
     Action.remove({ _id: action_id}).exec();
 }
 
-var add_action_to_user_history = async function(user_id, action_id) {        
+var add_action_to_user_history = async function(user_id, action_id) {
     User.findById(user_id, function (err, user) {
         let user_history = user._history;
         user_history.push(action_id);
@@ -118,7 +118,7 @@ var add_action_to_user_history = async function(user_id, action_id) {
     });
 }
 
-var delete_action_from_user_history = async function(user_id, action_id) {        
+var delete_action_from_user_history = async function(user_id, action_id) {
     User.findById(user_id, function (err, user) {
         let user_history = user._history;
         let index = user_history.indexOf(action_id);
@@ -130,7 +130,7 @@ var delete_action_from_user_history = async function(user_id, action_id) {
 }
 
 var find_watched_obj = async function(watched_id) {
-    return Watched.findById(watched_id).exec(); 
+    return Watched.findById(watched_id).exec();
 }
 
 var find_user_watched_list = async function(user_id) {
@@ -146,7 +146,7 @@ var inject_media_json = async function(watched_obj) {
 }
 
 var get_media_obj = async function(media_id) {
-    return Media.findById(media_id).exec(); 
+    return Media.findById(media_id).exec();
 }
 
 var user_has_watched = async function(user_id, media_id) {

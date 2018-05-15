@@ -227,6 +227,23 @@ html, body {
 
 .profile {
   font-family: 'Roboto' !important;
+  .uk-iconnav>* {
+    padding-left: 3px !important;
+  }
+  .date-change{
+    width: 85%;
+  }
+  .check {
+    width: 20px !important;
+    min-width: 20px !important;
+    width: 24px !important;
+    min-width: 20px !important;
+    padding-left: 1px;
+    padding-right: 4px;
+    background: #8600ca;
+    color: white;
+
+  }
   .uk-background-cover {
     background: url("/images/hogwarts.jpg");
     background-repeat: no-repeat;
@@ -257,6 +274,20 @@ html, body {
     margin-bottom: auto;
     font-weight: 300;
 
+    .button-switcher{
+       text-align: right;
+
+       .uk-button{
+            padding: 0 15px;
+            border-color: transparent;
+            color: #ccc;
+       }
+
+       .uk-button-default.uk-active, .uk-button-default:active .uk-icon{
+    	   color: #333;
+		}
+    }
+
     .uk-switcher {
      p{
       margin-bottom: 0px;
@@ -281,6 +312,32 @@ html, body {
    	  	margin-bottom: 0px;
    	  	width: 300px
    	  }
+    }
+
+    .uk-list-divider>li:nth-child(n+2) {
+       border-top: 1px solid #f7f7f7;
+    }
+
+    .uk-card-primary{
+       background: #fff;
+       box-shadow: none;
+
+       .uk-text{
+          color: #666;
+       }
+
+       .uk-text-muted{
+          color: #999 !important;
+       }
+
+       .uk-card-body{
+          padding-left: 0px;
+          padding-top: 5px;
+       }
+    }
+
+    .uk-list ul .uk-iconnav{
+       padding-left: 0px;
     }
   }
   .profile-image {
