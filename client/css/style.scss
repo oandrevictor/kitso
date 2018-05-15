@@ -227,6 +227,23 @@ html, body {
 
 .profile {
   font-family: 'Roboto' !important;
+  .uk-iconnav>* {
+    padding-left: 3px !important;
+  }
+  .date-change{
+    width: 85%;
+  }
+  .check {
+    width: 20px !important;
+    min-width: 20px !important;
+    width: 24px !important;
+    min-width: 20px !important;
+    padding-left: 1px;
+    padding-right: 4px;
+    background: #8600ca;
+    color: white;
+
+  }
   .uk-background-cover {
     background: url("/images/hogwarts.jpg");
     background-repeat: no-repeat;

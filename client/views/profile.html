@@ -63,7 +63,7 @@
                                     <div class="uk-card uk-card-primary">
                                         <div class="uk-card-media-top">
                                             <div class="uk-inline uk-dark">
-                                                
+
                                                 <div class="uk-visible-toggle">
                                                 <div>
                                                     <img src="images/b99.jpg" alt="">
@@ -71,21 +71,28 @@
                                                     <div class="uk-hidden-hover uk-overlay-default uk-position-cover">
                                                         <div class="uk-position-center">
                                                             <a href="" class="uk-icon-button uk-margin-small-right" uk-icon="pencil"></a>
-                                                            <div uk-dropdown="mode: click">
-                                                                <ul class="uk-iconnav">
-                                                                    <li><a href="#" uk-icon="icon: star"></a></li>
-                                                                    <li><a href="#" uk-icon="icon: star"></a></li>
-                                                                    <li><a href="#" uk-icon="icon: star"></a></li>
-                                                                    <li><a href="#" uk-icon="icon: star"></a></li>
-                                                                    <li><a href="#" uk-icon="icon: star"></a></li>
-                                                                </ul>
-                                                            </div>
+                                                        </div>
+                                                        <div uk-dropdown="pos: bottom-center; mode: click" style="z-index: 999">
+                                                          <center>
+                                                          <ul class="uk-iconnav">
+                                                              <a href="#" uk-icon="icon: star; ratio: .6"></a>
+                                                              <a href="#" uk-icon="icon: star; ratio: .6"></a>
+                                                              <a href="#" uk-icon="icon: star; ratio: .6"></a>
+                                                              <a href="#" uk-icon="icon: star; ratio: .6"></a>
+                                                              <a href="#" uk-icon="icon: star; ratio: .6"></a>
+                                                              <a href="#" uk-icon="icon: star; ratio: .6"></a>
+                                                              <a href="#" uk-icon="icon: star; ratio: .6"></a>
+                                                              <a href="#" uk-icon="icon: star; ratio: .6"></a>
+                                                              <a href="#" uk-icon="icon: star; ratio: .6"></a>
+                                                              <a href="#" uk-icon="icon: star; ratio: .6"></a>
+                                                          </ul>
+                                                        </center>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
                                             </div>
-                                            
+
                                         </div>
                                         <div class="uk-card-body">
                                             <p class="uk-text">Brooklyn 99</p>
@@ -93,25 +100,31 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div>
+                                <div ng-repeat="watched in user.watched">
                                     <div class="uk-card uk-card-primary">
                                         <div class="uk-card-media-top">
-                                            <img src="images/avatar.jpg" alt="">
-                                        </div>
+                                          <div class="uk-inline uk-dark">
+                                          <div class="uk-visible-toggle">
+                                            <img ng-src="{{watched._media.images.poster}}" style="z-index:-1" alt="">
+                                              <div class="uk-hidden-hover uk-overlay-default uk-position-cover">
+                                                <div class="uk-position-center">
+                                                  <a href="" class="uk-icon-button uk-margin-small-right" uk-icon="pencil"></a>
+                                                </div>
+                                                <div id="watched-date-{{watched._id}}" uk-dropdown="pos: bottom-center; mode: click" style="z-index: 999">
+                                                    <div class="uk-form-controls">
+                                                        <input class="uk-input date-change" type="date" id="release_date" name="release_date"
+                                                               ng-model="watched.date" required>
+                                                               <button ng-click="updateWatched(watched)" class="uk-button uk-button-default check"><span uk-icon="icon: check;"></button>
+
+                                                    </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          </div>
                                         <div class="uk-card-body">
-                                            <p class="uk-text">Avatar</p>
-                                            <p class="uk-text-small uk-text-muted">Rated: 5 stars | 12 days ago</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="uk-card uk-card-primary">
-                                        <div class="uk-card-media-top">
-                                            <img src="images/avatar.jpg" alt="">
-                                        </div>
-                                        <div class="uk-card-body">
-                                            <p class="uk-text">Avatar</p>
-                                            <p class="uk-text uk-text-small uk-text-muted">Watched | 12 days ago</p>
+                                            <p class="uk-text">{{watched._media.name}}</p>
+                                            <p class="uk-text uk-text-small uk-text-muted">Watched | {{formatDate(watched.date)}}</p>
                                         </div>
                                     </div>
                                 </div>

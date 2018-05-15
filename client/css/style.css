@@ -167,6 +167,19 @@ html, body {
 
 .profile {
   font-family: 'Roboto' !important; }
+  .profile .uk-iconnav > * {
+    padding-left: 3px !important; }
+  .profile .date-change {
+    width: 85%; }
+  .profile .check {
+    width: 20px !important;
+    min-width: 20px !important;
+    width: 24px !important;
+    min-width: 20px !important;
+    padding-left: 1px;
+    padding-right: 4px;
+    background: #8600ca;
+    color: white; }
   .profile .uk-background-cover {
     background: url("/images/hogwarts.jpg");
     background-repeat: no-repeat;
