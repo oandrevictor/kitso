@@ -21,7 +21,7 @@ var port = process.env.PORT || 8080;
 
 // connect to our mongoDB database
 // (uncomment after you enter in your own credentials in config/db.js)
-mongoose.connect(db.url);
+mongoose.connect(db.local_url);
 
 // Passport and sessions
 require('./config/passport')(passport);
@@ -110,6 +110,9 @@ app.use('/api/user', userRoutes);
 
 var watchedRoutes = require('./routes/watched');
 app.use('/api/watched', watchedRoutes);
+
+var ratedRoutes = require('./routes/rated');
+app.use('/api/rated', ratedRoutes);
 
 var tvShowRoutes = require('./routes/tvShow');
 app.use('/api/tvShow', tvShowRoutes);
