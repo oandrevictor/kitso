@@ -31,7 +31,7 @@ exports.create = function(req, res) {
         res.status(400).send(err);
     })
     .then((createdShow) => {
-        res.status(200).send('Show created.');
+        res.status(200).send(createdShow);
     });
 };
 
@@ -49,9 +49,9 @@ exports.update = function(req, res) {
         if (req.body._actors) show._actors = req.body._actors;
         if (req.body.imdb_id) show.imdb_id = req.body.imdb_id;
         if (req.body.genres) show.genres = req.body.genres;
-        if (req.body.poster) show.poster = req.body.poster;
+        if (req.body.images) show.images = req.body.images;
         if (req.body.seasons) show.seasons = req.body.seasons;
-        
+
 
         show.save()
         .catch((err) => {

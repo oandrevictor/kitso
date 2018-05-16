@@ -2,8 +2,9 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var WatchedSchema = new Schema({
-  user: {
-    date: Date,
+  _user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true
   },
   hidden: {
@@ -20,9 +21,9 @@ var WatchedSchema = new Schema({
     type: Date,
     required: true
   },
-  _history: {
+  _action: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'History',
+    ref: 'Action',
     required: false
   }
 });

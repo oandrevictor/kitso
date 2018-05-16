@@ -21,7 +21,7 @@ var port = process.env.PORT || 8080;
 
 // connect to our mongoDB database
 // (uncomment after you enter in your own credentials in config/db.js)
-mongoose.connect(db.local_url);
+mongoose.connect(db.url);
 
 // Passport and sessions
 require('./config/passport')(passport);
@@ -76,6 +76,22 @@ app.get('/profile', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
 
+app.get('/tvshow/:id', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
+app.get('/tvshow/edit/:id', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
+app.get('/movie/:id', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
+app.get('/movie/edit/:id', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
 // Api routes
 var exampleRoutes = require('./routes/example');
 app.use('/example', exampleRoutes);
@@ -92,8 +108,14 @@ app.use('/api/appears_in', appearsInRoutes);
 var userRoutes = require('./routes/user');
 app.use('/api/user', userRoutes);
 
+var watchedRoutes = require('./routes/watched');
+app.use('/api/watched', watchedRoutes);
+
 var tvShowRoutes = require('./routes/tvShow');
 app.use('/api/tvShow', tvShowRoutes);
+
+var actionRoutes = require('./routes/action');
+app.use('/api/action', actionRoutes);
 
 // start app ===============================================
 // startup our app at http://localhost:8080

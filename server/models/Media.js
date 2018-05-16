@@ -26,9 +26,13 @@ var MediaSchema = new Schema({
       default: [],
       required: true
     },
-    poster: {
-        type: String,
-        default: 'placeholder'
+    images: { 
+        poster: {
+            type: String
+        },
+        cover: {
+            type: String
+        }
     }
 });
 

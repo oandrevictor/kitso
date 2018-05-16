@@ -34,8 +34,8 @@ kitso.service('AuthService', ['$q', '$http', function ($q, $http) {
                 });
         } else {
             deferred.reject();
-        }      
-        
+        }
+
         return deferred.promise;
     }
 
@@ -81,7 +81,7 @@ kitso.service('AuthService', ['$q', '$http', function ($q, $http) {
     function getUser() {
         var auxUser = user.user;
         auxUser.birthday = new Date(auxUser.birthday);
-        return user.user;
+        return auxUser;
     }
 
     function getStatus() {
@@ -108,10 +108,10 @@ kitso.service('AuthService', ['$q', '$http', function ($q, $http) {
     function isLogged() {
         return user.status;
     }
-    
+
     function editUser(user) {
         var deferred = $q.defer();
-        
+
         $http.put('/api/user/' + user._id, user)
             .then(function (response) {
                 if (response.status === 200) {
