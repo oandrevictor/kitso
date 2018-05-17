@@ -283,6 +283,8 @@ html, body {
     font-weight: 100;
     padding-right: 20px;
     display: flex; }
+    .movie .rating .is-rated-star {
+      color: yellow; }
     .movie .rating .rating-value {
       display: inline;
       font-size: 30px;

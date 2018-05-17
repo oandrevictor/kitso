@@ -31,7 +31,6 @@ kitso.service('RatedService', ['$q','$http', function ($q, $http) {
       return deferred.promise;
     }
 
-
     function markAsRated(userId, mediaId, date = moment(), rating) {
         var deferred = $q.defer();
 

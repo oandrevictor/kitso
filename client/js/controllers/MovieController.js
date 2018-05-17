@@ -74,11 +74,34 @@ function($scope, $location, $timeout, MovieService, WatchedService, RatedService
             });
         });
     }
+
   $scope.editionMode = function () {
     $location.path('movie/edit/' + $routeParams.movie_id);
   }
 
+  $scope.rate = function(movieId, rating){
+    if ($scope.movie.rated) {
+        $scope.markAsNotRated($scope.movie.rated.rated_id);
+        if (rating !== $scope.movie.rating) {
+            $scope.markAsRated(movieId, rating);
+        }
+        UIkit.notification({
+                        message: '<span uk-icon=\'icon: check\'></span> Rating edited!',
+                        status: 'success',
+                        timeout: 1500
+                    });
+    } else {
+        $scope.markAsRated(movieId, rating);
+        UIkit.notification({
+                        message: '<span uk-icon=\'icon: check\'></span> Rated!',
+                        status: 'success',
+                        timeout: 1500
+                    });
+    }
+  }
+
   $scope.markAsRated = function(movieId, rating) {
+    $scope.movie.rating = rating;
     RatedService.markAsRated($scope.user._id, movieId, date = moment(), rating)
     .then((rated) => {
         $scope.movie.rated = rated;
@@ -90,6 +113,20 @@ function($scope, $location, $timeout, MovieService, WatchedService, RatedService
             timeout: 2500
         });
     });
+    }
+
+    $scope.markAsNotRated = function(ratedId){
+        RatedService.markAsNotRated(ratedId)
+        .then(() => {
+            $scope.movie.rated = false;
+        })
+        .catch((error) => {
+            UIkit.notification({
+                message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                status: 'danger',
+                timeout: 2500
+            });
+        });
     }
     
 

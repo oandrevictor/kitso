@@ -14,11 +14,14 @@
               <b>{{ release_date_formated }}</b> | Genres:
               <b ng-repeat="genre in movie.genres">{{ genre }}</b>
               <div class="rating">
-                  <a uk-icon="icon: star; ratio: 2"></a>
+                <div>
+                  <a class="is-rated-star" ng-show="movie.rated" uk-icon="icon: star; ratio: 2"></a>
+                  <a ng-hide="movie.rated" uk-icon="icon: star; ratio: 2"></a>
+                </div>
                   <div uk-dropdown="pos: bottom-center; mode: hover" style="z-index: 999">
                     <center>
                       <ul class="uk-iconnav">
-                        <a href="#" uk-icon="icon: star; ratio: .6" ng-repeat="n in range('10')" ng-click="markAsRated(movie._id, n)"></a>
+                        <a href="#" uk-icon="icon: star; ratio: .6" ng-repeat="n in range('10')" ng-click="rate(movie._id, n)"></a>
                       </ul>
                     </center>
                   </div>
