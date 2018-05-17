@@ -1,13 +1,38 @@
  var kitso = angular.module('kitso');
 
-kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthService', function($scope, $location, $timeout, AuthService) {
+kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthService', 'WatchedService', function($scope, $location, $timeout, AuthService, WatchedService) {
      AuthService.getStatus()
         .then(() => {
             $scope.user = AuthService.getUser();
+            WatchedService.getAllWatched($scope.user._id).then( function(watched){
+              watched.forEach(function(watched){
+                watched.date = new Date(watched.date);
+              })
+              $scope.user.watched = watched
+
+              console.log(watched)
+
+            }).catch(function(error){
+              console.log('deu ruim')
+
+            })
         });
+  $scope.formatDate = function(date){
+    return moment(date).format('DD/MM/YYYY')
+  };
+
+  $scope.updateWatched = function (watched){
+    WatchedService.updateWatched(watched).then(function(watched){
+      UIkit.dropdown($('#watched-date-' + watched._id)).hide()
+    }).catch(function(error){
+      console.log(error);
+
+    })
+
+  }
 
 	$scope.submitForm = function() {
-        
+
         if ($scope.editForm.$valid) {
             UserService.editUser($scope.user)
                 // handle success
@@ -42,7 +67,7 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthS
                             timeout: 2500
                         });
                     }
-                });  
+                });
         }
     };
 

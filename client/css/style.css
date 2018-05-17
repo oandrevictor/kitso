@@ -167,6 +167,19 @@ html, body {
 
 .profile {
   font-family: 'Roboto' !important; }
+  .profile .uk-iconnav > * {
+    padding-left: 3px !important; }
+  .profile .date-change {
+    width: 85%; }
+  .profile .check {
+    width: 20px !important;
+    min-width: 20px !important;
+    width: 24px !important;
+    min-width: 20px !important;
+    padding-left: 1px;
+    padding-right: 4px;
+    background: #8600ca;
+    color: white; }
   .profile .uk-background-cover {
     background: url("/images/hogwarts.jpg");
     background-repeat: no-repeat;
@@ -192,6 +205,14 @@ html, body {
     margin-top: -50px;
     margin-bottom: auto;
     font-weight: 300; }
+    .profile .profile-container .button-switcher {
+      text-align: right; }
+      .profile .profile-container .button-switcher .uk-button {
+        padding: 0 15px;
+        border-color: transparent;
+        color: #ccc; }
+      .profile .profile-container .button-switcher .uk-button-default.uk-active, .profile .profile-container .button-switcher .uk-button-default:active .uk-icon {
+        color: #333; }
     .profile .profile-container .uk-switcher p {
       margin-bottom: 0px; }
     .profile .profile-container .uk-switcher .uk-text-muted {
@@ -205,6 +226,20 @@ html, body {
     .profile .profile-container .uk-width-1-2 p {
       margin-bottom: 0px;
       width: 300px; }
+    .profile .profile-container .uk-list-divider > li:nth-child(n+2) {
+      border-top: 1px solid #f7f7f7; }
+    .profile .profile-container .uk-card-primary {
+      background: #fff;
+      box-shadow: none; }
+      .profile .profile-container .uk-card-primary .uk-text {
+        color: #666; }
+      .profile .profile-container .uk-card-primary .uk-text-muted {
+        color: #999 !important; }
+      .profile .profile-container .uk-card-primary .uk-card-body {
+        padding-left: 0px;
+        padding-top: 5px; }
+    .profile .profile-container .uk-list ul .uk-iconnav {
+      padding-left: 0px; }
   .profile .profile-image {
     border-style: solid; }
   .profile .profile-name {
@@ -260,6 +295,9 @@ html, body {
     width: 191px;
     border: 1px solid #FFFFFF;
     font-size: 10px !important; }
+    .movie .watch-button.watched {
+      color: white;
+      background: #773095; }
   .movie .poster {
     box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
     border: 4px solid white; }
@@ -329,6 +367,9 @@ html, body {
     width: 191px;
     border: 1px solid #FFFFFF;
     font-size: 10px !important; }
+    .tvshow .watch-button.watched {
+      color: white;
+      background: #773095; }
   .tvshow .poster {
     box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
     border: 4px solid white; }

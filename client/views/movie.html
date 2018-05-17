@@ -1,6 +1,6 @@
 <div class="movie">
     <!--Cover Content-->
-    <div class="uk-background-cover" align="center">
+    <div class="uk-background-cover" align="center" style="background-image: url({{ movie.images.cover }})">
       <div class="uk-width-xxlarge">
         <div class="title">{{movie.name}}
           <span ng-show="movie.isBoxOffice" class="uk-badge purple">In teathers</span>
@@ -9,7 +9,7 @@
     </div>
     <div class="uk-width-xxlarge content">
       <div class="uk-width-3-4">
-              <b>Directed by</b> {{ movie.directors }}
+              <b>Directed by</b> Directors
               <br /> Year:
               <b>{{ release_date_formated }}</b> | Genres:
               <b ng-repeat="genre in movie.genres">{{ genre }}</b>
@@ -19,9 +19,13 @@
               </div>
           </div>
           <div class="left-bar uk-width-1-4">
-              <img class="poster" src="/images/changeling-poster.jpeg" />
-              <button class="uk-button uk-button-default watch-button">
+              <img class="poster" ng-src="{{movie.images.poster}}" />
+              <button ng-hide="movie.watched" ng-click="markAsWatched(movie._id)" class="uk-button uk-button-default watch-button">
               <span uk-icon="icon: check;"></span> Mark as watched</button>
+              <button ng-show="movie.watched" ng-click="markAsNotWatched(movie.watched.watched_id)" class="uk-button uk-button-default watch-button watched">
+              <span uk-icon="icon: check;"></span> Watched (undo) </button>
+              <button class="uk-button uk-button-default watch-button" ng-click="editionMode()">
+              <span uk-icon="icon: pencil;"></span> Edit movie</button>
           </div>
 
       <div class="section sinopsis">

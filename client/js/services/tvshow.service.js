@@ -7,7 +7,8 @@ kitso.service('TvShowService', ['$q', '$http', function ($q, $http) {
     // return available functions for use in the controllers
     return ({
         loadTvShow: loadTvShow,
-        getTvShow: getTvShow
+        getTvShow: getTvShow,
+        updateTvShow: updateTvShow
     });
 
     function loadTvShow(id) {
