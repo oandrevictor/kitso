@@ -109,9 +109,9 @@ exports.update = function(req, res) {
 };
 
 exports.updatePassword = function(req, res) {
-    User.findOne({ email: req.params.email})
+    User.findOne({ email: req.body.email})
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(400).send('User not found.');
     })
     .then((user) => {
         if (user.new_password) {
@@ -122,9 +122,11 @@ exports.updatePassword = function(req, res) {
                 if (err) { 
                     return res.status(403).send(err);
                 } else {
-                    return res.status(200).send('Password updated!!');
+                    return res.status(200).send('Password updated!');
                 }
             });
+        } else {
+            return res.status(404).send('New password not found. Please try again.');
         }
     });
 };

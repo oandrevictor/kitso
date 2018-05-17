@@ -1,6 +1,6 @@
 var kitso = angular.module('kitso');
 
-kitso.controller('LoginController', ['$scope', '$location', '$timeout', 'AuthService', 'UserService', function($scope, $location, $timeout, AuthService, UserService) {
+kitso.controller('LoginController', ['$scope', '$location', '$timeout', '$routeParams', 'AuthService', 'UserService', function($scope, $location, $timeout, $routeParams, AuthService, UserService) {
 
     $scope.submitForm = function() {
         var user = {
@@ -84,6 +84,29 @@ kitso.controller('LoginController', ['$scope', '$location', '$timeout', 'AuthSer
                     timeout: 2000
                 });
                 $scope.recover = false;
+            });
+    }
+
+    $scope.passwordUpdated = 0;
+
+    $scope.updatePassword = function() {
+        UserService.updateUserPassword($routeParams.email)
+            .then((result) => {
+                $scope.passwordUpdated = 1;
+                $timeout(function() {
+                    $location.path('/login');
+                    }, 5000);
+            })
+            .catch((error) => {
+                $scope.passwordUpdated = 2;
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: check\'></span> ' + error,
+                    status: 'danger',
+                    timeout: 3000
+                });
+                $timeout(function() {
+                    $location.path('/login');
+                    }, 5000);
             });
     }
 }]);

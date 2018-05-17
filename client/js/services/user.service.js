@@ -5,6 +5,7 @@ kitso.service('UserService', ['$q', '$http', function ($q, $http) {
     return ({
         findByEmail: findByEmail,
         sendPasswordRecoverEmail: sendPasswordRecoverEmail,
+        updateUserPassword: updateUserPassword,
         editUser: editUser
     });
 
@@ -30,6 +31,25 @@ kitso.service('UserService', ['$q', '$http', function ($q, $http) {
         var deferred = $q.defer();
         
         $http.post('/api/email/passwordRecover', email)
+            .then(function (response) {
+                if (response.status === 200) {
+                    deferred.resolve(response.data);
+                } else {
+                    deferred.reject();
+                }
+            })
+            .catch(function (error) {
+                deferred.reject(error.data);
+            });
+
+        return deferred.promise;
+    }
+
+    function updateUserPassword(email) {
+        var deferred = $q.defer();
+        var body = {email: email};
+        
+        $http.post('/api/user/password', body)
             .then(function (response) {
                 if (response.status === 200) {
                     deferred.resolve(response.data);

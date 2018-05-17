@@ -68,6 +68,10 @@ app.get('/login', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
 
+app.post('/passwordRecover/:email', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
 app.get('/home', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });

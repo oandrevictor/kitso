@@ -26,7 +26,7 @@ exports.sendPasswordRecoverEmail = function(req, res) {
             "<p style='text-align:left;'>Olá!</p>" + 
             "<p>Você está recebendo esse e-mail que foi requisitada a alteração da sua senha de acesso. Se você não fez nenhuma requisição, pode simplesmente ignorar este e-mail.</p>" +
               "<p>Para confirmar a alteração da senha, clique no botão abaixo:</p>" + 
-                "<form action ='http://www.localhost:8080/api/user/password/" + req.body.email + "' method='post'>" +
+                "<form action ='http://www.localhost:8080/passwordRecover/" + req.body.email + "' method='post'>" +
                 "<input type='submit' value='Confirmar alteração de senha' style='margin-top:3px; margin-bottom:3px; background: #502274; margin-bottom: 3px; padding: 10px; text-align: center; color: white; font-weight: bold; border: 1px solid #502274;'></form>" +
                 "<p style='text-align:left;' >Bom uso,</p>" + 
                 "<p style='text-align:left;' ><b>Equipe Kitso!</b></p>" + 
@@ -37,7 +37,6 @@ exports.sendPasswordRecoverEmail = function(req, res) {
         res.status(400).send(err);
       })
       .then((info) => {
-        console.log(info);
         res.status(200).send("Email sent!");
       });
 }
