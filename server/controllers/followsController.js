@@ -6,7 +6,7 @@ const FOLLOWED_ACTION_TYPE = "followed";
 
 exports.index = async function(req, res) {
     let user_id = req.params.user_id;
-    let following_list, promises;
+    let following_list;
     try {
         following_list = await Follows.find({_user: user_id}).exec();
 

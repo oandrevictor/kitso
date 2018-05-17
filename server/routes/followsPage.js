@@ -3,10 +3,10 @@ var router = express.Router();
 
 var followsPageController = require('../controllers/followsPageController');
 
-router.get('/:user_id', followsPageController.index);
+router.get('/user/:user_id', followsPageController.index);
 
 //is_following_page?user_id=user_id&following_id=following_id
-router.get('/is_following', followsPageController.is_following_page);
+router.get('/is_following', followsPageController.is_following);
 
 router.post('/', followsPageController.create);
 
