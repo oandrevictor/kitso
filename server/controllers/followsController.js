@@ -8,7 +8,7 @@ exports.index = async function(req, res) {
     let user_id = req.params.user_id;
     let following_list, promises;
     try {
-        following_list = await find_user_following_list(user_id);
+        following_list = await Follows.find({_user: user_id}).exec();
 
         res.status(200).json(following_list);
     } catch (err) {
@@ -19,23 +19,24 @@ exports.index = async function(req, res) {
 exports.is_following = async function(req, res) {
     let user_id = req.query.user_id;
     let following_id = req.query.following_id;
-    try {
-        let user_is_following = await user_is_following(user_id, following_id);
-        if (user_is_following.length > 0) {
-            res_json = {
-                "is_following": true,
-                "following_id": user_is_following[0]._id
-            }
-            res.status(200).json(res_json);
-        } else {
-            json_not_following = {"is_following": false};
-            res.status(200).json(json_not_following);
-        }
-    } catch (err) {
-        res.status(400).json(err);
-    }
-}
 
+    Follows.find({_user: user_id, _following: following_id}, function(err, result) {
+        if (err) {
+            res.status(400).json(err);
+        } else {
+            if (result.length > 0) {
+                res_json = {
+                    "is_following": true,
+                    "following_id": result[0]._id
+                }
+                res.status(200).json(res_json);
+            } else {
+                json_not_following = {"is_following": false};
+                res.status(200).json(json_not_following);
+            }
+        }
+    });
+}
 
 exports.create = async function(req, res) {
     var follow = new Follows(req.body);
@@ -54,29 +55,27 @@ exports.create = async function(req, res) {
 };
 
 exports.delete = async function(req, res) {
-    let follow_id = req.params.follows_id;
-    try {
-        let followed = await find_followed_obj(follow_id);
-        let user_id = followed._user;
-        let action_id = followed._action;
-        delete_action(action_id);
-        delete_action_from_user_history(user_id, action_id);
-    } catch (err) {
-        res.status(400).send(err);
-    }
+    let follow_id = req.params.follow_id;
 
-    Follows.remove({ _id: req.params.followsPage_id})
-    .catch((err) => {
-        res.status(400).send(err);
-    })
-    .then(() => {
-        res.status(200).send('Follow removido.');
+    Follows.findById(follow_id, function(err, followed) {
+        if (!followed || err) {
+            res.status(400).send("Follow inexistente");
+        } else {
+            let user_id = followed._user;
+            let action_id = followed._action;
+            delete_action(action_id);
+            delete_action_from_user_history(user_id, action_id);
+
+            Follows.remove({ _id: follow_id})
+            .catch((err) => {
+                res.status(400).send(err);
+            })
+            .then(() => {
+                res.status(200).send('Follow removido.');
+            });
+        }
     });
 };
-
-var find_watched_obj = async function(watched_id) {
-    return Follows.findById(follow_id).exec();
-}
 
 var create_action = async function(user_id, follow_id) {
     var action = new Action({
@@ -109,12 +108,4 @@ var delete_action_from_user_history = async function(user_id, action_id) {
         }
         user.save();
     });
-}
-
-var user_is_following = async function(user_id, following_id) {
-    return Follows.find({_user: user_id, _following: following_id}).exec();
-}
-
-var find_user_following_list = async function(user_id) {
-    return Follows.find({_user: user_id}).exec();
 }

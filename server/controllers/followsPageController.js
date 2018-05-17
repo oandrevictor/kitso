@@ -16,7 +16,7 @@ exports.index = async function(req, res) {
     }
 };
 
-exports.is_following = async function(req, res) {
+exports.is_following_page = async function(req, res) {
     let user_id = req.query.user_id;
     let following_id = req.query.following_id;
     try {
