@@ -12,7 +12,7 @@ exports.index = function(req, res) {
 };
 
 // Uma série
-exports.media = function(req, res) {
+exports.show = function(req, res) {
     Media.findById(req.params.media_id)
     .catch((err) => {
         res.status(400).send(err);
@@ -20,6 +20,38 @@ exports.media = function(req, res) {
     .then((result) => {
         res.status(200).json(result);
     });
+};
+
+// Várias medias
+exports.showAll = function(req, res) {
+    var medias = req.body.medias;
+    var queries = 0;
+    var response = [];
+
+    for (var i = 0; i < medias.length; i++) {
+        Media.findById(medias[i])
+        .catch((err) => {
+            queries++;
+            response.push({error: err});
+
+            if (queries == medias.length) {
+                done();
+            }
+        })
+        .then((result) => {
+            queries++;
+            response.push({media: result});
+
+            if (queries == medias.length) {
+                done();
+            }
+        });
+    }
+
+    function done() {
+        res.status(200).send(response);
+    }
+    
 };
 
 // Criar série
