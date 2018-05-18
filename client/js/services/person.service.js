@@ -42,7 +42,7 @@ kitso.service('PersonService', ['$q','$http', function ($q, $http) {
             "medias": mediasId
         };
 
-        $http.post('/api/media/medias', data)
+        $http.post('/api/media/list', data)
             .then((response) => {
                 if (response.status === 200) {
                     medias = response.data;

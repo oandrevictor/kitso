@@ -20,7 +20,7 @@ var PersonSchema = new Schema({
         required: false
     },
     _appears_in: [
-        { type: mongoose.Schema.Types.ObjectId, ref: 'AppearsIn' }
+        { type: mongoose.Schema.Types.ObjectId, ref: 'Media' }
     ]
 });
 

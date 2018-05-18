@@ -9,7 +9,7 @@ router.get('/', mediaController.index);
 
 router.get('/:media_id', mediaController.show);
 
-router.post('/medias', mediaController.showAll);
+router.post('/list', mediaController.showAll);
 
 router.post('/', mediaController.create);
 

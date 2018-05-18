@@ -29,22 +29,19 @@ exports.showAll = function(req, res) {
     var response = [];
 
     for (var i = 0; i < medias.length; i++) {
+        let cb_index = i;
         Media.findById(medias[i])
         .catch((err) => {
-            queries++;
-            response.push({error: err});
+            response[cb_index] = {error: err};
+            queries++;      
 
-            if (queries == medias.length) {
-                done();
-            }
+            if (queries == medias.length) done();
         })
         .then((result) => {
+            response[cb_index] = {media: result};
             queries++;
-            response.push({media: result});
 
-            if (queries == medias.length) {
-                done();
-            }
+            if (queries == medias.length) done();
         });
     }
 
