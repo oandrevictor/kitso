@@ -61,14 +61,22 @@ exports.update = function(req, res) {
     });
 };
 
-exports.delete = function(req, res) {
-    News.remove({ _id: req.params.news_id})
-    .catch((err) => {
+exports.delete = async function(req, res) {
+    try {
+        var news = await find_news_obj(req.params.news_id);
+        var relateds_ids = news._related;
+        await delete_relateds(relateds_ids);
+    } catch(err) {
+        console.log(err);
         res.status(400).send(err);
-    })
-    .then(() => {
-        res.status(200).send('News deleted.');
-    });
+    }
+
+    // News.remove({ _id: req.params.news_id})
+    // .catch((err) => {
+    //     res.status(400).send(err);
+    // })
+
+    res.status(200).send('News deleted.');
 };
 
 var createNews = async function(news_obj) {
@@ -83,4 +91,12 @@ var createRelated = async function(news_id, media_id, person_id) {
     } 
     let related = new Related(related_structure);
     return related.save();
+}
+
+var find_news_obj = async function(news_id) {
+    return News.findById(news_id).exec();
+}
+
+var delete_relateds = async function(relateds_ids) {
+    // To DO: delete all relateds in relateds_ids
 }

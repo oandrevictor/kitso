@@ -5,12 +5,12 @@ var relatedController = require('../controllers/relatedController');
 
 router.get('/', relatedController.index);
 
-router.get('/:news_id', relatedController.show);
+router.get('/:related_id', relatedController.show);
 
 router.post('/', relatedController.create);
 
-router.put('/:news_id', relatedController.update);
+router.put('/:related_id', relatedController.update);
 
-router.delete('/:news_id', relatedController.delete);
+router.delete('/:related_id', relatedController.delete);
 
 module.exports = router;

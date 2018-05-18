@@ -121,7 +121,7 @@ var newsRoutes = require('./routes/news');
 app.use('/api/news', newsRoutes);
 
 var relatedRoutes = require('./routes/related');
-app.use('/api/news', relatedRoutes);
+app.use('/api/related', relatedRoutes);
 
 // start app ===============================================
 // startup our app at http://localhost:8080
