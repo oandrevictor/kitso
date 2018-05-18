@@ -1,4 +1,5 @@
 var News = require('../models/News');
+var Related = require('../models/Related');
 
 exports.index = function(req, res) {
     News.find({})
@@ -20,16 +21,23 @@ exports.show = function(req, res) {
     });
 };
 
-exports.create = function(req, res) {
-    var news = new News(req.body);
-
-    news.save()
-    .catch((err) => {
+exports.create = async function(req, res) {
+    var news_obj = new News(req.body);
+    try {
+        var news = await createNews(news_obj);
+        
+        let news_id = news._id;
+        let media_id = req.body._media_id;
+        let person_id = req.body._person_id;
+        let related = await createRelated(news_id, media_id, person_id);
+        
+        news._related.push(related._id);        
+        await news.save();        
+        res.status(200).send(news);
+    } catch(err) {
+        console.log(err);
         res.status(400).send(err);
-    })
-    .then((createdNews) => {
-        res.status(200).send('News created.');
-    });
+    }
 };
 
 exports.update = function(req, res) {
@@ -37,18 +45,18 @@ exports.update = function(req, res) {
     .catch((err) => {
         res.status(400).send(err);
     })
-    .then((action) => {
-        if (req.body._posted_by) action.name = req.body._posted_by;
-        if (req.body.link) action._action = req.body.link;
-        if (req.body.date) action._user = req.body.date;
-        if (req.body._related) action_type = req.body._related;
+    .then((news) => {
+        if (req.body._posted_by) news._posted_by = req.body._posted_by;
+        if (req.body.link) news.link = req.body.link;
+        if (req.body.date) news.date = req.body.date;
+        if (req.body._related) news._related = req.body._related;
         
-        action.save()
+        news.save()
         .catch((err) => {
             res.status(400).send(err);
         })
-        .then((updateAction) => {
-            res.status(200).json(updateAction);
+        .then((updatedNews) => {
+            res.status(200).json(updatedNews);
         });
     });
 };
@@ -62,3 +70,17 @@ exports.delete = function(req, res) {
         res.status(200).send('News deleted.');
     });
 };
+
+var createNews = async function(news_obj) {
+    return news_obj.save();
+}
+
+var createRelated = async function(news_id, media_id, person_id) {
+    let related_structure = {
+        _news: news_id,
+        _media: media_id,
+        _person: person_id
+    } 
+    let related = new Related(related_structure);
+    return related.save();
+}
