@@ -60,6 +60,11 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
             controller: 'PersonController',
             access: { restricted: true }
         })
+        .when('/person/edit/:person_id', {
+            templateUrl: 'views/person-edit.html',
+            controller: 'PersonEditController',
+            access: { restricted: true }
+        })
         .otherwise({
           redirectTo: '/'
         });

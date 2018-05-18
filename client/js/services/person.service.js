@@ -10,7 +10,8 @@ kitso.service('PersonService', ['$q','$http', function ($q, $http) {
         loadPerson: loadPerson,
         getPerson: getPerson,
         loadMedias: loadMedias,
-        getMedias: getMedias
+        getMedias: getMedias,
+        updatePerson: updatePerson
     });
 
     function loadPerson(id) {
@@ -68,7 +69,7 @@ kitso.service('PersonService', ['$q','$http', function ($q, $http) {
           .then(function (response) {
               if (response.status === 200) {
                   person = response.data;
-                  deferred.resolve(movie);
+                  deferred.resolve(person);
               } else {
                   deferred.reject();
               }

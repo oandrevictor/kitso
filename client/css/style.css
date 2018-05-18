@@ -324,6 +324,10 @@ html, body {
 
 .tvshow {
   font-family: 'Roboto' !important; }
+  .tvshow-name {
+    text-shadow: 1px 1px 2px black, 0 0 1em #000000, 0 0 0.2em #000000;
+    margin: 2px;
+  }
   .tvshow .uk-background-cover {
     z-index: -1;
     background: url("/images/changeling.jpg");
