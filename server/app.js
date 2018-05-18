@@ -68,6 +68,10 @@ app.get('/login', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
 
+app.post('/passwordRecover/:email', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
 app.get('/home', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
@@ -95,6 +99,9 @@ app.get('/movie/edit/:id', function (req, res) {
 // Api routes
 var exampleRoutes = require('./routes/example');
 app.use('/example', exampleRoutes);
+
+var emailRoutes = require('./routes/email');
+app.use('/api/email', emailRoutes);
 
 var movieRoutes = require('./routes/movie');
 app.use('/api/movie', movieRoutes);
