@@ -11,18 +11,19 @@ kitso.controller('PersonController',
                         $scope.person = PersonService.getPerson();
                         $scope.birthday_date_formated = moment($scope.person.birthday).format('DD/MM/YYYY');
 
-                        $scope.mediasPersonAppears = [];
+                        if ($scope.person._appears_in.length === 0) {
+                            $scope.background = "/images/It-Follows-background.jpg";
+                        }
 
-                        $scope.person._appears_in.forEach(function(media_id){
-                            PersonService.loadMedia(media_id)
-                                .then(() => {
-                                    $scope.mediasPersonAppears.push(PersonService.getMedia());
-                                })
-                                .catch((error) => {
-                                });
-                        });
+                        PersonService.loadMedias( $scope.person._appears_in)
+                            .then(() => {
+                                $scope.mediasPersonAppears = PersonService.getMedias();
 
-                        console.log($scope.mediasPersonAppears);
+                                $scope.background = ($scope.mediasPersonAppears[0])['media']['images']['cover'];
+                            })
+                            .catch((error) => {
+                            });
+
 
                     }).catch(function(){
                     })

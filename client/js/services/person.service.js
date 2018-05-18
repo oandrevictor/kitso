@@ -3,14 +3,14 @@ var kitso = angular.module('kitso');
 kitso.service('PersonService', ['$q','$http', function ($q, $http) {
 
     var person = {};
-    var media = {};
+    var medias = {};
 
     // return available functions for use in the controllers
     return ({
         loadPerson: loadPerson,
         getPerson: getPerson,
-        loadMedia: loadMedia,
-        getMedia: getMedia
+        loadMedias: loadMedias,
+        getMedias: getMedias
     });
 
     function loadPerson(id) {
@@ -35,13 +35,17 @@ kitso.service('PersonService', ['$q','$http', function ($q, $http) {
         return person;
     }
 
-    function loadMedia(id) {
+    function loadMedias(mediasId) {
         var deferred = $q.defer();
 
-        $http.get('/api/media/' + id)
+        var data = {
+            "medias": mediasId
+        };
+
+        $http.post('/api/media/medias', data)
             .then((response) => {
                 if (response.status === 200) {
-                    media = response.data;
+                    medias = response.data;
                     deferred.resolve();
                 } else {
                     deferred.reject();
@@ -53,8 +57,8 @@ kitso.service('PersonService', ['$q','$http', function ($q, $http) {
         return deferred.promise;
     }
 
-    function getMedia() {
-        return media;
+    function getMedias() {
+        return medias;
     }
 
     function updatePerson(person) {
