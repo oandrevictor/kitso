@@ -24,12 +24,12 @@ exports.show = function(req, res) {
 exports.create = async function(req, res) {
     var news_obj = new News(req.body);
     try {
-        var news = await createNews(news_obj);
+        var news = await create_news(news_obj);
         
         let news_id = news._id;
         let media_id = req.body._media_id;
         let person_id = req.body._person_id;
-        let related = await createRelated(news_id, media_id, person_id);
+        let related = await create_related(news_id, media_id, person_id);
         
         news._related.push(related._id);        
         await news.save();        
@@ -66,24 +66,19 @@ exports.delete = async function(req, res) {
         var news = await find_news_obj(req.params.news_id);
         var relateds_ids = news._related;
         await delete_relateds(relateds_ids);
+        await delete_news(req.params.news_id);
     } catch(err) {
         console.log(err);
         res.status(400).send(err);
     }
-
-    // News.remove({ _id: req.params.news_id})
-    // .catch((err) => {
-    //     res.status(400).send(err);
-    // })
-
     res.status(200).send('News deleted.');
 };
 
-var createNews = async function(news_obj) {
+var create_news = function(news_obj) {
     return news_obj.save();
 }
 
-var createRelated = async function(news_id, media_id, person_id) {
+var create_related = function(news_id, media_id, person_id) {
     let related_structure = {
         _news: news_id,
         _media: media_id,
@@ -93,10 +88,16 @@ var createRelated = async function(news_id, media_id, person_id) {
     return related.save();
 }
 
-var find_news_obj = async function(news_id) {
+var find_news_obj = function(news_id) {
     return News.findById(news_id).exec();
 }
 
-var delete_relateds = async function(relateds_ids) {
-    // To DO: delete all relateds in relateds_ids
+var delete_relateds = function(relateds_ids) {
+    relateds_ids.forEach(async function (related_id) {
+        await Related.remove({ _id: related_id}).exec();
+    })
+}
+
+var delete_news = function(news_id) {
+    return News.remove({ _id: news_id}).exec();
 }
