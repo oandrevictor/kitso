@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var ListItem = new Schema({
+var ListItemSchema = new Schema({
   ranked: {
     type: Number,
     require: true
@@ -32,12 +32,13 @@ var UserListSchema = new Schema({
     required: true
   },
   itens: {
-    type: [ListItem],
+    type: [ListItemSchema],
     required: true,
     default: []
   }
 });
 
 var UserList = mongoose.model('UserList', UserListSchema);
+var ListItem = mongoose.model('ListItem', ListItemSchema);
 
 module.exports = UserList;
