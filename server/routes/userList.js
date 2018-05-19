@@ -7,8 +7,10 @@ router.post('/', userListController.create);
 
 router.post('/:userlist_id/item', userListController.addItem);
 
-//router.delete('/:userlist_id/item', userListController.deleteItem);
+router.put('/:userlist_id', userListController.update);
 
 router.delete('/:userlist_id', userListController.delete);
+
+//router.delete('/:userlist_id/item', userListController.deleteItem);
 
 module.exports = router;

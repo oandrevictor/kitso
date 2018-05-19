@@ -19,6 +19,24 @@ exports.create = async function(req, res) {
     }
 };
 
+exports.update = async function(req, res) {
+    try {
+        let userListId = req.params.userlist_id;
+        let userList = await getUserList(userListId);
+        if (req.body.description) {
+            userList.description = req.body.description;
+        }
+        if (req.body.title) {
+            userList.title = req.body.title;
+        }
+        await saveUserList(userList);
+        res.status(OK).json(userList);
+    } catch (err) {
+        console.log(err)
+        res.status(BAD_REQUEST).send(err);
+    }
+};
+
 exports.delete = async function(req, res) {
     try {
         let userId = req.headers.user_id;
@@ -62,6 +80,9 @@ exports.addItem = async function(req, res) {
         res.status(BAD_REQUEST).send(err);
     }    
 }
+
+
+// AUXILIARY FUNCTIONS ============================================================================
 
 var saveUserList = function(userList) {
     return userList.save();
