@@ -10,8 +10,9 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
     return ({
         getUsersFollowing: getUsersFollowing,
         getPagesFollowing: getPagesFollowing,
-        unfollow: unfollow,
-        isFollowing: isFollowing
+        unfollowPage: unfollowPage,
+        isFollowingPage: isFollowingPage,
+        followPage: followPage
     });
 
     var getFollowing = function(userId, url){
@@ -66,10 +67,10 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
       return deferred.promise;
     }
 
-    function unfollow(followsId) {
+    function unfollowPage(followsId) {
       var deferred = $q.defer();
 
-      $http.delete('/api/follows/' + followsId)
+      $http.delete('/api/followsPage/' + followsId)
           .then((response) => {
               if (response.status === 200) {
                   deferred.resolve();
@@ -86,10 +87,34 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
 
     function isFollowingPage(userId, mediaId) {
         var deferred = $q.defer();
-        $http.get('/api/followsPage/is_watched?user_id='+ userId + "&following_id="+mediaId)
+        $http.get('/api/followsPage/is_following?user_id='+ userId + "&following_id=" + mediaId)
             .then((response) => {
                 if (response.status === 200) {
                     watched = response.data.is_watched;
+                    deferred.resolve(response.data);
+                } else {
+                    deferred.reject();
+                }
+            })
+            .catch((error) => {
+                deferred.reject(error.data);
+            });
+
+        return deferred.promise;
+    }
+
+    function followPage(userId, mediaId, date = moment()) {
+        var deferred = $q.defer();
+
+        var data = {
+            "_user": userId,
+            "_following": mediaId,
+            "is_media" : true
+        };
+
+        $http.post('/api/followsPage/', data)
+            .then((response) => {
+                if (response.status === 200) {
                     deferred.resolve(response.data);
                 } else {
                     deferred.reject();

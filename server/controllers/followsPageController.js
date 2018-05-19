@@ -57,7 +57,7 @@ exports.create = async function(req, res) {
 exports.delete = async function(req, res) {
     let follow_id = req.params.followsPage_id;
 
-    FollowsPages.findById(follow_id, function(err, followed) {
+    FollowsPage.findById(follow_id, function(err, followed) {
         if (!followed || err) {
             res.status(400).send("Follow inexistente");
         } else {

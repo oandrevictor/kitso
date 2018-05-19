@@ -6,7 +6,7 @@ var FollowsPageSchema = new Schema({
       type: mongoose.Schema.Types.ObjectId, ref: 'User',
       required: true
     },
-    following: {
+    _following: {
       type: String,
       required: true
     },
