@@ -13,6 +13,11 @@ var FollowsPageSchema = new Schema({
     is_media: {
       type: Boolean,
       required: true
+    },
+    _action: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Action',
+      required: false
     }
 });
 
