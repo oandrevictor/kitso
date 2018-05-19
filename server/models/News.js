@@ -14,10 +14,7 @@ var NewsSchema = new Schema({
         type: Date,
         required: true
     },
-    _related: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Related'
-    }
+    _related: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Related' }]
 });
 
 var News = mongoose.model('News', NewsSchema);
