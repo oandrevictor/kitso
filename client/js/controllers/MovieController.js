@@ -31,12 +31,9 @@ function($scope, $location, $timeout, MovieService, WatchedService,  FollowServi
                   timeout: 2500
               });
             });
-            console.log($scope.movie)
           }).catch(function(){
 
           })
-
-
         })
         .catch((error) => {
             UIkit.notification({
@@ -79,9 +76,8 @@ function($scope, $location, $timeout, MovieService, WatchedService,  FollowServi
 
     $scope.unfollow = function(movie){
       var followId = movie.followed.following_id;
-      console.log(movie.followed.following_id)
         FollowService.unfollowPage(followId)
-        .then((watched) => {
+        .then((followed) => {
             $scope.movie.followed = false;
         })
         .catch((error) => {
