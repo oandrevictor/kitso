@@ -14,7 +14,7 @@ var ListItem = new Schema({
 
 var UserListSchema = new Schema({
   title: {
-    date: String,
+    type: String,
     required: true
   },
   description: {
