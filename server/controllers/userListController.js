@@ -4,7 +4,7 @@ var User = require('../models/User');
 
 const UNAUTHORIZED = 401;
 const BAD_REQUEST = 400;
-const CREATED = 200;
+const OK = 200;
 
 exports.create = async function(req, res) {
     try {
@@ -12,12 +12,30 @@ exports.create = async function(req, res) {
         let userId = userList._user;
         await addListToUserLists(userList._id, userId);
         await saveUserList(userList);
-        res.status(CREATED).json(userList);    
+        res.status(OK).json(userList);    
     } catch(err) {
         console.log(err);
         res.status(BAD_REQUEST).send(err);
     }
 };
+
+exports.delete = async function(req, res) {
+    try {
+        let userId = req.headers.user_id;
+        let userListId = req.params.userlist_id;
+        let user = await getUser(userId);
+        let isAuthorized = userHasList(user, userListId);
+        if (!isAuthorized) {            
+            res.status(UNAUTHORIZED);
+        }
+        let deletedList = await removeListFromUserLists(userListId, userId);
+        await deleteListFromDb(userListId);
+        res.status(OK).json(deletedList);
+    } catch (err) {
+        console.log(err);
+        res.status(BAD_REQUEST).send(err);
+    }
+}
 
 exports.addItem = async function(req, res) {
     try {
@@ -38,7 +56,7 @@ exports.addItem = async function(req, res) {
         itens.push(newItem);
         await saveUserList(userList);
         // await newItem.save();
-        res.status(CREATED).json(userList); 
+        res.status(OK).json(userList); 
     } catch(err) {
         console.log(err);
         res.status(BAD_REQUEST).send(err);
@@ -54,6 +72,21 @@ var addListToUserLists = function(userListId, userId) {
         user._lists.push(userListId);
         return user.save();
     });    
+}
+
+var removeListFromUserLists = function(userListId, userId) {
+    User.findById(userId, function (err, user) {
+        let userLists = user._lists;
+        let index = userLists.indexOf(userListId);
+        if (index > -1) {
+            userLists.splice(index, 1);
+        }
+        return user.save();
+    });
+}
+
+var deleteListFromDb = function(listId) {
+    return UserList.remove({ _id: listId}).exec();
 }
 
 var getUserList = function(userListId) {
