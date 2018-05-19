@@ -2,11 +2,6 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var RelatedSchema = new Schema({
-    _user: {
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: 'User',
-      required: true
-    },
     _news: {
       type: mongoose.Schema.Types.ObjectId, 
       ref: 'News',
