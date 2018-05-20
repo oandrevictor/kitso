@@ -12,6 +12,10 @@ kitso.controller('PersonController',
                         $scope.person = loadedPerson;
                         $scope.birthday_date_formated = moment($scope.person.birthday).format('DD/MM/YYYY');
 
+                        if (!$scope.person.image_url) {
+                            $scope.person.image_url = "/images/person-edited.png";
+                        }
+
                         if ($scope.person._appears_in.length === 0) {
                             $scope.background = "/images/It-Follows-background.jpg"; // Criar um cover default do kisto
                         } else {

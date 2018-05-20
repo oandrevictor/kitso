@@ -11,14 +11,16 @@ kitso.controller('PersonEditController',
                     $scope.person = PersonService.getPerson();
                     $scope.person.birthday = new Date(moment($scope.person.birthday).format('YYYY/MM/DD'));
 
-                    if ($scope.person._appears_in.length === 0) {
-                        $scope.background = "/images/It-Follows-background.jpg"; // Criar um cover default do kisto
+                    if (!$scope.person.image_url) {
+                        $scope.person.image_url = "/images/person-edited.png";
                     }
 
-                    PersonService.loadMedias( $scope.person._appears_in)
-                        .then(() => {
-                            $scope.mediasPersonAppears = PersonService.getMedias();
-
+                    if ($scope.person._appears_in.length === 0) {
+                        $scope.background = "/images/It-Follows-background.jpg"; // Criar um cover default do kisto
+                    } else {
+                        PersonService.loadMedias($scope.person._appears_in)
+                        .then((loadedMedias) => {
+                            $scope.mediasPersonAppears = loadedMedias;
                             $scope.background = ($scope.mediasPersonAppears[Math.floor((Math.random() * $scope.mediasPersonAppears.length))])['media']['images']['cover'];
                         })
                         .catch((error) => {
@@ -28,9 +30,15 @@ kitso.controller('PersonEditController',
                                 timeout: 2500
                             });
                         });
+                    }
 
 
                 }).catch((error) => {
+                    UIkit.notification({
+                        message: '<span uk-icon=\'icon: check\'></span> ' + 'Something went wrong. Try to reload the page.',
+                        status: 'danger',
+                        timeout: 2500
+                    });
                 });
             })
             .catch((error) => {
