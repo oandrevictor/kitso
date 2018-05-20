@@ -29,7 +29,10 @@ function($scope, $location, $timeout, MovieService, WatchedService,  FollowServi
 
 
     $scope.canEdit = function(){
-      return $scope.user._id == $scope.logged_user.id;
+      if (!$scope.user || !$scope.logged_user)
+        return false;
+      else
+        return $scope.user._id == $scope.logged_user.id;
     }
 
     $scope.follow = function(movieId){
