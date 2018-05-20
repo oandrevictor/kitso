@@ -76,6 +76,10 @@ app.get('/home', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
 
+app.get('/explore', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
 app.get('/profile', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
