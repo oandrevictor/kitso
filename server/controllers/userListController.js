@@ -19,6 +19,7 @@ exports.show = async function(req, res) {
         let itens = userList.itens;
         let promises = itens.map(injectMediaJson);
         Promise.all(promises).then(function(results) {
+            results.sort(sortUserListByRank)
             res.status(OK_CODE).json(results);
         })
     } catch (err) {
@@ -253,4 +254,8 @@ var checkIfUserIsAuthorizedToManipulateList = async function(userId, userListId)
     if (!isAuthorized) { 
         throw new Error(UNAUTHORIZED_MSG);
     }
+}
+
+var sortUserListByRank = function(itemA, itemB) { 
+    return itemA.ranked - itemB.ranked;
 }
