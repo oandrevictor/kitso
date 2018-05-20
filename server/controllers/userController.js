@@ -77,7 +77,7 @@ exports.update = function (req, res) {
       res.status(400).send(err);
     })
     .then((user) => {
-      if (req.user && req.user._id == user._id) {
+      if (req.user && req.user._id.toString() === user._id.toString()) {
         if (req.body.name) user.name = req.body.name;
         if (req.body.username) user.username = req.body.username;
         if (req.body.email) user.email = req.body.email;
@@ -104,7 +104,7 @@ exports.update = function (req, res) {
           }
         });
       } else {
-        return res.status(401).send({ error: err, message: 'You need to be authenticated to edit your user info.' });
+        return res.status(401).send({message: 'You need to be authenticated to edit your user info.' });
       }
 
     });
