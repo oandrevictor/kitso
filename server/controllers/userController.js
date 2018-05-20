@@ -48,6 +48,17 @@ exports.findby = function (req, res) {
 
 };
 
+exports.findByEmail = function (req, res) {
+    User.findOne({email: req.body.email})
+    .catch((err) => {
+        res.status(400).send(err);
+    })
+    .then((result) => {
+        if (result) res.status(200).json(result);
+        else res.status(400).json('User not found.');
+    });
+}
+
 // Criar usuário
 exports.create = function (req, res) {
   var user = new User(req.body);
@@ -110,30 +121,26 @@ exports.update = function (req, res) {
     });
 };
 
-exports.updatePassword = function (req, res) {
-  User.findById(req.params.user_id)
+exports.updatePassword = function(req, res) {
+    User.findOne({ email: req.body.email})
     .catch((err) => {
-      res.status(400).send(err);
+        res.status(400).send('User not found.');
     })
     .then((user) => {
-      if (user.validPassword(req.body.old_password)) {
-        bcrypt.hash(req.body.password, 10, function (err, hash) {
-          if (err) {
-            res.status(400).send(err);
-          } else {
-            user.password = hash;
-            user.save(function (err) {
-              if (err) {
-                return res.status(400).send(err);
-              } else {
-                return res.status(200).send('User password updated.');
-              }
+        if (user.new_password) {
+            user.password = user.new_password;
+            user.new_password = null;
+
+            user.save(function(err) {
+                if (err) { 
+                    return res.status(403).send(err);
+                } else {
+                    return res.status(200).send('Password updated!');
+                }
             });
-          }
-        });
-      } else {
-        return res.status(401).send('Wrong password');
-      }
+        } else {
+            return res.status(404).send('New password not found. Please try again.');
+        }
     });
 };
 

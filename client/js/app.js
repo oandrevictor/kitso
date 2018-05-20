@@ -21,6 +21,12 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
             controller: 'LoginController',
             access: { restricted: false }
         })
+        // Password Recover page
+        .when('/passwordRecover/:email', {
+            templateUrl: 'views/passwordRecover.html',
+            controller: 'LoginController',
+            access: { restricted: false }
+        })
         // user home page
         .when('/home', {
             templateUrl: 'views/userHome.html',

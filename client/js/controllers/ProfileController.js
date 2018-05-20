@@ -1,4 +1,4 @@
-var kitso = angular.module('kitso');
+ var kitso = angular.module('kitso');
 
 kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthService', 'WatchedService', function($scope, $location, $timeout, AuthService, WatchedService) {
      AuthService.getStatus()
@@ -32,7 +32,7 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthS
 	$scope.submitForm = function() {
 
         if ($scope.editForm.$valid) {
-            AuthService.editUser($scope.user)
+            UserService.editUser($scope.user)
                 // handle success
                 .then(function () {
                     $scope.toggleDescriptionArea();
@@ -116,7 +116,6 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthS
         return text === 'I know this is a permanent action';
     }
 
-    //$scope.descriptionArea = false;
     $scope.toggleDescriptionArea = function() {
         $scope.descriptionArea = !$scope.descriptionArea;
     }
