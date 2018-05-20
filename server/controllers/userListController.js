@@ -19,8 +19,9 @@ exports.show = async function(req, res) {
         let itens = userList.itens;
         let promises = itens.map(injectMediaJson);
         Promise.all(promises).then(function(results) {
-            results.sort(sortUserListByRank)
-            res.status(OK_CODE).json(results);
+            results.sort(sortUserListByRank);
+            userList.itens = results;
+            res.status(OK_CODE).json(userList);
         })
     } catch (err) {
         console.log(err)
