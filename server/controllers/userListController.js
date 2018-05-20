@@ -17,7 +17,7 @@ exports.show = async function(req, res) {
         let userListId = req.params.userlist_id;
         let userList = await getUserList(userListId);
         let itens = userList.itens;
-        let promises = itens.map(getMediaJson);
+        let promises = itens.map(injectMediaJson);
         Promise.all(promises).then(function(results) {
             res.status(OK_CODE).json(results);
         })
@@ -192,8 +192,14 @@ var userHasList = function(user, listId) {
     return userHasList;
 }
 
-var getMediaJson = function(item) {
+var injectMediaJson = async function(item) {
     let mediaId = item._media;
+    let mediaObj = await getMediaObj(mediaId);
+    item._media = mediaObj;
+    return item;
+}
+
+var getMediaObj = function(mediaId) {
     return Media.findById(mediaId).exec();
 }
 
