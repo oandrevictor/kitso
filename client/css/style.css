@@ -6,6 +6,8 @@ html, body {
 .uk-tab > * {
   margin-right: auto;
   margin-left: auto; }
+.uk-card-default {
+  box-shadow: none !important; }
 
 .home {
   font-family: 'Roboto', sans-serif;
@@ -37,14 +39,30 @@ html, body {
   width: 60vw;
   height: 6vh;
   min-height: 60px;
-  background: #502274;
-  color: #EDEDED;
+  background: linear-gradient(155deg, #9730a0 0%, #7c1b7a 51%, #502274 75%);
+  color: #EDEDED !important;
   display: inline-grid;
   font-weight: 100;
   font-style: italic;
   padding-left: 20vw;
   padding-right: 20vw;
   display: flex; }
+  .toolbar .exploring {
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+    width: 33%;
+    color: white;
+    text-align: center; }
+  .toolbar .icon {
+    border: 0px;
+    padding: 0px;
+    padding-left: 4px; }
+    .toolbar .icon:hover {
+      color: white; }
+    .toolbar .icon:active {
+      color: white; }
   .toolbar .uk-dropdown {
     min-width: 120px !important;
     background: #502274;
@@ -63,14 +81,19 @@ html, body {
     margin-bottom: auto;
     font-weight: 700;
     font-size: 24px;
-    font-style: initial; }
+    font-style: initial;
+    color: white !important;
+    text-decoration: none !important;
+    padding-right: 10px;
+    width: 32%; }
   .toolbar .options {
     margin-left: auto;
     margin-top: auto;
     margin-bottom: auto;
     color: white;
-    width: 30px;
-    border: solid 0px; }
+    border: solid 0px;
+    float: right;
+    width: 33%; }
     .toolbar .options a {
       font-style: initial; }
       .toolbar .options a:hover {
@@ -169,6 +192,72 @@ html, body {
       font-weight: 300;
       font-family: 'Roboto' !important; }
 
+.explore .uk-background-cover {
+  text-shadow: 1px 0px 5px #333333e3;
+  background: url("/images/interstellar.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  overflow-y: auto !important;
+  height: 30vh;
+  display: block;
+  color: #ffffff !important;
+  padding-bottom: 0px !important;
+  padding-top: 4%; }
+  .explore .uk-background-cover .title {
+    font-size: 2.5rem; }
+.explore .date-change {
+  width: 85% !important; }
+.explore .check {
+  width: 20px !important;
+  min-width: 20px !important;
+  width: 24px !important;
+  min-width: 20px !important;
+  padding-left: 1px;
+  padding-right: 4px;
+  background: #8600ca;
+  color: white; }
+.explore .explore-container {
+  margin-top: -50px;
+  margin-bottom: auto;
+  font-weight: 300; }
+  .explore .explore-container .button-switcher {
+    text-align: right; }
+    .explore .explore-container .button-switcher .uk-button {
+      padding: 0 15px;
+      border-color: transparent;
+      color: #ccc; }
+    .explore .explore-container .button-switcher .uk-button-default.uk-active, .explore .explore-container .button-switcher .uk-button-default:active .uk-icon {
+      color: #333; }
+  .explore .explore-container .uk-switcher p {
+    margin-bottom: 0px; }
+  .explore .explore-container .uk-switcher .uk-text-muted {
+    margin-bottom: 10px;
+    margin-top: 5px;
+    font-size: 13px; }
+  .explore .explore-container .uk-switcher .uk-divider-icon {
+    margin-top: 0px; }
+  .explore .explore-container .uk-tab > .uk-active > a {
+    font-weight: 400;
+    border-color: #db2399 !important; }
+  .explore .explore-container .uk-width-1-2 p {
+    margin-bottom: 0px;
+    width: 300px; }
+  .explore .explore-container .uk-list-divider > li:nth-child(n+2) {
+    border-top: 1px solid #f7f7f7; }
+  .explore .explore-container .uk-card-primary {
+    background: #fff;
+    box-shadow: none; }
+    .explore .explore-container .uk-card-primary .uk-text {
+      color: #666; }
+    .explore .explore-container .uk-card-primary .uk-text-muted {
+      color: #999 !important; }
+    .explore .explore-container .uk-card-primary .uk-card-body {
+      padding-left: 0px;
+      padding-top: 5px; }
+  .explore .explore-container .uk-list ul .uk-iconnav {
+    padding-left: 0px; }
+
 .profile {
   font-family: 'Roboto' !important; }
   .profile .uk-iconnav > * {
@@ -182,6 +271,7 @@ html, body {
     background: rgba(0, 0, 0, 0.7);
     padding-left: 8px;
     padding-right: 8px; }
+
   .profile .check {
     width: 20px !important;
     min-width: 20px !important;
@@ -192,12 +282,12 @@ html, body {
     background: #8600ca;
     color: white; }
   .profile .uk-background-cover {
-    background: url("/images/hogwarts.jpg");
+    background: url("/images/strange.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
     overflow-y: auto !important;
-    height: 50%;
+    height: 30vh;
     display: block;
     color: #ffffff !important;
     padding-bottom: 0px !important;
@@ -233,7 +323,8 @@ html, body {
     .profile .profile-container .uk-switcher .uk-divider-icon {
       margin-top: 0px; }
     .profile .profile-container .uk-tab > .uk-active > a {
-      border-color: #8600ca !important; }
+      font-weight: 400;
+      border-color: #db2399 !important; }
     .profile .profile-container .uk-width-1-2 p {
       margin-bottom: 0px;
       width: 300px; }
