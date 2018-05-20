@@ -10,10 +10,27 @@ function($scope, $location, $timeout, MovieService, WatchedService, RatedService
             $scope.user = AuthService.getUser();
             $scope.movie = MovieService.getMovie();
             $scope.release_date_formated = moment($scope.movie.release_date).format('YYYY');
+            $scope.updateRating(0);
             RatedService.isRated($scope.user._id ,$routeParams.movie_id).then((rated) => {
                 $scope.movie.rated = rated;
-                if (! rated.rated_id)
+                if (! rated.rated_id){
                   $scope.movie.rated = false;
+                  $scope.updateRating(0);
+                }else{
+                  RatedService.getAllRated($scope.user._id).then((all) => {
+                    for (var i = 0; i < all.length; i++) {
+                      if(all[i]._id === $scope.movie.rated.rated_id){
+                        $scope.updateRating(all[i].rating);
+                      }
+                    }
+                  }).catch((error) => {
+                    UIkit.notification({
+                        message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                        status: 'danger',
+                        timeout: 2500
+                    });
+                  })
+                }
             }).catch((error) => {
               UIkit.notification({
                   message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
@@ -32,7 +49,7 @@ function($scope, $location, $timeout, MovieService, WatchedService, RatedService
                   timeout: 2500
               });
             });
-            
+
           }).catch(function(){
 
           })
@@ -65,6 +82,7 @@ function($scope, $location, $timeout, MovieService, WatchedService, RatedService
         WatchedService.markAsNotWatched(watchedId)
         .then(() => {
             $scope.movie.watched = false;
+            $scope.movie.rating = 0;
         })
         .catch((error) => {
             UIkit.notification({
@@ -81,9 +99,13 @@ function($scope, $location, $timeout, MovieService, WatchedService, RatedService
 
   $scope.rate = function(movieId, rating){
     if ($scope.movie.rated) {
-        $scope.markAsNotRated($scope.movie.rated.rated_id);
         if (rating !== $scope.movie.rating) {
-            $scope.markAsRated(movieId, rating);
+          $scope.markAsNotRated($scope.movie.rated.rated_id);
+          $scope.markAsRated(movieId, rating);
+          $scope.updateRating(rating);
+        } else {
+          $scope.markAsNotRated($scope.movie.rated.rated_id);
+          $scope.updateRating(0);
         }
         UIkit.notification({
                         message: '<span uk-icon=\'icon: check\'></span> Rating edited!',
@@ -92,6 +114,7 @@ function($scope, $location, $timeout, MovieService, WatchedService, RatedService
                     });
     } else {
         $scope.markAsRated(movieId, rating);
+        $scope.updateRating(rating);
         UIkit.notification({
                         message: '<span uk-icon=\'icon: check\'></span> Rated!',
                         status: 'success',
@@ -101,7 +124,6 @@ function($scope, $location, $timeout, MovieService, WatchedService, RatedService
   }
 
   $scope.markAsRated = function(movieId, rating) {
-    $scope.movie.rating = rating;
     RatedService.markAsRated($scope.user._id, movieId, date = moment(), rating)
     .then((rated) => {
         $scope.movie.rated = rated;
@@ -128,13 +150,17 @@ function($scope, $location, $timeout, MovieService, WatchedService, RatedService
             });
         });
     }
-    
+
+    $scope.updateRating = function(rating){
+      $scope.movie.rating = rating;
+    }
+
 
     $scope.range = function(count){
-        var ratings = []; 
-        for (var i = 0; i < count; i++) { 
-            ratings.push(i+1) 
-        } 
+        var ratings = [];
+        for (var i = 0; i < count; i++) {
+            ratings.push(i+1)
+        }
         return ratings;
     }
 

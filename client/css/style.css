@@ -284,11 +284,21 @@ html, body {
     padding-right: 20px;
     display: flex; }
     .movie .rating .is-rated-star {
-      color: yellow; }
+      background: url("/images/icon/white-star.svg") center no-repeat;
+      background-size: 40px;
+      height: 40px;
+      width: 40px;
+      margin-top: 5px; }
     .movie .rating .rating-value {
       display: inline;
       font-size: 30px;
       padding-left: 8px; }
+    .movie .rating .rating-star {
+      background: url("/images/icon/purple-star.svg") center no-repeat;
+      background-size: 12px;
+      height: 12px;
+      width: 12px;
+      padding-left: 0px; }
   .movie .left-bar {
     float: right;
     margin-top: -140px; }
