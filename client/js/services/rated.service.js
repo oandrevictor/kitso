@@ -60,11 +60,9 @@ kitso.service('RatedService', ['$q','$http', function ($q, $http) {
 
     function updateRated(rated) {
         var deferred = $q.defer();
-        var date = rated.date;
         var rating = rated.rating;
 
         var data = {
-            "date" : date,
             "rating" : rating
         };
 

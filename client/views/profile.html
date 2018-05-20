@@ -226,14 +226,15 @@
                             <div class="uk-position-center">
                               <a href="" class="uk-icon-button uk-margin-small-right" uk-icon="pencil"></a>
                             </div>
-                            <div id="rated-date-{{rated._id}}" uk-dropdown="pos: bottom-center; mode: click" style="z-index: 999">
-                              <div class="uk-form-controls">
-                                <input class="uk-input date-change" type="date" id="release_date" name="release_date" ng-model="rated.date" required>
-                                <button ng-click="updateRated(rated)" class="uk-button uk-button-default check">
-                                  <span uk-icon="icon: check;">
-                                </button>
-
-                              </div>
+                            <div id="rated-{{rated._id}}" uk-dropdown="pos: bottom-center; mode: click" style="z-index: 999">
+                              <center>
+                                <ul class="uk-iconnav">
+                                  <div ng-repeat="n in range('10')">
+                                    <a ng-if="n <= rated.rating" class="rating-star" ng-click="updateRated(rated)"></a>
+                                    <a ng-if="n > rated.rating" uk-icon="icon: star; ratio: .6" ng-click="updateRated(rated)"></a>
+                                  </div>
+                                </ul>
+                              </center>
                             </div>
                           </div>
                         </div>

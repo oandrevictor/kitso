@@ -43,6 +43,16 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthS
 
   }
 
+  $scope.updatedRated = function (rated) {
+    RatedService.updatedRated(rated)
+      .then((rated) => {
+        UIkit.dropdown($('#rated-' + rated._id)).hide();
+      }).catch((error) => {
+        console.log(error);
+      });
+
+  }
+
   $scope.submitForm = function () {
 
     if ($scope.editForm.$valid) {
