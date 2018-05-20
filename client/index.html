@@ -28,6 +28,7 @@
     <script src="js/controllers/SignupController.js"></script>
     <script src="js/controllers/LoginController.js"></script>
     <script src="js/controllers/HomeController.js"></script>
+    <script src="js/controllers/ExploreController.js"></script>
     <script src="js/controllers/ProfileController.js"></script>
     <script src="js/controllers/TvShowController.js"></script>
     <script src="js/controllers/TvShowEditController.js"></script>
@@ -46,10 +47,18 @@
 
     <script src="js/lib/moment.js"></script>
 </head>
-<body ng-app="kitso" ng-controller="MainController">
+<body ng-app="kitso" ng-controller="HomeController">
   <div class="toolbar">
-    <div class="logo"> Kitso</div>
-    <div class= "options" ng-controller="HomeController">
+    <a href="/"class="logo"> Kitso</a>
+
+    <div  ng-show="isLogged()" class="exploring">
+      <a ng-href="/" ><button  class="uk-button uk-button-default icon"><span uk-icon="home"></span></button></a>
+      <a ng-href="/explore" ><button  class="uk-button uk-button-default icon"><span uk-icon="world"></span></button></a>
+      <a ng-href="/profile" ><button  class="uk-button uk-button-default icon"><span uk-icon="user"></span></button></a>
+    </div>
+
+
+    <div class= "options" >
       <button ng-show="isLogged()" class="uk-button uk-button-default options"><span uk-icon="menu"></span></button>
 
       <div uk-dropdown="pos: bottom-right	">

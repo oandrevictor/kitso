@@ -33,6 +33,12 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
             controller: 'HomeController',
             access: { restricted: true }
         })
+        //exploring
+        .when('/explore', {
+            templateUrl: 'views/explore.html',
+            controller: 'ExploreController',
+            access: { restricted: true }
+        })
         // profile page
         .when('/profile', {
             templateUrl: 'views/profile.html',
@@ -93,11 +99,6 @@ angular.module('kitso').run(function ($rootScope, $location, $route, AuthService
                 $route.reload();
             } else if (!next.access.restricted && AuthService.isLogged()) {
                 $location.path('/profile');
-                UIkit.notification({
-                    message: '<span uk-icon=\'icon: check\'></span> To log in/register, you need to log out first.',
-                    status: 'warning',
-                    timeout: 2500
-                });
                 $route.reload();
             }
         });
