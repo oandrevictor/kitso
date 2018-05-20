@@ -104,6 +104,34 @@ exports.addItem = async function(req, res) {
     }    
 }
 
+exports.removeItem = async function(req, res) {
+    try {
+        let userId = req.headers.user_id;
+        let userListId = req.params.userlist_id;
+        let user = await getUser(userId);
+        let isAuthorized = userHasList(user, userListId);
+        if (!isAuthorized) {            
+            res.status(UNAUTHORIZED);
+        }
+        let userList = await getUserList(userListId);
+        let itens = userList.itens;
+        let itemToRemoveRank = req.params.item_rank;
+        if (itemToRemoveRank > itens.length) {            
+            res.status(BAD_REQUEST);
+        }
+        removeItemFromList(itemToRemoveRank, itens);
+        await saveUserList(userList);
+        res.status(OK).json(userList); 
+    } catch(err) {
+        console.log(err);
+        res.status(BAD_REQUEST).send(String(err));
+    }  
+}
+
+exports.changeItemRank = async function(req, res) {
+    // TODO
+}
+
 
 // AUXILIARY FUNCTIONS ============================================================================
 
@@ -155,4 +183,26 @@ var userHasList = function(user, listId) {
 var getMediaJson = function(item) {
     let mediaId = item._media;
     return Media.findById(mediaId).exec();
+}
+
+var removeItemFromList = function(itemToRemoveRank, itens) {
+    var indexOfItemToRemove = -1;
+    for(var i=0; i < itens.length; i++) {
+        let item = itens[i];
+        if (item.ranked == itemToRemoveRank) {            
+            indexOfItemToRemove = i;
+        }        
+    }
+    if (indexOfItemToRemove == -1) {
+        throw new Error('There is no such item with this rank in this list.');
+    } else {
+        itens.splice(indexOfItemToRemove, 1);
+        for(var i=0; i < itens.length; i++) {
+            let item = itens[i];
+            if (item.ranked > itemToRemoveRank) {            
+                item.ranked--;
+            }        
+        }
+    }
+    return(itens);
 }
