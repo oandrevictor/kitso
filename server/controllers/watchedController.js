@@ -91,8 +91,8 @@ exports.delete = async function(req, res) {
     .catch((err) => {
         res.status(400).send(err);
     })
-    .then((createdWatched) => {
-        res.status(200).json(createdWatched);
+    .then((deletedWatched) => {
+        res.status(200).json(deletedWatched);
     });
 };
 

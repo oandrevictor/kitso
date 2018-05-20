@@ -131,6 +131,9 @@ app.use('/api/appears_in', appearsInRoutes);
 var userRoutes = require('./routes/user');
 app.use('/api/user', userRoutes);
 
+var userListRoutes = require('./routes/userList');
+app.use('/api/userlist', userListRoutes);
+
 var watchedRoutes = require('./routes/watched');
 app.use('/api/watched', watchedRoutes);
 
