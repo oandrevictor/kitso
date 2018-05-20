@@ -1,24 +1,23 @@
 kitso = angular.module('kitso');
 
 kitso.controller('PersonController',
-    ['$scope', '$location', '$timeout', 'PersonService', '$routeParams', 'AuthService',
-        function($scope, $location, $timeout, PersonService, $routeParams, AuthService) {
+    ['$scope', '$location', '$timeout', '$route', '$routeParams', 'PersonService', 'AuthService',
+        function($scope, $location, $timeout, $route, $routeParams, PersonService, AuthService) {
 
             PersonService.loadPerson($routeParams.person_id)
-                .then(() => {
-                    AuthService.getStatus().then(function(){
+                .then((loadedPerson) => {
+                    AuthService.getStatus()
+                    .then(() => {
                         $scope.user = AuthService.getUser();
-                        $scope.person = PersonService.getPerson();
+                        $scope.person = loadedPerson;
                         $scope.birthday_date_formated = moment($scope.person.birthday).format('DD/MM/YYYY');
 
                         if ($scope.person._appears_in.length === 0) {
                             $scope.background = "/images/It-Follows-background.jpg"; // Criar um cover default do kisto
-                        }
-
-                        PersonService.loadMedias( $scope.person._appears_in)
-                            .then(() => {
-                                $scope.mediasPersonAppears = PersonService.getMedias();
-
+                        } else {
+                            PersonService.loadMedias($scope.person._appears_in)
+                            .then((loadedMedias) => {
+                                $scope.mediasPersonAppears = loadedMedias;
                                 $scope.background = ($scope.mediasPersonAppears[Math.floor((Math.random() * $scope.mediasPersonAppears.length))])['media']['images']['cover'];
                             })
                             .catch((error) => {
@@ -28,9 +27,14 @@ kitso.controller('PersonController',
                                     timeout: 2500
                                 });
                             });
-
+                        }
 
                     }).catch((error) => {
+                        UIkit.notification({
+                            message: '<span uk-icon=\'icon: check\'></span> ' + 'Something went wrong. Try to reload the page.',
+                            status: 'danger',
+                            timeout: 2500
+                        });
                     });
                 })
                 .catch((error) => {

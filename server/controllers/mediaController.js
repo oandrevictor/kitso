@@ -28,25 +28,29 @@ exports.showAll = function(req, res) {
     var queries = 0;
     var response = [];
 
-    for (var i = 0; i < medias.length; i++) {
-        let cb_index = i;
-        Media.findById(medias[i])
-        .catch((err) => {
-            response[cb_index] = {error: err};
-            queries++;      
-
-            if (queries == medias.length) done();
-        })
-        .then((result) => {
-            response[cb_index] = {media: result};
-            queries++;
-
-            if (queries == medias.length) done();
-        });
-    }
-
-    function done() {
-        res.status(200).send(response);
+    if (req.body.medias.length > 0) {
+        for (var i = 0; i < medias.length; i++) {
+            let cb_index = i;
+            Media.findById(medias[i])
+            .catch((err) => {
+                response[cb_index] = {error: err};
+                queries++;      
+    
+                if (queries == medias.length) done();
+            })
+            .then((result) => {
+                response[cb_index] = {media: result};
+                queries++;
+    
+                if (queries == medias.length) done();
+            });
+        }
+    
+        function done() {
+            res.status(200).send(response);
+        }
+    } else {
+        res.status(400).json({message: "Body medias field is empty."});
     }
     
 };

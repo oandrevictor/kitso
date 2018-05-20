@@ -21,7 +21,7 @@ kitso.service('PersonService', ['$q','$http', function ($q, $http) {
             .then((response) => {
                 if (response.status === 200) {
                     person = response.data;
-                    deferred.resolve();
+                    deferred.resolve(person);
                 } else {
                     deferred.reject();
                 }
@@ -47,7 +47,7 @@ kitso.service('PersonService', ['$q','$http', function ($q, $http) {
             .then((response) => {
                 if (response.status === 200) {
                     medias = response.data;
-                    deferred.resolve();
+                    deferred.resolve(medias);
                 } else {
                     deferred.reject();
                 }

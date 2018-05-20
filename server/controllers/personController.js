@@ -47,6 +47,7 @@ exports.update = function(req, res) {
         if (req.body.name) person.name = req.body.name;
         if (req.body.description) person.description = req.body.description;
         if (req.body.birthday) person.birthday = req.body.birthday;
+        if (req.body.image_url) person.image_url = req.body.image_url;
         if (req.body._appears_in) person._appears_in = req.body._appears_in;
         person.save()
         .catch((err) => {
