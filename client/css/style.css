@@ -6,6 +6,7 @@ html, body {
 .uk-tab > * {
   margin-right: auto;
   margin-left: auto; }
+
 .uk-card-default {
   box-shadow: none !important; }
 
@@ -263,7 +264,7 @@ html, body {
   .profile .uk-iconnav > * {
     padding-left: 3px !important; }
   .profile .date-change {
-    width: 85%; }
+    width: 85% !important; }
   .profile .follow-button {
     cursor: pointer;
     color: white;
@@ -271,7 +272,6 @@ html, body {
     background: rgba(0, 0, 0, 0.7);
     padding-left: 8px;
     padding-right: 8px; }
-
   .profile .check {
     width: 20px !important;
     min-width: 20px !important;
