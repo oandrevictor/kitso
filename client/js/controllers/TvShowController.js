@@ -93,23 +93,28 @@ function($scope, $location, $timeout, $routeParams, TvShowService, WatchedServic
             $scope.markAsNotRated($scope.tvshow.rated.rated_id);
             $scope.markAsRated(tvshowId, rating);
             $scope.updateRating(rating);
+            UIkit.notification({
+                message: '<span uk-icon=\'icon: check\'></span> Rating edited!',
+                status: 'success',
+                timeout: 1500
+            });
           } else {
             $scope.markAsNotRated($scope.tvshow.rated.rated_id);
             $scope.updateRating(0);
+            UIkit.notification({
+                message: '<span uk-icon=\'icon: check\'></span> Rating removed.',
+                status: 'warning',
+                timeout: 1500
+            });
           }
-          UIkit.notification({
-                          message: '<span uk-icon=\'icon: check\'></span> Rating edited!',
-                          status: 'success',
-                          timeout: 1500
-                      });
       } else {
           $scope.markAsRated(tvshowId, rating);
           $scope.updateRating(rating);
           UIkit.notification({
-                          message: '<span uk-icon=\'icon: check\'></span> Rated!',
-                          status: 'success',
-                          timeout: 1500
-                      });
+                message: '<span uk-icon=\'icon: check\'></span> Rated!',
+                status: 'success',
+                timeout: 1500
+            });
       }
     }
 
