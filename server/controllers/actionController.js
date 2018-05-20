@@ -5,21 +5,6 @@ var Watched = require('../models/Watched');
 var Follows = require('../models/Follows');
 var FollowsṔage = require('../models/FollowsPage');
 
-
-// exports.index = async function(req, res) {
-//     try {
-//         action_list = await Action.find({}).exec();;
-//         promises = watched_list.map(inject_media_json);
-//     } catch (err) {
-//         res.status(400).json(err);
-//     }
-//     promise = actions.map(formatActionObject);
-
-//     Promise.all(promises).then(function(results) {
-//         res.status(200).json(results);
-//     })
-// };
-
 exports.index = async function(req, res) {
     let action_list, promises;
     try {
@@ -36,13 +21,15 @@ exports.index = async function(req, res) {
 
 
 // Uma ação
-exports.show = function(req, res) {
+exports.show = async function(req, res) {
     Action.findById(req.params.action_id)
     .catch((err) => {
         res.status(400).send(err);
     })
     .then((result) => {
-        res.status(200).json(formatActionObject(result));
+        inject_media_json(result).then(function(results) {
+            res.status(200).json(results);
+        });
     });
 };
 
