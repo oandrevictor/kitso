@@ -9,7 +9,7 @@ function($scope, $location, $timeout, MovieService, WatchedService,  FollowServi
       $scope.logged_user = AuthService.getUser();
       UserService.getUser($routeParams.user_id).then((user)=> {
         $scope.user = user;
-        FollowService.isFollowingUser($scope.logged_user._id, $routeParams.user_id).then((followed) => {
+        FollowService.isFollowingUser($scope.logged_user._id, $scope.user._id).then((followed) => {
           $scope.user.followed = followed;
         }).catch((error) => {
           console.log(error)
@@ -28,20 +28,20 @@ function($scope, $location, $timeout, MovieService, WatchedService,  FollowServi
     })
 
 
-    $scope.canEdit = function(){
+    $scope.canEdit = function(user){
       if (!$scope.user || !$scope.logged_user)
         return false;
       else
-        return $scope.user._id == $scope.logged_user.id;
+        return ($scope.user._id === $scope.logged_user._id);
     }
 
-    $scope.follow = function(movieId){
-        FollowService.followPage($scope.user._id, movieId)
+    $scope.follow = function(user){
+      userId = user._id;
+        FollowService.followUser($scope.logged_user._id, userId)
         .then((followed) => {
-            $scope.movie.followed = followed;
-            $scope.movie.followed.following_id = followed._id;
-            $scope.movie.followed.is_following = true;
-
+            user.followed = followed;
+            user.followed.following_id = followed._id;
+            user.followed.is_following = true;
         })
         .catch((error) => {
             UIkit.notification({
@@ -52,11 +52,11 @@ function($scope, $location, $timeout, MovieService, WatchedService,  FollowServi
         });
     };
 
-    $scope.unfollow = function(movie){
-      var followId = movie.followed.following_id;
-        FollowService.unfollowPage(followId)
+    $scope.unfollow = function(user){
+      var followId = user.followed.following_id;
+        FollowService.unfollowUser(followId)
         .then((followed) => {
-            $scope.movie.followed = false;
+            user.followed = false;
         })
         .catch((error) => {
             UIkit.notification({

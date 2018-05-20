@@ -5,7 +5,10 @@ html, body {
     max-width: 100%;
     overflow-x: hidden;
 }
-
+.uk-tab>*{
+margin-right: auto;
+margin-left: auto;
+}
 .home {
   font-family: 'Roboto', sans-serif;
   background: black;
@@ -233,6 +236,14 @@ html, body {
   .date-change{
     width: 85%;
   }
+  .follow-button {
+    cursor: pointer;
+    color: white;
+    display: inline-block;
+    background: rgba(0,0,0, 0.7);
+    padding-left: 8px;
+    padding-right: 8px;
+  }
   .check {
     width: 20px !important;
     min-width: 20px !important;
@@ -342,8 +353,10 @@ html, body {
   }
   .profile-image {
     border-style: solid;
+    display: block;
   }
   .profile-name {
+    display: inline-block;
     text-shadow: 1px 1px 2px black, 0 0 1em #000000, 0 0 0.2em #000000;
     margin: 2px;
   }

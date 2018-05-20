@@ -10,9 +10,11 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
         getUsersFollowing: getUsersFollowing,
         getPagesFollowing: getPagesFollowing,
         unfollowPage: unfollowPage,
+        unfollowUser: unfollowUser,
         isFollowingPage: isFollowingPage,
         isFollowingUser: isFollowingUser,
-        followPage: followPage
+        followPage: followPage,
+        followUser: followUser
     });
 
     var getFollowing = function(userId, url){
@@ -142,5 +144,46 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
             });
 
         return deferred.promise;
+    }
+
+    function followUser(userId, user2Id, date = moment()) {
+        var deferred = $q.defer();
+
+        var data = {
+            "_user": userId,
+            "_following": user2Id
+        };
+
+        $http.post('/api/follows/', data)
+            .then((response) => {
+                if (response.status === 200) {
+                    deferred.resolve(response.data);
+                } else {
+                    deferred.reject();
+                }
+            })
+            .catch((error) => {
+                deferred.reject(error.data);
+            });
+
+        return deferred.promise;
+    }
+
+    function unfollowUser(followsId) {
+      var deferred = $q.defer();
+
+      $http.delete('/api/follows/' + followsId)
+          .then((response) => {
+              if (response.status === 200) {
+                  deferred.resolve();
+              } else {
+                  deferred.reject();
+              }
+          })
+          .catch((error) => {
+              deferred.reject(error.data);
+          });
+
+      return deferred.promise;
     }
 }]);
