@@ -21,7 +21,7 @@ var port = process.env.PORT || 8080;
 
 // connect to our mongoDB database
 // (uncomment after you enter in your own credentials in config/db.js)
-mongoose.connect(db.url);
+mongoose.connect(db.local_url);
 
 // Passport and sessions
 require('./config/passport')(passport);
@@ -68,6 +68,10 @@ app.get('/login', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
 
+app.post('/passwordRecover/:email', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
 app.get('/home', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
@@ -104,6 +108,9 @@ app.get('/person/edit/:id', function (req, res) {
 var exampleRoutes = require('./routes/example');
 app.use('/example', exampleRoutes);
 
+var emailRoutes = require('./routes/email');
+app.use('/api/email', emailRoutes);
+
 var movieRoutes = require('./routes/movie');
 app.use('/api/movie', movieRoutes);
 
@@ -127,6 +134,12 @@ app.use('/api/action', actionRoutes);
 
 var mediaRoutes = require('./routes/media');
 app.use('/api/media', mediaRoutes);
+
+var newsRoutes = require('./routes/news');
+app.use('/api/news', newsRoutes);
+
+var relatedRoutes = require('./routes/related');
+app.use('/api/related', relatedRoutes);
 
 // start app ===============================================
 // startup our app at http://localhost:8080
