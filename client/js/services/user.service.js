@@ -6,12 +6,31 @@ kitso.service('UserService', ['$q', '$http', function ($q, $http) {
         findByEmail: findByEmail,
         sendPasswordRecoverEmail: sendPasswordRecoverEmail,
         updateUserPassword: updateUserPassword,
-        editUser: editUser
+        editUser: editUser,
+        getUser: getUser
     });
+
+    function getUser(userId){
+      var deferred = $q.defer();
+      $http.get('/api/user/' + userId)
+          .then((response) => {
+            if (response.status === 200) {
+              var user = response.data;
+              user.birthday = new Date(user.birthday);
+                  deferred.resolve(user);
+              } else {
+                  deferred.reject();
+              }
+          })
+          .catch((error) => {
+              deferred.reject(error.data);
+          });
+        return deferred.promise;
+    }
 
     function findByEmail(email) {
         var deferred = $q.defer();
-        
+
         $http.post('/api/user/email', email)
             .then(function (response) {
                 if (response.status === 200) {
