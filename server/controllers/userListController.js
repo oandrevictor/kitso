@@ -4,9 +4,10 @@ var User = require('../models/User');
 var Media = require('../models/Media');
 
 
-const UNAUTHORIZED = 401;
-const BAD_REQUEST = 400;
-const OK = 200;
+const UNAUTHORIZED_CODE = 401;
+const UNAUTHORIZED_MSG = "Unauthorized!";
+const BAD_REQUEST_CODE = 400;
+const OK_CODE = 200;
 
 
 // CRUD USERLIST ==================================================================================
@@ -18,11 +19,11 @@ exports.show = async function(req, res) {
         let itens = userList.itens;
         let promises = itens.map(getMediaJson);
         Promise.all(promises).then(function(results) {
-            res.status(OK).json(results);
+            res.status(OK_CODE).json(results);
         })
     } catch (err) {
         console.log(err)
-        res.status(BAD_REQUEST).send(err);
+        res.status(BAD_REQUEST_CODE).send(err);
     }    
 }
 
@@ -32,10 +33,10 @@ exports.create = async function(req, res) {
         let userId = userList._user;
         await addListToUserLists(userList._id, userId);
         await saveUserList(userList);
-        res.status(OK).json(userList);    
+        res.status(OK_CODE).json(userList);    
     } catch(err) {
         console.log(err);
-        res.status(BAD_REQUEST).send(err);
+        res.status(BAD_REQUEST_CODE).send(err);
     }
 };
 
@@ -50,10 +51,10 @@ exports.update = async function(req, res) {
             userList.title = req.body.title;
         }
         await saveUserList(userList);
-        res.status(OK).json(userList);
+        res.status(OK_CODE).json(userList);
     } catch (err) {
         console.log(err)
-        res.status(BAD_REQUEST).send(err);
+        res.status(BAD_REQUEST_CODE).send(err);
     }
 };
 
@@ -64,14 +65,14 @@ exports.delete = async function(req, res) {
         let user = await getUser(userId);
         let isAuthorized = userHasList(user, userListId);
         if (!isAuthorized) {            
-            res.status(UNAUTHORIZED);
+            res.status(UNAUTHORIZED_CODE);
         }
         let deletedList = await removeListFromUserLists(userListId, userId);
         await deleteListFromDb(userListId);
-        res.status(OK).json(deletedList);
+        res.status(OK_CODE).json(deletedList);
     } catch (err) {
         console.log(err);
-        res.status(BAD_REQUEST).send(err);
+        res.status(BAD_REQUEST_CODE).send(err);
     }
 }
 
@@ -85,7 +86,7 @@ exports.addItem = async function(req, res) {
         let user = await getUser(userId);
         let isAuthorized = userHasList(user, userListId);
         if (!isAuthorized) {            
-            res.status(UNAUTHORIZED);
+            res.status(UNAUTHORIZED_CODE);
         }
         let userList = await getUserList(userListId);
         let itens = userList.itens;
@@ -97,10 +98,10 @@ exports.addItem = async function(req, res) {
         itens.push(newItem);
         await saveUserList(userList);
         // await newItem.save();
-        res.status(OK).json(userList); 
+        res.status(OK_CODE).json(userList); 
     } catch(err) {
         console.log(err);
-        res.status(BAD_REQUEST).send(err);
+        res.status(BAD_REQUEST_CODE).send(err);
     }    
 }
 
@@ -108,28 +109,43 @@ exports.removeItem = async function(req, res) {
     try {
         let userId = req.headers.user_id;
         let userListId = req.params.userlist_id;
-        let user = await getUser(userId);
-        let isAuthorized = userHasList(user, userListId);
-        if (!isAuthorized) {            
-            res.status(UNAUTHORIZED);
-        }
+        await checkIfUserIsAuthorizedToManipulateList(userId, userListId);
         let userList = await getUserList(userListId);
         let itens = userList.itens;
         let itemToRemoveRank = req.params.item_rank;
         if (itemToRemoveRank > itens.length) {            
-            res.status(BAD_REQUEST);
+            res.status(BAD_REQUEST_CODE);
         }
         removeItemFromList(itemToRemoveRank, itens);
         await saveUserList(userList);
-        res.status(OK).json(userList); 
+        res.status(OK_CODE).json(userList); 
     } catch(err) {
         console.log(err);
-        res.status(BAD_REQUEST).send(String(err));
+        if (err.msg === UNAUTHORIZED_MSG) {
+            res.status(UNAUTHORIZED_CODE);
+        }
+        res.status(BAD_REQUEST_CODE).send(String(err));
     }  
 }
 
 exports.changeItemRank = async function(req, res) {
-    // TODO
+    try {
+        let userId = req.headers.user_id;
+        let userListId = req.params.userlist_id;
+        let user = await getUser(userId);
+        let isAuthorized = userHasList(user, userListId);
+        if (!isAuthorized) { 
+            res.status(UNAUTHORIZED_CODE);
+        }
+        let userList = await getUserList(userListId);
+        let itens = userList.itens;
+        changeRank(req.body.current_rank, req.body.new_rank, itens);
+        await saveUserList(userList);
+        res.status(OK_CODE).json(userList); 
+    } catch(err) {
+        console.log(err);
+        res.status(BAD_REQUEST_CODE).send(String(err));
+    } 
 }
 
 
@@ -204,5 +220,35 @@ var removeItemFromList = function(itemToRemoveRank, itens) {
             }        
         }
     }
-    return(itens);
+}
+
+var changeRank = function(itemCurrentRank, itemNewRank, itens) {
+    if (itemNewRank > itens.length) {            
+        throw new Error('There is no such item with this rank in this list.');
+    }
+    for(var i=0; i < itens.length; i++) {
+        let item = itens[i];
+        if (item.ranked == itemCurrentRank) {                        
+            item.ranked = itemNewRank;
+            changedRank = true;
+        } else {
+            if (itemCurrentRank < itemNewRank) { // ex: if i am 3 and i want to move to 5
+                if (item.ranked > itemCurrentRank && item.ranked <= itemNewRank) {            
+                    item.ranked--;
+                }
+            } else { // ex: if i am 5 and i want to move to 3
+                if (item.ranked >= itemNewRank) {            
+                    item.ranked++;
+                }                
+            }
+        }        
+    }
+}
+
+var checkIfUserIsAuthorizedToManipulateList = async function(userId, userListId) {
+    let user = await getUser(userId);
+    let isAuthorized = userHasList(user, userListId);
+    if (!isAuthorized) { 
+        throw new Error(UNAUTHORIZED_MSG);
+    }
 }

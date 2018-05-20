@@ -13,6 +13,8 @@ router.delete('/:userlist_id', userListController.delete);
 
 router.post('/:userlist_id/item', userListController.addItem);
 
+router.put('/:userlist_id/change_rank', userListController.changeItemRank);
+
 router.delete('/:userlist_id/delete_item/:item_rank', userListController.removeItem);
 
 module.exports = router;
