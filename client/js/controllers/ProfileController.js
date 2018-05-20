@@ -1,4 +1,4 @@
-var kitso = angular.module('kitso');
+ var kitso = angular.module('kitso');
 
 kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthService', 'WatchedService', 'RatedService',
  function ($scope, $location, $timeout, AuthService, WatchedService, RatedService) {

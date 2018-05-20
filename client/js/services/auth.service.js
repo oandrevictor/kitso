@@ -12,7 +12,6 @@ kitso.service('AuthService', ['$q', '$http', function ($q, $http) {
         getUser: getUser,
         isLogged: isLogged,
         logout: logout,
-        editUser: editUser,
         deleteUser: deleteUser
     });
 
