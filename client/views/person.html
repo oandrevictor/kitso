@@ -1,6 +1,6 @@
 <div class="person">
     <!--Cover Content-->
-    <div class="uk-background-cover" align="center" style="background-image: url({{background}})">
+    <div class="uk-background-cover" align="center" style="background-image: url({{ background }})">
         <div class="uk-width-xxlarge">
             <div class="title person-name">{{person.name}}
             </div>
@@ -8,7 +8,7 @@
     </div>
     <div class="uk-width-xxlarge content">
         <div class="left-bar uk-width-1-4">
-            <img class="poster" style="background-image: url({{person.image_url}})" />
+            <img class="poster" style="background-image: url({{ person.image_url }})" />
             <p align="center"> Born in {{ birthday_date_formated }}</p>
             <button class="uk-button uk-button-default edit-user-button" ng-click="editionMode()">
             <span uk-icon="icon: pencil;"></span> Edit person</button>
@@ -33,7 +33,7 @@
                         <div ng-repeat="media in mediasPersonAppears">
                             <li>
                                 <div class="uk-card uk-grid-match uk-card-default uk-card-hover appears-in" ng-click="goToMedia(media['media'])">
-                                    <img class="poster" style="background-image: url({{media['media'].images.poster}})" />
+                                    <img class="poster" style="background-image: url({{ media['media'].images.poster }})" />
                                     <div class="uk-card-body">
                                         <p class="uk-align-center uk-text-uppercase" align="center"> {{media['media'].name}}</p>
                                     </div>
