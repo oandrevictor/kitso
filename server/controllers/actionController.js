@@ -38,7 +38,7 @@ var inject_media_json = async function(action) {
     let action_id = action._action;
 
     user_obj = await getUser(user_id);
-    action_obj = await getAction(action_id);
+    action_obj = await getAction(action.action_type, action_id);
 
     let action_complete = action;
     action_complete._user = user_obj;
@@ -52,14 +52,14 @@ var getUser = async function(id) {
 }
 
 var getAction = async function(type, id) {
-    if (type == "rated") {
+    if (type == 'rated') {
         return Rated.findById(id).exec();
-    } else if (type == "watched") {
+    } else if (type == 'watched') {
         return Watched.findById(id).exec();
-    } else if (type == "followed") {
+    } else if (type == 'followed') {
         return Follows.findById(id).exec();
-    } else if (type == "followed-page") {
-        return FollowsPage.findById(id).exec();
+    } else {
+        return FollowsṔage.findById(id).exec();
     }
 }
 
