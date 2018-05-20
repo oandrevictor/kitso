@@ -324,10 +324,9 @@ html, body {
 
 .tvshow {
   font-family: 'Roboto' !important; }
-  .tvshow-name {
+  .tvshow .tvshow-name {
     text-shadow: 1px 1px 2px black, 0 0 1em #000000, 0 0 0.2em #000000;
-    margin: 2px;
-  }
+    margin: 2px; }
   .tvshow .uk-background-cover {
     z-index: -1;
     background: url("/images/changeling.jpg");
@@ -412,7 +411,7 @@ html, body {
   font-family: 'Roboto' !important; }
   .person .uk-background-cover {
     z-index: -1;
-    background: url("/images/It-Follows-background.jpg");
+    background: url("/poster");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
@@ -443,6 +442,12 @@ html, body {
     float: right;
     margin-top: -140px; }
   .person .poster {
+    background-image: url("/images/person-edited.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 160px;
+    height: 240px;
+    overflow: hidden;
     box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
     border: 4px solid white; }
   .person .section {
