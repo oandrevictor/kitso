@@ -1,10 +1,30 @@
 var UserList = require('../models/UserList');
 var ListItem = UserList.base.models.ListItem;
 var User = require('../models/User');
+var Media = require('../models/Media');
+
 
 const UNAUTHORIZED = 401;
 const BAD_REQUEST = 400;
 const OK = 200;
+
+
+// CRUD USERLIST ==================================================================================
+
+exports.show = async function(req, res) {
+    try {
+        let userListId = req.params.userlist_id;
+        let userList = await getUserList(userListId);
+        let itens = userList.itens;
+        let promises = itens.map(getMediaJson);
+        Promise.all(promises).then(function(results) {
+            res.status(OK).json(results);
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(BAD_REQUEST).send(err);
+    }    
+}
 
 exports.create = async function(req, res) {
     try {
@@ -54,6 +74,9 @@ exports.delete = async function(req, res) {
         res.status(BAD_REQUEST).send(err);
     }
 }
+
+
+// LIST ITENS FUNCTIONS ===========================================================================
 
 exports.addItem = async function(req, res) {
     try {
@@ -127,4 +150,9 @@ var userHasList = function(user, listId) {
         }
     }
     return userHasList;
+}
+
+var getMediaJson = function(item) {
+    let mediaId = item._media;
+    return Media.findById(mediaId).exec();
 }
