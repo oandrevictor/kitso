@@ -451,6 +451,11 @@ html, body {
 
 .tvshow {
   font-family: 'Roboto' !important;
+  .tvshow-name {
+    text-shadow: 1px 1px 2px black, 0 0 1em #000000, 0 0 0.2em #000000;
+    margin: 2px;
+  }
+
   .uk-background-cover {
     z-index: -1;
     background: url("/images/changeling.jpg");
@@ -465,6 +470,18 @@ html, body {
     padding-top: 4%;
     position: relative;
   }
+
+  .poster {
+    background: #502274;
+    background-repeat:no-repeat;
+    background-size:cover;
+    width: 191px;
+    height: 275px;
+    overflow:hidden;
+    box-shadow: 0 0px 10px rgba(0,0,0,0.1);
+    border: 4px solid white;
+  }
+
   .title {
     bottom: 10px;
     position: absolute;
@@ -554,5 +571,98 @@ html, body {
   border-radius: 0px !important;
   &.purple {
     background: #502274;
+  }
+}
+
+.person {
+  font-family: 'Roboto' !important;
+  .uk-background-cover {
+    z-index: -1;
+    background: url("/poster");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    overflow-y: auto !important;
+    height: 30vh;
+    display: block;
+    color: #ffffff !important;
+    padding-bottom: 0px !important;
+    padding-top: 4%;
+    position: relative;
+  }
+
+  .uk-card-body {
+    padding: 6%;
+  }
+
+  .content {
+    padding-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .title {
+    bottom: 10px;
+    position: absolute;
+    font-size: 4vh;
+    font-weight: 100;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .description {
+    text-align: justify;
+    width: 540px;
+  }
+
+  .left-bar {
+    float: right;
+    margin-top: -92px;
+  }
+
+  .poster {
+    background: url("/images/person-edited.png");
+    background: #502274;
+    background-repeat:no-repeat;
+    background-size:cover;
+    width: 191px;
+    height: 240px;
+    overflow:hidden;
+    box-shadow: 0 0px 10px rgba(0,0,0,0.1);
+    border: 4px solid white;
+  }
+
+  .section {
+    margin-top: 8px;
+    margin-bottom: 4px;
+  }
+
+  .section-title {
+    margin-bottom: 3px;
+    font-size: 2.5vh;
+    color: #773095;
+    font-weight: 100;
+  }
+
+  .edit-user-button {
+    display: block;
+    width: 191px;
+    border: 1px solid #FFFFFF;
+    font-size: 10px !important;
+  }
+
+  .uk-card {
+    cursor: pointer !important;
+  }
+
+  .person-name {
+    text-shadow: 1px 1px 2px black, 0 0 1em #000000, 0 0 0.2em #000000;
+    margin: 2px;
+  }
+
+  p {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    font-size: 14px;
   }
 }

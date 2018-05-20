@@ -1,0 +1,52 @@
+<div class="person">
+    <!--Cover Content-->
+    <div class="uk-background-cover" align="center" style="background-image: url({{background}})">
+      <div class="uk-width-xxlarge">
+        <div class="title person-name">
+          Edit Person - {{person.name}}
+        </div>
+      </div>
+    </div>
+  
+    <div class="uk-width-xxlarge content">
+      <div class="left-bar uk-width-1-4">
+        <img class="poster" style="background-image: url({{person.image_url}})" />
+        <button class="uk-button uk-button-default edit-user-button" ng-click="savePerson()">
+        <span uk-icon="icon: check;"></span> Save page</button>
+        <button class="uk-button uk-button-default edit-user-button" ng-click="discardChanges()">
+        <span uk-icon="icon: close;"></span> Cancel</button>
+      </div>
+  
+      <div class="uk-width-3-4">
+        <div class="uk-margin">
+          <label class="uk-form-label">Person name</label>
+          <input class="uk-input" type="text" ng-model="person.name">
+        </div>
+  
+        <div class="uk-margin">
+          <label class="uk-form-label">Description</label>
+          <textarea class="uk-textarea" rows="3" ng-model="person.description"></textarea>
+        </div>
+  
+        <div class="uk-margin">
+          <label class="uk-form-label">Birthday</label>
+          <div class="uk-form-controls">
+              <input class="uk-input" type="date" id="birthday" name="birthday"
+                     ng-model="person.birthday" required>
+          </div>
+        </div>
+  
+        <div class="uk-margin">
+          <label class="uk-form-label">Poster Image URL</label>
+          <input class="uk-input" type="text" ng-model="person.image_url">
+        </div>
+
+        <div class="uk-margin">
+            <label class="uk-form-label">Appears In</label>
+            <input class="uk-input" type="text" ng-model="person._appears_in">
+          </div>
+  
+      </div>
+    </div>
+  </div>
+  
