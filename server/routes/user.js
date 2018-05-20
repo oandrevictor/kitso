@@ -10,6 +10,8 @@ router.get('/status', authController.status);
 
 router.get('/logout', authController.logout);
 
+router.get('/query', userController.findby);
+
 router.get('/:user_id', userController.show);
 
 router.post('/', userController.create);
