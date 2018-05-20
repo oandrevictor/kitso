@@ -43,6 +43,18 @@ exports.is_following = async function(req, res) {
     });
 }
 
+exports.following_me = async function(req, res) {
+    let page_id = req.params.page_id;
+    let following_me_list;
+    try {
+        following_me_list = await FollowsPage.find({_following: page_id}).exec();
+
+        res.status(200).json(following_me_list);
+    } catch (err) {
+        res.status(400).json(err);
+    }
+}
+
 exports.create = async function(req, res) {
     var follow = new FollowsPage(req.body);
     let user_id = follow._user;
