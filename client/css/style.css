@@ -440,12 +440,13 @@ html, body {
     width: 540px; }
   .person .left-bar {
     float: right;
-    margin-top: -140px; }
+    margin-top: -92px; }
   .person .poster {
-    background-image: url("/images/person-edited.png");
+    background: url("/images/person-edited.png");
+    background: #502274;
     background-repeat: no-repeat;
     background-size: cover;
-    width: 160px;
+    width: 191px;
     height: 240px;
     overflow: hidden;
     box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
