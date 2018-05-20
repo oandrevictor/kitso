@@ -340,6 +340,15 @@ html, body {
     padding-bottom: 0px !important;
     padding-top: 4%;
     position: relative; }
+  .tvshow .poster {
+    background: #502274;
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 191px;
+    height: 275px;
+    overflow: hidden;
+    box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
+    border: 4px solid white; }
   .tvshow .title {
     bottom: 10px;
     position: absolute;
