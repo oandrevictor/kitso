@@ -1,4 +1,5 @@
 var Person = require('../models/Person');
+var Media = require('../models/Media');
 
 exports.index = function(req, res) {
     Person.find({})
@@ -20,8 +21,13 @@ exports.show = function(req, res) {
     });
 };
 
-exports.create = function(req, res) {
+exports.create = async function(req, res) {
     var person = new Person(req.body);
+    try {
+        await add_person_to_media_cast(person._appears_in, person._id);
+    } catch (err) {
+        res.status(400).send(err);
+    }
 
     person.save()
     .catch((err) => {
@@ -43,11 +49,19 @@ exports.update = function(req, res) {
     .catch((err) => {
         res.status(400).send(err);
     })
-    .then((person) => {
+    .then(async(person) => {
         if (req.body.name) person.name = req.body.name;
         if (req.body.description) person.description = req.body.description;
         if (req.body.birthday) person.birthday = req.body.birthday;
+        if (req.body.image_url) person.image_url = req.body.image_url;
         if (req.body._appears_in) person._appears_in = req.body._appears_in;
+
+        try {
+            await add_person_to_media_cast(person._appears_in, person._id);
+        } catch (err) {
+            res.status(400).send(err);
+        }
+
         person.save()
         .catch((err) => {
             res.status(400).send(err);
@@ -59,11 +73,43 @@ exports.update = function(req, res) {
 };
 
 exports.delete = function(req, res) {
-    Person.remove({ _id: req.params.person_id})
+    Person.findById(req.params.person_id)
     .catch((err) => {
         res.status(400).send(err);
     })
-    .then(() => {
-        res.status(200).send('Person removed.');
+    .then((person) => {
+        Person.remove({ _id: req.params.person_id})
+        .catch((err) => {
+            res.status(400).send(err);
+        })
+        .then(async () => {
+            try {
+                await remove_person_from_media_cast(person._appears_in, person._id);
+                res.status(200).send('Person removed.');
+            } catch (err) {
+                res.status(400).send(err);
+            }
+        });
     });
 };
+
+var add_person_to_media_cast = async function(medias, person_id) {
+    medias.forEach(media_id => {
+        Media.findById(media_id, function(err, media) {
+            media._actors.push(person_id);
+            media.save();
+        });
+    });
+}
+
+var remove_person_from_media_cast = async function(medias, person_id) {
+    medias.forEach(media_id => {
+        Media.findById(media_id, function(err, media) {
+            var index = media._actors.indexOf(person_id);
+            if (index > -1) {
+                media._actors.splice(index, 1);
+            }
+            media.save();
+        });
+    });
+}

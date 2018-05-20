@@ -100,6 +100,14 @@ app.get('/movie/edit/:id', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
 
+app.get('/person/:id', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
+app.get('/person/edit/:id', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
 // Api routes
 var exampleRoutes = require('./routes/example');
 app.use('/example', exampleRoutes);
@@ -133,6 +141,9 @@ app.use('/api/follows', followsRoutes);
 
 var followsPageRoutes = require('./routes/followsPage');
 app.use('/api/followsPage', followsPageRoutes);
+
+var mediaRoutes = require('./routes/media');
+app.use('/api/media', mediaRoutes);
 
 var newsRoutes = require('./routes/news');
 app.use('/api/news', newsRoutes);
