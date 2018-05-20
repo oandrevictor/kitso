@@ -9,8 +9,11 @@ exports.index = async function(req, res) {
     let following_list;
     try {
         following_list = await Follows.find({_user: user_id}).exec();
+        promises = following_list.map(getFollowedFromFollow);
 
-        res.status(200).json(following_list);
+        Promise.all(promises).then(function(results) {
+            res.status(200).json(results);
+        })  
     } catch (err) {
         res.status(400).json(err);
     }
@@ -39,12 +42,15 @@ exports.is_following = async function(req, res) {
 }
 
 exports.following_me = async function(req, res) {
-    let user_id = req.params.user_id;
+    let user_id = req.query.user_id;
     let following_me_list;
     try {
         following_me_list = await Follows.find({_following: user_id}).exec();
+        promises = following_me_list.map(getFollowedFromFollow);
 
-        res.status(200).json(following_me_list);
+        Promise.all(promises).then(function(results) {
+            res.status(200).json(results);
+        }) 
     } catch (err) {
         res.status(400).json(err);
     }
@@ -88,6 +94,10 @@ exports.delete = async function(req, res) {
         }
     });
 };
+
+var getFollowedFromFollow = async function(follow) {
+    return User.findById(follow._following).exec();
+}
 
 var create_action = async function(user_id, follow_id) {
     var action = new Action({

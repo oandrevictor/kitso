@@ -1,6 +1,8 @@
 var FollowsPage = require('../models/FollowsPage');
 var Action = require('../models/Action');
 var User = require('../models/User');
+var Media = require('../models/Media');
+var Person = require('../models/Person');
 
 const FOLLOWED_ACTION_TYPE = "followed";
 
@@ -9,8 +11,11 @@ exports.index = async function(req, res) {
     let following_list;
     try {
         following_list = await FollowsPage.find({_user: user_id}).exec();
+        promises = following_list.map(getFollowedFromFollow);
 
-        res.status(200).json(following_list);
+        Promise.all(promises).then(function(results) {
+            res.status(200).json(results);
+        }) 
     } catch (err) {
         res.status(400).json(err);
     }
@@ -36,18 +41,6 @@ exports.is_following = async function(req, res) {
             }
         }
     });
-}
-
-exports.following_me = async function(req, res) {
-    let user_id = req.params.user_id;
-    let following_me_list;
-    try {
-        following_me_list = await FollowsPage.find({_following: user_id}).exec();
-
-        res.status(200).json(following_me_list);
-    } catch (err) {
-        res.status(400).json(err);
-    }
 }
 
 exports.create = async function(req, res) {
@@ -88,6 +81,15 @@ exports.delete = async function(req, res) {
         }
     });
 };
+
+var getFollowedFromFollow = async function(follow) {
+    if (follow.is_media) {
+        return Media.findById(follow._following).exec();
+    } else {
+        return Person.findById(follow._following).exec();
+    } 
+}
+
 
 var create_action = async function(user_id, follow_id) {
     var action = new Action({
