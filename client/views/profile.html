@@ -228,10 +228,10 @@
                             </div>
                             <div id="rated-{{rated._id}}" uk-dropdown="pos: bottom-center; mode: click" style="z-index: 999">
                               <center>
-                                <ul class="uk-iconnav">
+                                <ul class="uk-iconnav rating">
                                   <div ng-repeat="n in range('10')">
-                                    <a ng-if="n <= rated.rating" class="rating-star" ng-click="updateRated(rated)"></a>
-                                    <a ng-if="n > rated.rating" uk-icon="icon: star; ratio: .6" ng-click="updateRated(rated)"></a>
+                                    <a ng-if="n <= rated.rating" class="rating-star" ng-click="updateRated(rated,n)"></a>
+                                    <a ng-if="n > rated.rating" uk-icon="icon: star; ratio: .6" ng-click="updateRated(rated,n)"></a>
                                   </div>
                                 </ul>
                               </center>

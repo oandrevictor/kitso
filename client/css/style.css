@@ -249,30 +249,22 @@ html, body {
     text-shadow: 1px 1px 2px black, 0 0 1em #000000, 0 0 0.2em #000000;
     margin-top: 2px;
     margin-bottom: 80px; }
-  .profile .rating {
-    float: right;
-    margin-top: -100px;
-    color: white;
-    font-size: 28px;
-    font-weight: 100;
-    padding-right: 20px;
-    display: flex; }
-    .profile .rating .is-rated-star {
-      background: url("/images/icon/white-star.svg") center no-repeat;
-      background-size: 40px;
-      height: 40px;
-      width: 40px;
-      margin-top: 5px; }
-    .profile .rating .rating-value {
-      display: inline;
-      font-size: 30px;
-      padding-left: 8px; }
-    .profile .rating .rating-star {
-      background: url("/images/icon/purple-star.svg") center no-repeat;
-      background-size: 12px;
-      height: 12px;
-      width: 12px;
-      padding-left: 0px; }
+  .profile .rating .is-rated-star {
+    background: url("/images/icon/white-star.svg") center no-repeat;
+    background-size: 40px;
+    height: 40px;
+    width: 40px;
+    margin-top: 5px; }
+  .profile .rating .rating-value {
+    display: inline;
+    font-size: 30px;
+    padding-left: 8px; }
+  .profile .rating .rating-star {
+    background: url("/images/icon/purple-star.svg") center no-repeat;
+    background-size: 12px;
+    height: 12px;
+    width: 12px;
+    padding-left: 0px; }
 
 .movie {
   font-family: 'Roboto' !important; }

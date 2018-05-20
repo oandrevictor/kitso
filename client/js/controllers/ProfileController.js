@@ -34,6 +34,15 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthS
     return moment(date).format('DD/MM/YYYY')
   };
 
+  $scope.range = function(count){
+      var ratings = [];
+      for (var i = 0; i < count; i++) {
+          ratings.push(i+1)
+      }
+      return ratings;
+  }
+
+
   $scope.updateWatched = function (watched) {
     WatchedService.updateWatched(watched).then(function (watched) {
       UIkit.dropdown($('#watched-date-' + watched._id)).hide()
@@ -43,8 +52,9 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthS
 
   }
 
-  $scope.updatedRated = function (rated) {
-    RatedService.updatedRated(rated)
+  $scope.updateRated = function (rated, n) {
+    rated.rating = n;
+    RatedService.updateRated(rated)
       .then((rated) => {
         UIkit.dropdown($('#rated-' + rated._id)).hide();
       }).catch((error) => {
