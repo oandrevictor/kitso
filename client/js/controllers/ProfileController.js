@@ -9,14 +9,14 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthS
                 watched.date = new Date(watched.date);
               })
               $scope.user.watched = watched
-
-              console.log(watched)
-
             }).catch(function(error){
-              console.log('deu ruim')
 
             })
         });
+
+  $scope.canEdit = function(){
+    return true;
+  }
   $scope.formatDate = function(date){
     return moment(date).format('DD/MM/YYYY')
   };
@@ -32,43 +32,42 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthS
   }
 
 	$scope.submitForm = function() {
+    if ($scope.editForm.$valid) {
+      AuthService.editUser($scope.user)
+      // handle success
+        .then(function () {
+            $scope.toggleDescriptionArea();
+            UIkit.notification({
+                message: '<span uk-icon=\'icon: check\'></span> User successfully edited.',
+                status: 'success',
+                timeout: 1500
+            });
+        })
+        // handle error
+        .catch(function (error) {
+            var dangerMessage = 'Something went wrong...';
 
-        if ($scope.editForm.$valid) {
-            AuthService.editUser($scope.user)
-                // handle success
-                .then(function () {
-                    $scope.toggleDescriptionArea();
-                    UIkit.notification({
-                        message: '<span uk-icon=\'icon: check\'></span> User successfully edited.',
-                        status: 'success',
-                        timeout: 1500
-                    });
-                })
-                // handle error
-                .catch(function (error) {
-                    var dangerMessage = 'Something went wrong...';
+            if (error.code === 11000) {
+                if (error.errmsg.includes('username_1')) {
+                    dangerMessage = 'Username already in use';
+                } else if (error.errmsg.includes('email_1')) {
+                    dangerMessage = 'Email already in use';
+                }
 
-                    if (error.code === 11000) {
-                        if (error.errmsg.includes('username_1')) {
-                            dangerMessage = 'Username already in use';
-                        } else if (error.errmsg.includes('email_1')) {
-                            dangerMessage = 'Email already in use';
-                        }
-
-                        UIkit.notification({
-                            message: '<span uk-icon=\'icon: check\'></span> ' + dangerMessage,
-                            status: 'danger',
-                            timeout: 2500
-                        });
-                    } else {
-                        UIkit.notification({
-                            message: '<span uk-icon=\'icon: check\'></span> ' + dangerMessage,
-                            status: 'danger',
-                            timeout: 2500
-                        });
-                    }
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: check\'></span> ' + dangerMessage,
+                    status: 'danger',
+                    timeout: 2500
                 });
-        }
+            } else {
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: check\'></span> ' + dangerMessage,
+                    status: 'danger',
+                    timeout: 2500
+                });
+            }
+        });
+      }
     };
 
     $scope.deleteAccount = function() {

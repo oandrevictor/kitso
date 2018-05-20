@@ -4,7 +4,6 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
 
   var USERS_FOLLOW_URL = '/api/follows/'
   var PAGES_FOLLOW_URL = '/api/followsPage/'
-    var movie = {};
 
     // return available functions for use in the controllers
     return ({
@@ -12,6 +11,7 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
         getPagesFollowing: getPagesFollowing,
         unfollowPage: unfollowPage,
         isFollowingPage: isFollowingPage,
+        isFollowingUser: isFollowingUser,
         followPage: followPage
     });
 
@@ -91,6 +91,23 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
             .then((response) => {
                 if (response.status === 200) {
                     watched = response.data.is_watched;
+                    deferred.resolve(response.data);
+                } else {
+                    deferred.reject();
+                }
+            })
+            .catch((error) => {
+                deferred.reject(error.data);
+            });
+
+        return deferred.promise;
+    }
+
+    function isFollowingUser(userId, user2Id) {
+        var deferred = $q.defer();
+        $http.get('/api/follows/is_following?user_id='+ userId + "&following_id=" + user2Id)
+            .then((response) => {
+                if (response.status === 200) {
                     deferred.resolve(response.data);
                 } else {
                     deferred.reject();

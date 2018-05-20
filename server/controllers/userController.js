@@ -20,7 +20,17 @@ exports.show = function(req, res) {
         res.status(400).send(err);
     })
     .then((result) => {
+      if (result){
         res.status(200).json(result);
+      }
+      else{
+        User.findOne({username: req.params.user_id}).catch((err)=> {
+          res.status(400).send(err);
+        })
+        .then((result) =>{
+          res.status(200).json(result);
+        })
+      }
     });
 };
 
