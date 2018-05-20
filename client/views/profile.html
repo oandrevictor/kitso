@@ -3,6 +3,9 @@
     <div class="uk-background-cover" align="center">
             <img class="profile-image" src="/images/mask2.png" width="140" height="140">
             <p class="uk-text-large profile-name">{{ user.name }}</p>
+            <div ng-if="!canEdit()" ng-hide="user.followed.following_id" class="follow-button" ng-click="follow(user)"><span uk-icon="icon: rss; ratio: 0.5"></span> Follow</div>
+            <div ng-show="user.followed.following_id" class="follow-button" ng-click="unfollow(user)"><span uk-icon="icon: rss; ratio: 0.5"></span> Following </div>
+
             <p class="uk-text-small profile-username">@{{ user.username }}</p>
     </div>
     <!--Card Content-->
@@ -14,12 +17,12 @@
                 <li class="uk-disabled"><a>Ranking</a></li>
                 <li class="uk-disabled"><a>Following</a></li>
                 <li class="uk-disabled"><a>Followers</a></li>
-                <li><a>Settings</a></li>
+                <li ng-if="canEdit()"><a>Settings</a></li>
             </ul>
             <ul id="tab-id" class="uk-switcher uk-margin">
                 <li><a href="#" id="overview" data-uk-switcher-item="next"></a>
                     <p class="uk-text-large" ng-init="descriptionArea=false">About
-                        <a class="uk-icon-button" uk-icon="pencil" ng-click="toggleDescriptionArea()" ng-hide="descriptionArea"></a>
+                        <a ng-if="canEdit()" class="uk-icon-button" uk-icon="pencil" ng-click="toggleDescriptionArea()" ng-hide="descriptionArea"></a>
                         <a uk-icon="check" class="uk-icon-button uk-button-save-changes" ng-hide="!descriptionArea" ng-click="submitForm()"></a>
                         <a uk-icon="close" class="uk-icon-button" ng-hide="!descriptionArea" ng-click="toggleDescriptionArea()"></a>
                     </p>
@@ -213,7 +216,7 @@
                 <li>Ranking Content Here</li>
                 <li>Following Content Here</li>
                 <li>Followers Content Here</li>
-                <li>
+                <li ng-show="canEdit()">
                     <a href="#" id="settings" data-uk-switcher-item="next"></a>
                     <p class="uk-text-large">Settings</p>
                     <form name="editForm" ng-submit="submitForm()" novalidate>

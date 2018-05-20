@@ -9,11 +9,7 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthS
                 watched.date = new Date(watched.date);
               })
               $scope.user.watched = watched
-
-              console.log(watched)
-
             }).catch(function(error){
-              console.log('deu ruim')
 
             })
         });
@@ -30,7 +26,9 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthS
     })
 
   }
-
+  $scope.canEdit = function(){
+    return true;
+  }
 	$scope.submitForm = function() {
 
         if ($scope.editForm.$valid) {

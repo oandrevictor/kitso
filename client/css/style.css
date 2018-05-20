@@ -3,6 +3,9 @@ html, body {
   max-width: 100%;
   overflow-x: hidden; }
 
+.uk-tab > * {
+  margin-right: auto;
+  margin-left: auto; }
 .uk-card-default {
   box-shadow: none !important; }
 
@@ -260,7 +263,15 @@ html, body {
   .profile .uk-iconnav > * {
     padding-left: 3px !important; }
   .profile .date-change {
-    width: 85% !important; }
+    width: 85%; }
+  .profile .follow-button {
+    cursor: pointer;
+    color: white;
+    display: inline-block;
+    background: rgba(0, 0, 0, 0.7);
+    padding-left: 8px;
+    padding-right: 8px; }
+
   .profile .check {
     width: 20px !important;
     min-width: 20px !important;
@@ -332,8 +343,10 @@ html, body {
     .profile .profile-container .uk-list ul .uk-iconnav {
       padding-left: 0px; }
   .profile .profile-image {
-    border-style: solid; }
+    border-style: solid;
+    display: block; }
   .profile .profile-name {
+    display: inline-block;
     text-shadow: 1px 1px 2px black, 0 0 1em #000000, 0 0 0.2em #000000;
     margin: 2px; }
   .profile .profile-username {

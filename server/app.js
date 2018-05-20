@@ -84,6 +84,10 @@ app.get('/profile', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
 
+app.get('/user/:id', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
 app.get('/tvshow/:id', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
@@ -135,6 +139,12 @@ app.use('/api/tvShow', tvShowRoutes);
 
 var actionRoutes = require('./routes/action');
 app.use('/api/action', actionRoutes);
+
+var followsRoutes = require('./routes/follows');
+app.use('/api/follows', followsRoutes);
+
+var followsPageRoutes = require('./routes/followsPage');
+app.use('/api/followsPage', followsPageRoutes);
 
 var mediaRoutes = require('./routes/media');
 app.use('/api/media', mediaRoutes);
