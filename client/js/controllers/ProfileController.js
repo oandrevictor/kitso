@@ -83,7 +83,7 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthS
         .catch(function (error) {
           var dangerMessage = 'Something went wrong...';
 
-          if (error.code === 11000) {
+          if (error.hasOwnProperty('code') && error.code === 11000) {
             if (error.errmsg.includes('username_1')) {
               dangerMessage = 'Username already in use';
             } else if (error.errmsg.includes('email_1')) {
