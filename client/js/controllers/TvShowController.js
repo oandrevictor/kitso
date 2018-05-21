@@ -24,12 +24,8 @@ function($scope, $location, $timeout, $routeParams, TvShowService, WatchedServic
                   $scope.tvshow.rated = false;
                   $scope.updateRating(0);
                 }else{
-                  RatedService.getAllRated($scope.user._id).then((all) => {
-                    for (var i = 0; i < all.length; i++) {
-                      if(all[i]._id === $scope.tvshow.rated.rated_id){
-                        $scope.updateRating(all[i].rating);
-                      }
-                    }
+                  RatedService.getRated($scope.tvshow.rated.rated_id).then((rated) => {
+                    $scope.updateRating(rated.rating);
                   }).catch((error) => {
                     UIkit.notification({
                         message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
@@ -90,8 +86,7 @@ function($scope, $location, $timeout, $routeParams, TvShowService, WatchedServic
     $scope.rate = function(tvshowId, rating){
       if ($scope.tvshow.rated) {
           if (rating !== $scope.tvshow.rating) {
-            $scope.markAsNotRated($scope.tvshow.rated.rated_id);
-            $scope.markAsRated(tvshowId, rating);
+            $scope.updateRated($scope.tvshow.rated.rated_id, rating);
             $scope.updateRating(rating);
           } else {
             $scope.markAsNotRated($scope.tvshow.rated.rated_id);
@@ -140,6 +135,15 @@ function($scope, $location, $timeout, $routeParams, TvShowService, WatchedServic
                 timeout: 2500
             });
         });
+    }
+
+    $scope.updateRated = function (ratedId, rating){
+      var ratedObj = {
+          "date" : date = moment(),
+          "rating" : rating,
+          "_id" : ratedId
+      };
+      RatedService.updateRated(ratedObj);
     }
 
     $scope.updateRating = function(rating){
