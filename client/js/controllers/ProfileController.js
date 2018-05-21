@@ -1,18 +1,32 @@
  var kitso = angular.module('kitso');
 
-kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthService', 'WatchedService', function($scope, $location, $timeout, AuthService, WatchedService) {
+kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthService', 'WatchedService', 'FollowService', function($scope, $location, $timeout, AuthService, WatchedService, FollowService) {
      AuthService.getStatus()
         .then(() => {
             $scope.user = AuthService.getUser();
+
             WatchedService.getAllWatched($scope.user._id).then( function(watched){
               watched.forEach(function(watched){
                 watched.date = new Date(watched.date);
               })
               $scope.user.watched = watched
             }).catch(function(error){
+                console.log(error);
+            });
 
+            FollowService.getUsersFollowing($scope.user._id).then( function(following){
+              $scope.user.following = following
+            }).catch(function(error){
+                console.log(error);
+            })
+
+            FollowService.getUsersFollowers($scope.user._id).then( function(followers){
+              $scope.user.followers = followers
+            }).catch(function(error){
+                console.log(error);
             })
         });
+
   $scope.formatDate = function(date){
     return moment(date).format('DD/MM/YYYY')
   };
@@ -26,6 +40,7 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthS
     })
 
   }
+
   $scope.canEdit = function(){
     return true;
   }

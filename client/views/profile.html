@@ -15,8 +15,8 @@
                 <li><a href="">Overview</a></li>
                 <li><a>History</a></li>
                 <li class="uk-disabled"><a>Ranking</a></li>
-                <li class="uk-disabled"><a>Following</a></li>
-                <li class="uk-disabled"><a>Followers</a></li>
+                <li><a>Following</a></li>
+                <li><a>Followers</a></li>
                 <li ng-if="canEdit()"><a>Settings</a></li>
             </ul>
             <ul id="tab-id" class="uk-switcher uk-margin">
@@ -214,8 +214,22 @@
                     </ul>
                 </li>
                 <li>Ranking Content Here</li>
-                <li>Following Content Here</li>
-                <li>Followers Content Here</li>
+                <li>
+                    <div class="uk-margin">
+                        <p class="uk-text-large">Following</p>
+                        <div ng-repeat="following in user.following">
+                            {{ following.name }}
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="uk-margin">
+                        <p class="uk-text-large">Followers</p>
+                        <div ng-repeat="follower in user.followers">
+                            {{ follower.email }}
+                        </div>
+                    </div>
+                </li>
                 <li ng-show="canEdit()">
                     <a href="#" id="settings" data-uk-switcher-item="next"></a>
                     <p class="uk-text-large">Settings</p>

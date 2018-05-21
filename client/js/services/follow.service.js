@@ -8,6 +8,7 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
     // return available functions for use in the controllers
     return ({
         getUsersFollowing: getUsersFollowing,
+        getUsersFollowers: getUsersFollowers,
         getPagesFollowing: getPagesFollowing,
         unfollowPage: unfollowPage,
         unfollowUser: unfollowUser,
@@ -17,7 +18,7 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
         followUser: followUser
     });
 
-    var getFollowing = function(userId, url){
+    function getFollowing(userId, url){
       var deferred = $q.defer();
       $http.get(url +'user/' + userId)
           .then((response) => {
@@ -35,12 +36,31 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
 
     }
 
-    function getUsersFollowing(userId) {
+    function getFollowers(userId, url){
       var deferred = $q.defer();
-      getFollowing(userId, USERS_FOLLOW_URL)
+      $http.get(url + 'following_me?user_id=' + userId)
           .then((response) => {
-            if (response.status === 200) {
-                following = response.data;
+              if (response.status === 200) {
+                  following = response.data;
+                  deferred.resolve(following);
+              } else {
+                  deferred.reject();
+              }
+          })
+          .catch((error) => {
+              deferred.reject(error.data);
+          });
+      return deferred.promise;
+
+    }
+
+    function getUsersFollowers(userId) {
+      var deferred = $q.defer();
+      getFollowers(userId, USERS_FOLLOW_URL)
+          .then((response) => {
+            following = response;
+            if (response) {
+                following = response;
                 deferred.resolve(following);
             } else {
                 deferred.reject();
@@ -49,6 +69,26 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
         .catch((error) => {
             deferred.reject(error.data);
         });
+
+        return deferred.promise;
+    }
+
+    function getUsersFollowing(userId) {
+      var deferred = $q.defer();
+      getFollowing(userId, USERS_FOLLOW_URL)
+          .then((response) => {
+            following = response;
+            if (response) {
+                following = response;
+                deferred.resolve(following);
+            } else {
+                deferred.reject();
+            }
+        })
+        .catch((error) => {
+            deferred.reject(error.data);
+        });
+
         return deferred.promise;
     }
 
