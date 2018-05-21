@@ -1,26 +1,67 @@
 var Action = require('../models/Action');
+var User = require('../models/User');
+var Rated = require('../models/Rated');
+var Watched = require('../models/Watched');
+var Follows = require('../models/Follows');
+var FollowsṔage = require('../models/FollowsPage');
 
-// Todos as ações
-exports.index = function(req, res) {
-    Action.find({})
-    .catch((err) => {
-        res.status(400).send(err);
+exports.index = async function(req, res) {
+    let action_list, promises;
+    try {
+        action_list = await Action.find({}).exec();
+        promises = action_list.map(inject_media_json);
+    } catch (err) {
+        res.status(400).json(err);
+    }
+
+    Promise.all(promises).then(function(results) {
+        res.status(200).json(results);
     })
-    .then((result) => {
-        res.status(200).json(result);
-    });
 };
 
+
 // Uma ação
-exports.show = function(req, res) {
+exports.show = async function(req, res) {
     Action.findById(req.params.action_id)
     .catch((err) => {
         res.status(400).send(err);
     })
     .then((result) => {
-        res.status(200).json(result);
+        inject_media_json(result).then(function(results) {
+            res.status(200).json(results);
+        });
     });
 };
+
+var inject_media_json = async function(action) {
+    let user_id = action._user;
+    let action_id = action._action;
+
+    user_obj = await getUser(user_id);
+    action_obj = await getAction(action.action_type, action_id);
+
+    let action_complete = action;
+    action_complete._user = user_obj;
+    action_complete._action = action_obj;
+
+    return action_complete;
+} 
+
+var getUser = async function(id) {
+    return User.findById(id).exec();
+}
+
+var getAction = async function(type, id) {
+    if (type == 'rated') {
+        return Rated.findById(id).exec();
+    } else if (type == 'watched') {
+        return Watched.findById(id).exec();
+    } else if (type == 'followed') {
+        return Follows.findById(id).exec();
+    } else {
+        return FollowsṔage.findById(id).exec();
+    }
+}
 
 // Criar ação
 exports.create = function(req, res) {
