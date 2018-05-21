@@ -14,7 +14,20 @@
             <b> {{ tvshow.release_date | date: 'yyyy' }}</b> | Genres:
             <b ng-repeat="genre in tvshow.genres">{{ genre }}</b>
             <div class="rating">
-                <span uk-icon="icon: star; ratio: 2"></span>
+              <div>
+                <div class="is-rated-star" ng-show="tvshow.rated"></div>
+                <a ng-hide="tvshow.rated" uk-icon="icon: star; ratio: 2"></a>
+              </div>
+                  <div uk-dropdown="pos: bottom-center; mode: hover" style="z-index: 999">
+                    <center>
+                      <ul class="uk-iconnav">
+                        <div ng-repeat="n in range('10')">
+                          <a ng-if="n <= tvshow.rating" class="rating-star" ng-click="rate(tvshow._id, n)"></a>
+                          <a ng-if="n > tvshow.rating" uk-icon="icon: star; ratio: .6" ng-click="rate(tvshow._id, n)"></a>
+                        </div>
+                      </ul>
+                    </center>
+                  </div>
                 <div class="rating-value"> 8.3</div>
             </div>
         </div>
