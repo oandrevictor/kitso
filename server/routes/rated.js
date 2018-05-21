@@ -8,6 +8,8 @@ router.get('/user/:user_id', ratedController.index);
 //is_rated?user_id=user_id&media_id=media_id
 router.get('/is_rated', ratedController.is_rated);
 
+router.get('/:rated_id', ratedController.show);
+
 router.post('/', ratedController.create);
 
 router.put('/:rated_id', ratedController.update);

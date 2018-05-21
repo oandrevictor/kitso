@@ -39,6 +39,16 @@ exports.is_rated = async function(req, res) {
     }
 }
 
+exports.show = function(req, res) {
+    Rated.findById(req.params.rated_id)
+    .catch((err) => {
+        res.status(400).send(err);
+    })
+    .then((result) => {
+        res.status(200).json(result);
+    });
+};
+
 exports.create = async function(req, res) {
     var rated = new Rated(req.body);
     let user_id = rated._user;

@@ -8,6 +8,7 @@ kitso.service('RatedService', ['$q','$http', function ($q, $http) {
     // return available functions for use in the controllers
     return ({
       getAllRated: getAllRated,
+      getRated: getRated,
       markAsRated: markAsRated,
       markAsNotRated: markAsNotRated,
       isRated: isRated,
@@ -17,6 +18,23 @@ kitso.service('RatedService', ['$q','$http', function ($q, $http) {
     function getAllRated(userId){
       var deferred = $q.defer();
       $http.get('/api/rated/user/' + userId)
+          .then((response) => {
+            if (response.status === 200) {
+                  deferred.resolve(response.data);
+              } else {
+                  deferred.reject();
+              }
+          })
+          .catch((error) => {
+              deferred.reject(error.data);
+          });
+
+      return deferred.promise;
+    }
+
+    function getRated(ratedId){
+      var deferred = $q.defer();
+      $http.get('/api/rated/' + ratedId)
           .then((response) => {
             if (response.status === 200) {
                   deferred.resolve(response.data);

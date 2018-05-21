@@ -10,19 +10,14 @@ function($scope, $location, $timeout, MovieService, WatchedService, RatedService
             $scope.user = AuthService.getUser();
             $scope.movie = MovieService.getMovie();
             $scope.release_date_formated = moment($scope.movie.release_date).format('YYYY');
-            $scope.updateRating(0);
             RatedService.isRated($scope.user._id ,$routeParams.movie_id).then((rated) => {
                 $scope.movie.rated = rated;
                 if (! rated.rated_id){
                   $scope.movie.rated = false;
                   $scope.updateRating(0);
                 }else{
-                  RatedService.getAllRated($scope.user._id).then((all) => {
-                    for (var i = 0; i < all.length; i++) {
-                      if(all[i]._id === $scope.movie.rated.rated_id){
-                        $scope.updateRating(all[i].rating);
-                      }
-                    }
+                  RatedService.getRated($scope.movie.rated.rated_id).then((rated) => {
+                    $scope.updateRating(rated.rating);
                   }).catch((error) => {
                     UIkit.notification({
                         message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
@@ -100,8 +95,7 @@ function($scope, $location, $timeout, MovieService, WatchedService, RatedService
   $scope.rate = function(movieId, rating){
     if ($scope.movie.rated) {
         if (rating !== $scope.movie.rating) {
-          $scope.markAsNotRated($scope.movie.rated.rated_id);
-          $scope.markAsRated(movieId, rating);
+          $scope.updateRated($scope.movie.rated.rated_id, rating);
           $scope.updateRating(rating);
         } else {
           $scope.markAsNotRated($scope.movie.rated.rated_id);
@@ -151,10 +145,18 @@ function($scope, $location, $timeout, MovieService, WatchedService, RatedService
         });
     }
 
+    $scope.updateRated = function (ratedId, rating){
+      var ratedObj = {
+          "date" : date = moment(),
+          "rating" : rating,
+          "_id" : ratedId
+      };
+      RatedService.updateRated(ratedObj);
+    }
+
     $scope.updateRating = function(rating){
       $scope.movie.rating = rating;
     }
-
 
     $scope.range = function(count){
         var ratings = [];
