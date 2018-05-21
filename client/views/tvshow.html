@@ -2,7 +2,7 @@
     <!--Cover Content-->
     <div class="uk-background-cover" align="center" style="background-image: url({{ tvshow.images.cover }})">
         <div class="uk-width-xxlarge">
-            <div class="title">{{ tvshow.name }}</div>
+            <div class="title tvshow-name">{{ tvshow.name }}</div>
 
         </div>
     </div>
@@ -32,7 +32,11 @@
             </div>
         </div>
         <div class="left-bar uk-width-1-4">
-            <img class="poster" src=" {{ tvshow.images.poster }}" />
+            <img class="poster" style="background-image: url({{ tvshow.images.poster }})" />
+            <button ng-hide="tvshow.followed.is_following" class="uk-button uk-button-default watch-button" ng-click="follow(tvshow._id)">
+            <span uk-icon="icon: rss;"></span> Follow</button>
+            <button ng-show="tvshow.followed.is_following" class="uk-button uk-button-default watch-button watched" ng-click="unfollow(tvshow)">
+            <span uk-icon="icon: rss;"></span> Following </button>
             <button ng-hide="tvshow.watched" ng-click="markAsWatched(tvshow._id)" class="uk-button uk-button-default watch-button">
             <span uk-icon="icon: check;"></span> Mark as watched</button>
             <button ng-show="tvshow.watched" ng-click="markAsNotWatched(tvshow.watched.watched_id)" class="uk-button uk-button-default watch-button watched">

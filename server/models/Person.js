@@ -15,8 +15,12 @@ var PersonSchema = new Schema({
         type: Date,
         required: false
     },
+    image_url: {
+        type: String,
+        required: false
+    },
     _appears_in: [
-        { type: mongoose.Schema.Types.ObjectId, ref: 'AppearsIn' }
+        { type: mongoose.Schema.Types.ObjectId, ref: 'Media' }
     ]
 });
 

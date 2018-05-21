@@ -9,6 +9,11 @@ var FollowsSchema = new Schema({
     _following: {
       type: mongoose.Schema.Types.ObjectId, ref: 'User',
       required: true
+    },
+    _action: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Action',
+      required: false
     }
 });
 

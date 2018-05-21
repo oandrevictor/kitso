@@ -21,16 +21,33 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
             controller: 'LoginController',
             access: { restricted: false }
         })
+        // Password Recover page
+        .when('/passwordRecover/:email', {
+            templateUrl: 'views/passwordRecover.html',
+            controller: 'LoginController',
+            access: { restricted: false }
+        })
         // user home page
         .when('/home', {
             templateUrl: 'views/userHome.html',
             controller: 'HomeController',
             access: { restricted: true }
         })
+        //exploring
+        .when('/explore', {
+            templateUrl: 'views/explore.html',
+            controller: 'ExploreController',
+            access: { restricted: true }
+        })
         // profile page
         .when('/profile', {
             templateUrl: 'views/profile.html',
             controller: 'ProfileController',
+            access: { restricted: true }
+        })
+        .when('/user/:user_id', {
+            templateUrl: 'views/profile.html',
+            controller: 'UserController',
             access: { restricted: true }
         })
         .when('/tvshow/:tvshow_id', {
@@ -52,6 +69,17 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
         .when('/movie/edit/:movie_id', {
             templateUrl: 'views/movie-edit.html',
             controller: 'MovieEditController',
+            access: { restricted: true }
+        })
+        // person page
+        .when('/person/:person_id', {
+            templateUrl: 'views/person.html',
+            controller: 'PersonController',
+            access: { restricted: true }
+        })
+        .when('/person/edit/:person_id', {
+            templateUrl: 'views/person-edit.html',
+            controller: 'PersonEditController',
             access: { restricted: true }
         })
         .otherwise({
@@ -76,11 +104,6 @@ angular.module('kitso').run(function ($rootScope, $location, $route, AuthService
                 $route.reload();
             } else if (!next.access.restricted && AuthService.isLogged()) {
                 $location.path('/profile');
-                UIkit.notification({
-                    message: '<span uk-icon=\'icon: check\'></span> To log in/register, you need to log out first.',
-                    status: 'warning',
-                    timeout: 2500
-                });
                 $route.reload();
             }
         });

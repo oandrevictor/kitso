@@ -8,7 +8,8 @@ kitso.service('MovieService', ['$q','$http', function ($q, $http) {
     return ({
         loadMovie: loadMovie,
         getMovie: getMovie,
-        updateMovie: updateMovie
+        updateMovie: updateMovie,
+        getAllMovies: getAllMovies
     });
 
     function loadMovie(id) {
@@ -50,6 +51,23 @@ kitso.service('MovieService', ['$q','$http', function ($q, $http) {
           });
 
       return deferred.promise;
+    }
+
+    function getAllMovies(){
+      var deferred = $q.defer();
+      $http.get('/api/movie/')
+          .then((response) => {
+              if (response.status === 200) {
+                  deferred.resolve(response.data);
+              } else {
+                  deferred.reject();
+              }
+          })
+          .catch((error) => {
+              deferred.reject(error.data);
+          });
+      return deferred.promise;
+
     }
 
 }]);
