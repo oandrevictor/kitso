@@ -17,6 +17,14 @@ exports.index = function (req, res) {
 exports.show = function (req, res) {
   User.findOne({$or: [{username: req.params.user_id}, {_id: req.params.user_id}]})
     .catch((err) => {
+      User.findOne({ username: req.params.user_id })
+        .catch((err) => {
+          res.status(400).send(err);
+        })
+        .then((result) => {
+          res.status(200).json(result);
+        });
+
       res.status(400).send(err);
     })
     .then((result) => {
