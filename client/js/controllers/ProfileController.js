@@ -1,6 +1,8 @@
  var kitso = angular.module('kitso');
 
 kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$routeParams', 'AuthService', 'UserService', 'FollowService', 'WatchedService', 'RatedService',
+function ($scope, $location, $timeout, $routeParams, AuthService, UserService, FollowService, WatchedService, RatedService) {
+
   AuthService.getStatus()
     .then(() => {
       $scope.user = AuthService.getUser();
