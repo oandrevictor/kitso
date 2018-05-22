@@ -603,6 +603,14 @@ html, body {
     position: relative; }
   .person .uk-card-body {
     padding: 6%; }
+  .person .watch-button {
+    display: block;
+    width: 191px;
+    border: 1px solid #FFFFFF;
+    font-size: 10px !important; }
+    .person .watch-button.watched {
+      color: white;
+      background: #773095; }
   .person .content {
     padding-top: 20px;
     margin-left: auto;
