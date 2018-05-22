@@ -106,6 +106,18 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
     })
   }
 
+  $scope.goToPage = function (followble_obj) {
+    if (followble_obj.hasOwnProperty('__t')) {
+      if (followble_obj.__t === 'TvShow') {
+        $location.path('tvshow/' + followble_obj._id);
+      } else if (followble_obj.__t === "Movie") {
+        $location.path('movie/' + followble_obj._id);
+      }
+    } else {
+      $location.path('person/' + followble_obj._id);
+    } 
+  }
+
   $scope.range = function(count){
       var ratings = [];
       for (var i = 0; i < count; i++) {

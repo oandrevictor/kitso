@@ -75,7 +75,6 @@ kitso.controller('PersonController',
       $scope.follow = function(person){
         FollowService.followPage($scope.user._id, person)
         .then((followed) => {
-          console.log(followed);
           $scope.person.followed = followed;
           $scope.person.followed.following_id = followed._id;
           $scope.person.followed.is_following = true;
