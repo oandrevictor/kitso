@@ -280,10 +280,9 @@
         </li>
         <li>
           <div class="uk-margin">
-              <p class="uk-text-large">Following</p>
           </div>
           <ul class="uk-list uk-list-divider">
-            <p class="uk-text-medium">Users</p>
+            <p class="uk-text-medium bold">Users</p>
             <div ng-if="user.following.length == 0">
                 <br>You are not following any user yet.
             </div>
@@ -298,12 +297,12 @@
                 </div>
               </div>
             </li>
-            <p class="uk-text-medium">Pages</p>
+            <p class="uk-text-medium bold">Pages</p>
             <div ng-if="user.following_pages.length == 0">
                 <br>You are not following any page yet.
             </div>
             <li ng-repeat="following_page in user.following_pages">
-              <div uk-grid>
+              <div class="following-list" uk-grid>
                 <div class="uk-width-expand">
                   <a ng-href="/{{following_page.__t | lowercase}}/{{following_page._id}}" class="following-link">
                   {{ following_page.name }}</a>

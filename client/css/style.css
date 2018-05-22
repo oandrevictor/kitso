@@ -10,6 +10,9 @@ html, body {
 .uk-card-default {
   box-shadow: none !important; }
 
+.bold {
+  font-weight: 400 !important; }
+
 .full-loading {
   background: url("/images/icon/loading.svg") no-repeat center center, linear-gradient(155deg, #9730a0 0%, #7c1b7a 51%, #502274 75%);
   height: 100%;
