@@ -1,6 +1,7 @@
 var User = require('../models/User');
 var bcrypt = require('bcryptjs');
 var _ = require('underscore');
+var mongoose       = require('mongoose');
 
 // Todos usuários
 exports.index = function (req, res) {
@@ -15,21 +16,24 @@ exports.index = function (req, res) {
 
 // Um usuário
 exports.show = function (req, res) {
-  User.findOne({$or: [{username: req.params.user_id}, {_id: req.params.user_id}]})
-    .catch((err) => {
-      User.findOne({ username: req.params.user_id })
-        .catch((err) => {
-          res.status(400).send(err);
-        })
-        .then((result) => {
+  if (mongoose.Types.ObjectId.isValid(req.params.user_id)){
+    User.findById(req.params.user_id)
+      .catch((err) => {
+        res.status(400).send(err);
+      })
+      .then((result) => {
           res.status(200).json(result);
-        });
-
+      });
+  }
+  else {
+  User.findOne({ username: req.params.user_id })
+    .catch((err) => {
       res.status(400).send(err);
     })
     .then((result) => {
       res.status(200).json(result);
     });
+  }
 };
 
 // Um usuário, por query
@@ -111,23 +115,6 @@ exports.update = function (req, res) {
             user = _.omit(user.toJSON(), 'password');
             return res.status(200).json(user);
           }
-        });
-      } else if (req.body.new_password) {
-        bcrypt.hash(req.body.new_password, 10, function(err, hash) {
-          if (err) {
-              res.status(400).send(err);
-          } else {
-              user.new_password = hash;
-              user.save(function(err) {
-                  if (err) {
-                      if (err.name === 'MongoError' && err.code === 11000) {
-                          return res.status(403).send(err);
-                      }
-                  } else {
-                      return res.status(200).send('New password updated.');
-                  }
-              });
-            }
         });
       } else {
         return res.status(401).send({message: 'You need to be authenticated to edit your user info.' });
