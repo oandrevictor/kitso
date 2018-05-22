@@ -67,6 +67,27 @@ html, body {
     width: 33%;
     color: white;
     text-align: center; }
+    .toolbar .exploring .explore-icon {
+      background: url("/images/icon/explore.svg") center no-repeat;
+      background-size: 20px;
+      height: 20px;
+      width: 20px;
+      border: 0px;
+      padding: 0px; }
+    .toolbar .exploring .home-icon {
+      background: url("/images/icon/home.svg") center no-repeat;
+      background-size: 21px;
+      height: 21px;
+      width: 21px;
+      border: 0px;
+      padding: 0px; }
+    .toolbar .exploring .profile-icon {
+      background: url("/images/icon/profile.svg") center no-repeat;
+      background-size: 20px;
+      height: 20px;
+      width: 20px;
+      border: 0px;
+      padding: 0px; }
   .toolbar .icon {
     border: 0px;
     padding: 0px;
@@ -116,12 +137,12 @@ html, body {
   font-family: 'Roboto', sans-serif;
   width: 100vw;
   height: 10vh;
-  background: #502274;
-  color: #EDEDED;
+  background: #f9f9f9;
+  color: #502274;
   text-align: center;
   display: inline-grid;
   font-weight: 100;
-  font-style: italic; }
+  font-style: bold; }
   .footer p {
     margin-top: auto;
     margin-bottom: auto; }
