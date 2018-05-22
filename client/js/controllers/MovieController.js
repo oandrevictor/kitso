@@ -81,8 +81,8 @@ function($scope, $location, $timeout, MovieService, WatchedService,  FollowServi
         });
     }
 
-    $scope.follow = function(movieId){
-        FollowService.followPage($scope.user._id, movieId)
+    $scope.follow = function(movie){
+        FollowService.followPage($scope.user._id, movie)
         .then((followed) => {
             $scope.movie.followed = followed;
             $scope.movie.followed.following_id = followed._id;

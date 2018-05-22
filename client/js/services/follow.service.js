@@ -162,14 +162,24 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
         return deferred.promise;
     }
 
-    function followPage(userId, mediaId, date = moment()) {
+    function followPage(userId, object, date = moment()) {
         var deferred = $q.defer();
+        var data = {};
 
-        var data = {
-            "_user": userId,
-            "_following": mediaId,
-            "is_media" : true
-        };
+        if (object.hasOwnProperty('__t')) {
+            var data = {
+                "_user": userId,
+                "_following": object._id,
+                "is_media" : true
+            };
+        } else {
+            var data = {
+                "_user": userId,
+                "_following": object._id,
+                "is_media" : false
+            };
+        }
+        
 
         $http.post('/api/followsPage/', data)
             .then((response) => {
