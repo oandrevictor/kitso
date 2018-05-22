@@ -114,6 +114,23 @@ exports.update = function (req, res) {
             return res.status(200).json(user);
           }
         });
+      } else if (req.body.new_password) {
+        bcrypt.hash(req.body.new_password, 10, function(err, hash) {
+          if (err) {
+              res.status(400).send(err);
+          } else {
+              user.new_password = hash;
+              user.save(function(err) {
+                  if (err) {
+                      if (err.name === 'MongoError' && err.code === 11000) {
+                          return res.status(403).send(err);
+                      }
+                  } else {
+                      return res.status(200).send('New password updated.');
+                  }
+              });
+            }
+        });
       } else {
         return res.status(401).send({message: 'You need to be authenticated to edit your user info.' });
       }

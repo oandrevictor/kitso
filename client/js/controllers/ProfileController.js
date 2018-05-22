@@ -1,7 +1,6 @@
  var kitso = angular.module('kitso');
 
 kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$routeParams', 'AuthService', 'UserService', 'FollowService', 'WatchedService', 'RatedService',
- function ($scope, $location, $timeout, $routeParams, AuthService, UserService, FollowService, WatchedService, RatedService) {
   AuthService.getStatus()
     .then(() => {
       $scope.user = AuthService.getUser();
@@ -173,10 +172,10 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$rout
   $scope.submitForm = function () {
 
     if ($scope.editForm.$valid) {
-      AuthService.editUser($scope.user)
+      UserService.editUser($scope.user)
         // handle success
         .then(function () {
-          $scope.toggleDescriptionArea();
+          $scope.descriptionArea = false;
           UIkit.notification({
             message: '<span uk-icon=\'icon: check\'></span> User successfully edited.',
             status: 'success',
@@ -187,7 +186,7 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$rout
         .catch(function (error) {
           var dangerMessage = 'Something went wrong...';
 
-          if (error.code === 11000) {
+          if (error.hasOwnProperty('code') && error.code === 11000) {
             if (error.errmsg.includes('username_1')) {
               dangerMessage = 'Username already in use';
             } else if (error.errmsg.includes('email_1')) {
