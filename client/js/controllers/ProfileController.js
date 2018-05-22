@@ -33,11 +33,20 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthS
             })
         });
 
-  $scope.unfollow = function(unfollowedUser){
+  $scope.unfollow_user = function(unfollowedUser){
     FollowService.isFollowingUser($scope.user._id, unfollowedUser._id).then( function(following){
       if (following.is_following) {
         FollowService.unfollowUser(following.following_id);
         $scope.user.following.splice($scope.user.following.indexOf(unfollowedUser),1);
+        }
+    })
+  }
+
+  $scope.unfollow_page = function(unfollowedPage){
+    FollowService.isFollowingPage($scope.user._id, unfollowedPage._id).then( function(following){
+      if (following.is_following) {
+        FollowService.unfollowPage(following.following_id);
+        $scope.user.following_pages.splice($scope.user.following_pages.indexOf(unfollowedPage),1);
         }
     })
   }
