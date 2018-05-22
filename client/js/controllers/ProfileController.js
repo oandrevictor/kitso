@@ -24,8 +24,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
             });
           })
         }).catch((error)=>{
-          console.log(error)
-          console.log("Couldnt fetch page user")
+          $location.path('/profile');
         })
       }
       else{
