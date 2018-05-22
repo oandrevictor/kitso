@@ -304,7 +304,7 @@
             <li ng-repeat="following_page in user.following_pages">
               <div class="following-list" uk-grid>
                 <div class="uk-width-expand">
-                  <a ng-href="/{{following_page.__t | lowercase}}/{{following_page._id}}" class="following-link">
+                  <a ng-click="goToPage(following_page)" class="following-link">
                   {{ following_page.name }}</a>
                 </div>
                 <div class="uk-width-auto">
