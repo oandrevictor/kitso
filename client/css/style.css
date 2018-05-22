@@ -291,6 +291,8 @@ html, body {
     background: rgba(0, 0, 0, 0.7);
     padding-left: 8px;
     padding-right: 8px; }
+  .profile .following-list .follow-button {
+    background: rgba(0, 0, 0, 0.4); }
   .profile .check {
     width: 20px !important;
     min-width: 20px !important;

@@ -406,6 +406,11 @@ margin-left: auto;
     padding-left: 8px;
     padding-right: 8px;
   }
+  .following-list {
+    .follow-button{
+      background: rgba(0,0,0, 0.4);
+    }
+  }
 
   .check {
     width: 20px !important;

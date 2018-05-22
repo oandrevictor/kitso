@@ -147,7 +147,9 @@
                     <div class="uk-card-media-top">
                       <div class="uk-inline uk-dark">
                         <div class="uk-visible-toggle">
+                          <a class="page-link" ng-href="/{{rated._media.__t.toLowerCase()}}/{{rated._media._id}}">
                           <img ng-src="{{rated._media.images.poster}}" style="z-index:-1" alt="">
+                        </a>
                           <div ng-if="canEdit()" class="uk-hidden-hover uk-overlay-default uk-position-cover">
                             <div class="uk-position-center">
                               <a href="" class="uk-icon-button uk-margin-small-right" uk-icon="pencil"></a>
@@ -286,7 +288,7 @@
                 <br>You are not following any user yet.
             </div>
             <li ng-repeat="following in user.following">
-              <div uk-grid>
+              <div class="following-list" uk-grid>
                 <div class="uk-width-expand">
                   <a ng-href="/user/{{following._id}}" class="following-link">
                   {{ following.name }}</a>
