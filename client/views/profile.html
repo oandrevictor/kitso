@@ -64,7 +64,9 @@
                     <div class="uk-card-media-top">
                       <div class="uk-inline uk-dark">
                         <div class="uk-visible-toggle">
+                          <a class="page-link" ng-href="/{{watched._media.__t.toLowerCase()}}/{{watched._media._id}}">
                           <img ng-src="{{watched._media.images.poster}}" style="z-index:-1" alt="">
+                        </div>
                           <div ng-if="canEdit()" class="uk-hidden-hover uk-overlay-default uk-position-cover">
                             <div class="uk-position-center">
                               <a href="" class="uk-icon-button uk-margin-small-right" uk-icon="pencil"></a>
@@ -82,7 +84,7 @@
                       </div>
                     </div>
                     <div class="uk-card-body">
-                      <p class="uk-text">{{watched._media.name}}</p>
+                      <p class="uk-text"><a class="page-link" ng-href="/{{watched._media.__t.toLowerCase()}}/{{watched._media._id}}">{{watched._media.name}}</a></p>
                       <p class="uk-text uk-text-small uk-text-muted">Watched | {{formatDate(watched.date)}}</p>
                     </div>
                   </div>
@@ -140,9 +142,8 @@
           </div>
           <ul class="uk-switcher uk-margin">
             <li>
-              <div class="uk-grid-match" uk-grid>
-                <div class="uk-child-width-1-3@m" ng-repeat="rated in user.ratings">
-                  <div class="uk-card uk-card-primary">
+                <div class="uk-child-width-1-3@m" uk-grid >
+                  <div class="uk-card uk-card-primary" ng-repeat="rated in user.ratings">
                     <div class="uk-card-media-top">
                       <div class="uk-inline uk-dark">
                         <div class="uk-visible-toggle">
@@ -171,7 +172,6 @@
                     </div>
                   </div>
                 </div>
-              </div>
             </li>
             <li>
               <!-- <ul class="uk-list uk-list-divider">
