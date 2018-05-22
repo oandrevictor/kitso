@@ -1,8 +1,8 @@
 var kitso = angular.module('kitso');
 
 kitso.controller('ExploreController',
-['$scope', '$location', '$timeout', 'MovieService', 'TvShowService', 'WatchedService', '$routeParams', 'AuthService',
-function($scope, $location, $timeout, MovieService, TvShowService, WatchedService, $routeParams, AuthService) {
+['$scope', '$location', '$timeout', 'MovieService', 'TvShowService', 'WatchedService', 'PersonService', '$routeParams', 'AuthService',
+function($scope, $location, $timeout, MovieService, TvShowService, WatchedService, PersonService, $routeParams, AuthService) {
   $('.full-loading').show();
   $scope.allMedias = [];
 
@@ -45,6 +45,19 @@ function($scope, $location, $timeout, MovieService, TvShowService, WatchedServic
             });
         });
 
+    PersonService.getAllPeople()
+        .then((allPeople) => {
+            $scope.allPeople = allPeople;
+            $scope.allPeople = allPeople.sort(compareDates)
+        })
+        .catch((error) => {
+            UIkit.notification({
+                message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                status: 'danger',
+                timeout: 2500
+            });
+        });
+
     $scope.markAsWatched = function(movieId){
         WatchedService.markAsWatched($scope.user._id, movieId)
         .then((watched) => {
@@ -72,6 +85,7 @@ function($scope, $location, $timeout, MovieService, TvShowService, WatchedServic
             });
         });
     }
+
   $scope.editionMode = function () {
     $location.path('movie/edit/' + $routeParams.movie_id);
   }

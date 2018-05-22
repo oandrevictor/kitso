@@ -11,7 +11,8 @@ kitso.service('PersonService', ['$q','$http', function ($q, $http) {
         getPerson: getPerson,
         loadMedias: loadMedias,
         getMedias: getMedias,
-        updatePerson: updatePerson
+        updatePerson: updatePerson,
+        getAllPeople: getAllPeople
     });
 
     function loadPerson(id) {
@@ -79,5 +80,21 @@ kitso.service('PersonService', ['$q','$http', function ($q, $http) {
           });
 
       return deferred.promise;
+    }
+
+    function getAllPeople(){
+        var deferred = $q.defer();
+        $http.get('/api/person/')
+            .then((response) => {
+                if (response.status === 200) {
+                    deferred.resolve(response.data);
+                } else {
+                    deferred.reject();
+                }
+            })
+            .catch((error) => {
+                deferred.reject(error.data);
+            });
+        return deferred.promise;
     }
 }]);
