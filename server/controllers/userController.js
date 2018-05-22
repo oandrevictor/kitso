@@ -15,22 +15,12 @@ exports.index = function (req, res) {
 
 // Um usuário
 exports.show = function (req, res) {
-  User.findById(req.params.user_id)
+  User.findOne({$or: [{username: req.params.user_id}, {_id: req.params.user_id}]})
     .catch((err) => {
       res.status(400).send(err);
     })
     .then((result) => {
-      if (result) {
-        res.status(200).json(result);
-      } else {
-        User.findOne({ username: req.params.user_id })
-          .catch((err) => {
-            res.status(400).send(err);
-          })
-          .then((result) => {
-            res.status(200).json(result);
-          });
-      }
+      res.status(200).json(result);
     });
 };
 
