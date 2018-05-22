@@ -9,7 +9,6 @@
     <div class="uk-width-xxlarge content">
         <div class="left-bar uk-width-1-4">
             <img class="poster" style="background-image: url({{ person.image_url }})" />
-            <p align="center"> Born in {{ birthday_date_formated }}</p>
             <button ng-hide="person.followed.is_following" class="uk-button uk-button-default watch-button" ng-click="follow(person)">
             <span uk-icon="icon: rss;"></span> Follow</button>
             <button ng-show="person.followed.is_following" class="uk-button uk-button-default watch-button watched" ng-click="unfollow(person)">
@@ -19,6 +18,10 @@
         </div>
 
         <div class="section description">
+            <div class="section-title">
+                Born in {{ birthday_date_formated }}
+            </div>
+
             <div class="section-title">
                 Description
             </div>
