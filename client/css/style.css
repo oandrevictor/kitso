@@ -10,6 +10,14 @@ html, body {
 .uk-card-default {
   box-shadow: none !important; }
 
+.full-loading {
+  background: url("/images/icon/loading.svg") no-repeat center center, linear-gradient(155deg, #9730a0 0%, #7c1b7a 51%, #502274 75%);
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  display: none;
+  z-index: 999; }
+
 .home {
   font-family: 'Roboto', sans-serif;
   background: black; }
@@ -297,7 +305,7 @@ html, body {
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
-    overflow-y: auto !important;
+    overflow-y: visible !important;
     height: 30vh;
     display: block;
     color: #ffffff !important;
@@ -391,7 +399,7 @@ html, body {
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
-    overflow-y: auto !important;
+    overflow-y: visible !important;
     height: 30vh;
     display: block;
     color: #ffffff !important;
@@ -478,7 +486,7 @@ html, body {
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
-    overflow-y: auto !important;
+    overflow-y: visible !important;
     height: 30vh;
     display: block;
     color: #ffffff !important;
@@ -581,7 +589,7 @@ html, body {
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
-    overflow-y: auto !important;
+    overflow-y: visible !important;
     height: 30vh;
     display: block;
     color: #ffffff !important;

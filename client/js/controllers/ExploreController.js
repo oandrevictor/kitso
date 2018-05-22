@@ -3,7 +3,7 @@ var kitso = angular.module('kitso');
 kitso.controller('ExploreController',
 ['$scope', '$location', '$timeout', 'MovieService', 'TvShowService', 'WatchedService', '$routeParams', 'AuthService',
 function($scope, $location, $timeout, MovieService, TvShowService, WatchedService, $routeParams, AuthService) {
-
+  $('.full-loading').show();
   $scope.allMedias = [];
 
   AuthService.getStatus().then(function(){
@@ -20,6 +20,7 @@ function($scope, $location, $timeout, MovieService, TvShowService, WatchedServic
             $scope.allMovies = allMovies;
             $scope.allMovies = allMovies.sort(compareDates);
             $scope.allMedias = $scope.allMedias.concat($scope.allMovies).sort(compareDates)
+            $('.full-loading').hide();
           })
         .catch((error) => {
           console.log(error)

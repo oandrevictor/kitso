@@ -3,13 +3,14 @@ var kitso = angular.module('kitso');
 kitso.controller('MovieController',
 ['$scope', '$location', '$timeout', 'MovieService', 'WatchedService', 'FollowService', 'RatedService','$routeParams', 'AuthService',
 function($scope, $location, $timeout, MovieService, WatchedService,  FollowService,  RatedService, $routeParams, AuthService) {
-
+  $('.full-loading').show();
     MovieService.loadMovie($routeParams.movie_id)
         .then(() => {
           AuthService.getStatus().then(function(){
             $scope.user = AuthService.getUser();
             $scope.movie = MovieService.getMovie();
             $scope.release_date_formated = moment($scope.movie.release_date).format('YYYY');
+            $('.full-loading').hide();
             RatedService.isRated($scope.user._id ,$routeParams.movie_id).then((rated) => {
                 $scope.movie.rated = rated;
                 if (! rated.rated_id){

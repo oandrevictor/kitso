@@ -3,6 +3,7 @@
 kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$routeParams', 'AuthService', 'UserService', 'FollowService', 'WatchedService', 'RatedService',
 function ($scope, $location, $timeout, $routeParams, AuthService, UserService, FollowService, WatchedService, RatedService) {
 
+  $('.full-loading').show();
   AuthService.getStatus()
     .then(() => {
       $scope.user = AuthService.getUser();
@@ -13,6 +14,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
           loadUserRatedInfo();
           loadUserFollowInfo();
           loadUserWatchedInfo();
+          $('.full-loading').hide();
           FollowService.isFollowingUser($scope.logged_user._id, $scope.user._id).then((followed) => {
             $scope.user.followed = followed;
           }).catch((error) => {
@@ -32,6 +34,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         loadUserRatedInfo();
         loadUserFollowInfo();
         loadUserWatchedInfo();
+        $('.full-loading').hide();
       }
     });
 

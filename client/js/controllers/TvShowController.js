@@ -2,11 +2,14 @@ var kitso = angular.module('kitso');
 
 kitso.controller("TvShowController", ['$scope', '$location', '$timeout', '$routeParams', 'TvShowService',  'WatchedService',  'FollowService', 'RatedService', 'AuthService',
 function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedService, FollowService, RatedService, AuthService) {
+  $('.full-loading').show();
+
     TvShowService.loadTvShow($routeParams.tvshow_id)
         .then(() => {
           AuthService.getStatus().then(function(){
             $scope.user = AuthService.getUser();
             $scope.tvshow = TvShowService.getTvShow();
+            $('.full-loading').hide();
             WatchedService.isWatched($scope.user._id ,$routeParams.tvshow_id).then((watched) => {
                 $scope.tvshow.watched = watched;
                 if (! watched.watched_id)
