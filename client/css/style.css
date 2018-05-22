@@ -261,8 +261,19 @@ html, body {
 
 .profile {
   font-family: 'Roboto' !important; }
+  .profile .card-rated .rating-star {
+    background: url("/images/icon/purple-star.svg") center no-repeat;
+    background-size: 16px;
+    height: 12px;
+    width: 12px;
+    padding-left: 0px;
+    padding: 10px; }
   .profile .uk-iconnav > * {
     padding-left: 3px !important; }
+  .profile .page-link {
+    text-decoration: none;
+    color: #666 !important;
+    font-weight: 300; }
   .profile .date-change {
     width: 85% !important; }
   .profile .follow-button {
@@ -355,6 +366,22 @@ html, body {
     text-shadow: 1px 1px 2px black, 0 0 1em #000000, 0 0 0.2em #000000;
     margin-top: 2px;
     margin-bottom: 80px; }
+  .profile .rating .is-rated-star {
+    background: url("/images/icon/white-star.svg") center no-repeat;
+    background-size: 40px;
+    height: 40px;
+    width: 40px;
+    margin-top: 5px; }
+  .profile .rating .rating-value {
+    display: inline;
+    font-size: 30px;
+    padding-left: 8px; }
+  .profile .rating .rating-star {
+    background: url("/images/icon/purple-star.svg") center no-repeat;
+    background-size: 12px;
+    height: 12px;
+    width: 12px;
+    padding-left: 0px; }
 
 .movie {
   font-family: 'Roboto' !important; }
@@ -389,10 +416,22 @@ html, body {
     font-weight: 100;
     padding-right: 20px;
     display: flex; }
+    .movie .rating .is-rated-star {
+      background: url("/images/icon/white-star.svg") center no-repeat;
+      background-size: 40px;
+      height: 40px;
+      width: 40px;
+      margin-top: 5px; }
     .movie .rating .rating-value {
       display: inline;
       font-size: 30px;
       padding-left: 8px; }
+    .movie .rating .rating-star {
+      background: url("/images/icon/purple-star.svg") center no-repeat;
+      background-size: 12px;
+      height: 12px;
+      width: 12px;
+      padding-left: 0px; }
   .movie .left-bar {
     float: right;
     margin-top: -140px; }
@@ -473,10 +512,22 @@ html, body {
     font-weight: 100;
     padding-right: 20px;
     display: flex; }
+    .tvshow .rating .is-rated-star {
+      background: url("/images/icon/white-star.svg") center no-repeat;
+      background-size: 40px;
+      height: 40px;
+      width: 40px;
+      margin-top: 5px; }
     .tvshow .rating .rating-value {
       display: inline;
       font-size: 30px;
       padding-left: 8px; }
+    .tvshow .rating .rating-star {
+      background: url("/images/icon/purple-star.svg") center no-repeat;
+      background-size: 12px;
+      height: 12px;
+      width: 12px;
+      padding-left: 0px; }
   .tvshow .left-bar {
     float: right;
     margin-top: -140px; }

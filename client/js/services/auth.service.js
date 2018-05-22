@@ -90,7 +90,7 @@ kitso.service('AuthService', ['$q', '$http', function ($q, $http) {
         $http.get('/api/user/status')
             .then(function (response) {
                 if (response.status === 200) {
-                    deferred.resolve();
+                    deferred.resolve(response.data);
                     user = response.data;
                 } else {
                     deferred.reject();

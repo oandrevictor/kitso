@@ -132,7 +132,7 @@ exports.updatePassword = function(req, res) {
             user.new_password = null;
 
             user.save(function(err) {
-                if (err) { 
+                if (err) {
                     return res.status(403).send(err);
                 } else {
                     return res.status(200).send('Password updated!');
