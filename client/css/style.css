@@ -353,6 +353,8 @@ html, body {
         padding-top: 5px; }
     .profile .profile-container .uk-list ul .uk-iconnav {
       padding-left: 0px; }
+    .profile .profile-container .following-link {
+      color: #db2399 !important; }
   .profile .profile-image {
     border-style: solid;
     display: block; }

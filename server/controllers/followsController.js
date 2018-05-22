@@ -46,7 +46,7 @@ exports.following_me = async function(req, res) {
     let following_me_list;
     try {
         following_me_list = await Follows.find({_following: user_id}).exec();
-        promises = following_me_list.map(getFollowedFromFollow);
+        promises = following_me_list.map(getFollowFromFollowed);
 
         Promise.all(promises).then(function(results) {
             res.status(200).json(results);
@@ -97,6 +97,10 @@ exports.delete = async function(req, res) {
 
 var getFollowedFromFollow = async function(follow) {
     return User.findById(follow._following).exec();
+}
+
+var getFollowFromFollowed = async function(follow) {
+    return User.findById(follow._user).exec();
 }
 
 var create_action = async function(user_id, follow_id) {

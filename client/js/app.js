@@ -47,7 +47,7 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
         })
         .when('/user/:user_id', {
             templateUrl: 'views/profile.html',
-            controller: 'UserController',
+            controller: 'ProfileController',
             access: { restricted: true }
         })
         .when('/tvshow/:tvshow_id', {

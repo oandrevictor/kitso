@@ -1,38 +1,106 @@
  var kitso = angular.module('kitso');
 
-kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthService', 'WatchedService', 'RatedService', 'UserService',
- function ($scope, $location, $timeout, AuthService, WatchedService, RatedService, UserService) {
+kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$routeParams', 'AuthService', 'UserService', 'FollowService', 'WatchedService', 'RatedService',
   AuthService.getStatus()
     .then(() => {
       $scope.user = AuthService.getUser();
-
-      WatchedService.getAllWatched($scope.user._id)
-        .then(function (watched) {
-          watched.forEach(function (watched) {
-            watched.date = new Date(watched.date);
-          });
-
-          $scope.user.watched = watched
-        }).catch(function (error) {
-          console.log(error);
-        });
-
-      RatedService.getAllRated($scope.user._id)
-        .then((ratings) => {
-          ratings.forEach((rated) => {
-            rated.date = new Date(rated.date);
-          });
-
-          $scope.user.ratings = ratings;
+      if ($routeParams.user_id){
+        $scope.logged_user = $scope.user;
+        UserService.getUser($routeParams.user_id).then((user)=> {
+          $scope.user = user;
+          loadUserRatedInfo();
+          loadUserFollowInfo();
+          loadUserWatchedInfo();
+          FollowService.isFollowingUser($scope.logged_user._id, $scope.user._id).then((followed) => {
+            $scope.user.followed = followed;
+          }).catch((error) => {
+            console.log(error)
+            UIkit.notification({
+                message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                status: 'danger',
+                timeout: 2500
+            });
+          })
+        }).catch((error)=>{
+          console.log(error)
+          console.log("Couldnt fetch page user")
         })
-        .catch(function (error) {
-          console.log(error);
-        });
+      }
+      else{
+        $scope.logged_user = $scope.user;
+        loadUserRatedInfo();
+        loadUserFollowInfo();
+        loadUserWatchedInfo();
+      }
     });
 
   $scope.formatDate = function (date) {
     return moment(date).format('DD/MM/YYYY')
   };
+
+  var loadUserWatchedInfo = function(){
+    WatchedService.getAllWatched($scope.user._id)
+      .then(function (watched) {
+        watched.forEach(function (watched) {
+          watched.date = new Date(watched.date);
+        });
+
+        $scope.user.watched = watched
+      }).catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  var loadUserRatedInfo = function(){
+    RatedService.getAllRated($scope.user._id)
+      .then((ratings) => {
+        ratings.forEach((rated) => {
+          rated.date = new Date(rated.date);
+        });
+
+        $scope.user.ratings = ratings;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+  var loadUserFollowInfo = function(){
+    FollowService.getUsersFollowing($scope.user._id).then( function(following){
+        $scope.user.following = following
+      }).catch(function(error){
+          console.log(error);
+      })
+
+    FollowService.getPagesFollowing($scope.user._id).then( function(following_pages){
+        $scope.user.following_pages = following_pages
+      }).catch(function(error){
+          console.log(error);
+      })
+
+    FollowService.getUsersFollowers($scope.user._id).then( function(followers){
+        $scope.user.followers = followers;
+      }).catch(function(error){
+          console.log(error);
+      })
+  }
+
+  $scope.unfollow_user = function(unfollowedUser){
+    FollowService.isFollowingUser($scope.user._id, unfollowedUser._id).then( function(following){
+      if (following.is_following) {
+        FollowService.unfollowUser(following.following_id);
+        $scope.user.following.splice($scope.user.following.indexOf(unfollowedUser),1);
+        }
+    })
+  }
+
+  $scope.unfollow_page = function(unfollowedPage){
+    FollowService.isFollowingPage($scope.user._id, unfollowedPage._id).then( function(following){
+      if (following.is_following) {
+        FollowService.unfollowPage(following.following_id);
+        $scope.user.following_pages.splice($scope.user.following_pages.indexOf(unfollowedPage),1);
+        }
+    })
+  }
 
   $scope.range = function(count){
       var ratings = [];
@@ -52,8 +120,43 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthS
 
   }
 
-  $scope.canEdit = function(){
-    return true;
+  $scope.follow = function(user){
+    userId = user._id;
+      FollowService.followUser($scope.logged_user._id, userId)
+      .then((followed) => {
+          user.followed = followed;
+          user.followed.following_id = followed._id;
+          user.followed.is_following = true;
+      })
+      .catch((error) => {
+          UIkit.notification({
+              message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+              status: 'danger',
+              timeout: 2500
+          });
+      });
+  };
+
+  $scope.unfollow = function(user){
+    var followId = user.followed.following_id;
+      FollowService.unfollowUser(followId)
+      .then((followed) => {
+          user.followed = false;
+      })
+      .catch((error) => {
+          UIkit.notification({
+              message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+              status: 'danger',
+              timeout: 2500
+          });
+      });
+  }
+
+  $scope.canEdit = function(user){
+    if (!$scope.user || !$scope.logged_user)
+      return false;
+    else
+      return ($scope.user._id === $scope.logged_user._id);
   }
   $scope.updateRated = function (rated, n) {
     rated.rating = n;
