@@ -20,6 +20,12 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', 'AuthS
                 console.log(error);
             })
 
+            FollowService.getPagesFollowing($scope.user._id).then( function(following_pages){
+              $scope.user.following_pages = following_pages
+            }).catch(function(error){
+                console.log(error);
+            })
+
             FollowService.getUsersFollowers($scope.user._id).then( function(followers){
               $scope.user.followers = followers;
             }).catch(function(error){

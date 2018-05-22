@@ -96,8 +96,8 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
       var deferred = $q.defer();
       getFollowing(userId, PAGES_FOLLOW_URL)
           .then((response) => {
-            if (response.status === 200) {
-                following = response.data;
+            if (response) {
+                following = response;
                 deferred.resolve(following);
             } else {
                 deferred.reject();

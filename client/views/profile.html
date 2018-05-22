@@ -219,7 +219,26 @@
                       <p class="uk-text-large">Following</p>
                   </div>
                   <ul class="uk-list uk-list-divider">
+                    <p class="uk-text-medium">Users</p>
+                    <div ng-if="user.following.length == 0">
+                        <br>You are not following any user yet.
+                    </div>
                     <li ng-repeat="following in user.following">
+                      <div uk-grid>
+                        <div class="uk-width-expand">
+                          <a ng-href="/user/{{following._id}}" class="following-link">
+                          {{ following.name }}</a>
+                        </div>
+                        <div class="uk-width-auto">
+                          <div class="follow-button" ng-click="unfollow(following)"><span uk-icon="icon: rss; ratio: 0.5"></span> Unfollow</div>
+                        </div>
+                      </div>
+                    </li>
+                    <p class="uk-text-medium">Pages</p>
+                    <div ng-if="user.following_pages.length == 0">
+                        <br>You are not following any page yet.
+                    </div>
+                    <li ng-repeat="following_page in user.following_pages">
                       <div uk-grid>
                         <div class="uk-width-expand">
                           <a ng-href="/user/{{following._id}}" class="following-link">
