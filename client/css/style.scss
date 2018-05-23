@@ -4,10 +4,15 @@
 html, body {
     max-width: 100%;
     overflow-x: hidden;
+    height: 100%;
 }
 .uk-tab>*{
 margin-right: auto;
 margin-left: auto;
+}
+.kitso-wrapper {
+  min-height: 100%;
+  overflow-x: hidden;
 }
 .uk-card-default {
   box-shadow: none !important;
@@ -73,6 +78,8 @@ margin-left: auto;
   padding-left: 20vw;
   padding-right: 20vw;
   display: flex;
+  position: absolute;
+  z-index: 99999;
   .exploring {
     margin-right: auto;
     margin-left: auto;
@@ -171,6 +178,8 @@ margin-left: auto;
 }
 
 .footer {
+  position: relative;
+  bottom:0;
   font-family: 'Roboto', sans-serif;
   width: 100vw;
   height: 10vh;

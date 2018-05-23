@@ -1,11 +1,16 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:100i,300,400,500,700");
 html, body {
   max-width: 100%;
-  overflow-x: hidden; }
+  overflow-x: hidden;
+  height: 100%; }
 
 .uk-tab > * {
   margin-right: auto;
   margin-left: auto; }
+
+.kitso-wrapper {
+  min-height: 100%;
+  overflow-x: hidden; }
 
 .uk-card-default {
   box-shadow: none !important; }
@@ -58,7 +63,9 @@ html, body {
   font-style: italic;
   padding-left: 20vw;
   padding-right: 20vw;
-  display: flex; }
+  display: flex;
+  position: absolute;
+  z-index: 99999; }
   .toolbar .exploring {
     margin-right: auto;
     margin-left: auto;
@@ -134,6 +141,8 @@ html, body {
         font-weight: 500; }
 
 .footer {
+  position: relative;
+  bottom: 0;
   font-family: 'Roboto', sans-serif;
   width: 100vw;
   height: 10vh;

@@ -55,13 +55,11 @@
 <body ng-app="kitso" ng-controller="HomeController">
   <div class="toolbar">
     <a href="/"class="logo"> Kitso</a>
-
     <div  ng-show="isLogged()" class="exploring">
       <a ng-href="/explore" ><button  class="uk-button uk-button-default explore-icon"></button></a>
       <a ng-href="/" ><button  class="uk-button uk-button-default home-icon"></button></a>
       <a ng-href="/profile" ><button  class="uk-button uk-button-default profile-icon"></button></a>
     </div>
-
 
     <div class= "options" >
       <button ng-show="isLogged()" class="uk-button uk-button-default options"><span uk-icon="menu"></span></button>
@@ -75,15 +73,15 @@
       </div>
     </div>
   </div>
-<div>
+  <div class="kitso-wrapper">
 
-    <!-- ANGULAR DYNAMIC CONTENT -->
-    <div ng-view class="kitso-content"></div>
-
-    <div class="footer">
-      <p> Kitso © 101 Toppers. Todos os direitos reservados. </p>
+      <!-- ANGULAR DYNAMIC CONTENT -->
+      <div ng-view class="kitso-content"></div>
     </div>
 
-</div>
+      <div class="footer">
+        <p> Kitso © 101 Toppers. Todos os direitos reservados. </p>
+      </div>
+
 </body>
 </html>
