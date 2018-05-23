@@ -500,7 +500,7 @@ html, body {
     margin-top: 8px;
     margin-bottom: 4px; }
     .movie .section .cast-info {
-      width: 156px;
+      width: 145px;
       display: flex; }
       .movie .section .cast-info .cast-image {
         height: 100px; }
@@ -596,7 +596,7 @@ html, body {
     margin-top: 8px;
     margin-bottom: 4px; }
     .tvshow .section .cast-info {
-      width: 156px;
+      width: 145px;
       display: flex; }
       .tvshow .section .cast-info .cast-image {
         height: 100px; }

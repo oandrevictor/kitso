@@ -125,6 +125,10 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
         $location.path('tvshow/edit/' + $routeParams.tvshow_id);
     }
 
+    $scope.goToPerson = function (personId) {
+        $location.path('person/' + personId);
+    }
+
     $scope.rate = function(tvshowId, rating){
       if ($scope.tvshow.rated) {
           if (rating !== $scope.tvshow.rating) {

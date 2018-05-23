@@ -1,80 +1,68 @@
 <div class="movie">
     <!--Cover Content-->
     <div class="uk-background-cover" align="center" style="background-image: url({{ movie.images.cover }})">
-      <div class="uk-width-xxlarge">
-        <div class="title">{{movie.name}}
-          <span ng-show="movie.isBoxOffice" class="uk-badge purple">In teathers</span>
+        <div class="uk-width-xxlarge">
+            <div class="title">{{movie.name}}
+                <span ng-show="movie.isBoxOffice" class="uk-badge purple">In teathers</span>
+            </div>
         </div>
-      </div>
     </div>
     <div class="uk-width-xxlarge content">
-      <div class="uk-width-3-4">
-              <b>Directed by</b> Directors
-              <br /> Year:
-              <b>{{ release_date_formated }}</b> | Genres:
-              <b ng-repeat="genre in movie.genres">{{ genre }}</b>
-              <div class="rating">
+        <div class="uk-width-3-4">
+            <b>Directed by</b> Directors
+            <br /> Year:
+            <b>{{ release_date_formated }}</b> | Genres:
+            <b ng-repeat="genre in movie.genres">{{ genre }}</b>
+            <div class="rating">
                 <div>
-                  <div class="is-rated-star" ng-show="movie.rated"></div>
-                  <a ng-hide="movie.rated" uk-icon="icon: star; ratio: 2"></a>
+                    <div class="is-rated-star" ng-show="movie.rated"></div>
+                    <a ng-hide="movie.rated" uk-icon="icon: star; ratio: 2"></a>
                 </div>
-                  <div uk-dropdown="pos: bottom-center; mode: hover" style="z-index: 999">
+                <div uk-dropdown="pos: bottom-center; mode: hover" style="z-index: 999">
                     <center>
-                      <ul class="uk-iconnav">
-                        <div ng-repeat="n in range('10')">
-                          <a ng-if="n <= movie.rating" class="rating-star" ng-click="rate(movie._id, n)"></a>
-                          <a ng-if="n > movie.rating" uk-icon="icon: star; ratio: .6" ng-click="rate(movie._id, n)"></a>
-                        </div>
-                      </ul>
+                        <ul class="uk-iconnav">
+                            <div ng-repeat="n in range('10')">
+                                <a ng-if="n <= movie.rating" class="rating-star" ng-click="rate(movie._id, n)"></a>
+                                <a ng-if="n > movie.rating" uk-icon="icon: star; ratio: .6" ng-click="rate(movie._id, n)"></a>
+                            </div>
+                        </ul>
                     </center>
-                  </div>
-                  <div class="rating-value"> 7.2 </div>
-              </div>
-          </div>
-          <div class="left-bar uk-width-1-4">
-              <img class="poster" ng-src="{{movie.images.poster}}" />
-              <button ng-hide="movie.followed.is_following" class="uk-button uk-button-default watch-button" ng-click="follow(movie)">
-              <span uk-icon="icon: rss;"></span> Follow</button>
-              <button ng-show="movie.followed.is_following" class="uk-button uk-button-default watch-button watched" ng-click="unfollow(movie)">
-              <span uk-icon="icon: rss;"></span> Following </button>
-              <button ng-hide="movie.watched" ng-click="markAsWatched(movie._id)" class="uk-button uk-button-default watch-button">
-              <span uk-icon="icon: check;"></span> Mark as watched</button>
-              <button ng-show="movie.watched" ng-click="markAsNotWatched(movie.watched.watched_id)" class="uk-button uk-button-default watch-button watched">
-              <span uk-icon="icon: check;"></span> Watched (undo) </button>
-              <button class="uk-button uk-button-default watch-button" ng-click="editionMode()">
-              <span uk-icon="icon: pencil;"></span> Edit movie</button>
-          </div>
+                </div>
+                <div class="rating-value"> 7.2 </div>
+            </div>
+        </div>
+        <div class="left-bar uk-width-1-4">
+            <img class="poster" ng-src="{{movie.images.poster}}" />
+            <button ng-hide="movie.followed.is_following" class="uk-button uk-button-default watch-button" ng-click="follow(movie)">
+                <span uk-icon="icon: rss;"></span> Follow</button>
+            <button ng-show="movie.followed.is_following" class="uk-button uk-button-default watch-button watched" ng-click="unfollow(movie)">
+                <span uk-icon="icon: rss;"></span> Following </button>
+            <button ng-hide="movie.watched" ng-click="markAsWatched(movie._id)" class="uk-button uk-button-default watch-button">
+                <span uk-icon="icon: check;"></span> Mark as watched</button>
+            <button ng-show="movie.watched" ng-click="markAsNotWatched(movie.watched.watched_id)" class="uk-button uk-button-default watch-button watched">
+                <span uk-icon="icon: check;"></span> Watched (undo) </button>
+            <button class="uk-button uk-button-default watch-button" ng-click="editionMode()">
+                <span uk-icon="icon: pencil;"></span> Edit movie</button>
+        </div>
 
-      <div class="section sinopsis">
-        <div class="section-title">
-          Sinopse
+        <div class="section sinopsis">
+            <div class="section-title">
+                Sinopse
+            </div>
+            <p>
+                {{movie.overview}}
+            </p>
         </div>
-        <p>
-          {{movie.overview}}
-        </p>
-      </div>
-    <div class="section">
-      <div class="section-title">
-        Cast
-      </div>
-      <div uk-grid>
-        <div class="cast-info">
-          <img class="cast-image" src="/images/angelina-picture.jpg" />
-          <p class="cast-name">Angelina Jolie</p>
+        <div class="section">
+            <div class="section-title">
+                Cast
+            </div>
+            <div uk-grid ng-repeat="person in movie._cast">
+                <div class="cast-info" ng-click="goToPerson(person['_id'])">
+                    <img class="cast-image" src="{{ person['image_url'] }}" />
+                    <p class="cast-name">{{ person['name'] }}</p>
+                </div>
+            </div>
         </div>
-        <div class="cast-info">
-          <img class="cast-image" src="/images/angelina-picture.jpg" />
-          <p class="cast-name">Jean-Claude Van Damme</p>
-        </div>
-        <div class="cast-info">
-          <img class="cast-image" src="/images/angelina-picture.jpg" />
-          <p class="cast-name">Angelina Jolie</p>
-        </div>
-        <div class="cast-info">
-          <img class="cast-image" src="/images/angelina-picture.jpg" />
-          <p class="cast-name">Angelina Jolie</p>
-        </div>
-      </div>
-
     </div>
-    </div>
+</div>
