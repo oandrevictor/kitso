@@ -1,0 +1,132 @@
+<div class="explore">
+    <!--Cover Content-->
+    <div class="uk-background-cover" align="center">
+      <span uk-icon="icon: world; ratio: 3"></span>
+
+            <p class="uk-text-large title">Explore</p>
+            <br />
+    </div>
+    <!--Card Content-->
+    <div class="uk-width-xxlarge uk-container explore-container">
+        <div class="uk-card uk-card-small uk-card-default uk-card-body uk-container-center">
+            <ul class="uk-tab" data-uk-tab="{connect:'#tab-id'}">
+                <li><a href="">All</a></li>
+                <li><a>Movies</a></li>
+                <li ><a>Tv Shows</a></li>
+                <li><a>People</a></li>
+                <li class="uk-disabled"><a>Lists</a></li>
+                <li class="uk-disabled"><a>Users</a></li>
+            </ul>
+            <ul id="tab-id" class="uk-switcher uk-margin">
+                <li><a href="#" id="overview" data-uk-switcher-item="next"></a>
+                    <p class="uk-text-large">Newest Tv Shows & Movies
+                    </p>
+                    <div uk-switcher="animation: uk-animation-fade" class="button-switcher">
+                        <button class="uk-button uk-button-default" type="button" uk-icon="grid"></button>
+                    </div>
+
+                    <ul class="uk-switcher uk-margin">
+                        <li>
+                            <div class="uk-child-width-1-3@m" uk-grid>
+                              <div ng-repeat="media in allMedias" class="uk-card uk-card-primary">
+                                  <div class="uk-card-media-top">
+                                    <div class="uk-visible-toggle">
+                                      <a ng-href="/{{media.__t.toLowerCase()}}/{{media._id}}">
+                                      <img ng-src="{{media.images.poster}}" style="z-index:-1; height: 268px" alt="">
+                                      </a>
+                                      </div>
+                                    </div>
+                                  <div class="uk-card-body">
+                                      <p class="uk-text">{{media.name}}</p>
+                                  </div>
+                                </div>
+                          </div>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                  <p class="uk-text-large">Newest Movies
+                  </p>
+                    <div uk-switcher="animation: uk-animation-fade" class="button-switcher">
+                        <button class="uk-button uk-button-default" type="button" uk-icon="grid"></button>
+                    </div>
+
+                    <ul class="uk-switcher uk-margin">
+                        <li>
+                            <div class="uk-child-width-1-3@m" uk-grid>
+                              <div ng-repeat="movie in allMovies" class="uk-card uk-card-primary">
+                                  <div class="uk-card-media-top">
+                                    <div class="uk-visible-toggle">
+                                      <a ng-href="/movie/{{movie._id}}">
+                                      <img ng-src="{{movie.images.poster}}" style="z-index:-1; height: 268px" alt="">
+                                      </a>
+                                      </div>
+                                    </div>
+                                  <div class="uk-card-body">
+                                      <p class="uk-text">{{movie.name}}</p>
+                                  </div>
+                                </div>
+                          </div>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                  <p class="uk-text-large">Newest Tv Shows
+                  </p>
+                    <div uk-switcher="animation: uk-animation-fade" class="button-switcher">
+                        <button class="uk-button uk-button-default" type="button" uk-icon="grid"></button>
+                    </div>
+
+                    <ul class="uk-switcher uk-margin">
+                        <li>
+                            <div class="uk-child-width-1-3@m" uk-grid>
+                              <div ng-repeat="tvshow in allShows" class="uk-card uk-card-primary">
+                                  <div class="uk-card-media-top">
+                                    <div class="uk-visible-toggle">
+                                      <a ng-href="/tvshow/{{tvshow._id}}">
+                                      <img ng-src="{{tvshow.images.poster}}" style="z-index:-1; height: 268px" alt="">
+                                      </a>
+                                      </div>
+                                    </div>
+                                  <div class="uk-card-body">
+                                      <p class="uk-text">{{tvshow.name}}</p>
+                                  </div>
+                                </div>
+                          </div>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <p class="uk-text-large">Newest People
+                    </p>
+                    <div uk-switcher="animation: uk-animation-fade" class="button-switcher">
+                        <button class="uk-button uk-button-default" type="button" uk-icon="grid"></button>
+                    </div>
+
+                    <ul class="uk-switcher uk-margin">
+                        <li>
+                            <div class="uk-child-width-1-3@m" uk-grid>
+                                <div ng-repeat="person in allPeople" class="uk-card uk-card-primary">
+                                    <div class="uk-card-media-top">
+                                        <div class="uk-visible-toggle">
+                                            <a ng-href="/person/{{person._id}}">
+                                                <img ng-src="{{person.image_url}}" style="z-index:-1; height: 268px" alt="">
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="uk-card-body">
+                                        <p class="uk-text">{{person.name}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+                <li>Followers Content Here</li>
+                <li>
+                    <a href="#" id="settings" data-uk-switcher-item="next"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

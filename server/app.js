@@ -68,11 +68,23 @@ app.get('/login', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
 
+app.post('/passwordRecover/:email', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
 app.get('/home', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
 
+app.get('/explore', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
 app.get('/profile', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
+app.get('/user/:id', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
 
@@ -92,9 +104,20 @@ app.get('/movie/edit/:id', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
 
+app.get('/person/:id', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
+app.get('/person/edit/:id', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
 // Api routes
 var exampleRoutes = require('./routes/example');
 app.use('/example', exampleRoutes);
+
+var emailRoutes = require('./routes/email');
+app.use('/api/email', emailRoutes);
 
 var movieRoutes = require('./routes/movie');
 app.use('/api/movie', movieRoutes);
@@ -108,14 +131,35 @@ app.use('/api/appears_in', appearsInRoutes);
 var userRoutes = require('./routes/user');
 app.use('/api/user', userRoutes);
 
+var userListRoutes = require('./routes/userList');
+app.use('/api/userlist', userListRoutes);
+
 var watchedRoutes = require('./routes/watched');
 app.use('/api/watched', watchedRoutes);
+
+var ratedRoutes = require('./routes/rated');
+app.use('/api/rated', ratedRoutes);
 
 var tvShowRoutes = require('./routes/tvShow');
 app.use('/api/tvShow', tvShowRoutes);
 
 var actionRoutes = require('./routes/action');
 app.use('/api/action', actionRoutes);
+
+var followsRoutes = require('./routes/follows');
+app.use('/api/follows', followsRoutes);
+
+var followsPageRoutes = require('./routes/followsPage');
+app.use('/api/followsPage', followsPageRoutes);
+
+var mediaRoutes = require('./routes/media');
+app.use('/api/media', mediaRoutes);
+
+var newsRoutes = require('./routes/news');
+app.use('/api/news', newsRoutes);
+
+var relatedRoutes = require('./routes/related');
+app.use('/api/related', relatedRoutes);
 
 // start app ===============================================
 // startup our app at http://localhost:8080

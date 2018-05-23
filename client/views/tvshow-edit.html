@@ -2,7 +2,7 @@
   <!--Cover Content-->
   <div class="uk-background-cover" align="center" style="background-image: url({{ tvshow.images.cover }})">
     <div class="uk-width-xxlarge">
-      <div class="title">
+      <div class="title tvshow-name">
         Edit TvShow - {{tvshow.name}}
       </div>
     </div>
@@ -10,7 +10,7 @@
 
   <div class="uk-width-xxlarge content">
     <div class="left-bar uk-width-1-4">
-      <img class="poster" src="{{tvshow.images['poster']}}"/>
+      <img class="poster" style="background-image: url({{ tvshow.images['poster'] }})" />
       <button class="uk-button uk-button-default watch-button" ng-click="saveTvShow()">
         <span uk-icon="icon: check;"></span> Save page</button>
     </div>

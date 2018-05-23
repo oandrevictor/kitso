@@ -5,7 +5,24 @@ html, body {
     max-width: 100%;
     overflow-x: hidden;
 }
-
+.uk-tab>*{
+margin-right: auto;
+margin-left: auto;
+}
+.uk-card-default {
+  box-shadow: none !important;
+}
+.bold {
+  font-weight: 400 !important;
+}
+.full-loading {
+  background: url('/images/icon/loading.svg') no-repeat center center, linear-gradient(155deg, #9730a0 0%, #7c1b7a 51%, #502274 75%);;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  display: none;
+  z-index: 999;
+}
 .home {
   font-family: 'Roboto', sans-serif;
   background: black;
@@ -48,14 +65,61 @@ html, body {
   width: 60vw;
   height: 6vh;
   min-height: 60px;
-  background: #502274;
-  color: #EDEDED;
+  background: linear-gradient(155deg, #9730a0 0%, #7c1b7a 51%, #502274 75%);
+  color: #EDEDED !important;
   display: inline-grid;
   font-weight: 100;
   font-style: italic;
   padding-left: 20vw;
   padding-right: 20vw;
   display: flex;
+  .exploring {
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+    width: 33%;
+    color: white;
+    text-align: center;
+
+    .explore-icon{
+      background: url("/images/icon/explore.svg") center no-repeat;
+      background-size: 20px;
+      height: 20px;
+      width: 20px;
+      border: 0px;
+      padding: 0px;
+    }
+
+    .home-icon{
+      background: url("/images/icon/home.svg") center no-repeat;
+      background-size: 21px;
+      height: 21px;
+      width: 21px;
+      border: 0px;
+      padding: 0px;
+    }
+
+    .profile-icon{
+      background: url("/images/icon/profile.svg") center no-repeat;
+      background-size: 20px;
+      height: 20px;
+      width: 20px;
+      border: 0px;
+      padding: 0px;
+    }
+  }
+  .icon {
+    border: 0px;
+    padding: 0px;
+    padding-left: 4px;
+    &:hover{
+      color: white;
+    }
+    &:active{
+      color: white;
+    }
+  }
 
   .uk-dropdown {
     min-width: 120px !important;
@@ -82,6 +146,10 @@ html, body {
     font-weight: 700;
     font-size: 24px;
     font-style: initial;
+    color: white !important;
+    text-decoration: none !important;
+    padding-right: 10px;
+    width: 32%;
   }
 
   .options {
@@ -89,8 +157,9 @@ html, body {
     margin-top: auto;
     margin-bottom: auto;
     color: white;
-    width: 30px;
     border: solid 0px;
+    float: right;
+    width: 33%;
     a {
       font-style: initial;
       &:hover {
@@ -105,12 +174,12 @@ html, body {
   font-family: 'Roboto', sans-serif;
   width: 100vw;
   height: 10vh;
-  background: #502274;
-  color: #EDEDED;
+  background: #f9f9f9;
+  color: #502274;
   text-align: center;
   display: inline-grid;
   font-weight: 100;
-  font-style: italic;
+  font-style: bold;
   p {
     margin-top: auto;
     margin-bottom: auto;
@@ -224,15 +293,155 @@ html, body {
     }
   }
 }
+.explore {
+
+  .uk-background-cover {
+    text-shadow: 1px 0px 5px #333333e3;
+    background: url("/images/interstellar.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    overflow-y: auto !important;
+    height: 30vh;
+    display: block;
+    color: #ffffff !important;
+    padding-bottom: 0px !important;
+    padding-top: 4%;
+
+    .title {
+      font-size: 2.5rem;
+    }
+  }
+
+  .date-change{
+    width: 85% !important;
+  }
+
+  .check {
+    width: 20px !important;
+    min-width: 20px !important;
+    width: 24px !important;
+    min-width: 20px !important;
+    padding-left: 1px;
+    padding-right: 4px;
+    background: #8600ca;
+    color: white;
+
+  }
+
+  .explore-container {
+    margin-top: -50px;
+    margin-bottom: auto;
+    font-weight: 300;
+
+    .button-switcher{
+       text-align: right;
+
+       .uk-button{
+            padding: 0 15px;
+            border-color: transparent;
+            color: #ccc;
+       }
+
+       .uk-button-default.uk-active, .uk-button-default:active .uk-icon{
+         color: #333;
+    }
+    }
+
+    .uk-switcher {
+     p{
+      margin-bottom: 0px;
+     }
+     .uk-text-muted{
+      margin-bottom: 10px;
+      margin-top: 5px;
+      font-size: 13px;
+     }
+
+     .uk-divider-icon {
+      margin-top: 0px;
+     }
+    }
+
+    .uk-tab>.uk-active>a {
+      font-weight: 400;
+      border-color: #db2399 !important;
+  }
+
+    .uk-width-1-2{
+      p{
+        margin-bottom: 0px;
+        width: 300px
+      }
+    }
+
+    .uk-list-divider>li:nth-child(n+2) {
+       border-top: 1px solid #f7f7f7;
+    }
+
+    .uk-card-primary{
+       background: #fff;
+       box-shadow: none;
+
+       .uk-text{
+          color: #666;
+       }
+
+       .uk-text-muted{
+          color: #999 !important;
+       }
+
+       .uk-card-body{
+          padding-left: 0px;
+          padding-top: 5px;
+       }
+    }
+
+    .uk-list ul .uk-iconnav{
+       padding-left: 0px;
+    }
+  }
+
+
+}
 
 .profile {
   font-family: 'Roboto' !important;
+  .card-rated{
+    .rating-star {
+      background: url("/images/icon/purple-star.svg") center no-repeat;
+      background-size: 16px;
+      height: 12px;
+      width: 12px;
+      padding-left: 0px;
+      padding: 10px;
+    }
+  }
   .uk-iconnav>* {
     padding-left: 3px !important;
   }
-  .date-change{
-    width: 85%;
+  .page-link {
+      text-decoration: none;
+      color:  #666 !important;
+      font-weight: 300;
   }
+  .date-change{
+    width: 85% !important;
+  }
+  .follow-button {
+    cursor: pointer;
+    color: white;
+    display: inline-block;
+    background: rgba(0,0,0, 0.7);
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  .following-list {
+    .follow-button{
+      background: rgba(0,0,0, 0.4);
+    }
+  }
+
   .check {
     width: 20px !important;
     min-width: 20px !important;
@@ -245,12 +454,12 @@ html, body {
 
   }
   .uk-background-cover {
-    background: url("/images/hogwarts.jpg");
+    background: url("/images/strange.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
-    overflow-y: auto !important;
-    height: 50%;
+    overflow-y: visible !important;
+    height: 30vh;
     display: block;
     color: #ffffff !important;
     padding-bottom: 0px !important;
@@ -304,7 +513,8 @@ html, body {
     }
 
     .uk-tab>.uk-active>a {
-     border-color: #8600ca !important;
+      font-weight: 400;
+      border-color: #db2399 !important;
 	}
 
     .uk-width-1-2{
@@ -339,11 +549,17 @@ html, body {
     .uk-list ul .uk-iconnav{
        padding-left: 0px;
     }
+
+    .following-link{
+      color: #db2399 !important
+    }
   }
   .profile-image {
     border-style: solid;
+    display: block;
   }
   .profile-name {
+    display: inline-block;
     text-shadow: 1px 1px 2px black, 0 0 1em #000000, 0 0 0.2em #000000;
     margin: 2px;
   }
@@ -351,6 +567,31 @@ html, body {
     text-shadow: 1px 1px 2px black, 0 0 1em #000000, 0 0 0.2em #000000;
     margin-top: 2px;
     margin-bottom: 80px;
+  }
+
+  .rating {
+
+    .is-rated-star {
+      background: url("/images/icon/white-star.svg") center no-repeat;
+      background-size: 40px;
+      height: 40px;
+      width: 40px;
+      margin-top: 5px;
+    }
+
+    .rating-value {
+      display: inline;
+      font-size: 30px;
+      padding-left: 8px;
+    }
+
+    .rating-star {
+      background: url("/images/icon/purple-star.svg") center no-repeat;
+      background-size: 12px;
+      height: 12px;
+      width: 12px;
+      padding-left: 0px;
+    }
   }
 }
 
@@ -362,7 +603,7 @@ html, body {
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
-    overflow-y: auto !important;
+    overflow-y: visible !important;
     height: 30vh;
     display: block;
     color: #ffffff !important;
@@ -393,10 +634,26 @@ html, body {
     padding-right: 20px;
     display: flex;
 
+    .is-rated-star {
+      background: url("/images/icon/white-star.svg") center no-repeat;
+      background-size: 40px;
+      height: 40px;
+      width: 40px;
+      margin-top: 5px;
+    }
+
     .rating-value {
       display: inline;
       font-size: 30px;
       padding-left: 8px;
+    }
+
+    .rating-star {
+      background: url("/images/icon/purple-star.svg") center no-repeat;
+      background-size: 12px;
+      height: 12px;
+      width: 12px;
+      padding-left: 0px;
     }
   }
 
@@ -451,13 +708,18 @@ html, body {
 
 .tvshow {
   font-family: 'Roboto' !important;
+  .tvshow-name {
+    text-shadow: 1px 1px 2px black, 0 0 1em #000000, 0 0 0.2em #000000;
+    margin: 2px;
+  }
+
   .uk-background-cover {
     z-index: -1;
     background: url("/images/changeling.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
-    overflow-y: auto !important;
+    overflow-y: visible !important;
     height: 30vh;
     display: block;
     color: #ffffff !important;
@@ -465,6 +727,18 @@ html, body {
     padding-top: 4%;
     position: relative;
   }
+
+  .poster {
+    background: #502274;
+    background-repeat:no-repeat;
+    background-size:cover;
+    width: 191px;
+    height: 275px;
+    overflow:hidden;
+    box-shadow: 0 0px 10px rgba(0,0,0,0.1);
+    border: 4px solid white;
+  }
+
   .title {
     bottom: 10px;
     position: absolute;
@@ -488,10 +762,26 @@ html, body {
     padding-right: 20px;
     display: flex;
 
+    .is-rated-star {
+      background: url("/images/icon/white-star.svg") center no-repeat;
+      background-size: 40px;
+      height: 40px;
+      width: 40px;
+      margin-top: 5px;
+    }
+
     .rating-value {
       display: inline;
       font-size: 30px;
       padding-left: 8px;
+    }
+
+    .rating-star {
+      background: url("/images/icon/purple-star.svg") center no-repeat;
+      background-size: 12px;
+      height: 12px;
+      width: 12px;
+      padding-left: 0px;
     }
   }
 
@@ -554,5 +844,109 @@ html, body {
   border-radius: 0px !important;
   &.purple {
     background: #502274;
+  }
+}
+
+.person {
+  font-family: 'Roboto' !important;
+  .uk-background-cover {
+    z-index: -1;
+    background: url("/poster");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    overflow-y: visible !important;
+    height: 30vh;
+    display: block;
+    color: #ffffff !important;
+    padding-bottom: 0px !important;
+    padding-top: 4%;
+    position: relative;
+  }
+
+  .uk-card-body {
+    padding: 6%;
+  }
+
+  .watch-button {
+    display: block;
+    width: 191px;
+    border: 1px solid #FFFFFF;
+    font-size: 10px !important;
+    &.watched {
+      color: white;
+      background: #773095;
+    }
+  }
+
+  .content {
+    padding-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .title {
+    bottom: 10px;
+    position: absolute;
+    font-size: 4vh;
+    font-weight: 100;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .description {
+    text-align: justify;
+    width: 540px;
+  }
+
+  .left-bar {
+    float: right;
+    margin-top: -92px;
+  }
+
+  .poster {
+    background: url("/images/person-edited.png");
+    background: #502274;
+    background-repeat:no-repeat;
+    background-size:cover;
+    width: 191px;
+    height: 240px;
+    overflow:hidden;
+    box-shadow: 0 0px 10px rgba(0,0,0,0.1);
+    border: 4px solid white;
+  }
+
+  .section {
+    margin-top: 8px;
+    margin-bottom: 4px;
+  }
+
+  .section-title {
+    margin-bottom: 3px;
+    font-size: 2.5vh;
+    color: #773095;
+    font-weight: 100;
+  }
+
+  .edit-user-button {
+    display: block;
+    width: 191px;
+    border: 1px solid #FFFFFF;
+    font-size: 10px !important;
+  }
+
+  .uk-card {
+    cursor: pointer !important;
+  }
+
+  .person-name {
+    text-shadow: 1px 1px 2px black, 0 0 1em #000000, 0 0 0.2em #000000;
+    margin: 2px;
+  }
+
+  p {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    font-size: 14px;
   }
 }

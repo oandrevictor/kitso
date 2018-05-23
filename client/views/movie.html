@@ -14,12 +14,29 @@
               <b>{{ release_date_formated }}</b> | Genres:
               <b ng-repeat="genre in movie.genres">{{ genre }}</b>
               <div class="rating">
-                  <span uk-icon="icon: star; ratio: 2"></span>
-                  <div class="rating-value"> 7.2</div>
+                <div>
+                  <div class="is-rated-star" ng-show="movie.rated"></div>
+                  <a ng-hide="movie.rated" uk-icon="icon: star; ratio: 2"></a>
+                </div>
+                  <div uk-dropdown="pos: bottom-center; mode: hover" style="z-index: 999">
+                    <center>
+                      <ul class="uk-iconnav">
+                        <div ng-repeat="n in range('10')">
+                          <a ng-if="n <= movie.rating" class="rating-star" ng-click="rate(movie._id, n)"></a>
+                          <a ng-if="n > movie.rating" uk-icon="icon: star; ratio: .6" ng-click="rate(movie._id, n)"></a>
+                        </div>
+                      </ul>
+                    </center>
+                  </div>
+                  <div class="rating-value"> 7.2 </div>
               </div>
           </div>
           <div class="left-bar uk-width-1-4">
               <img class="poster" ng-src="{{movie.images.poster}}" />
+              <button ng-hide="movie.followed.is_following" class="uk-button uk-button-default watch-button" ng-click="follow(movie)">
+              <span uk-icon="icon: rss;"></span> Follow</button>
+              <button ng-show="movie.followed.is_following" class="uk-button uk-button-default watch-button watched" ng-click="unfollow(movie)">
+              <span uk-icon="icon: rss;"></span> Following </button>
               <button ng-hide="movie.watched" ng-click="markAsWatched(movie._id)" class="uk-button uk-button-default watch-button">
               <span uk-icon="icon: check;"></span> Mark as watched</button>
               <button ng-show="movie.watched" ng-click="markAsNotWatched(movie.watched.watched_id)" class="uk-button uk-button-default watch-button watched">

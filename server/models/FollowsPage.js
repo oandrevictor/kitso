@@ -6,13 +6,18 @@ var FollowsPageSchema = new Schema({
       type: mongoose.Schema.Types.ObjectId, ref: 'User',
       required: true
     },
-    following: {
+    _following: {
       type: String,
       required: true
     },
     is_media: {
       type: Boolean,
       required: true
+    },
+    _action: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Action',
+      required: false
     }
 });
 
