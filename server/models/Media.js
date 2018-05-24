@@ -8,12 +8,12 @@ var MediaSchema = new Schema({
     },
     overview: {
         type: String,
-        required: true,
+        required: false,
         default: "No information now, come back soon."
     },
     release_date: {
         type: Date,
-        required: true
+        required: false
     },
     _directors: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Person' }],
     _actors: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Person' }],
@@ -24,9 +24,9 @@ var MediaSchema = new Schema({
     genres: {
       type: [String],
       default: [],
-      required: true
+      required: false
     },
-    images: { 
+    images: {
         poster: {
             type: String
         },

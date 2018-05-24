@@ -1,4 +1,9 @@
 var Show = require('../models/TvShow');
+var redis = require('redis');
+var client = redis.createClient();
+const https = require('https');
+
+
 
 // Todas as séries
 exports.index = function(req, res) {
@@ -18,9 +23,47 @@ exports.show = function(req, res) {
         res.status(400).send(err);
     })
     .then((result) => {
-        res.status(200).json(result);
+      console.log(result)
+      tmdb_id = result._tmdb_id;
+      query = 'tvshow/' + tmdb_id
+      client.exists('tvshow/' + tmdb_id, function(err, reply) {
+        if (reply === 1) {
+            console.log('exists');
+            client.get(query,(err,data)=>{
+                if(err)
+                  console.log(err)
+                else{
+                  console.log('got query from redis');
+                  parsed_data = JSON.parse(data)
+                  res.setHeader('Content-Type', 'application/json');
+                  res.status(200).send(parsed_data);
+                }
+              });
+        } else {
+          console.log("Could not get from redis, requesting info from The Movie DB")
+          https.get("https://api.themoviedb.org/3/tv/"+ tmdb_id + "?api_key=db00a671b1c278cd4fa362827dd02620", (resp) => {
+            let data = '';
+            // A chunk of data has been recieved.
+            resp.on('data', (chunk) => {
+              data += chunk;
+            });
+            // The whole response has been received. Print out the result.
+            resp.on('end', () => {
+            console.log("saving result to redis")
+            client.set(query, JSON.stringify(data));
+            res.status(200).send(data);
+            });
+
+          }).on("error", (err) => {
+            console.log("Error: " + err.message);
+          });
+
+            console.log('doesn\'t exist');
+        }
+      });
     });
 };
+
 
 // Criar série
 exports.create = function(req, res) {

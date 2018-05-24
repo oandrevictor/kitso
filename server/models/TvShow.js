@@ -8,11 +8,11 @@ var TvShowSchema = new Schema({
         {
           season_n: {
             type: Number,
-            required: true
+            required: false
           },
           total_episodes: {
             type: Number,
-            required: true
+            required: false
           },
           starts_airing: {
             type: Date,
@@ -24,8 +24,11 @@ var TvShowSchema = new Schema({
           }
         }
       ],
-      required: true,
+      required: false,
       default: []
+    },
+    _tmdb_id: {
+      type: String
     }
 });
 
