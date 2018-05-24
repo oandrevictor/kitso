@@ -10,7 +10,7 @@
 
   <div class="uk-width-xxlarge content">
     <div class="left-bar uk-width-1-4">
-      <img class="poster" src="{{movie.images['poster']}}"/>
+      <img class="poster" style="background-image: url({{ movie.images['poster'] }})" />
       <button class="uk-button uk-button-default watch-button" ng-click="saveMovie()">
         <span uk-icon="icon: check;"></span> Save page</button>
     </div>
@@ -34,8 +34,8 @@
       <div class="uk-margin">
         <label class="uk-form-label">Release Date</label>
         <div class="uk-form-controls">
-            <input class="uk-input" type="date" id="release_date" name="release_date"
-                   ng-model="movie.release_date" required>
+          <input class="uk-input" type="date" id="release_date" name="release_date"
+                 ng-model="movie.release_date" required>
         </div>
       </div>
 
