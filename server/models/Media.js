@@ -19,7 +19,7 @@ var MediaSchema = new Schema({
     _actors: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Person' }],
     imdb_id: {
         type: String,
-        required: true
+        required: false
     },
     genres: {
       type: [String],
