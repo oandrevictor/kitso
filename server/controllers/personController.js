@@ -82,13 +82,13 @@ exports.delete = function(req, res) {
         res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((person) => {
-        Person.remove({ _id: req.params.person_id})
+        Person.find({ _id: req.params.person_id})
         .catch((err) => {
             res.status(RequestStatus.BAD_REQUEST).send(err);
         })
         .then(async () => {
             try {
-                await remove_person_from_media_cast(person._appears_in, person._id);
+                person.remove();
                 res.status(RequestStatus.OK).send('Person removed.');
             } catch (err) {
                 res.status(RequestStatus.BAD_REQUEST).send(err);
@@ -96,18 +96,6 @@ exports.delete = function(req, res) {
         });
     });
 };
-
-var remove_person_from_media_cast = async function(medias, person_id) {
-    medias.forEach(media_id => {
-        Media.findById(media_id, function(err, media) {
-            var index = media._actors.indexOf(person_id);
-            if (index > -1) {
-                media._actors.splice(index, 1);
-            }
-            media.save();
-        });
-    });
-}
 
 var returnAppearsInObj = function(appearsInId) {
     return AppearsIn.findById(appearsInId).exec();
