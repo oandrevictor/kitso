@@ -1,5 +1,6 @@
 var Media = require('../models/Media');
 var Person = require('../models/Person');
+var RequestStatus = require('../constants/requestStatus');
 
 
 exports.index = function(req, res) {
@@ -105,16 +106,16 @@ exports.update = function(req, res) {
     });
 };
 
-exports.delete = function(req, res) {
-    Media.remove({ _id: req.params.media_id})
-    .catch((err) => {
-        res.status(400).send(err);
-    })
-    .then(() => {
-        res.status(200).send('Media removed.');
-    });
+exports.delete = async function(req, res) {
+    try {
+        let media = await Media.findById(req.params.media_id).exec();
+        media.remove();
+        res.status(RequestStatus.OK).send('Media removed.');
+    } catch (err) {
+        console.log(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
+    }
 };
-
 
 var injectPersonJson = async function(personId) {
     let personObj = await getPersonObj(personId);

@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var Utils = require('../utils/utils');
 
 var MediaSchema = new Schema({
     name: {
@@ -34,6 +35,24 @@ var MediaSchema = new Schema({
             type: String
         }
     }
+});
+
+MediaSchema.pre('remove', async function(next) {
+
+    let mActors = this._actors;
+    let mId = this._id;
+
+    // deleting media from actors' appearsins
+    await mActors.forEach(async (personId) => {
+        await Utils.removeMediaFromPerson(mId, personId);
+    });
+
+    // deleting appearsIns entities with deleted media
+    await mActors.forEach(async (personId) => {
+        await Utils.deleteAppearsInByKeys(mId, personId);
+    });
+    
+    next();
 });
 
 var Media = mongoose.model('Media', MediaSchema);
