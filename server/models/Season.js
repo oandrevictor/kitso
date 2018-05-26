@@ -11,6 +11,9 @@ var SeasonSchema = new Schema({
   _tmdb_id: {
     type: String,
     required: true
+  },
+  _tvshow_id: {
+    type: mongoose.Schema.Types.ObjectId, ref: 'TvShow' 
   }
 });
 

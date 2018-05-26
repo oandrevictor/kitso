@@ -11,6 +11,20 @@ var EpisodeSchema = new Schema({
   _tmdb_id: {
     type: String,
     required: true
+  },
+  _tvshow_id: {
+    type: mongoose.Schema.Types.ObjectId, ref: 'TvShow'
+  },
+  _tmdb_tvshow_id: {
+    type: String,
+    required: true
+  },
+  _season_id: {
+    type: mongoose.Schema.Types.ObjectId, ref: 'Season'
+  },
+  season_number: {
+    type: Number,
+    required: true
   }
 });
 

@@ -188,7 +188,7 @@ getShowFromTMDB = function(tmdb_id){
 
 getSeasonFromAPI = function(tv_id, season_number){
   return new Promise(function(resolve, reject) {
-    var query = 'tvshow/' + tv_id + '/season' + season_number
+    var query = 'tvshow/' + tv_id + '/season/' + season_number
     console.log("log")
     https.get("https://api.themoviedb.org/3/tv/"+ tv_id + "/season/"+ season_number +"?api_key=db00a671b1c278cd4fa362827dd02620",
     (resp) => {
@@ -245,6 +245,8 @@ matchApiEpisodesToDb = function(tvshow, seasonapi, dbseason){
       var tmdb_id = episode.id;
       var name = episode.name;
       var db_episode = new Episode();
+      db_episode._tvshow_id = tvshow.id;
+      db_episode.season_number= season.season_number
       db_episode.name = name;
       db_episode._tmdb_id = tmdb_id;
       db_episode.number = episode.episode_number;
