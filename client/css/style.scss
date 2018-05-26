@@ -11,9 +11,7 @@ margin-right: auto;
 margin-left: auto;
 }
 .kitso-wrapper {
-  padding-top: 6vh;
   min-height: 90vh;
-
 }
 .kitso-content{
   overflow-y: auto;
@@ -25,7 +23,6 @@ margin-left: auto;
   font-weight: 400 !important;
 }
 .kitso-content{
-  padding-bottom:6vh;
 }
 .full-loading {
   background: url('/images/icon/loading.svg') no-repeat center center, linear-gradient(155deg, #9730a0 0%, #7c1b7a 51%, #502274 75%);;
@@ -73,8 +70,6 @@ margin-left: auto;
 
 
 .toolbar {
-  margin-top: -6vh;
-  position: absolute;
   font-family: 'Roboto', sans-serif;
   width: 60vw;
   height: 6vh;
