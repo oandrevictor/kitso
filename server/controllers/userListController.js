@@ -2,12 +2,8 @@ var UserList = require('../models/UserList');
 var ListItem = UserList.base.models.ListItem;
 var User = require('../models/User');
 var Media = require('../models/Media');
-
-
-const UNAUTHORIZED_CODE = 401;
-const UNAUTHORIZED_MSG = "Unauthorized!";
-const BAD_REQUEST_CODE = 400;
-const OK_CODE = 200;
+var RequestStatus = require('../constants/requestStatus');
+var RequestMsg = require('../constants/requestMsg');
 
 
 // CRUD USERLIST ==================================================================================
@@ -21,11 +17,11 @@ exports.show = async function(req, res) {
         Promise.all(promises).then(function(results) {
             results.sort(sortUserListByRank);
             userList.itens = results;
-            res.status(OK_CODE).json(userList);
+            res.status(RequestStatus.OK).json(userList);
         })
     } catch (err) {
         console.log(err)
-        res.status(BAD_REQUEST_CODE).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     }    
 }
 
@@ -35,10 +31,10 @@ exports.create = async function(req, res) {
         let userId = userList._user;
         await addListToUserLists(userList._id, userId);
         await saveUserList(userList);
-        res.status(OK_CODE).json(userList);    
+        res.status(RequestStatus.OK).json(userList);    
     } catch(err) {
         console.log(err);
-        res.status(BAD_REQUEST_CODE).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     }
 };
 
@@ -53,10 +49,10 @@ exports.update = async function(req, res) {
             userList.title = req.body.title;
         }
         await saveUserList(userList);
-        res.status(OK_CODE).json(userList);
+        res.status(RequestStatus.OK).json(userList);
     } catch (err) {
         console.log(err)
-        res.status(BAD_REQUEST_CODE).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     }
 };
 
@@ -67,13 +63,13 @@ exports.delete = async function(req, res) {
         await checkIfUserIsAuthorizedToManipulateList(userId, userListId);
         let deletedList = await removeListFromUserLists(userListId, userId);
         await deleteListFromDb(userListId);
-        res.status(OK_CODE).json(deletedList);
+        res.status(RequestStatus.OK).json(deletedList);
     } catch (err) {
         console.log(err);
-        if (err.message === UNAUTHORIZED_MSG) {
-            res.status(UNAUTHORIZED_CODE).send(err.message);
+        if (err.message === RequestMsg.UNAUTHORIZED) {
+            res.status(RequestStatus.UNAUTHORIZED).send(err.message);
         }
-        res.status(BAD_REQUEST_CODE).send(err.message);
+        res.status(RequestStatus.BAD_REQUEST).send(err.message);
     }
 }
 
@@ -94,13 +90,13 @@ exports.addItem = async function(req, res) {
         });
         itens.push(newItem);
         await saveUserList(userList);
-        res.status(OK_CODE).json(userList); 
+        res.status(RequestStatus.OK).json(userList); 
     } catch(err) {
         console.log(err);
-        if (err.message === UNAUTHORIZED_MSG) {
-            res.status(UNAUTHORIZED_CODE).send(err.message);
+        if (err.message === RequestMsg.UNAUTHORIZED) {
+            res.status(RequestStatus.UNAUTHORIZED).send(err.message);
         }
-        res.status(BAD_REQUEST_CODE).send(err.message);
+        res.status(RequestStatus.BAD_REQUEST).send(err.message);
     }    
 }
 
@@ -113,17 +109,17 @@ exports.removeItem = async function(req, res) {
         let itens = userList.itens;
         let itemToRemoveRank = req.params.item_rank;
         if (itemToRemoveRank > itens.length) {            
-            res.status(BAD_REQUEST_CODE);
+            res.status(RequestStatus.BAD_REQUEST);
         }
         removeItemFromList(itemToRemoveRank, itens);
         await saveUserList(userList);
-        res.status(OK_CODE).json(userList); 
+        res.status(RequestStatus.OK).json(userList); 
     } catch(err) {
         console.log(err);
-        if (err.message === UNAUTHORIZED_MSG) {
-            res.status(UNAUTHORIZED_CODE).send(err.message);
+        if (err.message === RequestMsg.UNAUTHORIZED) {
+            res.status(RequestStatus.UNAUTHORIZED).send(err.message);
         }
-        res.status(BAD_REQUEST_CODE).send(err.message);
+        res.status(RequestStatus.BAD_REQUEST).send(err.message);
     }  
 }
 
@@ -136,13 +132,13 @@ exports.changeItemRank = async function(req, res) {
         let itens = userList.itens;
         changeRank(req.body.current_rank, req.body.new_rank, itens);
         await saveUserList(userList);
-        res.status(OK_CODE).json(userList); 
+        res.status(RequestStatus.OK).json(userList); 
     } catch(err) {
         console.log(err);
-        if (err.message === UNAUTHORIZED_MSG) {
-            res.status(UNAUTHORIZED_CODE).send(err.message);
+        if (err.message === RequestMsg.UNAUTHORIZED) {
+            res.status(RequestStatus.UNAUTHORIZED).send(err.message);
         }
-        res.status(BAD_REQUEST_CODE).send(err.message);
+        res.status(RequestStatus.BAD_REQUEST).send(err.message);
     } 
 }
 
@@ -253,7 +249,7 @@ var checkIfUserIsAuthorizedToManipulateList = async function(userId, userListId)
     let user = await getUser(userId);
     let isAuthorized = userHasList(user, userListId);
     if (!isAuthorized) { 
-        throw new Error(UNAUTHORIZED_MSG);
+        throw new Error(RequestMsg.UNAUTHORIZED);
     }
 }
 
