@@ -12,7 +12,7 @@
             <b>Directed by</b> {{ 'Directors' }}
             <br /> Airing:
             <b> {{ tvshow.release_date | date: 'yyyy' }}</b> | Genres:
-            <b ng-repeat="genre in tvshow.genres">{{ genre }}</b>
+            <b ng-repeat="genre in tvshow.genres">{{ genre.name }} </b>
             <div class="rating">
               <div>
                 <div class="is-rated-star" ng-show="tvshow.rated"></div>
@@ -75,8 +75,8 @@
             </div>
             <div class="section">
                 <div class="section-title">
-
-            Episodes
+                  Episodes
+                </div>
 
             <ul uk-accordion="multiple: true" ng-repeat="episode in season.episodes">
               <li>
