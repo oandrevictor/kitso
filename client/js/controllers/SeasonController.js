@@ -44,7 +44,7 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
       });
     });
 
-    RatedService.isRated($scope.user._id, episode).then((rated) => {
+    RatedService.isRated($scope.user._id, episode._id).then((rated) => {
       var episodeId = episode._id;
       episode.rated = rated;
       if (! rated.rated_id){
@@ -66,10 +66,11 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
   }
 
 
-    $scope.markAsWatched = function(tvshowId){
-        WatchedService.markAsWatched($scope.user._id, tvshowId)
+    $scope.markAsWatched = function(episode){
+      var episodeId = episode._id;
+        WatchedService.markAsWatched($scope.user._id, episodeId)
         .then((watched) => {
-            $scope.tvshow.watched = watched;
+            episode.watched = watched;
         })
         .catch((error) => {
             UIkit.notification({
@@ -80,10 +81,11 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
         });
     }
 
-    $scope.markAsNotWatched = function(watchedId){
+    $scope.markAsNotWatched = function(episode){
+      var watchedId = episode.watched.watched_id;
         WatchedService.markAsNotWatched(watchedId)
         .then(() => {
-            $scope.tvshow.watched = false;
+            episode.watched = false;
         })
         .catch((error) => {
             UIkit.notification({

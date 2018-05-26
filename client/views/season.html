@@ -92,8 +92,10 @@
                         <h3 class="uk-card-title">{{episode.name}}</h3>
                         <p>Aired: {{episode.air_date}}</p>
                           <p>{{episode.overview}}</p>
-                          <button ng-hide="tvshow.watched" ng-click="markAsWatched(tvshow._id)" class="uk-button uk-button-default watch-button">
+                          <button ng-hide="episode.watched" ng-click="markAsWatched(episode)" class="uk-button uk-button-default watch-button">
                           <span uk-icon="icon: check;"></span> Mark as watched</button>
+                          <button ng-show="episode.watched" ng-click="markAsNotWatched(episode)" class="uk-button uk-button-default watch-button watched">
+                          <span uk-icon="icon: check;"></span> Watched (undo) </button>
                       </div>
                     </div>
                   </div>
