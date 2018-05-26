@@ -5,35 +5,6 @@ var redis = require('redis');
 var client = redis.createClient();
 const https = require('https');
 
-// Todas as temporadas de um show
-exports.index = function(req, res) {
-    Show.findById(req.params.show_id)
-    .catch((err) => {
-        res.status(400).send(err);
-    })
-    .then((result) => {
-      if (result) {
-        let seasons = result._seasons;
-        let promises;
-  
-        try {
-            promises = seasons.map(inject_seasons);
-        } catch (err) {
-            res.status(400).json(err);
-        }
-        Promise.all(promises).then(function(results) {
-            res.status(200).json(results);
-        })
-      } else {
-        res.status(404).send("Show not found!");
-      }
-    });
-};
-
-inject_seasons = async function(season) {
-  return await Season.findById(season).exec();
-}
-
 // Uma temporada
 exports.show = function(req, res) {
     Show.findById(req.params.show_id)
@@ -46,22 +17,21 @@ exports.show = function(req, res) {
       query = "tvShow/"+ tmdb_id + "/season/" + season;
 
       client.exists(query, function(err, reply) {
-        if (reply = 1) {
+        if (reply == 1) {
           console.log('exists');
           client.get(query,(err,data)=>{
               if(err)
                 console.log(err)
               else{
                 console.log('got query from redis');
-                console.log(data);
-                //var parsed_result = JSON.parse(JSON.parse(data));
+                var parsed_result = JSON.parse(JSON.parse(data));
                 // parsed_result._seasons = result._seasons;
                 // parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
                 // parsed_result._id = result._id;
                 // parsed_result.__t = result.__t;
                 // parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
                 res.setHeader('Content-Type', 'application/json');
-                res.status(200).send(data);
+                res.status(200).send(parsed_result);
               }
             });
         } else {
@@ -87,10 +57,6 @@ exports.delete = function(req, res) {
         res.status(200).send('Season removed.');
     });
 };
-
-inject_seasons = async function(season) {
-  return await Season.findById(season).exec();
-}
 
 getSeasonFromTMDB = function(tmdb_id, season){
   return new Promise(function(resolve, reject) {

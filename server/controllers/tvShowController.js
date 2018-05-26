@@ -20,23 +20,26 @@ exports.index = function(req, res) {
         var query = 'tvshow/' + tmdb_id;
         client.exists(query, function(err, reply) {
           if (reply === 1) {
-              console.log('exists');
-              client.get(query,(err,data)=>{
-                  if(err)
-                    console.log(err)
-                  else{
-                    console.log('got query from redis');
-                    var parsed_result = JSON.parse(JSON.parse(data));
-                    parsed_result._seasons = tvshow._seasons;
-                    parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
-                    parsed_result._id = tvshow._id;
-                    parsed_result.__t = tvshow.__t;
-                    parsed_result.backdrop_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.backdrop_path;
-                    final_result.push(parsed_result);
-                    if (index == result.length -1) res.status(200).send(final_result);
+            console.log('exists');
+            client.get(query, async function(err,data) {
+              if(err)
+                console.log(err)
+              else{
+                console.log('got query from redis');
+                var parsed_result = JSON.parse(JSON.parse(data));
+                promises = await tvshow._seasons.map(inject_seasons);
 
-                  }
-                });
+                Promise.all(promises).then(function(results) {
+                  parsed_result._seasons = results;
+                  parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
+                  parsed_result._id = tvshow._id;
+                  parsed_result.__t = tvshow.__t;
+                  parsed_result.backdrop_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.backdrop_path;
+                  final_result.push(parsed_result);
+                  if (index == result.length -1) res.status(200).send(final_result);
+                  })
+                }
+              });
           } else {
             getShowFromTMDB(tmdb_id).then((data) => {
               data = JSON.parse(JSON.parse(data))
@@ -52,6 +55,10 @@ exports.index = function(req, res) {
       })
     });
 };
+
+inject_seasons = function(season) {
+  return Season.findById(season).exec();
+}
 
 // Uma série
 exports.show = function(req, res) {

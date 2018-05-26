@@ -18,7 +18,7 @@ exports.show = function(req, res) {
       query = "tvShow/"+ tmdb_id + "/season/" + season + "/episode/" + episode;
 
       client.exists(query, function(err, reply) {
-        if (reply = 1) {
+        if (reply == 1) {
           console.log('exists');
           client.get(query,(err,data)=>{
               if(err)
@@ -48,10 +48,6 @@ exports.show = function(req, res) {
       });
     });
 };
-
-inject_seasons = async function(season) {
-  return await Season.findById(season).exec();
-}
 
 getEpisodeFromTMDB = function(tmdb_id, season, episode){
   return new Promise(function(resolve, reject) {
