@@ -9,7 +9,7 @@ html, body {
   margin-left: auto; }
 
 .kitso-wrapper {
-  min-height: 90vh; }
+  min-height: 100vh; }
 
 .kitso-content {
   overflow-y: auto; }
