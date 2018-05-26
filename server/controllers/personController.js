@@ -88,7 +88,7 @@ exports.delete = function(req, res) {
         })
         .then(async () => {
             try {
-                person.remove();
+                person.remove(); // check Person model remove middleware
                 res.status(RequestStatus.OK).send('Person removed.');
             } catch (err) {
                 res.status(RequestStatus.BAD_REQUEST).send(err);
