@@ -63,11 +63,11 @@
                 <div class="uk-position-relative uk-visible-toggle uk-light">
                     <ul class="uk-slider-items uk-child-width-1-3@s uk-grid">
 
-                            <li>
-                                <div class="uk-card uk-grid-match uk-card-default uk-card-hover appears-in" ng-click="goToMedia(media['media'])">
-                                    <img class="poster" style="background-image: url({{ tvshow.images.poster }})" />
+                            <li ng-repeat="season in tvshow.seasons">
+                                <div class="uk-card uk-grid-match uk-card-default uk-card-hover appears-in" >
+                                    <a ng-href="tvshow/{{tvshow._id}}/season/{{season.season_number}}"> <img class="poster" style="background-image: url({{ season.poster_path }})" /> </a>
                                     <div class="uk-card-body">
-                                        <p class="uk-align-center uk-text-uppercase" align="center"> {{tvshow.name}}</p>
+                                        <p class="uk-align-center uk-text-uppercase" align="center"> {{season.name}}</p>
                                     </div>
                                 </div>
                             </li>
