@@ -10,7 +10,7 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
 
       TvShowService.loadSeason($routeParams.tvshow_id, $routeParams.season).then((season) => {
         $scope.season = season;
-        $scope.season._episodes.forEach(function(episode){
+        $scope.season.episodes.forEach(function(episode){
           loadEpisodeActions(episode)
         });
         $('.full-loading').hide();
