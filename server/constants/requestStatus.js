@@ -2,6 +2,7 @@
 const UNAUTHORIZED_STATUS = 401;
 const BAD_REQUEST_STATUS = 400;
 const OK_STATUS = 200;
+const UNPROCESSABLE_ENTITY = 422;
 
 class RequestStatus {
 
@@ -15,6 +16,10 @@ class RequestStatus {
 
     static get OK() {
         return OK_STATUS;
+    }
+
+    static get UNPROCESSABLE_ENTITY() {
+        return UNPROCESSABLE_ENTITY;
     }
 }
 
