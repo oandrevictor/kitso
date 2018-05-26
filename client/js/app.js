@@ -55,6 +55,11 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
             controller: 'TvShowController',
             access: { restricted: true }
         })
+        .when('/tvshow/:tvshow_id/season/:season_number', {
+            templateUrl: 'views/season.html',
+            controller: 'TvShowController',
+            access: { restricted: true }
+        })
         .when('/tvshow/edit/:tvshow_id', {
             templateUrl: 'views/tvshow-edit.html',
             controller: 'TvShowEditController',

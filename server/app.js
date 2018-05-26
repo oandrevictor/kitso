@@ -92,6 +92,10 @@ app.get('/tvshow/:id', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
 
+app.get('/tvshow/:id/season/:number', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
 app.get('/tvshow/edit/:id', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
