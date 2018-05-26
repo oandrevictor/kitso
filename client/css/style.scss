@@ -71,7 +71,6 @@ margin-left: auto;
 
 .toolbar {
   font-family: 'Roboto', sans-serif;
-  width: 60vw;
   height: 6vh;
   min-height: 60px;
   background: linear-gradient(155deg, #9730a0 0%, #7c1b7a 51%, #502274 75%);
@@ -184,7 +183,7 @@ margin-left: auto;
   clear: both;
   position: relative;
   font-family: 'Roboto', sans-serif;
-  width: 100vw;
+  width: 100%;
   height: 6vh;
   background: #f9f9f9;
   color: #502274;
