@@ -7,45 +7,66 @@ const https = require('https');
 
 // Uma temporada
 exports.show = function(req, res) {
-    Show.findById(req.params.show_id)
-    .catch((err) => {
-        res.status(400).send(err);
-    })
-    .then((result) => {
+  Show.findById(req.params.show_id)
+  .catch((err) => {
+      res.status(400).send(err);
+  })
+  .then(async function(result) {
+    if(!result) {
+      res.status(404).send("Season not found!");
+    } else {
       tmdb_id = result._tmdb_id;
-      season = req.params.season_num;
-      query = "tvShow/"+ tmdb_id + "/season/" + season;
+      season_num = req.params.season_num;
+      query = "tvShow/"+ tmdb_id + "/season/" + season_num;
+      season = await getSeason(season_num);
 
-      client.exists(query, function(err, reply) {
+      client.exists(query,function(err, reply) {
         if (reply == 1) {
           console.log('exists');
-          client.get(query,(err,data)=>{
+          client.get(query, async function(err,data) {
               if(err)
                 console.log(err)
               else{
                 console.log('got query from redis');
-                var parsed_result = JSON.parse(JSON.parse(data));
-                // parsed_result._seasons = result._seasons;
-                // parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
-                // parsed_result._id = result._id;
-                // parsed_result.__t = result.__t;
-                // parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
-                res.setHeader('Content-Type', 'application/json');
-                res.status(200).send(parsed_result);
+                promises = await season._episodes.map(inject_episodes);
+
+                Promise.all(promises).then(function(results) {
+                  var parsed_result = JSON.parse(JSON.parse(data));
+                  parsed_result._episodes = results;
+                  // parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
+                  parsed_result._id = season._id;
+                  parsed_result.__t = season.__t;
+                  // parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
+                  res.setHeader('Content-Type', 'application/json');
+                  res.status(200).send(parsed_result);
+                });
               }
             });
         } else {
-          getSeasonFromTMDB(tmdb_id, season).then((data) => {
-            string = JSON.stringify(data);
-            dataJson = JSON.parse(string)
-            //dataJson._seasons = result._seasons;
-            //dataJson._id = result._id;
-            //dataJson.__t = result.__t;
-            res.status(200).send(dataJson)
+          getSeasonFromTMDB(tmdb_id, season_num).then(async function(data) {
+            promises = await season._episodes.map(inject_episodes);
+
+            Promise.all(promises).then(function(results) {
+              string = JSON.stringify(data);
+              dataJson = JSON.parse(string)
+              dataJson._episodes = results;
+              dataJson._id = season._id;
+              dataJson.__t = season.__t;
+              res.status(200).send(dataJson);
+            });
           })}
       });
-    });
+    }
+  });
 };
+
+inject_episodes = function(episode) {
+  return Episode.findById(episode).exec();
+}
+
+getSeason = function(num) {
+  return Season.findOne({ number: num}).exec();
+}
 
 // Deletar temporada
 exports.delete = function(req, res) {
