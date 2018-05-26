@@ -11,8 +11,6 @@ router.get('/', tvShowController.index);
 
 router.get('/:show_id', tvShowController.show);
 
-router.get('/:show_id/seasons', seasonController.index);
-
 router.get('/:show_id/season/:season_num', seasonController.show);
 
 router.get('/:show_id/season/:season_num/episode/:episode_num', episodeController.show);
