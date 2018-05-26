@@ -1,6 +1,7 @@
 var Media = require('../models/Media');
+var Person = require('../models/Person');
 
-// Todas as séries
+
 exports.index = function(req, res) {
     Media.find({})
     .catch((err) => {
@@ -11,18 +12,29 @@ exports.index = function(req, res) {
     });
 };
 
-// Uma série
-exports.show = function(req, res) {
+exports.show = async function(req, res) {
     Media.findById(req.params.media_id)
-    .catch((err) => {
+    .catch((err) => {        
         res.status(400).send(err);
     })
-    .then((result) => {
-        res.status(200).json(result);
+    .then( async (media) => {
+
+        let directors = media._directors;
+        let actors = media._actors;
+        let directorsPromises = directors.map(injectPersonJson);
+        let actorsPromises = actors.map(injectPersonJson);
+        
+        await Promise.all(directorsPromises).then(function(results) {            
+            media._directors = results;
+        });
+        await Promise.all(actorsPromises).then(function(results) {
+            media._actors = results;
+        });
+
+        res.status(200).json(media);
     });
 };
 
-// Várias medias
 exports.showAll = function(req, res) {
     var medias = req.body.medias;
     var queries = 0;
@@ -55,7 +67,6 @@ exports.showAll = function(req, res) {
     
 };
 
-// Criar série
 exports.create = function(req, res) {
     var media = new Media(req.body);
 
@@ -68,7 +79,6 @@ exports.create = function(req, res) {
     });
 };
 
-// Editar série
 exports.update = function(req, res) {
     Media.findById(req.params.media_id)
     .catch((err) => {
@@ -95,7 +105,6 @@ exports.update = function(req, res) {
     });
 };
 
-// Deletar série
 exports.delete = function(req, res) {
     Media.remove({ _id: req.params.media_id})
     .catch((err) => {
@@ -105,3 +114,13 @@ exports.delete = function(req, res) {
         res.status(200).send('Media removed.');
     });
 };
+
+
+var injectPersonJson = async function(personId) {
+    let personObj = await getPersonObj(personId);
+    return personObj;
+}
+
+var getPersonObj = async function(personId) {
+    return Person.findById(personId).exec();
+}
