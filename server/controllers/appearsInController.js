@@ -108,7 +108,7 @@ var addPersonToMediaCast = function(personId, mediaId) {
 
 var alreadyExists = async function(personId, mediaId) {
     let isDuplicated = await AppearsIn.find({_person: personId, _media: mediaId}).exec();
-    if (isDuplicated) {
+    if (isDuplicated.length > 0) {
         return true;
     } else {
         return false;
