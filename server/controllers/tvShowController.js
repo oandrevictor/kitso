@@ -75,28 +75,36 @@ exports.show = function(req, res) {
       client.exists('tvshow/' + tmdb_id, function(err, reply) {
         if (reply === 1) {
             console.log('exists');
-            client.get(query,(err,data)=>{
+            client.get(query, async function(err,data) {
                 if(err)
                   console.log(err)
                 else{
                   console.log('got query from redis');
                   var parsed_result = JSON.parse(JSON.parse(data));
-                  parsed_result._seasons = result._seasons;
-                  parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
-                  parsed_result._id = result._id;
-                  parsed_result.__t = result.__t;
-                  parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
-                  res.setHeader('Content-Type', 'application/json');
-                  res.status(200).send(parsed_result);
+                  promises = await result._seasons.map(inject_seasons);
+
+                  Promise.all(promises).then(function(results) {
+                    parsed_result._seasons = results;
+                    parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
+                    parsed_result._id = result._id;
+                    parsed_result.__t = result.__t;
+                    parsed_result.backdrop_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.backdrop_path;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.status(200).send(parsed_result);
+                  })
                 }
               });
         } else {
-          getShowFromTMDB(tmdb_id).then((data) => {
-            data = JSON.parse(JSON.parse(data))
-            data._seasons = result._seasons;
-            data._id = result._id;
-            data.__t = result.__t;
-            res.status(200).send(data)
+          getShowFromTMDB(tmdb_id).then(async function(data) {
+            data = JSON.parse(data)
+            promises = await result._seasons.map(inject_seasons);
+
+            Promise.all(promises).then(function(results) {
+              data._seasons = results;
+              data._id = result._id;
+              data.__t = result.__t;
+              res.status(200).send(data);
+            })
           })
         }
       });

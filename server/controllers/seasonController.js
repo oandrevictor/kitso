@@ -13,7 +13,7 @@ exports.show = function(req, res) {
   })
   .then(async function(result) {
     if(!result) {
-      res.status(404).send("Season not found!");
+      res.status(404).send("Show not found!");
     } else {
       tmdb_id = result._tmdb_id;
       season_num = req.params.season_num;
@@ -35,6 +35,8 @@ exports.show = function(req, res) {
                   parsed_result.episodes = results;
                   parsed_result._id = season._id;
                   parsed_result.__t = season.__t;
+                  parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
+                  parsed_result.backdrop_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.backdrop_path;
                   res.setHeader('Content-Type', 'application/json');
                   res.status(200).send(parsed_result);
                 });
@@ -49,6 +51,8 @@ exports.show = function(req, res) {
               dataJson.episodes = results;
               dataJson._id = season._id;
               dataJson.__t = season.__t;
+              dataJson.poster_path = "https://image.tmdb.org/t/p/w500/" + data.poster_path;
+              dataJson.backdrop_path = "https://image.tmdb.org/t/p/w500/" + data.backdrop_path;
               res.status(200).send(dataJson);
             });
           })}
