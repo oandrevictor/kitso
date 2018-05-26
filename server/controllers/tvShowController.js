@@ -52,107 +52,6 @@ exports.index = function(req, res) {
       })
     });
 };
-getShowFromTMDB = function(tmdb_id){
-  return new Promise(function(resolve, reject) {
-    query = 'tvshow/' + tmdb_id
-    console.log("Could not get from redis, requesting info from The Movie DB")
-    https.get("https://api.themoviedb.org/3/tv/"+ tmdb_id + "?api_key=db00a671b1c278cd4fa362827dd02620",
-    (resp) => {
-      let data = '';
-      resp.on('data', (chunk) => {
-        data += chunk;
-      });
-      resp.on('end', () => {
-        console.log("saving result to redis: "+ query)
-        client.set(query, JSON.stringify(data));
-        resolve(data)
-      });
-
-    }).on("error", (err) => {
-      console.log("Error: " + err.message);
-      reject();
-    });
-  })
-}
-
-getSeasonFromAPI = function(tv_id, season_number){
-  return new Promise(function(resolve, reject) {
-    var query = 'tvshow/' + tv_id + '/season' + season_number
-    console.log("log")
-    https.get("https://api.themoviedb.org/3/tv/"+ tv_id + "/season/"+ season_number +"?api_key=db00a671b1c278cd4fa362827dd02620",
-    (resp) => {
-      let data = '';
-      resp.on('data', (chunk) => {
-        data += chunk;
-      });
-      resp.on('end', () => {
-        console.log("saving season result to redis:"+  query)
-        client.set(query, JSON.stringify(data));
-        resolve(data)
-      });
-
-    }).on("error", (err) => {
-      console.log("Error: " + err.message);
-      reject();
-    });
-  })
-
-}
-
-
-matchApiSeasonsToDb = function(tvshow, dbtvshow){
-  var tvshow = JSON.parse(tvshow);
-  tvshow.seasons.forEach(function(season){
-    //before create fetch from db
-    var tmdb_id = season.id;
-    var name = season.name;
-    var db_season = new Season();
-    db_season.name = name;
-    db_season._tmdb_id = tmdb_id;
-    db_season.imdb_id = "";
-    db_season.number = season.season_number;
-    db_season.save().then((created) =>{
-      matchApiEpisodesToDb(tvshow, season, created);
-      dbtvshow._seasons.push(created._id);
-      dbtvshow.save().then((tvshow)=>{
-      }).catch((err)=>{
-        console.log(err)
-      })
-    }).catch((err)=>{
-      console.log(err);
-    })
-  })
-}
-matchApiEpisodesToDb = function(tvshow, seasonapi, dbseason){
-  console.log(seasonapi.name)
-  console.log(seasonapi.season_number)
-  getSeasonFromAPI(tvshow.id, seasonapi.season_number).then((season)=>{
-    var season = JSON.parse(season);
-  console.log("THE SEASON")
-  console.log(season.episodes.length)
-    season.episodes.forEach(function(episode){
-      //before create fetch from db
-      var tmdb_id = episode.id;
-      var name = episode.name;
-      var db_episode = new Episode();
-      db_episode.name = name;
-      db_episode._tmdb_id = tmdb_id;
-      db_episode.number = episode.episode_number;
-      db_episode.save().then((created) =>{
-        console.log('Created Ep: '+ created.name)
-        dbseason._episodes.push(created._id);
-        dbseason.save().then((saved_season)=>{
-        }).catch((err)=>{
-          console.log(err)
-        })
-      }).catch((err)=>{
-        console.log(err);
-      })
-    })
-}
-)
-
-}
 
 // Uma série
 exports.show = function(req, res) {
@@ -253,3 +152,102 @@ exports.delete = function(req, res) {
         res.status(200).send('Show removed.');
     });
 };
+
+getShowFromTMDB = function(tmdb_id){
+  return new Promise(function(resolve, reject) {
+    query = 'tvshow/' + tmdb_id
+    console.log("Could not get from redis, requesting info from The Movie DB")
+    https.get("https://api.themoviedb.org/3/tv/"+ tmdb_id + "?api_key=db00a671b1c278cd4fa362827dd02620",
+    (resp) => {
+      let data = '';
+      resp.on('data', (chunk) => {
+        data += chunk;
+      });
+      resp.on('end', () => {
+        console.log("saving result to redis: "+ query)
+        client.set(query, JSON.stringify(data));
+        resolve(data)
+      });
+
+    }).on("error", (err) => {
+      console.log("Error: " + err.message);
+      reject();
+    });
+  })
+}
+
+getSeasonFromAPI = function(tv_id, season_number){
+  return new Promise(function(resolve, reject) {
+    var query = 'tvshow/' + tv_id + '/season' + season_number
+    console.log("log")
+    https.get("https://api.themoviedb.org/3/tv/"+ tv_id + "/season/"+ season_number +"?api_key=db00a671b1c278cd4fa362827dd02620",
+    (resp) => {
+      let data = '';
+      resp.on('data', (chunk) => {
+        data += chunk;
+      });
+      resp.on('end', () => {
+        console.log("saving season result to redis:"+  query)
+        client.set(query, JSON.stringify(data));
+        resolve(data)
+      });
+
+    }).on("error", (err) => {
+      console.log("Error: " + err.message);
+      reject();
+    });
+  })
+}
+
+matchApiSeasonsToDb = function(tvshow, dbtvshow){
+  var tvshow = JSON.parse(tvshow);
+  tvshow.seasons.forEach(function(season){
+    //before create fetch from db
+    var tmdb_id = season.id;
+    var name = season.name;
+    var db_season = new Season();
+    db_season.name = name;
+    db_season._tmdb_id = tmdb_id;
+    db_season.imdb_id = "";
+    db_season.number = season.season_number;
+    db_season.save().then((created) =>{
+      matchApiEpisodesToDb(tvshow, season, created);
+      dbtvshow._seasons.push(created._id);
+      dbtvshow.save().then((tvshow)=>{
+      }).catch((err)=>{
+        console.log(err)
+      })
+    }).catch((err)=>{
+      console.log(err);
+    })
+  })
+}
+
+matchApiEpisodesToDb = function(tvshow, seasonapi, dbseason){
+  console.log(seasonapi.name)
+  console.log(seasonapi.season_number)
+  getSeasonFromAPI(tvshow.id, seasonapi.season_number).then((season)=>{
+    var season = JSON.parse(season);
+  console.log("THE SEASON")
+  console.log(season.episodes.length)
+    season.episodes.forEach(function(episode){
+      //before create fetch from db
+      var tmdb_id = episode.id;
+      var name = episode.name;
+      var db_episode = new Episode();
+      db_episode.name = name;
+      db_episode._tmdb_id = tmdb_id;
+      db_episode.number = episode.episode_number;
+      db_episode.save().then((created) =>{
+        console.log('Created Ep: '+ created.name)
+        dbseason._episodes.push(created._id);
+        dbseason.save().then((saved_season)=>{
+        }).catch((err)=>{
+          console.log(err)
+        })
+      }).catch((err)=>{
+        console.log(err);
+      })
+    })
+  })
+}
