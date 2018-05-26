@@ -45,7 +45,7 @@ exports.index = function(req, res) {
               promises = await tvshow._seasons.map(inject_seasons);
 
               Promise.all(promises).then(function(results) {
-                data = JSON.parse(JSON.parse(data))
+                data = JSON.parse(JSON.parse(data));
                 data._seasons = results;
                 data._id = result._id;
                 data.__t = result.__t;
