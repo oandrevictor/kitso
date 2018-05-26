@@ -23,12 +23,6 @@ exports.show = function(req, res) {
 
 exports.create = async function(req, res) {
     var person = new Person(req.body);
-    try {
-        await add_person_to_media_cast(person._appears_in, person._id);
-    } catch (err) {
-        res.status(400).send(err);
-    }
-
     person.save()
     .catch((err) => {
         res.status(400).send(err);
@@ -55,12 +49,6 @@ exports.update = function(req, res) {
         if (req.body.birthday) person.birthday = req.body.birthday;
         if (req.body.image_url) person.image_url = req.body.image_url;
         if (req.body._appears_in) person._appears_in = req.body._appears_in;
-
-        try {
-            await add_person_to_media_cast(person._appears_in, person._id);
-        } catch (err) {
-            res.status(400).send(err);
-        }
 
         person.save()
         .catch((err) => {
@@ -92,15 +80,6 @@ exports.delete = function(req, res) {
         });
     });
 };
-
-var add_person_to_media_cast = async function(medias, person_id) {
-    medias.forEach(media_id => {
-        Media.findById(media_id, function(err, media) {
-            media._actors.push(person_id);
-            media.save();
-        });
-    });
-}
 
 var remove_person_from_media_cast = async function(medias, person_id) {
     medias.forEach(media_id => {
