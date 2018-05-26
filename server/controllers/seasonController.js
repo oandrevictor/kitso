@@ -28,15 +28,13 @@ exports.show = function(req, res) {
                 console.log(err)
               else{
                 console.log('got query from redis');
-                promises = await season._episodes.map(inject_episodes);
+                var parsed_result = JSON.parse(JSON.parse(data));
+                let promises = parsed_result.episodes.map(inject_episode_ip);
 
                 Promise.all(promises).then(function(results) {
-                  var parsed_result = JSON.parse(JSON.parse(data));
-                  parsed_result._episodes = results;
-                  // parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
+                  parsed_result.episodes = results;
                   parsed_result._id = season._id;
                   parsed_result.__t = season.__t;
-                  // parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
                   res.setHeader('Content-Type', 'application/json');
                   res.status(200).send(parsed_result);
                 });
@@ -44,12 +42,11 @@ exports.show = function(req, res) {
             });
         } else {
           getSeasonFromTMDB(tmdb_id, season_num).then(async function(data) {
-            promises = await season._episodes.map(inject_episodes);
+            dataJson = JSON.parse(data);
+            let promises = dataJson.episodes.map(inject_episode_ip);
 
             Promise.all(promises).then(function(results) {
-              string = JSON.stringify(data);
-              dataJson = JSON.parse(string)
-              dataJson._episodes = results;
+              dataJson.episodes = results;
               dataJson._id = season._id;
               dataJson.__t = season.__t;
               res.status(200).send(dataJson);
@@ -59,6 +56,15 @@ exports.show = function(req, res) {
     }
   });
 };
+
+inject_episode_ip = async function(episode) {
+  episode_obj = await Episode.findOne({ number: episode.episode_number}).exec();
+
+  episode_with_id = episode;
+  episode_with_id._id = episode_obj._id;
+  
+  return episode_with_id;
+}
 
 inject_episodes = function(episode) {
   return Episode.findById(episode).exec();
