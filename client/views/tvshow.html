@@ -58,7 +58,7 @@
             <div class="section-title">
                 Cast
             </div>
-            <div uk-grid ng-repeat="person in tvshow._cast">
+            <div uk-grid ng-repeat="person in tvshow._actors">
                 <div class="cast-info" ng-click="goToPerson(person['_id'])">
                     <img class="cast-image" src="{{ person['image_url'] }}" />
                     <p class="cast-name">{{ person['name'] }}</p>
