@@ -1,5 +1,6 @@
 var Show = require('../models/TvShow');
 var Season = require('../models/Season');
+var Person = require('../models/Person');
 var Episode = require('../models/Episode');
 var redis = require('redis');
 var client = redis.createClient();
@@ -20,7 +21,6 @@ exports.index = function(req, res) {
         var query = 'tvshow/' + tmdb_id;
         client.exists(query, function(err, reply) {
           if (reply === 1) {
-            console.log('exists');
             client.get(query, async function(err,data) {
               if(err)
                 console.log(err)
@@ -34,7 +34,7 @@ exports.index = function(req, res) {
                   parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
                   parsed_result._id = tvshow._id;
                   parsed_result.__t = tvshow.__t;
-                  parsed_result.backdrop_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.backdrop_path;
+                  parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
                   final_result.push(parsed_result);
                   if (index == result.length -1) res.status(200).send(final_result);
                   })
@@ -120,12 +120,14 @@ exports.create = function(req, res) {
         res.status(400).send(err);
     })
     .then((createdShow) => {
+      console.log("Created show")
       console.log(createdShow)
       getShowFromTMDB(createdShow._tmdb_id).then((result)=> {
         result._id = createdShow._id;
         result._seasons = createdShow._seasons;
         result.__t = createdShow.__t;
         matchApiSeasonsToDb(result, createdShow);
+        matchApiCastToDb(createdShow)
         res.setHeader('Content-Type', 'application/json');
         res.status(200).send(result);
       })
@@ -197,7 +199,6 @@ getShowFromTMDB = function(tmdb_id){
 getSeasonFromAPI = function(tv_id, season_number){
   return new Promise(function(resolve, reject) {
     var query = 'tvshow/' + tv_id + '/season/' + season_number
-    console.log("log")
     https.get("https://api.themoviedb.org/3/tv/"+ tv_id + "/season/"+ season_number +"?api_key=db00a671b1c278cd4fa362827dd02620",
     (resp) => {
       let data = '';
@@ -231,6 +232,7 @@ matchApiSeasonsToDb = function(tvshow, dbtvshow){
     db_season._tvshow_id = dbtvshow._id;
 
     db_season.save().then((created) =>{
+      console.log("season created:" + name)
       matchApiEpisodesToDb(tvshow, season, created);
       dbtvshow._seasons.push(created._id);
       dbtvshow.save().then((tvshow)=>{
@@ -243,13 +245,55 @@ matchApiSeasonsToDb = function(tvshow, dbtvshow){
   })
 }
 
+getCastFromAPI = function(tv_id){
+  return new Promise(function(resolve, reject) {
+    console.log(tv_id)
+    https.get("https://api.themoviedb.org/3/tv/"+ tv_id + "/credits"+"?api_key=db00a671b1c278cd4fa362827dd02620",
+    (resp) => {
+      let data = '';
+      resp.on('data', (chunk) => {
+        data += chunk;
+      });
+      resp.on('end', () => {
+        resolve(data)
+      });
+
+    }).on("error", (err) => {
+      console.log("Error: " + err.message);
+      reject();
+    });
+  })
+}
+
+matchApiCastToDb = function(dbtvshow){
+  getCastFromAPI(dbtvshow._tmdb_id).then(function(credits){
+    var credits = JSON.parse(credits)
+    var cast = credits.cast;
+    cast.forEach(function(person){
+      var tmdb_id = person.id;
+      var name = person.name;
+      var character = person.character;
+      var picture = person.profile_path;
+      var description = "No description yet";
+      var db_person = new Person();
+      db_person.name = name;
+      db_person._tmdb_id = tmdb_id;
+      db_person.image_url = picture;
+      db_person.description = description;
+      db_person.save().then((db_person)=>{
+        console.log("Person Created:" + name)
+      }).catch((err)=>{console.log(err)});
+    })
+
+  });
+
+
+}
+
 matchApiEpisodesToDb = function(tvshow, seasonapi, dbseason){
-  console.log(seasonapi.name)
-  console.log(seasonapi.season_number)
+
   getSeasonFromAPI(tvshow.id, seasonapi.season_number).then((season)=>{
     var season = JSON.parse(season);
-  console.log("THE SEASON")
-  console.log(season.episodes.length)
     season.episodes.forEach(function(episode){
       //before create fetch from db
       var tmdb_id = episode.id;
