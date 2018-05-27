@@ -13,12 +13,12 @@ exports.show = function(req, res) {
   })
   .then(async function(result) {
     if(!result) {
-      res.status(404).send("Show not found!");
+      res.status(404).send("Season not found!");
     } else {
       tmdb_id = result._tmdb_id;
       season_num = req.params.season_num;
       query = "tvShow/"+ tmdb_id + "/season/" + season_num;
-      season = await getSeason(season_num);
+      season = await getSeason(result._id, season_num);
 
       client.exists(query,function(err, reply) {
         if (reply == 1) {
@@ -28,15 +28,15 @@ exports.show = function(req, res) {
                 console.log(err)
               else{
                 console.log('got query from redis');
-                promises = await season._episodes.map(inject_episodes);
+                var parsed_result = JSON.parse(JSON.parse(data));
+                let promises = parsed_result.episodes.map(inject_episode_ip(season._id));
 
                 Promise.all(promises).then(function(results) {
-                  var parsed_result = JSON.parse(JSON.parse(data));
-                  parsed_result._episodes = results;
-                  parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
+                  parsed_result.episodes = results;
                   parsed_result._id = season._id;
                   parsed_result.__t = season.__t;
-                  parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
+                  parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
+                  parsed_result.backdrop_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.backdrop_path;
                   res.setHeader('Content-Type', 'application/json');
                   res.status(200).send(parsed_result);
                 });
@@ -44,12 +44,11 @@ exports.show = function(req, res) {
             });
         } else {
           getSeasonFromTMDB(tmdb_id, season_num).then(async function(data) {
-            promises = await season._episodes.map(inject_episodes);
+            dataJson = JSON.parse(data);
+            let promises = dataJson.episodes.map(inject_episode_ip(season._id));
 
             Promise.all(promises).then(function(results) {
-              string = JSON.stringify(data);
-              dataJson = JSON.parse(string)
-              dataJson._episodes = results;
+              dataJson.episodes = results;
               dataJson._id = season._id;
               dataJson.__t = season.__t;
               dataJson.poster_path = "https://image.tmdb.org/t/p/w500/" + data.poster_path;
@@ -62,21 +61,26 @@ exports.show = function(req, res) {
   });
 };
 
-inject_episode_ip = async function(episode) {
-  episode_obj = await Episode.findOne({ number: episode.episode_number}).exec();
+inject_episode_ip = function(season) {
+  return async function(episode){
+    console.log(episode);
+    console.log(season);
+    console.log(episode.episode_number)
+    episode_obj = await Episode.findOne({ _season_id: season, number: episode.episode_number}).exec();
 
-  episode_with_id = episode;
-  episode_with_id._id = episode_obj._id;
+    episode_with_id = episode;
+    episode_with_id._id = episode_obj._id;
 
-  return episode_with_id;
+    return episode_with_id;
+  }
 }
 
 inject_episodes = function(episode) {
   return Episode.findById(episode).exec();
 }
 
-getSeason = function(num) {
-  return Season.findOne({ number: num}).exec();
+getSeason = function(show, num) {
+  return Season.findOne({ _tvshow_id: show, number: num}).exec();
 }
 
 // Deletar temporada
