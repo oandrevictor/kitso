@@ -163,12 +163,13 @@ getSeasonFromAPI = function(tv_id, season_number){
 var inject_media_json = async function(watched_obj) {
     let media_id = watched_obj._media;
     let media_obj = await get_media_obj(media_id);
-    if (media_obj.__t == 'Episode'){
-      getSeasonFromAPI(media_obj._tvshow_id, media_obj.season_number).then((season)=>{
+    if (media_obj.__t == 'Episode' && media_obj._tmdb_tvshow_id){
+      getSeasonFromAPI(media_obj._tmdb_tvshow_id, media_obj.season_number).then((season)=>{
         var season = season;
+        console.log("SEASON")
         console.log(season);
         let watched_with_full_media = watched_obj;
-        watched_with_full_media._media = media_obj
+        watched_with_full_media._media = JSON.parse(media_obj)
         watched_with_full_media._media._season = season;
         console.log(watched_with_full_media)
         return watched_with_full_media;
@@ -178,6 +179,8 @@ var inject_media_json = async function(watched_obj) {
     else {
       let watched_with_full_media = watched_obj;
       watched_with_full_media._media = media_obj;
+      console.log(watched_with_full_media)
+
       return watched_with_full_media;
     }
 }

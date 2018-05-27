@@ -228,6 +228,8 @@ matchApiSeasonsToDb = function(tvshow, dbtvshow){
     db_season._tmdb_id = tmdb_id;
     db_season.imdb_id = "";
     db_season.number = season.season_number;
+    db_season._tvshow_id = dbtvshow._id;
+
     db_season.save().then((created) =>{
       matchApiEpisodesToDb(tvshow, season, created);
       dbtvshow._seasons.push(created._id);
@@ -253,7 +255,9 @@ matchApiEpisodesToDb = function(tvshow, seasonapi, dbseason){
       var tmdb_id = episode.id;
       var name = episode.name;
       var db_episode = new Episode();
-      db_episode._tvshow_id = tvshow.id;
+      db_episode._tvshow_id = dbseason._tvshow_id;
+      db_episode._season_id = dbseason._id;
+      db_episode._tmdb_tvshow_id = tvshow.id;
       db_episode.season_number= season.season_number
       db_episode.name = name;
       db_episode._tmdb_id = tmdb_id;

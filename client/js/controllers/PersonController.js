@@ -69,6 +69,8 @@ kitso.controller('PersonController',
           $location.path('tvshow/' + media._id);
         } else if (media.__t === "Movie") {
           $location.path('movie/' + media._id);
+        } else if (media.__t === "Episode"){
+          $location.path('tvshow/' + media._tvshow_id + '/season/'+ media.season_number);
         }
       }
 
