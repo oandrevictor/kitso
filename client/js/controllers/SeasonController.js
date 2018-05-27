@@ -44,6 +44,17 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
       });
     });
 
+  $scope.goToMedia = function (media) {
+    if (media.__t === 'TvShow') {
+      $location.path('tvshow/' + media._id);
+    } else if (media.__t === "Movie") {
+      $location.path('movie/' + media._id);
+    } else if (media.__t === "Episode"){
+      $location.path('tvshow/' + media._tvshow_id + '/season/'+ media.season_number);
+    }
+
+  }
+
     RatedService.isRated($scope.user._id, episode._id).then((rated) => {
       var episodeId = episode._id;
       episode.rated = rated;

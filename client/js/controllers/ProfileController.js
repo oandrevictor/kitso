@@ -130,14 +130,15 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
   }
 
   $scope.getPoster = function(media){
+    console.log(media)
     if (media.poster_path){
       return poster_path;
     }
     if(media.images && media.images.poster){
       return media.images.poster;
     }
-    if(media._season && media._season.poster_path){
-      return 'https://image.tmdb.org/t/p/w500/' + media._season.poster_path;
+    if(media.helper && media.helper.poster_path){
+      return 'https://image.tmdb.org/t/p/w500/' + media.helper.poster_path;
     }
   }
 

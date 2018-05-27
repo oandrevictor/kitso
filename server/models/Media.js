@@ -33,6 +33,9 @@ var MediaSchema = new Schema({
         cover: {
             type: String
         }
+    },
+    helper: {
+      type: String
     }
 });
 

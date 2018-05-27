@@ -41,8 +41,8 @@
             <span uk-icon="icon: check;"></span> Mark as watched</button>
             <button ng-show="tvshow.watched" ng-click="markAsNotWatched(tvshow.watched.watched_id)" class="uk-button uk-button-default watch-button watched">
             <span uk-icon="icon: check;"></span> Watched (undo) </button>
-            <button class="uk-button uk-button-default watch-button" ng-click="editionMode()">
-            <span uk-icon="icon: pencil;"></span> Edit TvShow</button>
+            <!--button class="uk-button uk-button-default watch-button" ng-click="editionMode()">
+            <span uk-icon="icon: pencil;"></span> Edit TvShow</button!-->
         </div>
 
 
@@ -65,7 +65,7 @@
 
                             <li ng-repeat="season in tvshow.seasons">
                                 <div class="uk-card uk-grid-match uk-card-default uk-card-hover appears-in" >
-                                    <a ng-href="tvshow/{{tvshow._id}}/season/{{season.season_number}}"> <img class="poster" style="background-image: url({{ season.poster_path }})" /> </a>
+                                    <a ng-href="tvshow/{{tvshow._id}}/season/{{season.season_number}}"> <img class="poster" style="background-image: url(https://image.tmdb.org/t/p/w500/{{ season.poster_path }})" /> </a>
                                     <div class="uk-card-body">
                                         <p class="uk-align-center uk-text-uppercase" align="center"> {{season.name}}</p>
                                     </div>

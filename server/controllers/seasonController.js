@@ -36,7 +36,7 @@ exports.show = function(req, res) {
                   parsed_result._id = season._id;
                   parsed_result.__t = season.__t;
                   parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
-                  parsed_result.backdrop_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.backdrop_path;
+                  parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
                   res.setHeader('Content-Type', 'application/json');
                   res.status(200).send(parsed_result);
                 });
@@ -63,9 +63,6 @@ exports.show = function(req, res) {
 
 inject_episode_ip = function(season) {
   return async function(episode){
-    console.log(episode);
-    console.log(season);
-    console.log(episode.episode_number)
     episode_obj = await Episode.findOne({ _season_id: season, number: episode.episode_number}).exec();
 
     episode_with_id = episode;
