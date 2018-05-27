@@ -10,7 +10,8 @@ var TvShowSchema = new Schema({
       default: []
     },
     _tmdb_id: {
-      type: String
+      type: String,
+      unique: true,
     }
 });
 

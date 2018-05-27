@@ -10,7 +10,8 @@ var EpisodeSchema = new Schema({
   ],
   _tmdb_id: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   _tvshow_id: {
     type: mongoose.Schema.Types.ObjectId, ref: 'TvShow'
