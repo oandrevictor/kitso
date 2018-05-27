@@ -75,10 +75,6 @@ inject_episode_ip = function(season) {
   }
 }
 
-inject_episodes = function(episode) {
-  return Episode.findById(episode).exec();
-}
-
 getSeason = function(show, num) {
   return Season.findOne({ _tvshow_id: show, number: num}).exec();
 }
