@@ -53,7 +53,7 @@ exports.show = function(req, res) {
               dataJson._id = season._id;
               dataJson.__t = season.__t;
               dataJson.poster_path = "https://image.tmdb.org/t/p/w500/" + data.poster_path;
-              dataJson.backdrop_path = "https://image.tmdb.org/t/p/w500/" + data.backdrop_path;
+              dataJson.backdrop_path = "https://image.tmdb.org/t/p/original/" + data.backdrop_path;
               res.status(200).send(dataJson);
             });
           })}
