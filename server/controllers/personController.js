@@ -10,7 +10,7 @@ exports.index = function(req, res) {
         res.status(400).send(err);
     })
     .then((result) => {
-        final_result = [];
+        var final_result = [];
         result.forEach((person, index)=> {
           var tmdb_id = person._tmdb_id;
           var query = 'person/' + tmdb_id;
@@ -89,11 +89,11 @@ exports.create = async function(req, res) {
         res.status(400).send(err);
     })
     .then((createdPerson) => {
-        res_json = {
+        var res_json = {
             "message": "Person created",
             "data": {
                 "personId": createdPerson._id,
-            }            
+            }
         }
         res.status(200).json(res_json);
     });
@@ -171,7 +171,7 @@ var remove_person_from_media_cast = async function(medias, person_id) {
 
 getPersonFromTMDB = function(tmdb_id){
   return new Promise(function(resolve, reject) {
-    query = 'person/' + tmdb_id
+    var query = 'person/' + tmdb_id
     console.log("Could not get from redis, requesting info from The Movie DB")
     https.get("https://api.themoviedb.org/3/person/"+ tmdb_id + "?api_key=db00a671b1c278cd4fa362827dd02620",
     (resp) => {

@@ -74,7 +74,6 @@ function($scope, $location, $timeout, MovieService, TvShowService, WatchedServic
 
 
     $scope.getPoster = function(media){
-      console.log(media)
       if (media.poster_path){
         return media.poster_path;
       }

@@ -15,7 +15,7 @@ exports.index = function(req, res) {
         res.status(400).send(err);
     })
     .then((result) => {
-      final_result = [];
+      var final_result = [];
       result.forEach((tvshow, index)=>{
         var tmdb_id = tvshow._tmdb_id;
         var query = 'tvshow/' + tmdb_id;
@@ -27,7 +27,7 @@ exports.index = function(req, res) {
               else{
                 console.log('got query from redis');
                 var parsed_result = JSON.parse(JSON.parse(data));
-                promises = await tvshow._seasons.map(inject_seasons);
+                var promises = await tvshow._seasons.map(inject_seasons);
 
                 Promise.all(promises).then(function(results) {
                   parsed_result._seasons = results;
@@ -42,10 +42,10 @@ exports.index = function(req, res) {
               });
           } else {
             getShowFromTMDB(tmdb_id).then(async function(data) {
-              promises = await tvshow._seasons.map(inject_seasons);
+              var promises = await tvshow._seasons.map(inject_seasons);
 
               Promise.all(promises).then(function(results) {
-                data = JSON.parse(data);
+                var data = JSON.parse(data);
                 data._seasons = results;
                 data._id = result._id;
                 data.__t = result.__t;
@@ -70,8 +70,8 @@ exports.show = function(req, res) {
         res.status(400).send(err);
     })
     .then((result) => {
-      tmdb_id = result._tmdb_id;
-      query = 'tvshow/' + tmdb_id
+      var tmdb_id = result._tmdb_id;
+      var query = 'tvshow/' + tmdb_id
       client.exists('tvshow/' + tmdb_id, function(err, reply) {
         if (reply === 1) {
             console.log('exists');
@@ -96,8 +96,8 @@ exports.show = function(req, res) {
               });
         } else {
           getShowFromTMDB(tmdb_id).then(async function(data) {
-            data = JSON.parse(data)
-            promises = await result._seasons.map(inject_seasons);
+            var data = JSON.parse(data)
+            var promises = await result._seasons.map(inject_seasons);
 
             Promise.all(promises).then(function(results) {
               data._seasons = results;
