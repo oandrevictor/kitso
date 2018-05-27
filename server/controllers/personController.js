@@ -1,5 +1,8 @@
 var Person = require('../models/Person');
 var Media = require('../models/Media');
+var redis = require('redis');
+var client = redis.createClient();
+const https = require('https');
 
 exports.index = function(req, res) {
     Person.find({})
@@ -7,9 +10,38 @@ exports.index = function(req, res) {
         res.status(400).send(err);
     })
     .then((result) => {
-        res.status(200).json(result);
+        final_result = [];
+        result.forEach((person, index)=> {
+          var tmdb_id = person._tmdb_id;
+          var query = 'person/' + tmdb_id;
+          client.exists(query, function(err, reply) {
+            if (reply === 1) {
+              client.get(query, async function(err,data) {
+                if(err)
+                  console.log(err)
+                else{
+                  console.log('got query from redis');
+                  var parsed_result = JSON.parse(JSON.parse(data));
+                  parsed_result.profile_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.profile_path;
+                  parsed_result._id = person._id;
+                  final_result.push(parsed_result);
+
+                  if (index == result.length -1) res.status(200).send(final_result);
+                  }
+                });
+            } else {
+              getPersonFromTMDB(tmdb_id).then(async function(data) {
+                data = JSON.parse(data);
+                data.profile_path = "https://image.tmdb.org/t/p/w500/" + data.profile_path;
+                data._id = person._id;
+                final_result.push(data);
+                if (index == result.length -1) res.status(200).send(final_result);
+              });
+            }
+          });
     });
-};
+  })
+}
 
 exports.show = function(req, res) {
     Person.findById(req.params.person_id)
@@ -17,9 +49,32 @@ exports.show = function(req, res) {
         res.status(400).send(err);
     })
     .then((result) => {
-        res.status(200).json(result);
+      var tmdb_id = result._tmdb_id;
+      var query = 'person/' + tmdb_id;
+      client.exists(query, function(err, reply) {
+        if (reply === 1) {
+          client.get(query, async function(err,data) {
+            if(err)
+              console.log(err)
+            else{
+              console.log('got query from redis');
+              var parsed_result = JSON.parse(JSON.parse(data));
+              parsed_result._id = result._id;
+              parsed_result.profile_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.profile_path;
+              res.status(200).send(parsed_result);
+              }
+            });
+        } else {
+          getPersonFromTMDB(tmdb_id).then(async function(data) {
+            data = JSON.parse(data);
+            data._id = result._id;
+            data.profile_path = "https://image.tmdb.org/t/p/w500/" + data.profile_path;
+            res.status(200).send(data);
+          });
+        }
     });
-};
+  })
+}
 
 exports.create = async function(req, res) {
     var person = new Person(req.body);
@@ -112,4 +167,27 @@ var remove_person_from_media_cast = async function(medias, person_id) {
             media.save();
         });
     });
+}
+
+getPersonFromTMDB = function(tmdb_id){
+  return new Promise(function(resolve, reject) {
+    query = 'person/' + tmdb_id
+    console.log("Could not get from redis, requesting info from The Movie DB")
+    https.get("https://api.themoviedb.org/3/person/"+ tmdb_id + "?api_key=db00a671b1c278cd4fa362827dd02620",
+    (resp) => {
+      let data = '';
+      resp.on('data', (chunk) => {
+        data += chunk;
+      });
+      resp.on('end', () => {
+        console.log("saving result to redis: "+ query)
+        client.set(query, JSON.stringify(data));
+        resolve(data)
+      });
+
+    }).on("error", (err) => {
+      console.log("Error: " + err.message);
+      reject();
+    });
+  })
 }
