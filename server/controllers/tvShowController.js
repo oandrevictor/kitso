@@ -88,7 +88,7 @@ exports.show = function(req, res) {
                     parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
                     parsed_result._id = result._id;
                     parsed_result.__t = result.__t;
-                    parsed_result.backdrop_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.backdrop_path;
+                    parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
                     res.setHeader('Content-Type', 'application/json');
                     res.status(200).send(parsed_result);
                   })

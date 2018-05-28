@@ -41,6 +41,9 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
   $scope.formatDate = function (date) {
     return moment(date).format('DD/MM/YYYY')
   };
+  var compareDates = function(a,b){
+    return - moment(a.date).diff(moment(b.date))
+  }
 
   var loadUserWatchedInfo = function(){
     WatchedService.getAllWatched($scope.user._id)
@@ -48,6 +51,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         watched.forEach(function (watched) {
           watched.date = new Date(watched.date);
         });
+        watched = watched.sort(compareDates);
 
         $scope.user.watched = watched
       }).catch(function (error) {
