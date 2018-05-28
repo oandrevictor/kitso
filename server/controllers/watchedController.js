@@ -78,21 +78,19 @@ exports.update = async function(req, res) {
 
 exports.delete = async function(req, res) {
     let watched_id = req.params.watched_id;
-    try {
-        let watched = await find_watched_obj(watched_id);
-        let user_id = watched._user;
-        let action_id = watched._action;
-        delete_action(action_id);
-        delete_action_from_user_history(user_id, action_id);
-    } catch (err) {
-        res.status(400).send(err);
-    }
-    Watched.remove({ _id: watched_id})
+
+    Watched.findById(watched_id)
     .catch((err) => {
         res.status(400).send(err);
     })
-    .then((deletedWatched) => {
-        res.status(200).json(deletedWatched);
+    .then((watched) => {
+        watched.remove()
+        .catch((err) => {
+            res.status(400).send(err);
+        })
+        .then((deletedWatched) => {
+            res.status(200).json(deletedWatched);
+        });
     });
 };
 

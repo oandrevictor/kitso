@@ -92,21 +92,19 @@ exports.update = async function(req, res) {
 
 exports.delete = async function(req, res) {
     let rated_id = req.params.rated_id;
-    try {
-        let rated = await find_rated_obj(rated_id);
-        let user_id = rated._user;
-        let action_id = rated._action;
-        delete_action(action_id);
-        delete_action_from_user_history(user_id, action_id);
-    } catch (err) {
-        res.status(400).send(err);
-    }
-    Rated.remove({ _id: rated_id})
+
+    Rated.findById(rated_id)
     .catch((err) => {
         res.status(400).send(err);
     })
-    .then((createdRated) => {
-        res.status(200).json(createdRated);
+    .then((rated) => {
+        rated.remove()
+        .catch((err) => {
+            res.status(400).send(err);
+        })
+        .then((deletedRated) => {
+            res.status(200).json(deletedRated);
+        });
     });
 };
 

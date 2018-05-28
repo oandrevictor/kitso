@@ -1,6 +1,12 @@
 var Media = require('../models/Media');
 var AppearsIn = require('../models/AppearsIn');
 var Person = require('../models/Person');
+var Follows = require('../models/Follows');
+var Action = require('../models/Action');
+var User = require('../models/User');
+var FollowsPage = require('../models/FollowsPage');
+var Rated = require('../models/Rated');
+var Watched = require('../models/Watched');
 
 class Utils {
     
@@ -42,6 +48,40 @@ class Utils {
     static async deleteAppearsInByKeys(mediaId, personId) {
         let appearsIn = await this.getAppearsInByKeys(mediaId, personId);
         appearsIn.remove();
+    }
+
+    static async getFollowsPage(mediaId) {
+        return FollowsPage.find({_media: mediaId}).exec();
+    }
+
+    static async deleteMediaAndFollowsPage(mediaId) {
+        let followsPages = await this.getFollowsPage(mediaId);
+        await followsPages.forEach(async (followPage) => {
+            await followPage.remove().exec();
+        });
+    }
+
+    static async getWatched(mediaId) {
+        return Watched.find({_media: mediaId}).exec();
+    }
+
+    static async deleteMediaAndWatched(mediaId) {
+        let watcheds = await this.getWatched(mediaId);
+        console.log(watcheds);
+        await watcheds.forEach(async (watched) => {
+            await watched.remove().exec();
+        });
+    }
+
+    static async getRated(mediaId) {
+        return Rated.find({_media: mediaId}).exec();
+    }
+
+    static async deleteMediaAndRated(mediaId) {
+        let rateds = await this.getRated(mediaId);
+        await rateds.forEach(async (rated) => {
+            await rated.remove().exec();
+        });
     }
 
 }

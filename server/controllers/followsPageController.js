@@ -74,23 +74,18 @@ exports.create = async function(req, res) {
 exports.delete = async function(req, res) {
     let follow_id = req.params.followsPage_id;
 
-    FollowsPage.findById(follow_id, function(err, followed) {
-        if (!followed || err) {
-            res.status(400).send("Follow inexistente");
-        } else {
-            let user_id = followed._user;
-            let action_id = followed._action;
-            delete_action(action_id);
-            delete_action_from_user_history(user_id, action_id);
-
-            FollowsPage.remove({ _id: follow_id})
-            .catch((err) => {
-                res.status(400).send(err);
-            })
-            .then(() => {
-                res.status(200).send('Follow removido.');
-            });
-        }
+    FollowsPage.findById(follow_id)
+    .catch((err) => {
+        res.status(400).send(err);
+    })
+    .then((follow) => {
+        follow.remove()
+        .catch((err) => {
+            res.status(400).send(err);
+        })
+        .then((deletedFollows) => {
+            res.status(200).json(deletedFollows);
+        });
     });
 };
 

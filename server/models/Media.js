@@ -51,6 +51,10 @@ MediaSchema.pre('remove', async function(next) {
     await mActors.forEach(async (personId) => {
         await Utils.deleteAppearsInByKeys(mId, personId);
     });
+
+    await Utils.deleteMediaAndFollowsPage(mId);
+    await Utils.deleteMediaAndRated(mId);
+    await Utils.deleteMediaAndWatched(mId);
     
     next();
 });
