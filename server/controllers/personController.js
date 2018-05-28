@@ -2,6 +2,8 @@ var Person = require('../models/Person');
 var Media = require('../models/Media');
 var AppearsIn = require('../models/AppearsIn');
 var RequestStatus = require('../constants/requestStatus');
+var Utils = require('../utils/lib/utils');
+var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 
 exports.index = function(req, res) {
     Person.find({})
@@ -21,7 +23,7 @@ exports.show = async function(req, res) {
     .then(async (person) => {
 
         let appearsIn = person._appears_in;
-        let appearsInPromises = appearsIn.map(returnAppearsInObj);        
+        let appearsInPromises = appearsIn.map(getAppearsInObj);        
         await Promise.all(appearsInPromises).then(function(results) {            
             appearsIn = results;
         });
@@ -81,32 +83,53 @@ exports.delete = function(req, res) {
     .catch((err) => {
         res.status(RequestStatus.BAD_REQUEST).send(err);
     })
-    .then((person) => {
-        Person.find({ _id: req.params.person_id})
-        .catch((err) => {
-            res.status(RequestStatus.BAD_REQUEST).send(err);
-        })
-        .then(async () => {
-            try {
-                person.remove(); // check Person model remove middleware
-                res.status(RequestStatus.OK).send('Person removed.');
-            } catch (err) {
-                res.status(RequestStatus.BAD_REQUEST).send(err);
-            }
+    .then(async (person) => {
+        
+        let personId = person._id;
+        let appearsIns = person._appears_in;
+        let appearsInPromises = appearsIns.map(getAppearsInObj);        
+        await Promise.all(appearsInPromises).then(function(results) {            
+            appearsIns = results;
         });
+        
+        let medias;
+        let mediasPromises = appearsIns.map(getMediaObjFromAppearsInObj);
+        await Promise.all(mediasPromises).then(function(results) {            
+            medias = results;
+        });
+
+        // deleting person from medias' casts
+        await medias.forEach(async (media) => {
+            Utils.removeItemFromList(personId, media._actors);
+            media.save();
+        });
+        
+        // deleting appearsIns entities when delete person entity
+        await appearsIns.forEach(async (appearsInId) => {
+            await AppearsIn.remove({_id: appearsInId}).exec();
+        });
+
+        person.remove();
+        res.status(RequestStatus.OK).send('Person removed.');
     });
 };
 
-var returnAppearsInObj = function(appearsInId) {
+var getAppearsInObj = function(appearsInId) {
     return AppearsIn.findById(appearsInId).exec();
 }
 
 var injectMediaJson = async function(appearsInObj) {
     let mediaId = appearsInObj._media;
-    appearsInObj._media = await getMediaJson(mediaId);
+    appearsInObj._media = await getMediaObj(mediaId);
     return appearsInObj;
 }
 
-var getMediaJson = function(mediaId) {
+var getMediaObj = function(mediaId) {
     return Media.findById(mediaId).exec();
 }
+
+var getMediaObjFromAppearsInObj = function(appearsInObj) {
+    let mediaId = appearsInObj._media;
+    return Media.findById(mediaId).exec();
+}
+
