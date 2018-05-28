@@ -2,7 +2,7 @@
     <!--Cover Content-->
     <div class="uk-background-cover" align="center" style="background-image: url({{ tvshow.backdrop_path }})">
         <div class="uk-width-xxlarge">
-            <div ng-click="goToMedia(tvshow)" class="title tvshow-name"> <a ng-href="/tvshow/{{tvshow._id}}">{{ tvshow.name }}</a>: {{season.name}}</div>
+            <div class="title tvshow-name">{{ tvshow.name }}: {{season.name}}</div>
 
         </div>
     </div>
@@ -42,6 +42,8 @@
             <span uk-icon="icon: check;"></span> Mark as watched</button>
             <button ng-show="tvshow.watched" ng-click="markAsNotWatched(tvshow.watched.watched_id)" class="uk-button uk-button-default watch-button watched">
             <span uk-icon="icon: check;"></span> Watched (undo) </button> !-->
+            <button ng-click="goToMedia(tvshow)" class="uk-button uk-button-default watch-button">
+            <span uk-icon="icon: chevron-left;"></span> {{ tvshow.name }} </button>
         </div>
 
 
