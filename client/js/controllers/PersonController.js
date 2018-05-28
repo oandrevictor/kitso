@@ -11,6 +11,7 @@ kitso.controller('PersonController',
               $scope.user = AuthService.getUser();
               $scope.person = loadedPerson;
               $scope.birthday_date_formated = moment($scope.person.birthday).format('DD/MM/YYYY');
+              $scope.deathday_date_formated = moment($scope.person.deathday).format('DD/MM/YYYY');
               $('.full-loading').hide();
               if (!$scope.person.image_url) {
                 $scope.person.image_url = "/images/person-edited.png";
