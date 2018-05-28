@@ -723,7 +723,7 @@ margin-left: auto;
     text-shadow: 1px 1px 2px black, 0 0 1em #000000, 0 0 0.2em #000000;
     margin: 2px;
   }
-
+  
   .uk-background-cover {
     z-index: -1;
     background: url("/images/changeling.jpg");
@@ -740,6 +740,7 @@ margin-left: auto;
   }
 
   .poster {
+    display: block;
     background: #502274;
     background-repeat:no-repeat;
     background-size:cover;
@@ -809,10 +810,6 @@ margin-left: auto;
       color: white;
       background: #773095;
     }
-  }
-  .poster {
-    box-shadow: 0 0px 10px rgba(0,0,0,0.1);
-    border: 4px solid white;
   }
 
   .section {
