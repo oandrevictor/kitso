@@ -14,10 +14,13 @@ exports.index = function(req, res) {
     .catch((err) => {
         res.status(400).send(err);
     })
-    .then((result) => {
+    .then((tv_result) => {
       var final_result = [];
-      result.forEach((tvshow, index)=>{
+      console.log("len:" + tv_result.length)
+      var answered = 0;
+      tv_result.forEach((tvshow, index)=>{
         var tmdb_id = tvshow._tmdb_id;
+        console.log("current indexing:" + tmdb_id);
         var query = 'tvshow/' + tmdb_id;
         client.exists(query, function(err, reply) {
           if (reply === 1) {
@@ -25,23 +28,26 @@ exports.index = function(req, res) {
               if(err)
                 console.log(err)
               else{
-                console.log('got query from redis');
+                console.log('got query from redis: tvshow/' + tmdb_id);
                 var parsed_result = JSON.parse(JSON.parse(data));
                 var promises = await tvshow._seasons.map(inject_seasons);
 
                 Promise.all(promises).then(function(results) {
+                  answered +=1;
                   parsed_result._seasons = results;
                   parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
                   parsed_result._id = tvshow._id;
                   parsed_result.__t = tvshow.__t;
                   parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
                   final_result.push(parsed_result);
-                  if (index == result.length -1) res.status(200).send(final_result);
+                  if (answered == tv_result.length) res.status(200).send(final_result);
                   })
                 }
               });
           } else {
             getShowFromTMDB(tmdb_id).then(async function(data) {
+              answered += 1;
+              console.log("Got from TMDB: " + tmdb_id )
               var promises = await tvshow._seasons.map(inject_seasons);
 
               Promise.all(promises).then(function(results) {
@@ -50,7 +56,7 @@ exports.index = function(req, res) {
                 data._id = result._id;
                 data.__t = result.__t;
                 final_result.push(data)
-                if (index == result.length -1) res.status(200).send(final_result);
+                if (answered == tv_result.length) res.status(200).send(final_result);
               });
             })
           }
@@ -120,8 +126,7 @@ exports.create = function(req, res) {
         res.status(400).send(err);
     })
     .then((createdShow) => {
-      console.log("Created show")
-      console.log(createdShow)
+      console.log("Created show: " + createdShow.name)
       getShowFromTMDB(createdShow._tmdb_id).then((result)=> {
         result._id = createdShow._id;
         result._seasons = createdShow._seasons;
@@ -236,6 +241,7 @@ matchApiSeasonsToDb = function(tvshow, dbtvshow){
       matchApiEpisodesToDb(tvshow, season, created);
       dbtvshow._seasons.push(created._id);
       dbtvshow.save().then((tvshow)=>{
+        console.log("saved or updated tvshow:" + dbtvshow.name)
       }).catch((err)=>{
         console.log(err)
       })
