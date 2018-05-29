@@ -152,9 +152,20 @@ var find_user_rated_list = async function(user_id) {
 var inject_media_json = async function(rated_obj) {
     let media_id = rated_obj._media;
     let media_obj = await get_media_obj(media_id);
-    let rated_with_full_media = rated_obj;
-    rated_with_full_media._media = media_obj
-    return rated_with_full_media;
+    if (media_obj.__t == 'Episode' && media_obj._tmdb_tvshow_id){
+      var value = await getSeasonFromAPI(media_obj._tmdb_tvshow_id, media_obj.season_number).then((season)=>{
+        var rated_with_full_media = watched_obj;
+        rated_with_full_media._media = media_obj
+        rated_with_full_media._media.helper = season;
+        return rated_with_full_media;
+      });
+      return value;
+    }
+    else {
+      let rated_with_full_media = rated_obj;
+      rated_with_full_media._media = media_obj
+      return rated_with_full_media;
+    }
 }
 
 var get_media_obj = async function(media_id) {
