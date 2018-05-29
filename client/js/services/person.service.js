@@ -37,26 +37,12 @@ kitso.service('PersonService', ['$q','$http', function ($q, $http) {
         return person;
     }
 
-    function loadMedias(mediasId) {
-        var deferred = $q.defer();
-
-        var data = {
-            "medias": mediasId
-        };
-
-        $http.post('/api/media/list', data)
-            .then((response) => {
-                if (response.status === 200) {
-                    medias = response.data;
-                    deferred.resolve(medias);
-                } else {
-                    deferred.reject();
-                }
-            })
-            .catch((error) => {
-                deferred.reject(error.data);
-            });
-        return deferred.promise;
+    function loadMedias(appearsIns) {
+        var loadedMedias = [];
+        appearsIns.forEach((appearsIn, i) => {
+            loadedMedias[i] = appearsIn._media;
+        });
+        return loadedMedias;
     }
 
     function getMedias() {

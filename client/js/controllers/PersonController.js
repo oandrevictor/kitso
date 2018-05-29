@@ -20,18 +20,8 @@ kitso.controller('PersonController',
               if ($scope.person._appears_in.length === 0) {
                 $scope.background = "/images/purple-edit-placeholder.jpg"; // Criar um cover default do kisto
               } else {
-                PersonService.loadMedias($scope.person._appears_in)
-                  .then((loadedMedias) => {
-                    $scope.mediasPersonAppears = loadedMedias;
-                    $scope.background = ($scope.mediasPersonAppears[Math.floor((Math.random() * $scope.mediasPersonAppears.length))])['media']['images']['cover'];
-                  })
-                  .catch((error) => {
-                    UIkit.notification({
-                      message: '<span uk-icon=\'icon: check\'></span> ' + 'Person medias data cannot be loaded. Sorry for that :(',
-                      status: 'danger',
-                      timeout: 2500
-                    });
-                  });
+                $scope.mediasPersonAppears = PersonService.loadMedias($scope.person._appears_in);
+                $scope.background = ($scope.mediasPersonAppears[Math.floor((Math.random() * $scope.mediasPersonAppears.length))])['media']['images']['cover'];
               }
 
               FollowService.isFollowingPage($scope.user._id, $routeParams.person_id)
@@ -66,6 +56,8 @@ kitso.controller('PersonController',
       };
 
       $scope.goToMedia = function (media) {
+        console.log($scope.mediasPersonAppears);
+        console.log($scope.person);
         if (media.__t === 'TvShow') {
           $location.path('tvshow/' + media._id);
         } else if (media.__t === "Movie") {
