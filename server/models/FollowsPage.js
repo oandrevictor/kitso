@@ -37,7 +37,7 @@ var delete_action = async function(action_id) {
 } 
 
 var delete_action_from_user_history = async function(user_id, action_id) {
-  User.findById(user_id, function (err, user) {
+  User.findById(user_id, async function (err, user) {
       let user_history = user._history;
       let index = user_history.indexOf(action_id);
       if (index > -1) {
