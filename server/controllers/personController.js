@@ -3,11 +3,15 @@ var Media = require('../models/Media');
 var redis = require('redis');
 var client = redis.createClient();
 const https = require('https');
+var AppearsIn = require('../models/AppearsIn');
+var RequestStatus = require('../constants/requestStatus');
+var Utils = require('../utils/lib/utils');
+var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 
 exports.index = function(req, res) {
     Person.find({})
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((result) => {
         var final_result = [];
@@ -43,12 +47,27 @@ exports.index = function(req, res) {
   })
 }
 
-exports.show = function(req, res) {
+exports.show = async function(req, res) {
     Person.findById(req.params.person_id)
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
-    .then((result) => {
+    .then(async (result) => {
+      let appearsIn = result._appears_in;
+      let appearsInPromises = appearsIn.map(DataStoreUtils.getAppearsInObjById);
+      await Promise.all(appearsInPromises).then(function(results) {
+          appearsIn = results;
+      });
+
+      let appearsInWithNestedMedia;
+      let appearsInWithNestedMediaPromises = appearsIn.map(injectMediaJson);
+      await Promise.all(appearsInWithNestedMediaPromises).then(function(results) {
+          appearsInWithNestedMedia = results;
+      });
+
+      result._appears_in = appearsInWithNestedMedia;
+
+
       var tmdb_id = result._tmdb_id;
       var query = 'person/' + tmdb_id;
       client.exists(query, function(err, reply) {
@@ -60,6 +79,7 @@ exports.show = function(req, res) {
               console.log('got query from redis');
               var parsed_result = JSON.parse(JSON.parse(data));
               parsed_result._id = result._id;
+              parsed_result._appears_in = result._appears_in;
               parsed_result.profile_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.profile_path;
               res.status(200).send(parsed_result);
               }
@@ -78,15 +98,9 @@ exports.show = function(req, res) {
 
 exports.create = async function(req, res) {
     var person = new Person(req.body);
-    try {
-        await add_person_to_media_cast(person._appears_in, person._id);
-    } catch (err) {
-        res.status(400).send(err);
-    }
-
     person.save()
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((createdPerson) => {
         var res_json = {
@@ -95,14 +109,14 @@ exports.create = async function(req, res) {
                 "personId": createdPerson._id,
             }
         }
-        res.status(200).json(res_json);
+        res.status(RequestStatus.OK).json(res_json);
     });
 };
 
 exports.update = function(req, res) {
     Person.findById(req.params.person_id)
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then(async(person) => {
         if (req.body.name) person.name = req.body.name;
@@ -111,18 +125,12 @@ exports.update = function(req, res) {
         if (req.body.image_url) person.image_url = req.body.image_url;
         if (req.body._appears_in) person._appears_in = req.body._appears_in;
 
-        try {
-            await add_person_to_media_cast(person._appears_in, person._id);
-        } catch (err) {
-            res.status(400).send(err);
-        }
-
         person.save()
         .catch((err) => {
-            res.status(400).send(err);
+            res.status(RequestStatus.BAD_REQUEST).send(err);
         })
         .then((updatePerson) => {
-            res.status(200).json(updatePerson);
+            res.status(RequestStatus.OK).json(updatePerson);
         });
     });
 };
@@ -130,43 +138,48 @@ exports.update = function(req, res) {
 exports.delete = function(req, res) {
     Person.findById(req.params.person_id)
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
-    .then((person) => {
-        Person.remove({ _id: req.params.person_id})
-        .catch((err) => {
-            res.status(400).send(err);
-        })
-        .then(async () => {
-            try {
-                await remove_person_from_media_cast(person._appears_in, person._id);
-                res.status(200).send('Person removed.');
-            } catch (err) {
-                res.status(400).send(err);
-            }
+    .then(async (person) => {
+
+        let personId = person._id;
+        let appearsIns = person._appears_in;
+        let appearsInPromises = appearsIns.map(DataStoreUtils.getAppearsInObjById);
+        await Promise.all(appearsInPromises).then(function(results) {
+            appearsIns = results;
         });
+
+        let medias;
+        let mediasPromises = appearsIns.map(getMediaObjFromAppearsInObj);
+        await Promise.all(mediasPromises).then(function(results) {
+            medias = results;
+        });
+
+        // deleting person from medias' casts
+        await medias.forEach(async (media) => {
+            Utils.removeItemFromList(personId, media._actors);
+            media.save();
+        });
+
+        // deleting appearsIns entities when delete person entity
+        await appearsIns.forEach(async (appearsInId) => {
+            await AppearsIn.remove({_id: appearsInId}).exec();
+        });
+
+        person.remove();
+        res.status(RequestStatus.OK).send('Person removed.');
     });
 };
 
-var add_person_to_media_cast = async function(medias, person_id) {
-    medias.forEach(media_id => {
-        Media.findById(media_id, function(err, media) {
-            media._actors.push(person_id);
-            media.save();
-        });
-    });
+var injectMediaJson = async function(appearsInObj) {
+    let mediaId = appearsInObj._media;
+    appearsInObj._media = await DataStoreUtils.getMediaObjById(mediaId);
+    return appearsInObj;
 }
 
-var remove_person_from_media_cast = async function(medias, person_id) {
-    medias.forEach(media_id => {
-        Media.findById(media_id, function(err, media) {
-            var index = media._actors.indexOf(person_id);
-            if (index > -1) {
-                media._actors.splice(index, 1);
-            }
-            media.save();
-        });
-    });
+var getMediaObjFromAppearsInObj = async function(appearsInObj) {
+    let mediaId = appearsInObj._media;
+    return await DataStoreUtils.getMediaObjById(mediaId);
 }
 
 getPersonFromTMDB = function(tmdb_id){

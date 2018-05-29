@@ -5,8 +5,8 @@ var Episode = require('../models/Episode');
 var redis = require('redis');
 var client = redis.createClient();
 const https = require('https');
-
-
+var RequestStatus = require('../constants/requestStatus');
+var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 
 // Todas as séries
 exports.index = function(req, res) {
@@ -168,14 +168,14 @@ exports.update = function(req, res) {
 };
 
 // Deletar série
-exports.delete = function(req, res) {
-    Show.remove({ _id: req.params.show_id})
-    .catch((err) => {
-        res.status(400).send(err);
-    })
-    .then(() => {
-        res.status(200).send('Show removed.');
-    });
+exports.delete = async function(req, res) {
+    try {
+        DataStoreUtils.deleteMediaById(req.params.show_id);
+        res.status(RequestStatus.OK).send('Show removed.');
+    } catch (err) {
+        console.log(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
+    }
 };
 
 getShowFromTMDB = function(tmdb_id){
