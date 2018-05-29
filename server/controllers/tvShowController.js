@@ -2,10 +2,13 @@ var Show = require('../models/TvShow');
 var Season = require('../models/Season');
 var Person = require('../models/Person');
 var Episode = require('../models/Episode');
+var Media = require('../models/Media');
+var AppearsIn = require('../models/AppearsIn');
 var redis = require('redis');
 var client = redis.createClient();
 const https = require('https');
 var RequestStatus = require('../constants/requestStatus');
+var RequestMsg = require('../constants/requestMsg');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 
 // Todas as séries
@@ -127,12 +130,13 @@ exports.create = function(req, res) {
     })
     .then((createdShow) => {
       console.log("Created show: " + createdShow.name)
-      getShowFromTMDB(createdShow._tmdb_id).then((result)=> {
+      getShowFromTMDB(createdShow._tmdb_id).then( async (result)=> {
         result._id = createdShow._id;
         result._seasons = createdShow._seasons;
         result.__t = createdShow.__t;
         matchApiSeasonsToDb(result, createdShow);
-        matchApiCastToDb(createdShow)
+        result._actors = await matchApiCastToDb(createdShow);
+        console.log(result._actors);
         res.setHeader('Content-Type', 'application/json');
         res.status(200).send(result);
       })
@@ -271,11 +275,15 @@ getCastFromAPI = function(tv_id){
   })
 }
 
-matchApiCastToDb = function(dbtvshow){
+matchApiCastToDb = async function(dbtvshow){
   getCastFromAPI(dbtvshow._tmdb_id).then(function(credits){
     var credits = JSON.parse(credits)
     var cast = credits.cast;
-    cast.forEach(function(person){
+    var castSize = cast.length;
+    var nCast = 0;
+    var castIds = [];
+
+    cast.forEach(function(person, i){
       var tmdb_id = person.id;
       var name = person.name;
       var character = person.character;
@@ -286,14 +294,20 @@ matchApiCastToDb = function(dbtvshow){
       db_person._tmdb_id = tmdb_id;
       db_person.image_url = picture;
       db_person.description = description;
-      db_person.save().then((db_person)=>{
+      db_person.save().then(async (created_db_person)=>{
+        nCast++;
+        castIds[i] = created_db_person._id;
+        await createAppearsIn(created_db_person._id, dbtvshow._id);
+        if (nCast == castSize) done();
         console.log("Person Created:" + name)
       }).catch((err)=>{console.log(err)});
-    })
+    });
+
+    function done() {
+      return castIds;
+    }
 
   });
-
-
 }
 
 matchApiEpisodesToDb = function(tvshow, seasonapi, dbseason){
@@ -321,7 +335,63 @@ matchApiEpisodesToDb = function(tvshow, seasonapi, dbseason){
         })
       }).catch((err)=>{
         console.log(err);
-      })
-    })
-  })
+      });
+    });
+  });
+}
+
+createAppearsIn = async function(personId, mediaId) {
+  try {
+    let appearsIn = new AppearsIn();
+    appearsIn._media = mediaId;
+    appearsIn._person = personId;
+    let appearsInId = appearsIn._id;
+
+    let isDuplicated = await alreadyExists(personId, mediaId);
+    if (isDuplicated) {
+        console.log(RequestMsg.DUPLICATED_ENTITY);
+    } else {
+        await saveAppearsIn(appearsIn);
+        await addAppearsInToPerson(personId, appearsInId);
+        await addPersonToMediaCast(personId, mediaId);
+        res_json = {
+            "message": "AppearsIn created",
+            "data": {
+                "appearsInId": appearsInId,
+            }            
+        }
+        console.log(res_json);
+    }
+  } catch (err) {
+    console.log(err);
+  } 
+}
+
+var saveAppearsIn = function(appearsIn) {
+  return appearsIn.save();
+}
+
+var addAppearsInToPerson = function(personId, appearsInId) {
+  Person.findById(personId, function (err, person) {
+      person._appears_in.push(appearsInId);
+      return person.save();
+  });      
+}
+
+var addPersonToMediaCast = function(personId, mediaId) {
+  Show.findById(mediaId, function (err, show) {
+      if (!show._actors.includes(personId)) {
+        show._actors.push(personId);
+      }
+      return show.save();
+  });
+}
+
+var alreadyExists = async function(personId, mediaId) {
+  let isDuplicated = await AppearsIn.find({_person: personId, _media: mediaId}).exec();
+  if (isDuplicated.length > 0) {
+      return true;
+  } else {
+      return false;
+  }
 }
