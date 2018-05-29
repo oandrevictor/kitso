@@ -3,7 +3,6 @@ var Season = require('../models/Season');
 var Person = require('../models/Person');
 var Episode = require('../models/Episode');
 var redis = require('redis');
-var redis = require('redis');
 
 const https = require('https');
 var RequestStatus = require('../constants/requestStatus');
