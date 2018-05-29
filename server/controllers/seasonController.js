@@ -2,7 +2,11 @@ var Show = require('../models/TvShow');
 var Season = require('../models/Season');
 var Episode = require('../models/Episode');
 var redis = require('redis');
-var client = redis.createClient();
+var redis = require('redis');
+var client = redis.createClient(19990, 'redis-19990.c16.us-east-1-2.ec2.cloud.redislabs.com', {no_ready_check: true});
+client.auth('nsXmMM8VvJ7PrbYc4q6WZ50ilryBdbmM', function (err) {
+    if (err) throw err;
+});
 const https = require('https');
 
 // Uma temporada
