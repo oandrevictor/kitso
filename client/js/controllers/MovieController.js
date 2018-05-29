@@ -132,6 +132,10 @@ function($scope, $location, $timeout, MovieService, WatchedService,  FollowServi
     $location.path('movie/edit/' + $routeParams.movie_id);
   }
 
+  $scope.goToPerson = function (personId) {
+    $location.path('person/' + personId);
+  }
+
   $scope.rate = function(movieId, rating){
     if ($scope.movie.rated) {
         if (rating !== $scope.movie.rating) {
