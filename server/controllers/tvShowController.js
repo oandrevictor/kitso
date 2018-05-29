@@ -92,15 +92,23 @@ exports.show = function(req, res) {
                   console.log('got query from redis');
                   var parsed_result = JSON.parse(JSON.parse(data));
                   promises = await result._seasons.map(inject_seasons);
+                  var actors = result._actors;
+                  let actorsPromises = actors.map(injectPersonJson);
 
-                  Promise.all(promises).then(function(results) {
+                  Promise.all(promises).then(async function(results) {
                     parsed_result._seasons = results;
                     parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
                     parsed_result._id = result._id;
                     parsed_result.__t = result.__t;
-                    parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
-                    res.setHeader('Content-Type', 'application/json');
-                    res.status(200).send(parsed_result);
+                    await Promise.all(actorsPromises).then(function(nested_actors) {
+                      parsed_result._actors = nested_actors;
+                      console.log(nested_actors)
+                      console.log(parsed_result._actors)
+                      parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
+                      res.setHeader('Content-Type', 'application/json');
+                      res.status(200).send(parsed_result);
+                    });
+
                   })
                 }
               });
@@ -395,4 +403,15 @@ var alreadyExists = async function(personId, mediaId) {
   } else {
       return false;
   }
+}
+
+
+var injectPersonJson = async function(personId) {
+    let personObj = await getPersonObj(personId);
+    return personObj;
+}
+
+
+var getPersonObj = async function(personId) {
+    return Person.findById(personId).exec();
 }
