@@ -36,6 +36,7 @@ kitso.controller('PersonController',
                   });
                 });
             }).catch((error) => {
+              console.log($scope.mediasPersonAppears);
               UIkit.notification({
                 message: '<span uk-icon=\'icon: check\'></span> ' + 'Something went wrong. Try to reload the page.',
                 status: 'danger',
@@ -56,8 +57,6 @@ kitso.controller('PersonController',
       };
 
       $scope.goToMedia = function (media) {
-        console.log($scope.mediasPersonAppears);
-        console.log($scope.person);
         if (media.__t === 'TvShow') {
           $location.path('tvshow/' + media._id);
         } else if (media.__t === "Movie") {
