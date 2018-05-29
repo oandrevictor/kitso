@@ -1,5 +1,4 @@
 var Person = require('../models/Person');
-var Media = require('../models/Media');
 var AppearsIn = require('../models/AppearsIn');
 var RequestStatus = require('../constants/requestStatus');
 var Utils = require('../utils/lib/utils');
@@ -23,7 +22,7 @@ exports.show = async function(req, res) {
     .then(async (person) => {
 
         let appearsIn = person._appears_in;
-        let appearsInPromises = appearsIn.map(getAppearsInObj);        
+        let appearsInPromises = appearsIn.map(DataStoreUtils.getAppearsInObjById);        
         await Promise.all(appearsInPromises).then(function(results) {            
             appearsIn = results;
         });
@@ -87,7 +86,7 @@ exports.delete = function(req, res) {
         
         let personId = person._id;
         let appearsIns = person._appears_in;
-        let appearsInPromises = appearsIns.map(getAppearsInObj);        
+        let appearsInPromises = appearsIns.map(DataStoreUtils.getAppearsInObjById);        
         await Promise.all(appearsInPromises).then(function(results) {            
             appearsIns = results;
         });
@@ -114,22 +113,13 @@ exports.delete = function(req, res) {
     });
 };
 
-var getAppearsInObj = function(appearsInId) {
-    return AppearsIn.findById(appearsInId).exec();
-}
-
 var injectMediaJson = async function(appearsInObj) {
     let mediaId = appearsInObj._media;
-    appearsInObj._media = await getMediaObj(mediaId);
+    appearsInObj._media = await DataStoreUtils.getMediaObjById(mediaId);
     return appearsInObj;
 }
 
-var getMediaObj = function(mediaId) {
-    return Media.findById(mediaId).exec();
-}
-
-var getMediaObjFromAppearsInObj = function(appearsInObj) {
+var getMediaObjFromAppearsInObj = async function(appearsInObj) {
     let mediaId = appearsInObj._media;
-    return Media.findById(mediaId).exec();
+    return await DataStoreUtils.getMediaObjById(mediaId);
 }
-

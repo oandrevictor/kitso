@@ -1,7 +1,7 @@
 var Media = require('../models/Media');
 var Person = require('../models/Person');
 var RequestStatus = require('../constants/requestStatus');
-
+var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 
 exports.index = function(req, res) {
     Media.find({})
@@ -108,8 +108,7 @@ exports.update = function(req, res) {
 
 exports.delete = async function(req, res) {
     try {
-        let media = await Media.findById(req.params.media_id).exec();
-        media.remove();
+        DataStoreUtils.deleteMediaById(req.params.media_id);
         res.status(RequestStatus.OK).send('Media removed.');
     } catch (err) {
         console.log(err);

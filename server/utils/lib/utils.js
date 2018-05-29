@@ -5,7 +5,3 @@ exports.removeItemFromList = function(item, list) {
         list.splice(index, 1);
     }
 }
-
-exports.test = function() {
-    console.log('deu certo')
-}

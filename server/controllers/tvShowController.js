@@ -1,5 +1,6 @@
 var Show = require('../models/TvShow');
 var RequestStatus = require('../constants/requestStatus');
+var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 
 // Todas as séries
 exports.index = function(req, res) {
@@ -67,8 +68,7 @@ exports.update = function(req, res) {
 // Deletar série
 exports.delete = async function(req, res) {
     try {
-        let show = await Show.findById(req.params.show_id).exec();
-        show.remove();
+        DataStoreUtils.deleteMediaById(req.params.show_id);
         res.status(RequestStatus.OK).send('Show removed.');
     } catch (err) {
         console.log(err);

@@ -31,6 +31,11 @@ var RatedSchema = new Schema({
   rating: {
     type: Number,
     enum: [1,2,3,4,5,6,7,8,9,10]
+  },
+  _action: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Action',
+    required: true
   }
 });
 

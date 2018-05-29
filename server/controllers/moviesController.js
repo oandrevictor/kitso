@@ -1,4 +1,6 @@
 var Movie = require('../models/Movie');
+var RequestStatus = require('../constants/requestStatus');
+var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 
 // Todos filmes
 exports.index = function(req, res) {
@@ -70,11 +72,11 @@ exports.update = function(req, res) {
 
 // Deletar filme
 exports.delete = function(req, res) {
-    Movie.remove({ _id: req.params.movie_id})
-    .catch((err) => {
-        res.status(400).send(err);
-    })
-    .then(() => {
-        res.status(200).send('Movie removed.');
-    });
+    try {
+        DataStoreUtils.deleteMediaById(req.params.movie_id);
+        res.status(RequestStatus.OK).send('Movie removed.');
+    } catch (err) {
+        console.log(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
+    }
 };
