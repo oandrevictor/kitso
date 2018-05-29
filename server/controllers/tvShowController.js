@@ -3,11 +3,15 @@ var Season = require('../models/Season');
 var Person = require('../models/Person');
 var Episode = require('../models/Episode');
 var redis = require('redis');
-var client = redis.createClient();
+var redis = require('redis');
+
 const https = require('https');
 var RequestStatus = require('../constants/requestStatus');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
-
+var client = redis.createClient(19990, 'redis-19990.c16.us-east-1-2.ec2.cloud.redislabs.com', {no_ready_check: true});
+client.auth('nsXmMM8VvJ7PrbYc4q6WZ50ilryBdbmM', function (err) {
+    if (err) throw err;
+});
 // Todas as séries
 exports.index = function(req, res) {
     Show.find({})
@@ -24,24 +28,24 @@ exports.index = function(req, res) {
         var query = 'tvshow/' + tmdb_id;
         client.exists(query, function(err, reply) {
           if (reply === 1) {
+
             client.get(query, async function(err,data) {
               if(err)
                 console.log(err)
               else{
                 console.log('got query from redis: tvshow/' + tmdb_id);
+                answered +=1;
                 var parsed_result = JSON.parse(JSON.parse(data));
                 var promises = await tvshow._seasons.map(inject_seasons);
-
-                Promise.all(promises).then(function(results) {
-                  answered +=1;
-                  parsed_result._seasons = results;
-                  parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
-                  parsed_result._id = tvshow._id;
-                  parsed_result.__t = tvshow.__t;
-                  parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
-                  final_result.push(parsed_result);
-                  if (answered == tv_result.length) res.status(200).send(final_result);
-                  })
+                parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
+                parsed_result._id = tvshow._id;
+                parsed_result.__t = tvshow.__t;
+                parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
+                final_result.push(parsed_result);
+                if (final_result.length == tv_result.length) {
+                  res.setHeader('Content-Type', 'application/json');
+                  res.status(200).send(final_result);
+                }
                 }
               });
           } else {
@@ -49,15 +53,13 @@ exports.index = function(req, res) {
               answered += 1;
               console.log("Got from TMDB: " + tmdb_id )
               var promises = await tvshow._seasons.map(inject_seasons);
-
-              Promise.all(promises).then(function(results) {
-                var data = JSON.parse(data);
-                data._seasons = results;
-                data._id = result._id;
-                data.__t = result.__t;
-                final_result.push(data)
-                if (answered == tv_result.length) res.status(200).send(final_result);
-              });
+              data._id = tv_result._id;
+              data.__t = tv_result.__t;
+              final_result.push(data)
+              if (final_result.length == tv_result.length) {
+                res.setHeader('Content-Type', 'application/json');
+                res.status(200).send(final_result);
+              }
             })
           }
         });
@@ -180,7 +182,7 @@ exports.delete = async function(req, res) {
 
 getShowFromTMDB = function(tmdb_id){
   return new Promise(function(resolve, reject) {
-    query = 'tvshow/' + tmdb_id
+    var query = 'tvshow/' + tmdb_id
     console.log("Could not get from redis, requesting info from The Movie DB")
     https.get("https://api.themoviedb.org/3/tv/"+ tmdb_id + "?api_key=db00a671b1c278cd4fa362827dd02620",
     (resp) => {
