@@ -1,4 +1,5 @@
 var Show = require('../models/TvShow');
+var RequestStatus = require('../constants/requestStatus');
 
 // Todas as séries
 exports.index = function(req, res) {
@@ -64,12 +65,13 @@ exports.update = function(req, res) {
 };
 
 // Deletar série
-exports.delete = function(req, res) {
-    Show.remove({ _id: req.params.show_id})
-    .catch((err) => {
-        res.status(400).send(err);
-    })
-    .then(() => {
-        res.status(200).send('Show removed.');
-    });
+exports.delete = async function(req, res) {
+    try {
+        let show = await Show.findById(req.params.show_id).exec();
+        show.remove();
+        res.status(RequestStatus.OK).send('Show removed.');
+    } catch (err) {
+        console.log(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
+    }
 };

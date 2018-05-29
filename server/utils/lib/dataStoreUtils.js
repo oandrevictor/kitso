@@ -2,6 +2,11 @@
 var AppearsIn = require('../../models/AppearsIn');
 var Person = require('../../models/Person');
 var Media = require('../../models/Media');
+var Action = require('../../models/Action');
+var User = require('../../models/User');
+var FollowsPage = require('../../models/FollowsPage');
+var Rated = require('../../models/Rated');
+var Watched = require('../../models/Watched');
 var Utils = require('./utils')
 
 exports.getPersonObjById = async function(personId) {
@@ -39,26 +44,27 @@ exports.test = function() {
     console.log('deu certo')
 }
 
-exports.getFollowsPage = async function(mediaId) {
-    return FollowsPage.find({_media: mediaId}).exec();
+exports.getFollowsPage = async function(followingId, isMedia) {
+    return FollowsPage.find({_following: followingId, is_media: isMedia}).exec();
 }
 
 exports.deleteMediaAndFollowsPage = async function(mediaId) {
-    let followsPages = await this.getFollowsPage(mediaId);
+    let followsPages = await this.getFollowsPage(mediaId, true);
+    console.log('follows: ' + followsPages);
     await followsPages.forEach(async (followPage) => {
-        await followPage.remove().exec();
+        await followPage.remove();
     });
 }
 
-exports.getWatched = function(mediaId) {
+exports.getWatched = async function(mediaId) {
     return Watched.find({_media: mediaId}).exec();
 }
 
 exports.deleteMediaAndWatched = async function(mediaId) {
     let watcheds = await this.getWatched(mediaId);
-    console.log(watcheds);
+    console.log('watched: ' + watcheds);
     await watcheds.forEach(async (watched) => {
-        await watched.remove().exec();
+        await watched.remove();
     });
 }
 
@@ -68,7 +74,8 @@ exports.getRated = async function(mediaId) {
 
 exports.deleteMediaAndRated = async function(mediaId) {
     let rateds = await this.getRated(mediaId);
+    console.log('rated: ' + rateds);
     await rateds.forEach(async (rated) => {
-        await rated.remove().exec();
+        await rated.remove();
     });
 }
