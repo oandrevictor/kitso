@@ -89,8 +89,8 @@
                 Cast
             </div>
             <div uk-grid>
-              <div class="cast-info" ng-repeat="person in tvshow.actors">
-                  <img class="cast-image" src="{{ person.image }}" />
+              <div class="cast-info" ng-repeat="person in tvshow._actors">
+                  <img class="cast-image" src="{{ 'https://image.tmdb.org/t/p/w500/' + person.image_url }}" />
                   <p class="cast-name">{{ person.name }}</p>
               </div>
 
