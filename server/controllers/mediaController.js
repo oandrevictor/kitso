@@ -14,12 +14,8 @@ exports.index = function(req, res) {
 };
 
 exports.show = async function(req, res) {
-    Media.findById(req.params.media_id)
-    .catch((err) => {        
-        res.status(400).send(err);
-    })
-    .then( async (media) => {
-
+    try {
+        let media = await Media.findById(req.params.media_id).exec();
         let directors = media._directors;
         let actors = media._actors;
         let directorsPromises = directors.map(injectPersonJson);
@@ -32,8 +28,11 @@ exports.show = async function(req, res) {
             media._actors = results;
         });
 
-        res.status(200).json(media);
-    });
+        res.status(RequestStatus.OK).json(media);
+
+    } catch (err) {
+        res.status(RequestStatus.BAD_REQUEST).send(err);
+    }
 };
 
 exports.showAll = function(req, res) {
