@@ -47,7 +47,7 @@
                         <div ng-repeat="media in mediasPersonAppears">
                             <li>
                                 <div class="uk-card uk-grid-match uk-card-default uk-card-hover appears-in" ng-click="goToMedia(media)">
-                                    <img class="poster" style="background-image: url({{ media.images.poster }})" />
+                                    <img class="poster" style="background-image: url(https://image.tmdb.org/t/p/w500/{{ media.helper.poster_path }})" />
                                     <div class="uk-card-body">
                                         <p class="uk-align-center uk-text-uppercase" align="center"> {{media.name}}</p>
                                     </div>

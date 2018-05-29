@@ -21,7 +21,7 @@ kitso.controller('PersonController',
                 $scope.background = "/images/purple-edit-placeholder.jpg"; // Criar um cover default do kisto
               } else {
                 $scope.mediasPersonAppears = PersonService.loadMedias($scope.person._appears_in);
-                $scope.background = ($scope.mediasPersonAppears[Math.floor((Math.random() * $scope.mediasPersonAppears.length))])['media']['images']['cover'];
+                $scope.background = ($scope.person._appears_in[Math.floor((Math.random() * $scope.person._appears_in.length))])['_media']['helper']['backdrop_path'];
               }
 
               FollowService.isFollowingPage($scope.user._id, $routeParams.person_id)

@@ -83,6 +83,7 @@ exports.show = async function(req, res) {
               console.log('got query from redis');
               var parsed_result = JSON.parse(JSON.parse(data));
               parsed_result._id = result._id;
+              parsed_result.helper = result.helper;
               parsed_result._appears_in = result._appears_in;
               parsed_result.profile_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.profile_path;
               res.status(200).send(parsed_result);
@@ -178,6 +179,9 @@ exports.delete = function(req, res) {
 var injectMediaJson = async function(appearsInObj) {
     let mediaId = appearsInObj._media;
     appearsInObj._media = await DataStoreUtils.getMediaObjById(mediaId);
+    appearsInObj._media.helper = await getShow(appearsInObj._media._tmdb_id).then(function (show){
+      return JSON.stringify(show);
+    });
     return appearsInObj;
 }
 
@@ -191,6 +195,59 @@ getPersonFromTMDB = function(tmdb_id){
     var query = 'person/' + tmdb_id
     console.log("Could not get from redis, requesting info from The Movie DB")
     https.get("https://api.themoviedb.org/3/person/"+ tmdb_id + "?api_key=db00a671b1c278cd4fa362827dd02620",
+    (resp) => {
+      let data = '';
+      resp.on('data', (chunk) => {
+        data += chunk;
+      });
+      resp.on('end', () => {
+        console.log("saving result to redis: "+ query)
+        client.set(query, JSON.stringify(data));
+        resolve(data)
+      });
+
+    }).on("error", (err) => {
+      console.log("Error: " + err.message);
+      reject();
+    });
+  })
+}
+
+
+var getShow = function(tmdb_id){
+  return new Promise(function(resolve, reject) {
+    var query = 'tvshow/' + tmdb_id;
+    client.exists('tvshow/' + tmdb_id, function(err, reply) {
+      if (reply === 1) {
+          console.log('exists');
+          client.get(query, async function(err,data) {
+              if(err)
+                console.log(err)
+              else{
+                console.log('got query from redis');
+                var parsed_result = JSON.parse(JSON.parse(data));
+                  //parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
+                  parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
+                  resolve(parsed_result);
+              }
+            });
+      } else {
+        getShowFromTMDB(tmdb_id).then(async function(data) {
+          var data = JSON.parse(data)
+            data._id = result._id;
+            data.__t = result.__t;
+            resolve(data);
+        })
+      }
+})
+})
+}
+
+var getShowFromTMDB = function(tmdb_id){
+  return new Promise(function(resolve, reject) {
+    var query = 'tvshow/' + tmdb_id
+    console.log("Could not get from redis, requesting info from The Movie DB")
+    https.get("https://api.themoviedb.org/3/tv/"+ tmdb_id + "?api_key=db00a671b1c278cd4fa362827dd02620",
     (resp) => {
       let data = '';
       resp.on('data', (chunk) => {

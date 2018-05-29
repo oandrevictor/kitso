@@ -27,7 +27,6 @@ kitso.service('RatedService', ['$q','$http', function ($q, $http) {
                 }
               })
                   deferred.resolve(result);
-                  deferred.resolve(response.data);
               } else {
                   deferred.reject();
               }
