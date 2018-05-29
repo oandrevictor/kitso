@@ -143,7 +143,7 @@ exports.create = function(req, res) {
         result._id = createdShow._id;
         result._seasons = createdShow._seasons;
         result.__t = createdShow.__t;
-        matchApiSeasonsToDb(result, createdShow);
+        setTimeout(function(){matchApiSeasonsToDb(result, createdShow);}, 5000);
         result._actors = await matchApiCastToDb(createdShow);
         console.log(result._actors);
         res.setHeader('Content-Type', 'application/json');

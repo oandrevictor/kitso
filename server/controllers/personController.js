@@ -38,13 +38,14 @@ exports.index = function(req, res) {
                   }
                 });
             } else {
-              getPersonFromTMDB(tmdb_id).then(async function(data) {
-                data = JSON.parse(data);
-                data.profile_path = "https://image.tmdb.org/t/p/w500/" + data.profile_path;
-                data._id = person._id;
-                final_result.push(data);
-                if (index == result.length -1) res.status(200).send(final_result);
-              });
+              setTimeout(function(){
+                getPersonFromTMDB(tmdb_id).then(async function(data) {
+                  data = JSON.parse(data);
+                  data.profile_path = "https://image.tmdb.org/t/p/w500/" + data.profile_path;
+                  data._id = person._id;
+                  final_result.push(data);
+                  if (index == result.length -1) res.status(200).send(final_result);
+                })}, 500);
             }
           });
     });
