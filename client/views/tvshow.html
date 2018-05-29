@@ -8,10 +8,11 @@
 
   <div class="uk-width-xxlarge content">
     <div class="uk-width-3-4">
-      <b>Directed by</b> {{ 'Directors' }}
+      Created by <b ng-repeat="person in tvshow.created_by">{{ person.name }}; </b>
+
       <br /> Year:
-      <b> {{ tvshow.release_date | date: 'yyyy' }}</b> | Genres:
-      <b ng-repeat="genre in tvshow.genres">{{ genre.name }}</b>
+      <b> {{ tvshow.air_date | date: 'yyyy' }}</b> | Genres:
+      <b ng-repeat="genre in tvshow.genres">{{ genre.name }} </b>
       <div class="rating">
         <div>
           <div class="is-rated-star" ng-show="tvshow.rated"></div>

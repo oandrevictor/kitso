@@ -9,9 +9,8 @@
 
     <div class="uk-width-xxlarge content">
         <div class="uk-width-3-4">
-            <b>Directed by</b> {{ 'Directors' }}
             <br /> Airing:
-            <b> {{ tvshow.release_date | date: 'yyyy' }}</b> | Genres:
+            <b> {{ season.air_date | date: 'yyyy' }}</b> | Genres:
             <b ng-repeat="genre in tvshow.genres">{{ genre.name }} </b>
             <div class="rating">
               <div>
