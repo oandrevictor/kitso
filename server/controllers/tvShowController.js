@@ -346,7 +346,7 @@ createAppearsIn = async function(personId, mediaId) {
         console.log(RequestMsg.DUPLICATED_ENTITY);
     } else {
         await saveAppearsIn(appearsIn);
-        await addAppearsInToPerson(personId, appearsInId);
+        await DataStoreUtils.addAppearsInToPerson(personId, appearsInId);
         await addPersonToMediaCast(personId, mediaId);
         res_json = {
             "message": "AppearsIn created",
@@ -363,13 +363,6 @@ createAppearsIn = async function(personId, mediaId) {
 
 var saveAppearsIn = function(appearsIn) {
   return appearsIn.save();
-}
-
-var addAppearsInToPerson = function(personId, appearsInId) {
-  Person.findById(personId, function (err, person) {
-      person._appears_in.push(appearsInId);
-      return person.save();
-  });      
 }
 
 var addPersonToMediaCast = function(personId, mediaId) {

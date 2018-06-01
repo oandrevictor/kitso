@@ -33,6 +33,13 @@ exports.addActionToUserHistory = async function(userId, actionId) {
     });
 };
 
+exports.addAppearsInToPerson = function(personId, appearsInId) {
+    Person.findById(personId, function (err, person) {
+        person._appears_in.push(appearsInId);
+        return person.save();
+    });
+};
+
 
 // GET ============================================================================================
 
