@@ -9,6 +9,12 @@ var Rated = require('../../models/Rated');
 var Watched = require('../../models/Watched');
 var Utils = require('./utils')
 var Media = require('../../models/Media');
+var User = require('../../models/User');
+
+
+exports.getUserById = async function(id) {
+    return User.findById(id).exec();
+}
 
 exports.getMediaObjById = function(mediaId) {
     return Media.findById(mediaId).exec();

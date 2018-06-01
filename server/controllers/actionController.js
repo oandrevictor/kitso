@@ -1,5 +1,4 @@
 var Action = require('../models/Action');
-var User = require('../models/User');
 var Rated = require('../models/Rated');
 var Watched = require('../models/Watched');
 var Follows = require('../models/Follows');
@@ -7,11 +6,14 @@ var FollowsṔage = require('../models/FollowsPage');
 var RequestStatus = require('../constants/requestStatus');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 
+
+// CRUD ACTION ====================================================================================
+
 exports.index = async function(req, res) {
     let action_list, promises;
     try {
         action_list = await Action.find({}).exec();
-        promises = action_list.map(inject_media_json);
+        promises = action_list.map(injectMediaJson);
     } catch (err) {
         res.status(RequestStatus.BAD_REQUEST).json(err);
     }
@@ -21,51 +23,18 @@ exports.index = async function(req, res) {
     })
 };
 
-
-// Uma ação
 exports.show = async function(req, res) {
     Action.findById(req.params.action_id)
     .catch((err) => {
         res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((result) => {
-        inject_media_json(result).then(function(results) {
+        injectMediaJson(result).then(function(results) {
             res.status(RequestStatus.OK).json(results);
         });
     });
 };
 
-var inject_media_json = async function(action) {
-    let user_id = action._user;
-    let action_id = action._action;
-
-    user_obj = await getUser(user_id);
-    action_obj = await getAction(action.action_type, action_id);
-
-    let action_complete = action;
-    action_complete._user = user_obj;
-    action_complete._action = action_obj;
-
-    return action_complete;
-} 
-
-var getUser = async function(id) {
-    return User.findById(id).exec();
-}
-
-var getAction = async function(type, id) {
-    if (type == 'rated') {
-        return Rated.findById(id).exec();
-    } else if (type == 'watched') {
-        return Watched.findById(id).exec();
-    } else if (type == 'followed') {
-        return Follows.findById(id).exec();
-    } else {
-        return FollowsṔage.findById(id).exec();
-    }
-}
-
-// Criar ação
 exports.create = function(req, res) {
     var action = new Action(req.body);
 
@@ -78,7 +47,6 @@ exports.create = function(req, res) {
     });
 };
 
-// Editar ação
 exports.update = function(req, res) {
     Action.findById(req.params.action_id)
     .catch((err) => {
@@ -100,13 +68,41 @@ exports.update = function(req, res) {
     });
 };
 
-// Deletar ação
 exports.delete = function(req, res) {
     Action.remove({ _id: req.params.action_id})
     .catch((err) => {
         res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then(() => {
-        res.status(RequestStatus.OK).send('Ação removida.');
+        res.status(RequestStatus.OK).send('Action removed.');
     });
 };
+
+
+// AUXILIARY FUNCTIONS ============================================================================
+
+var injectMediaJson = async function(action) {
+    let user_id = action._user;
+    let action_id = action._action;
+
+    user_obj = await DataStoreUtils.getUserById(user_id);
+    action_obj = await getAction(action.action_type, action_id);
+
+    let action_complete = action;
+    action_complete._user = user_obj;
+    action_complete._action = action_obj;
+
+    return action_complete;
+} 
+
+var getAction = async function(type, id) {
+    if (type == 'rated') {
+        return Rated.findById(id).exec();
+    } else if (type == 'watched') {
+        return Watched.findById(id).exec();
+    } else if (type == 'followed') {
+        return Follows.findById(id).exec();
+    } else {
+        return FollowsṔage.findById(id).exec();
+    }
+}
