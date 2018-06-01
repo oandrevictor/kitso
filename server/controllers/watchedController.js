@@ -1,7 +1,4 @@
 var Watched = require('../models/Watched');
-var Action = require('../models/Action');
-var User = require('../models/User');
-var Media = require('../models/Media');
 var RequestStatus = require('../constants/requestStatus');
 var ActionType = require('../constants/actionType');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
@@ -10,13 +7,12 @@ exports.index = async function(req, res) {
     let user_id = req.params.user_id;
     let watched_list, promises;
     try {
-        watched_list = await find_user_watched_list(user_id);
-        promises = await watched_list.map(inject_media_json);
+        watched_list = await DataStoreUtils.getWatchedByUserId(user_id);
+        promises = await watched_list.map(injectMediaJsonInWatched);
     } catch (err) {
         res.status(RequestStatus.BAD_REQUEST).json(err);
     }
     Promise.all(promises).then(function(results) {
-      console.log("Respondeu")
         res.status(RequestStatus.OK).send(results);
     })
 };
@@ -59,7 +55,7 @@ exports.create = async function(req, res) {
 exports.update = async function(req, res) {
     let watched_id = req.params.watched_id;
     try {
-        var watched = await find_watched_obj(watched_id);
+        var watched = await DataStoreUtils.getWatchedById(watched_id);
     } catch (err) {
         // if there is no watched with informed id
         res.status(RequestStatus.BAD_REQUEST).send(err);
@@ -96,51 +92,9 @@ exports.delete = async function(req, res) {
     });
 };
 
-var create_action = async function(user_id, watched_id) {
-    var action = new Action({
-        _user: user_id,
-        date: new Date(),
-        _action: watched_id,
-        action_type: WATCHED_ACTION_TYPE,
-    });
-    return action.save();
-}
-
-var delete_action = function(action_id) {
-    Action.remove({ _id: action_id}).exec();
-}
-
-var add_action_to_user_history = async function(user_id, action_id) {
-    User.findById(user_id, function (err, user) {
-        let user_history = user._history;
-        user_history.push(action_id);
-        return user.save();
-    });
-}
-
-var delete_action_from_user_history = async function(user_id, action_id) {
-    User.findById(user_id, function (err, user) {
-        let user_history = user._history;
-        let index = user_history.indexOf(action_id);
-        if (index > -1) {
-            user_history.splice(index, 1);
-        }
-        user.save();
-    });
-}
-
-var find_watched_obj = async function(watched_id) {
-    return Watched.findById(watched_id).exec();
-}
-
-var find_user_watched_list = async function(user_id) {
-    return Watched.find({_user: user_id}).exec();
-}
-
-
 var getSeasonFromAPI = function(tv_id, season_number){
   return new Promise(function(resolve, reject) {
-    var query = 'tvshow/' + tv_id + '/season/' + season_number
+    var query = 'tvshow/' + tv_id + '/season/' + season_number;
     https.get("https://api.themoviedb.org/3/tv/"+ tv_id + "/season/"+ season_number +"?api_key=db00a671b1c278cd4fa362827dd02620",
     (resp) => {
       let data = '';
@@ -148,7 +102,7 @@ var getSeasonFromAPI = function(tv_id, season_number){
         data += chunk;
       });
       resp.on('end', () => {
-        console.log("saving season result to redis:"+  query)
+        console.log("saving season result to redis:"+  query);
         client.set(query, JSON.stringify(data));
         resolve(data)
       });
@@ -157,31 +111,27 @@ var getSeasonFromAPI = function(tv_id, season_number){
       reject();
     });
   })
-}
-var inject_media_json = async function(watched_obj) {
-    let media_id = watched_obj._media;
-    let media_obj = await get_media_obj(media_id);
-    if (media_obj.__t == 'Episode' && media_obj._tmdb_tvshow_id){
-      var value = await getSeasonFromAPI(media_obj._tmdb_tvshow_id, media_obj.season_number).then((season)=>{
-        var watched_with_full_media = watched_obj;
-        watched_with_full_media._media = media_obj
+};
+
+var injectMediaJsonInWatched = async function(watched_obj) {
+    let mediaId = watched_obj._media;
+    let mediaObj = await DataStoreUtils.getMediaObjById(mediaId);
+    if (mediaObj.__t == 'Episode' && mediaObj._tmdb_tvshow_id){
+      var value = await getSeasonFromAPI(media_obj._tmdb_tvshow_id, media_obj.season_number).then((season) => {
+        var watched_with_full_media = watchedObj;
+        watched_with_full_media._media = mediaObj;
         watched_with_full_media._media.helper = season;
         return watched_with_full_media;
       });
       return value;
-
     }
     else {
       let watched_with_full_media = watched_obj;
-      watched_with_full_media._media = media_obj;
+      watched_with_full_media._media = mediaObj;
       return watched_with_full_media;
     }
-}
-
-var get_media_obj = async function(media_id) {
-    return Media.findById(media_id).exec();
-}
+};
 
 var user_has_watched = async function(user_id, media_id) {
     return Watched.find({_user: user_id, _media: media_id}).exec();
-}
+};
