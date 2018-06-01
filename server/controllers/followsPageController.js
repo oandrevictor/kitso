@@ -1,6 +1,4 @@
 var FollowsPage = require('../models/FollowsPage');
-var Action = require('../models/Action');
-var User = require('../models/User');
 var Media = require('../models/Media');
 var Person = require('../models/Person');
 var RequestStatus = require('../constants/requestStatus');
@@ -42,7 +40,7 @@ exports.is_following = async function(req, res) {
             }
         }
     });
-}
+};
 
 exports.following_me = async function(req, res) {
     let page_id = req.params.page_id;
@@ -53,7 +51,7 @@ exports.following_me = async function(req, res) {
     } catch (err) {
         res.status(RequestStatus.BAD_REQUEST).json(err);
     }
-}
+};
 
 exports.create = async function(req, res) {
     var follow = new FollowsPage(req.body);
@@ -95,19 +93,5 @@ var getFollowedFromFollow = async function(follow) {
     } else {
         return Person.findById(follow._following).exec();
     } 
-}
+};
 
-var delete_action = function(action_id) {
-    Action.remove({ _id: action_id}).exec();
-}
-
-var delete_action_from_user_history = async function(user_id, action_id) {
-    User.findById(user_id, function (err, user) {
-        let user_history = user._history;
-        let index = user_history.indexOf(action_id);
-        if (index > -1) {
-            user_history.splice(index, 1);
-        }
-        user.save();
-    });
-}
