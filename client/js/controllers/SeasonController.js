@@ -10,7 +10,9 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
 
       TvShowService.loadSeason($routeParams.tvshow_id, $routeParams.season).then((season) => {
         $scope.season = season;
+        console.log($scope.season)
         $scope.season.episodes.forEach(function(episode){
+          episode.rating = 0;
           loadEpisodeActions(episode)
         });
         $('.full-loading').hide();
@@ -43,17 +45,6 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
           timeout: 2500
       });
     });
-
-  $scope.goToMedia = function (media) {
-    if (media.__t === 'TvShow') {
-      $location.path('tvshow/' + media._id);
-    } else if (media.__t === "Movie") {
-      $location.path('movie/' + media._id);
-    } else if (media.__t === "Episode"){
-      $location.path('tvshow/' + media._tvshow_id + '/season/'+ media.season_number);
-    }
-
-  }
 
     RatedService.isRated($scope.user._id, episode._id).then((rated) => {
       var episodeId = episode._id;
@@ -144,7 +135,8 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
         $location.path('tvshow/edit/' + $routeParams.tvshow_id);
     }
 
-    $scope.rate = function(tvshowId, rating){
+    $scope.rate = function(episode, rating){
+      var episodeId = episode._id;
       if ($scope.tvshow.rated) {
           if (rating !== $scope.tvshow.rating) {
             $scope.updateRated($scope.tvshow.rated.rated_id, rating);
@@ -164,8 +156,7 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
             });
           }
       } else {
-          $scope.markAsRated(tvshowId, rating);
-          $scope.updateRating(rating);
+          $scope.markAsRated(episode, rating);
           UIkit.notification({
                 message: '<span uk-icon=\'icon: check\'></span> Rated!',
                 status: 'success',
@@ -174,11 +165,11 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
       }
     }
 
-  $scope.markAsRated = function(tvshowId, rating) {
-    $scope.tvshow.rating = rating;
-    RatedService.markAsRated($scope.user._id, tvshowId, date = moment(), rating)
+  $scope.markAsRated = function(object, rating) {
+    object.rating = rating;
+    RatedService.markAsRated($scope.user._id, object._id, date = moment(), rating)
     .then((rated) => {
-        $scope.tvshow.rated = rated;
+        object.rated = rated;
     })
     .catch((error) => {
         UIkit.notification({
@@ -222,6 +213,15 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
             ratings.push(i+1)
         }
         return ratings;
+    }
+    $scope.goToMedia = function (media) {
+      if (media.__t === 'TvShow') {
+        $location.path('tvshow/' + media._id);
+      } else if (media.__t === "Movie") {
+        $location.path('movie/' + media._id);
+      } else if (media.__t === "Episode"){
+        $location.path('tvshow/' + media._tvshow_id + '/season/'+ media.season_number);
+      }
     }
 
 }]);

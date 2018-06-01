@@ -45,7 +45,7 @@ kitso.service('RatedService', ['$q','$http', function ($q, $http) {
             if (response.status === 200) {
                   deferred.resolve(response.data);
               } else {
-                  deferred.reject();
+                  deferred.reject(response.data);
               }
           })
           .catch((error) => {
