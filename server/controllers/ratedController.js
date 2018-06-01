@@ -61,7 +61,7 @@ exports.create = async function(req, res) {
     let user_id = rated._user;
     let action = await DataStoreUtils.createAction(user_id, rated._id, ActionType.RATED);
     rated._action = action._id;
-    await add_action_to_user_history(user_id, action._id);
+    await DataStoreUtils.addActionToUserHistory(user_id, action._id);
     rated.save()
     .catch((err) => {
         res.status(RequestStatus.BAD_REQUEST).send(err);
@@ -117,14 +117,6 @@ exports.delete = async function(req, res) {
 
 var delete_action = function(action_id) {
     Action.remove({ _id: action_id}).exec();
-}
-
-var add_action_to_user_history = async function(user_id, action_id) {
-    User.findById(user_id, function (err, user) {
-        let user_history = user._history;
-        user_history.push(action_id);
-        return user.save();
-    });
 }
 
 var delete_action_from_user_history = async function(user_id, action_id) {

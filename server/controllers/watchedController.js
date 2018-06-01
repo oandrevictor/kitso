@@ -46,7 +46,7 @@ exports.create = async function(req, res) {
     let user_id = watched._user;
     let action = await DataStoreUtils.createAction(user_id, watched._id, ActionType.WATCHED);
     watched._action = action._id;
-    await add_action_to_user_history(user_id, action._id);
+    await DataStoreUtils.addActionToUserHistory(user_id, action._id);
     watched.save()
     .catch((err) => {
         res.status(RequestStatus.BAD_REQUEST).send(err);

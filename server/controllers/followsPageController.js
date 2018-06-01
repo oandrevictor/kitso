@@ -60,7 +60,7 @@ exports.create = async function(req, res) {
     let user_id = follow._user;
     let action = await DataStoreUtils.createAction(user_id, follow._id, ActionType.FOLLOWED);
     follow._action = action._id;
-    await add_action_to_user_history(user_id, action._id);
+    await DataStoreUtils.addActionToUserHistory(user_id, action._id);
 
     follow.save()
     .catch((err) => {
@@ -95,14 +95,6 @@ var getFollowedFromFollow = async function(follow) {
     } else {
         return Person.findById(follow._following).exec();
     } 
-}
-
-var add_action_to_user_history = async function(user_id, action_id) {
-    User.findById(user_id, function (err, user) {
-        let user_history = user._history;
-        user_history.push(action_id);
-        return user.save();
-    });
 }
 
 var delete_action = function(action_id) {
