@@ -22,6 +22,10 @@ exports.getAppearsInObjById = function(appearsInId) {
     return AppearsIn.findById(appearsInId).exec();
 }
 
+exports.getAppearsInObjByMedia = async function(mediaId) {
+    return AppearsIn.find({_media: mediaId}).exec();
+}
+
 exports.getAppearsInObjByKeys = async function(mediaId, personId) {
     let array = await AppearsIn.find({_media: mediaId, _person: personId}).exec();
     return array[0];  // since there's just 1 appearsIn with same mediaid and personId

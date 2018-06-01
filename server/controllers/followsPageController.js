@@ -3,6 +3,7 @@ var Action = require('../models/Action');
 var User = require('../models/User');
 var Media = require('../models/Media');
 var Person = require('../models/Person');
+var RequestStatus = require('../constants/requestStatus');
 
 const FOLLOWED_ACTION_TYPE = "followed";
 

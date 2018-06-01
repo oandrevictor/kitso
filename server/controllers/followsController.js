@@ -1,6 +1,7 @@
 var Follows = require('../models/Follows');
 var Action = require('../models/Action');
 var User = require('../models/User');
+var RequestStatus = require('../constants/requestStatus');
 
 const FOLLOWED_ACTION_TYPE = "followed";
 
@@ -12,10 +13,10 @@ exports.index = async function(req, res) {
         promises = following_list.map(getFollowedFromFollow);
 
         Promise.all(promises).then(function(results) {
-            res.status(200).json(results);
+            res.status(RequestStatus.OK).json(results);
         })  
     } catch (err) {
-        res.status(400).json(err);
+        res.status(RequestStatus.BAD_REQUEST).json(err);
     }
 };
 
@@ -25,17 +26,17 @@ exports.is_following = async function(req, res) {
 
     Follows.find({_user: user_id, _following: following_id}, function(err, result) {
         if (err) {
-            res.status(400).json(err);
+            res.status(RequestStatus.BAD_REQUEST).json(err);
         } else {
             if (result.length > 0) {
                 res_json = {
                     "is_following": true,
                     "following_id": result[0]._id
                 }
-                res.status(200).json(res_json);
+                res.status(RequestStatus.OK).json(res_json);
             } else {
                 json_not_following = {"is_following": false};
-                res.status(200).json(json_not_following);
+                res.status(RequestStatus.OK).json(json_not_following);
             }
         }
     });
@@ -49,10 +50,10 @@ exports.following_me = async function(req, res) {
         promises = following_me_list.map(getFollowFromFollowed);
 
         Promise.all(promises).then(function(results) {
-            res.status(200).json(results);
+            res.status(RequestStatus.OK).json(results);
         }) 
     } catch (err) {
-        res.status(400).json(err);
+        res.status(RequestStatus.BAD_REQUEST).json(err);
     }
 }
 
@@ -65,10 +66,10 @@ exports.create = async function(req, res) {
 
     follow.save()
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((createdFollow) => {
-        res.status(200).send(createdFollow);
+        res.status(RequestStatus.OK).send(createdFollow);
     });
 };
 
@@ -77,7 +78,7 @@ exports.delete = async function(req, res) {
 
     Follows.findById(follow_id, function(err, followed) {
         if (!followed || err) {
-            res.status(400).send("Follow inexistente");
+            res.status(RequestStatus.BAD_REQUEST).send("Follow inexistente");
         } else {
             let user_id = followed._user;
             let action_id = followed._action;
@@ -86,10 +87,10 @@ exports.delete = async function(req, res) {
 
             Follows.remove({ _id: follow_id})
             .catch((err) => {
-                res.status(400).send(err);
+                res.status(RequestStatus.BAD_REQUEST).send(err);
             })
             .then(() => {
-                res.status(200).send('Follow removido.');
+                res.status(RequestStatus.OK).send('Follow removido.');
             });
         }
     });
