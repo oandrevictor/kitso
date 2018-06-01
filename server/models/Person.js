@@ -15,13 +15,16 @@ var PersonSchema = new Schema({
         type: Date,
         required: false
     },
+    _tmdb_id: {
+      type: String,
+      required: true,
+      unique: true
+    },
     image_url: {
         type: String,
         required: false
     },
-    _appears_in: [
-        { type: mongoose.Schema.Types.ObjectId, ref: 'Media' }
-    ]
+    _appears_in: [{ type: mongoose.Schema.Types.ObjectId, ref: 'AppearsIn' }]
 });
 
 var Person = mongoose.model('Person', PersonSchema);
