@@ -4,6 +4,8 @@ var User = require('../models/User');
 var Media = require('../models/Media');
 const https = require('https');
 var redis = require('redis');
+var RequestStatus = require('../constants/requestStatus');
+
 
 var client = redis.createClient(19990, 'redis-19990.c16.us-east-1-2.ec2.cloud.redislabs.com', {no_ready_check: true});
 client.auth('nsXmMM8VvJ7PrbYc4q6WZ50ilryBdbmM', function (err) {
@@ -19,10 +21,10 @@ exports.index = async function(req, res) {
         rated_list = await find_user_rated_list(user_id);
         promises = rated_list.map(inject_media_json);
     } catch (err) {
-        res.status(400).json(err);
+        res.status(RequestStatus.BAD_REQUEST).json(err);
     }
     Promise.all(promises).then(function(results) {
-        res.status(200).json(results);
+        res.status(RequestStatus.OK).json(results);
     })
 };
 
@@ -36,23 +38,23 @@ exports.is_rated = async function(req, res) {
                 "is_rated": true,
                 "rated_id": user_did_rated[0]._id
             }
-            res.status(200).json(res_json);
+            res.status(RequestStatus.OK).json(res_json);
         } else {
             json_not_rated = {"is_rated": false};
-            res.status(200).json(json_not_rated);
+            res.status(RequestStatus.OK).json(json_not_rated);
         }
     } catch (err) {
-        res.status(400).json(err);
+        res.status(RequestStatus.BAD_REQUEST).json(err);
     }
 }
 
 exports.show = function(req, res) {
     Rated.findById(req.params.rated_id)
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((result) => {
-        res.status(200).json(result);
+        res.status(RequestStatus.OK).json(result);
     });
 };
 
@@ -64,10 +66,10 @@ exports.create = async function(req, res) {
     await add_action_to_user_history(user_id, action._id);
     rated.save()
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((createdRated) => {
-        res.status(200).json(createdRated);
+        res.status(RequestStatus.OK).json(createdRated);
     });
 };
 
@@ -77,7 +79,7 @@ exports.update = async function(req, res) {
         var rated = await find_rated_obj(rated_id);
     } catch (err) {
         // if there is no rated with informed id
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     }
 
     if (req.body.date) {
@@ -90,10 +92,10 @@ exports.update = async function(req, res) {
 
     rated.save()
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((updateRated) => {
-        res.status(200).json(updateRated);
+        res.status(RequestStatus.OK).json(updateRated);
     });
 };
 
@@ -102,15 +104,15 @@ exports.delete = async function(req, res) {
 
     Rated.findById(rated_id)
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((rated) => {
         rated.remove()
         .catch((err) => {
-            res.status(400).send(err);
+            res.status(RequestStatus.BAD_REQUEST).send(err);
         })
         .then((deletedRated) => {
-            res.status(200).json(deletedRated);
+            res.status(RequestStatus.OK).json(deletedRated);
         });
     });
 };

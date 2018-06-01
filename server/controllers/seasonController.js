@@ -1,6 +1,7 @@
 var Show = require('../models/TvShow');
 var Season = require('../models/Season');
 var Episode = require('../models/Episode');
+var RequestStatus = require('../constants/requestStatus');
 var redis = require('redis');
 var redis = require('redis');
 var client = redis.createClient(19990, 'redis-19990.c16.us-east-1-2.ec2.cloud.redislabs.com', {no_ready_check: true});
@@ -9,15 +10,15 @@ client.auth('nsXmMM8VvJ7PrbYc4q6WZ50ilryBdbmM', function (err) {
 });
 const https = require('https');
 
-// Uma temporada
+// One season
 exports.show = function(req, res) {
   Show.findById(req.params.show_id)
   .catch((err) => {
-      res.status(400).send(err);
+      res.status(RequestStatus.BAD_REQUEST).send(err);
   })
   .then(async function(result) {
     if(!result) {
-      res.status(404).send("Season not found!");
+      res.status(RequestStatus.NOT_FOUND).send("Season not found!");
     } else {
       tmdb_id = result._tmdb_id;
       season_num = req.params.season_num;
@@ -42,7 +43,7 @@ exports.show = function(req, res) {
                   parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
                   parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
                   res.setHeader('Content-Type', 'application/json');
-                  res.status(200).send(parsed_result);
+                  res.status(RequestStatus.OK).send(parsed_result);
                 });
               }
             });
@@ -57,7 +58,7 @@ exports.show = function(req, res) {
               dataJson.__t = season.__t;
               dataJson.poster_path = "https://image.tmdb.org/t/p/w500/" + data.poster_path;
               dataJson.backdrop_path = "https://image.tmdb.org/t/p/original/" + data.backdrop_path;
-              res.status(200).send(dataJson);
+              res.status(RequestStatus.OK).send(dataJson);
             });
           })}
       });
@@ -80,14 +81,13 @@ getSeason = function(show, num) {
   return Season.findOne({ _tvshow_id: show, number: num}).exec();
 }
 
-// Deletar temporada
 exports.delete = function(req, res) {
     Season.remove({ _id: req.params.season_id})
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then(() => {
-        res.status(200).send('Season removed.');
+        res.status(RequestStatus.OK).send('Season removed.');
     });
 };
 

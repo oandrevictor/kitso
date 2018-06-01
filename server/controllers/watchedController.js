@@ -2,6 +2,8 @@ var Watched = require('../models/Watched');
 var Action = require('../models/Action');
 var User = require('../models/User');
 var Media = require('../models/Media');
+var RequestStatus = require('../constants/requestStatus');
+
 
 const WATCHED_ACTION_TYPE = "watched";
 
@@ -12,11 +14,11 @@ exports.index = async function(req, res) {
         watched_list = await find_user_watched_list(user_id);
         promises = await watched_list.map(inject_media_json);
     } catch (err) {
-        res.status(400).json(err);
+        res.status(RequestStatus.BAD_REQUEST).json(err);
     }
     Promise.all(promises).then(function(results) {
       console.log("Respondeu")
-        res.status(200).send(results);
+        res.status(RequestStatus.OK).send(results);
     })
 };
 
@@ -30,13 +32,13 @@ exports.is_watched = async function(req, res) {
                 "is_watched": true,
                 "watched_id": user_did_watched[0]._id
             }
-            res.status(200).json(res_json);
+            res.status(RequestStatus.OK).json(res_json);
         } else {
             json_not_watched = {"is_watched": false};
-            res.status(200).json(json_not_watched);
+            res.status(RequestStatus.OK).json(json_not_watched);
         }
     } catch (err) {
-        res.status(400).json(err);
+        res.status(RequestStatus.BAD_REQUEST).json(err);
     }
 }
 
@@ -48,10 +50,10 @@ exports.create = async function(req, res) {
     await add_action_to_user_history(user_id, action._id);
     watched.save()
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((createdWatched) => {
-        res.status(200).json(createdWatched);
+        res.status(RequestStatus.OK).json(createdWatched);
     });
 };
 
@@ -61,7 +63,7 @@ exports.update = async function(req, res) {
         var watched = await find_watched_obj(watched_id);
     } catch (err) {
         // if there is no watched with informed id
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     }
 
     if (req.body.date) {
@@ -70,10 +72,10 @@ exports.update = async function(req, res) {
 
     watched.save()
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((updateWatched) => {
-        res.status(200).json(updateWatched);
+        res.status(RequestStatus.OK).json(updateWatched);
     });
 };
 
@@ -82,15 +84,15 @@ exports.delete = async function(req, res) {
 
     Watched.findById(watched_id)
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((watched) => {
         watched.remove()
         .catch((err) => {
-            res.status(400).send(err);
+            res.status(RequestStatus.BAD_REQUEST).send(err);
         })
         .then((deletedWatched) => {
-            res.status(200).json(deletedWatched);
+            res.status(RequestStatus.OK).json(deletedWatched);
         });
     });
 };
@@ -137,10 +139,9 @@ var find_user_watched_list = async function(user_id) {
 }
 
 
-getSeasonFromAPI = function(tv_id, season_number){
+var getSeasonFromAPI = function(tv_id, season_number){
   return new Promise(function(resolve, reject) {
     var query = 'tvshow/' + tv_id + '/season/' + season_number
-    console.log("log")
     https.get("https://api.themoviedb.org/3/tv/"+ tv_id + "/season/"+ season_number +"?api_key=db00a671b1c278cd4fa362827dd02620",
     (resp) => {
       let data = '';
@@ -154,7 +155,6 @@ getSeasonFromAPI = function(tv_id, season_number){
       });
 
     }).on("error", (err) => {
-      console.log("Error: " + err.message);
       reject();
     });
   })
@@ -175,7 +175,6 @@ var inject_media_json = async function(watched_obj) {
     else {
       let watched_with_full_media = watched_obj;
       watched_with_full_media._media = media_obj;
-      console.log(watched_with_full_media)
       return watched_with_full_media;
     }
 }

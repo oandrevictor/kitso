@@ -34,17 +34,17 @@ exports.index = function(req, res) {
                   parsed_result._id = person._id;
                   final_result.push(parsed_result);
 
-                  if (index == result.length -1) res.status(200).send(final_result);
+                  if (index == result.length -1) res.status(RequestStatus.OK).send(final_result);
                   }
                 });
             } else {
-              setTimeout(function(){
+              setTimeout(function() {
                 getPersonFromTMDB(tmdb_id).then(async function(data) {
                   data = JSON.parse(data);
                   data.profile_path = "https://image.tmdb.org/t/p/w500/" + data.profile_path;
                   data._id = person._id;
                   final_result.push(data);
-                  if (index == result.length -1) res.status(200).send(final_result);
+                  if (index == result.length -1) res.status(RequestStatus.OK).send(final_result);
                 })}, 500);
             }
           });
@@ -87,7 +87,7 @@ exports.show = async function(req, res) {
               parsed_result.helper = result.helper;
               parsed_result._appears_in = result._appears_in;
               parsed_result.profile_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.profile_path;
-              res.status(200).send(parsed_result);
+              res.status(RequestStatus.OK).send(parsed_result);
               }
             });
         } else {
@@ -95,7 +95,7 @@ exports.show = async function(req, res) {
             data = JSON.parse(data);
             data._id = result._id;
             data.profile_path = "https://image.tmdb.org/t/p/w500/" + data.profile_path;
-            res.status(200).send(data);
+            res.status(RequestStatus.OK).send(data);
           });
         }
     });

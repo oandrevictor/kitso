@@ -5,7 +5,6 @@ var Episode = require('../models/Episode');
 var Media = require('../models/Media');
 var AppearsIn = require('../models/AppearsIn');
 var redis = require('redis');
-
 const https = require('https');
 var RequestStatus = require('../constants/requestStatus');
 var RequestMsg = require('../constants/requestMsg');
@@ -18,15 +17,13 @@ client.auth('nsXmMM8VvJ7PrbYc4q6WZ50ilryBdbmM', function (err) {
 exports.index = function(req, res) {
     Show.find({})
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((tv_result) => {
       var final_result = [];
-      console.log("len:" + tv_result.length)
       var answered = 0;
       tv_result.forEach((tvshow, index)=>{
         var tmdb_id = tvshow._tmdb_id;
-        console.log("current indexing:" + tmdb_id);
         var query = 'tvshow/' + tmdb_id;
         client.exists(query, function(err, reply) {
           if (reply === 1) {
@@ -46,7 +43,7 @@ exports.index = function(req, res) {
                 final_result.push(parsed_result);
                 if (final_result.length == tv_result.length) {
                   res.setHeader('Content-Type', 'application/json');
-                  res.status(200).send(final_result);
+                  res.status(RequestStatus.OK).send(final_result);
                 }
                 }
               });
@@ -60,7 +57,7 @@ exports.index = function(req, res) {
               final_result.push(data)
               if (final_result.length == tv_result.length) {
                 res.setHeader('Content-Type', 'application/json');
-                res.status(200).send(final_result);
+                res.status(RequestStatus.OK).send(final_result);
               }
             })
           }
@@ -73,23 +70,20 @@ inject_seasons = function(season) {
   return Season.findById(season).exec();
 }
 
-// Uma série
 exports.show = function(req, res) {
     Show.findById(req.params.show_id)
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((result) => {
       var tmdb_id = result._tmdb_id;
       var query = 'tvshow/' + tmdb_id
       client.exists('tvshow/' + tmdb_id, function(err, reply) {
         if (reply === 1) {
-            console.log('exists');
             client.get(query, async function(err,data) {
                 if(err)
                   console.log(err)
                 else{
-                  console.log('got query from redis');
                   var parsed_result = JSON.parse(JSON.parse(data));
                   promises = await result._seasons.map(inject_seasons);
                   var actors = result._actors;
@@ -102,11 +96,9 @@ exports.show = function(req, res) {
                     parsed_result.__t = result.__t;
                     await Promise.all(actorsPromises).then(function(nested_actors) {
                       parsed_result._actors = nested_actors;
-                      console.log(nested_actors)
-                      console.log(parsed_result._actors)
                       parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
                       res.setHeader('Content-Type', 'application/json');
-                      res.status(200).send(parsed_result);
+                      res.status(RequestStatus.OK).send(parsed_result);
                     });
 
                   })
@@ -121,7 +113,7 @@ exports.show = function(req, res) {
               data._seasons = results;
               data._id = result._id;
               data.__t = result.__t;
-              res.status(200).send(data);
+              res.status(RequestStatus.OK).send(data);
             })
           })
         }
@@ -129,34 +121,30 @@ exports.show = function(req, res) {
     });
 };
 
-// Criar série
 exports.create = function(req, res) {
     var show = new Show(req.body);
 
     show.save()
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((createdShow) => {
-      console.log("Created show: " + createdShow.name)
       getShowFromTMDB(createdShow._tmdb_id).then( async (result)=> {
         result._id = createdShow._id;
         result._seasons = createdShow._seasons;
         result.__t = createdShow.__t;
         setTimeout(function(){matchApiSeasonsToDb(result, createdShow);}, 5000);
         result._actors = await matchApiCastToDb(createdShow);
-        console.log(result._actors);
         res.setHeader('Content-Type', 'application/json');
-        res.status(200).send(result);
+        res.status(RequestStatus.OK).send(result);
       })
     });
 };
 
-// Editar série
 exports.update = function(req, res) {
     Show.findById(req.params.show_id)
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((show) => {
         if (req.body.name) show.name = req.body.name;
@@ -172,10 +160,10 @@ exports.update = function(req, res) {
 
         show.save()
         .catch((err) => {
-            res.status(400).send(err);
+            res.status(RequestStatus.BAD_REQUEST).send(err);
         })
         .then((updatedShow) => {
-            res.status(200).json(updatedShow);
+            res.status(RequestStatus.OK).json(updatedShow);
         });
     });
 };
@@ -250,11 +238,9 @@ matchApiSeasonsToDb = function(tvshow, dbtvshow){
     db_season._tvshow_id = dbtvshow._id;
 
     db_season.save().then((created) =>{
-      console.log("season created:" + name)
       matchApiEpisodesToDb(tvshow, season, created);
       dbtvshow._seasons.push(created._id);
       dbtvshow.save().then((tvshow)=>{
-        console.log("saved or updated tvshow:" + dbtvshow.name)
       }).catch((err)=>{
         console.log(err)
       })
@@ -308,7 +294,6 @@ matchApiCastToDb = async function(dbtvshow){
         castIds[i] = created_db_person._id;
         await createAppearsIn(created_db_person._id, dbtvshow._id);
         if (nCast == castSize) done();
-        console.log("Person Created:" + name)
       }).catch((err)=>{console.log(err)});
     });
 
