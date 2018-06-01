@@ -4,8 +4,8 @@ var User = require('../models/User');
 var Media = require('../models/Media');
 var Person = require('../models/Person');
 var RequestStatus = require('../constants/requestStatus');
-
-const FOLLOWED_ACTION_TYPE = "followed";
+var ActionType = require('../constants/actionType');
+var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 
 exports.index = async function(req, res) {
     let user_id = req.params.user_id;
@@ -58,7 +58,7 @@ exports.following_me = async function(req, res) {
 exports.create = async function(req, res) {
     var follow = new FollowsPage(req.body);
     let user_id = follow._user;
-    let action = await create_action(user_id, follow._id);
+    let action = await DataStoreUtils.createAction(user_id, follow._id, ActionType.FOLLOWED);
     follow._action = action._id;
     await add_action_to_user_history(user_id, action._id);
 
@@ -95,17 +95,6 @@ var getFollowedFromFollow = async function(follow) {
     } else {
         return Person.findById(follow._following).exec();
     } 
-}
-
-
-var create_action = async function(user_id, follow_id) {
-    var action = new Action({
-        _user: user_id,
-        date: new Date(),
-        _action: follow_id,
-        action_type: FOLLOWED_ACTION_TYPE,
-    });
-    return action.save();
 }
 
 var add_action_to_user_history = async function(user_id, action_id) {

@@ -5,21 +5,19 @@ var Media = require('../models/Media');
 const https = require('https');
 var redis = require('redis');
 var RequestStatus = require('../constants/requestStatus');
-
-
+var ActionType = require('../constants/actionType');
+var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 var client = redis.createClient(19990, 'redis-19990.c16.us-east-1-2.ec2.cloud.redislabs.com', {no_ready_check: true});
 client.auth('nsXmMM8VvJ7PrbYc4q6WZ50ilryBdbmM', function (err) {
     if (err) throw err;
   });
-
-const RATED_ACTION_TYPE = "rated";
 
 exports.index = async function(req, res) {
     let user_id = req.params.user_id;
     let rated_list, promises;
     try {
         rated_list = await find_user_rated_list(user_id);
-        promises = rated_list.map(inject_media_json);
+        promises = rated_list.map(injectMediaJsonInRated);
     } catch (err) {
         res.status(RequestStatus.BAD_REQUEST).json(err);
     }
@@ -61,7 +59,7 @@ exports.show = function(req, res) {
 exports.create = async function(req, res) {
     var rated = new Rated(req.body);
     let user_id = rated._user;
-    let action = await create_action(user_id, rated._id);
+    let action = await DataStoreUtils.createAction(user_id, rated._id, ActionType.RATED);
     rated._action = action._id;
     await add_action_to_user_history(user_id, action._id);
     rated.save()
@@ -117,16 +115,6 @@ exports.delete = async function(req, res) {
     });
 };
 
-var create_action = async function(user_id, rated_id) {
-    var action = new Action({
-        _user: user_id,
-        date: new Date(),
-        _action: rated_id,
-        action_type: RATED_ACTION_TYPE,
-    });
-    return action.save();
-}
-
 var delete_action = function(action_id) {
     Action.remove({ _id: action_id}).exec();
 }
@@ -158,7 +146,7 @@ var find_user_rated_list = async function(user_id) {
     return Rated.find({_user: user_id}).exec();
 }
 
-var inject_media_json = async function(rated_obj) {
+var injectMediaJsonInRated = async function(rated_obj) {
     var media_id = rated_obj._media;
     var media_obj = await get_media_obj(media_id);
     if (media_obj.__t == 'Episode' && media_obj._tmdb_tvshow_id){
@@ -186,9 +174,8 @@ var inject_media_json = async function(rated_obj) {
     }
 }
 
-
-var getShow = function(tmdb_id){
-  return new Promise(function(resolve, reject) {
+var getShow = function(tmdb_id) {
+    return new Promise(function(resolve, reject) {
     var query = 'tvshow/' + tmdb_id;
     client.exists('tvshow/' + tmdb_id, function(err, reply) {
       if (reply === 1) {
@@ -212,8 +199,8 @@ var getShow = function(tmdb_id){
             resolve(data);
         })
       }
-})
-})
+    })
+    })
 }
 
 var getShowFromTMDB = function(tmdb_id){
@@ -238,7 +225,6 @@ var getShowFromTMDB = function(tmdb_id){
     });
   })
 }
-
 
 var get_media_obj = async function(media_id) {
     return Media.findById(media_id).exec();

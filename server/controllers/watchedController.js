@@ -3,9 +3,8 @@ var Action = require('../models/Action');
 var User = require('../models/User');
 var Media = require('../models/Media');
 var RequestStatus = require('../constants/requestStatus');
-
-
-const WATCHED_ACTION_TYPE = "watched";
+var ActionType = require('../constants/actionType');
+var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 
 exports.index = async function(req, res) {
     let user_id = req.params.user_id;
@@ -40,12 +39,12 @@ exports.is_watched = async function(req, res) {
     } catch (err) {
         res.status(RequestStatus.BAD_REQUEST).json(err);
     }
-}
+};
 
 exports.create = async function(req, res) {
     var watched = new Watched(req.body);
     let user_id = watched._user;
-    let action = await create_action(user_id, watched._id);
+    let action = await DataStoreUtils.createAction(user_id, watched._id, ActionType.WATCHED);
     watched._action = action._id;
     await add_action_to_user_history(user_id, action._id);
     watched.save()
