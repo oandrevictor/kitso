@@ -147,7 +147,7 @@
                     <div class="uk-card-media-top">
                       <div class="uk-inline uk-dark">
                         <div class="uk-visible-toggle">
-                          <a class="page-link" ng-href="goToMedia(media)">
+                          <a class="page-link" ng-click="goToMedia(rated._media)">
                           <img ng-src="{{getPoster(rated._media)}}" style="z-index:-1" alt="">
                         </a>
                           <div ng-if="canEdit()" class="uk-hidden-hover uk-overlay-default uk-position-cover">
@@ -169,7 +169,7 @@
                       </div>
                     </div>
                     <div class="uk-card-body card-rated">
-                      <p class="uk-text"><a class="page-link" ng-href="goToMedia(media)">{{rated._media.name}}</a></p>
+                      <p class="uk-text"><a class="page-link" ng-click="goToMedia(rated._media)">{{rated._media.name}}</a></p>
                       <p class="uk-text uk-text-small uk-text-muted"> <uk-text-bold style="color: #502274"> {{rated.rating}} <span class="rating-star"></span></uk-text-bold>| {{formatDate(rated.date)}}</p>
                     </div>
                   </div>
