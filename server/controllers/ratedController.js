@@ -1,12 +1,9 @@
 var Rated = require('../models/Rated');
-var Action = require('../models/Action');
-var User = require('../models/User');
-var Media = require('../models/Media');
-const https = require('https');
 var redis = require('redis');
 var RequestStatus = require('../constants/requestStatus');
 var ActionType = require('../constants/actionType');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
+const https = require('https');
 var client = redis.createClient(19990, 'redis-19990.c16.us-east-1-2.ec2.cloud.redislabs.com', {no_ready_check: true});
 client.auth('nsXmMM8VvJ7PrbYc4q6WZ50ilryBdbmM', function (err) {
     if (err) throw err;
@@ -16,7 +13,7 @@ exports.index = async function(req, res) {
     let user_id = req.params.user_id;
     let rated_list, promises;
     try {
-        rated_list = await find_user_rated_list(user_id);
+        rated_list = await findUserRatedList(user_id);
         promises = rated_list.map(injectMediaJsonInRated);
     } catch (err) {
         res.status(RequestStatus.BAD_REQUEST).json(err);
@@ -30,7 +27,7 @@ exports.is_rated = async function(req, res) {
     let user_id = req.query.user_id;
     let media_id = req.query.media_id;
     try {
-        let user_did_rated = await user_has_rated(user_id, media_id);
+        let user_did_rated = await userHasRated(user_id, media_id);
         if (user_did_rated.length > 0) {
             res_json = {
                 "is_rated": true,
@@ -44,7 +41,7 @@ exports.is_rated = async function(req, res) {
     } catch (err) {
         res.status(RequestStatus.BAD_REQUEST).json(err);
     }
-}
+};
 
 exports.show = function(req, res) {
     Rated.findById(req.params.rated_id)
@@ -74,7 +71,7 @@ exports.create = async function(req, res) {
 exports.update = async function(req, res) {
     let rated_id = req.params.rated_id;
     try {
-        var rated = await find_rated_obj(rated_id);
+        var rated = await findRatedObj(rated_id);
     } catch (err) {
         // if there is no rated with informed id
         res.status(RequestStatus.BAD_REQUEST).send(err);
@@ -115,32 +112,19 @@ exports.delete = async function(req, res) {
     });
 };
 
-var delete_action = function(action_id) {
-    Action.remove({ _id: action_id}).exec();
-}
-
-var delete_action_from_user_history = async function(user_id, action_id) {
-    User.findById(user_id, function (err, user) {
-        let user_history = user._history;
-        let index = user_history.indexOf(action_id);
-        if (index > -1) {
-            user_history.splice(index, 1);
-        }
-        user.save();
-    });
-}
-
-var find_rated_obj = async function(rated_id) {
+// TODO: move to DataStoreUtils
+var findRatedObj = async function(rated_id) {
     return Rated.findById(rated_id).exec();
-}
+};
 
-var find_user_rated_list = async function(user_id) {
+// TODO: move to DataStoreUtils
+var findUserRatedList = async function(user_id) {
     return Rated.find({_user: user_id}).exec();
-}
+};
 
 var injectMediaJsonInRated = async function(rated_obj) {
     var media_id = rated_obj._media;
-    var media_obj = await get_media_obj(media_id);
+    var media_obj = await DataStoreUtils.getMediaObjById(media_id);
     if (media_obj.__t == 'Episode' && media_obj._tmdb_tvshow_id){
       var value = await getSeasonFromAPI(media_obj._tmdb_tvshow_id, media_obj.season_number).then((season)=>{
         var rated_with_full_media = rated_obj;
@@ -164,8 +148,9 @@ var injectMediaJsonInRated = async function(rated_obj) {
       rated_with_full_media._media = media_obj
       return rated_with_full_media;
     }
-}
+};
 
+// TODO: move to tmdb expert class
 var getShow = function(tmdb_id) {
     return new Promise(function(resolve, reject) {
     var query = 'tvshow/' + tmdb_id;
@@ -193,11 +178,12 @@ var getShow = function(tmdb_id) {
       }
     })
     })
-}
+};
 
+// TODO: move to tmdb expert class
 var getShowFromTMDB = function(tmdb_id){
   return new Promise(function(resolve, reject) {
-    var query = 'tvshow/' + tmdb_id
+    var query = 'tvshow/' + tmdb_id;
     console.log("Could not get from redis, requesting info from The Movie DB")
     https.get("https://api.themoviedb.org/3/tv/"+ tmdb_id + "?api_key=db00a671b1c278cd4fa362827dd02620",
     (resp) => {
@@ -216,12 +202,8 @@ var getShowFromTMDB = function(tmdb_id){
       reject();
     });
   })
-}
+};
 
-var get_media_obj = async function(media_id) {
-    return Media.findById(media_id).exec();
-}
-
-var user_has_rated = async function(user_id, media_id) {
+var userHasRated = async function(user_id, media_id) {
     return Rated.find({_user: user_id, _media: media_id}).exec();
-}
+};
