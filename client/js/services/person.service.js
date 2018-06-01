@@ -21,8 +21,13 @@ kitso.service('PersonService', ['$q','$http', function ($q, $http) {
         $http.get('/api/person/' + id)
             .then((response) => {
                 if (response.status === 200) {
-                    person = response.data;
-                    deferred.resolve(person);
+                  var result = response.data;
+                  result._appears_in.forEach(function(appearsIn){
+                    if(appearsIn._media.helper){
+                      appearsIn._media.helper = JSON.parse(appearsIn._media.helper)
+                    }
+                  });
+                    deferred.resolve(result);
                 } else {
                     deferred.reject();
                 }
@@ -37,26 +42,12 @@ kitso.service('PersonService', ['$q','$http', function ($q, $http) {
         return person;
     }
 
-    function loadMedias(mediasId) {
-        var deferred = $q.defer();
-
-        var data = {
-            "medias": mediasId
-        };
-
-        $http.post('/api/media/list', data)
-            .then((response) => {
-                if (response.status === 200) {
-                    medias = response.data;
-                    deferred.resolve(medias);
-                } else {
-                    deferred.reject();
-                }
-            })
-            .catch((error) => {
-                deferred.reject(error.data);
-            });
-        return deferred.promise;
+    function loadMedias(appearsIns) {
+        var loadedMedias = [];
+        appearsIns.forEach((appearsIn, i) => {
+            loadedMedias[i] = appearsIn._media;
+        });
+        return loadedMedias;
     }
 
     function getMedias() {

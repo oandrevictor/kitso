@@ -11,17 +11,27 @@ var passport       = require('passport');
 var session        = require('express-session');
 var MongoStore     = require('connect-mongo')(session);
 var dotenv         = require('dotenv').load();
+var redis = require('redis');
+var client = redis.createClient(19990, 'redis-19990.c16.us-east-1-2.ec2.cloud.redislabs.com', {no_ready_check: true});
+client.auth('nsXmMM8VvJ7PrbYc4q6WZ50ilryBdbmM', function (err) {
+    if (err) throw err;
+});
+
 // configuration ===========================================
 
 // config files
 var db = require('./config/db');
+
+client.on('connect', function() {
+    console.log('connected to Redis');
+});
 
 // set our port
 var port = process.env.PORT || 8080;
 
 // connect to our mongoDB database
 // (uncomment after you enter in your own credentials in config/db.js)
-mongoose.connect(db.local_url);
+mongoose.connect(db.url);
 
 // Passport and sessions
 require('./config/passport')(passport);
@@ -89,6 +99,10 @@ app.get('/user/:id', function (req, res) {
 });
 
 app.get('/tvshow/:id', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
+app.get('/tvshow/:id/season/:number', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
 

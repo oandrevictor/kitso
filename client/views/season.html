@@ -1,0 +1,90 @@
+<div class="tvshow">
+    <!--Cover Content-->
+    <div class="uk-background-cover" align="center" style="background-image: url({{ tvshow.backdrop_path }})">
+        <div class="uk-width-xxlarge">
+            <div class="title tvshow-name">{{ tvshow.name }}: {{season.name}}</div>
+
+        </div>
+    </div>
+
+    <div class="uk-width-xxlarge content">
+        <div class="uk-width-3-4">
+            <br /> Airing:
+            <b> {{ season.air_date | date: 'yyyy' }}</b> | Genres:
+            <b ng-repeat="genre in tvshow.genres">{{ genre.name }} </b>
+            <div class="rating">
+              <div>
+                <div class="is-rated-star" ng-show="tvshow.rated"></div>
+                <a ng-hide="tvshow.rated" uk-icon="icon: star; ratio: 2"></a>
+              </div>
+                  <div uk-dropdown="pos: bottom-center; mode: hover" style="z-index: 999">
+                    <center>
+                      <ul class="uk-iconnav">
+                        <div ng-repeat="n in range('10')">
+                          <a ng-if="n <= tvshow.rating" class="rating-star" ng-click="rate(tvshow._id, n)"></a>
+                          <a ng-if="n > tvshow.rating" uk-icon="icon: star; ratio: .6" ng-click="rate(tvshow._id, n)"></a>
+                        </div>
+                      </ul>
+                    </center>
+                  </div>
+                <div class="rating-value"> 8.3</div>
+            </div>
+        </div>
+        <div class="left-bar uk-width-1-4">
+            <img class="poster" style="background-image: url({{ season.poster_path }})" />
+            <!--
+            <button ng-hide="tvshow.followed.is_following" class="uk-button uk-button-default watch-button" ng-click="follow(tvshow)">
+            <span uk-icon="icon: rss;"></span> Follow</button>
+            <button ng-show="tvshow.followed.is_following" class="uk-button uk-button-default watch-button watched" ng-click="unfollow(tvshow)">
+            <span uk-icon="icon: rss;"></span> Following </button>
+            <button ng-hide="tvshow.watched" ng-click="markAsWatched(tvshow._id)" class="uk-button uk-button-default watch-button">
+            <span uk-icon="icon: check;"></span> Mark as watched</button>
+            <button ng-show="tvshow.watched" ng-click="markAsNotWatched(tvshow.watched.watched_id)" class="uk-button uk-button-default watch-button watched">
+            <span uk-icon="icon: check;"></span> Watched (undo) </button> !-->
+            <button ng-click="goToMedia(tvshow)" class="uk-button uk-button-default watch-button">
+            <span uk-icon="icon: chevron-left;"></span> {{ tvshow.name }} </button>
+        </div>
+
+
+        <div class="section sinopsis">
+            <div class="section-title">
+                Overview
+            </div>
+            <p>
+                {{ tvshow.overview }}
+            </p>
+        </div>
+            <div class="section">
+                <div class="section-title">
+                  Episodes
+                </div>
+
+            <ul uk-accordion="multiple: true" ng-repeat="episode in season.episodes">
+              <li>
+                <a class="uk-accordion-title" href="#">{{episode.episode_number}}: {{episode.name}}</a>
+                <div class="uk-accordion-content">
+                  <div class="uk-card uk-card-default uk-grid-collapse uk-child-width-1-2@s uk-margin" uk-grid>
+                    <div class="uk-card-media-left uk-cover-container">
+                      <img ng-src="https://image.tmdb.org/t/p/w500/{{episode.still_path}}" alt="" uk-cover>
+                    </div>
+                    <div>
+                      <div class="episode-details">
+                        <h3 class="uk-card-title">{{episode.name}}</h3>
+                        <p>Aired: {{episode.air_date}}</p>
+                          <p>{{episode.overview}}</p>
+                          <button ng-hide="episode.watched" ng-click="markAsWatched(episode)" class="uk-button uk-button-default watch-button">
+                          <span uk-icon="icon: check;"></span> Mark as watched</button>
+                          <button ng-show="episode.watched" ng-click="markAsNotWatched(episode)" class="uk-button uk-button-default watch-button watched">
+                          <span uk-icon="icon: check;"></span> Watched (undo) </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+        </div>
+      </div>
+
+
+    </div>
+</div>

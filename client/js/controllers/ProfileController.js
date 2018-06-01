@@ -41,6 +41,9 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
   $scope.formatDate = function (date) {
     return moment(date).format('DD/MM/YYYY')
   };
+  var compareDates = function(a,b){
+    return - moment(a.date).diff(moment(b.date))
+  }
 
   var loadUserWatchedInfo = function(){
     WatchedService.getAllWatched($scope.user._id)
@@ -48,6 +51,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         watched.forEach(function (watched) {
           watched.date = new Date(watched.date);
         });
+        watched = watched.sort(compareDates);
 
         $scope.user.watched = watched
       }).catch(function (error) {
@@ -115,7 +119,31 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
       }
     } else {
       $location.path('person/' + followble_obj._id);
-    } 
+    }
+  }
+
+  $scope.goToMedia = function (media) {
+    if (media.__t === 'TvShow') {
+      $location.path('tvshow/' + media._id);
+    } else if (media.__t === "Movie") {
+      $location.path('movie/' + media._id);
+    } else if (media.__t === "Episode"){
+      $location.path('tvshow/' + media._tvshow_id + '/season/'+ media.season_number);
+    }
+
+  }
+
+  $scope.getPoster = function(media){
+    console.log(media)
+    if (media.poster_path){
+      return poster_path;
+    }
+    if(media.images && media.images.poster){
+      return media.images.poster;
+    }
+    if(media.helper && media.helper.poster_path){
+      return 'https://image.tmdb.org/t/p/w500/' + media.helper.poster_path;
+    }
   }
 
   $scope.range = function(count){

@@ -10,12 +10,13 @@ exports.index = async function(req, res) {
     let watched_list, promises;
     try {
         watched_list = await find_user_watched_list(user_id);
-        promises = watched_list.map(inject_media_json);
+        promises = await watched_list.map(inject_media_json);
     } catch (err) {
         res.status(400).json(err);
     }
     Promise.all(promises).then(function(results) {
-        res.status(200).json(results);
+      console.log("Respondeu")
+        res.status(200).send(results);
     })
 };
 
@@ -135,12 +136,48 @@ var find_user_watched_list = async function(user_id) {
     return Watched.find({_user: user_id}).exec();
 }
 
+
+getSeasonFromAPI = function(tv_id, season_number){
+  return new Promise(function(resolve, reject) {
+    var query = 'tvshow/' + tv_id + '/season/' + season_number
+    console.log("log")
+    https.get("https://api.themoviedb.org/3/tv/"+ tv_id + "/season/"+ season_number +"?api_key=db00a671b1c278cd4fa362827dd02620",
+    (resp) => {
+      let data = '';
+      resp.on('data', (chunk) => {
+        data += chunk;
+      });
+      resp.on('end', () => {
+        console.log("saving season result to redis:"+  query)
+        client.set(query, JSON.stringify(data));
+        resolve(data)
+      });
+
+    }).on("error", (err) => {
+      console.log("Error: " + err.message);
+      reject();
+    });
+  })
+}
 var inject_media_json = async function(watched_obj) {
     let media_id = watched_obj._media;
     let media_obj = await get_media_obj(media_id);
-    let watched_with_full_media = watched_obj;
-    watched_with_full_media._media = media_obj
-    return watched_with_full_media;
+    if (media_obj.__t == 'Episode' && media_obj._tmdb_tvshow_id){
+      var value = await getSeasonFromAPI(media_obj._tmdb_tvshow_id, media_obj.season_number).then((season)=>{
+        var watched_with_full_media = watched_obj;
+        watched_with_full_media._media = media_obj
+        watched_with_full_media._media.helper = season;
+        return watched_with_full_media;
+      });
+      return value;
+
+    }
+    else {
+      let watched_with_full_media = watched_obj;
+      watched_with_full_media._media = media_obj;
+      console.log(watched_with_full_media)
+      return watched_with_full_media;
+    }
 }
 
 var get_media_obj = async function(media_id) {
