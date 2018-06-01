@@ -19,7 +19,13 @@ kitso.service('WatchedService', ['$q','$http', function ($q, $http) {
       $http.get('/api/watched/user/' + userId)
           .then((response) => {
             if (response.status === 200) {
-                  deferred.resolve(response.data);
+              var result = response.data;
+              result.forEach(function(watched){
+                if(watched._media.helper){
+                  watched._media.helper = JSON.parse(watched._media.helper)
+                }
+              })
+                  deferred.resolve(result);
               } else {
                   deferred.reject();
               }

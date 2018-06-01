@@ -1,70 +1,87 @@
 var kitso = angular.module('kitso');
 
-kitso.controller("TvShowController", ['$scope', '$location', '$timeout', '$routeParams', 'TvShowService',  'WatchedService',  'FollowService', 'RatedService', 'AuthService',
+kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$routeParams', 'TvShowService',  'WatchedService',  'FollowService', 'RatedService', 'AuthService',
 function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedService, FollowService, RatedService, AuthService) {
   $('.full-loading').show();
+  TvShowService.loadTvShow($routeParams.tvshow_id).then(() => {
+    AuthService.getStatus().then(function(){
+      $scope.user = AuthService.getUser();
+      $scope.tvshow = TvShowService.getTvShow();
 
-    TvShowService.loadTvShow($routeParams.tvshow_id)
-        .then(() => {
-          AuthService.getStatus().then(function(){
-            $scope.user = AuthService.getUser();
-            $scope.tvshow = TvShowService.getTvShow();
-            $scope.tvshow.air_date = new Date($scope.tvshow.first_air_date)
-            $('.full-loading').hide();
-            WatchedService.isWatched($scope.user._id ,$routeParams.tvshow_id).then((watched) => {
-                $scope.tvshow.watched = watched;
-                if (! watched.watched_id)
-                  $scope.tvshow.watched = false;
-            }).catch((error) => {
-              UIkit.notification({
-                  message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
-                  status: 'danger',
-                  timeout: 2500
-              });
-            });
-            RatedService.isRated($scope.user._id ,$routeParams.tvshow_id).then((rated) => {
-                $scope.tvshow.rated = rated;
-                if (! rated.rated_id){
-                  $scope.tvshow.rated = false;
-                  $scope.updateRating(0);
-                }else{
-                  RatedService.getRated($scope.tvshow.rated.rated_id).then((rated) => {
-                    $scope.updateRating(rated.rating);
-                  }).catch((error) => {
-                    UIkit.notification({
-                        message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
-                        status: 'danger',
-                        timeout: 2500
-                    });
-                  })
-                }
-              }).catch(function(){
-              })
-              FollowService.isFollowingPage($scope.user._id ,$routeParams.tvshow_id).then((followed) => {
-                $scope.tvshow.followed = followed;
-            }).catch((error) => {
-              UIkit.notification({
-                  message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
-                  status: 'danger',
-                  timeout: 2500
-              });
-            });
-          }).catch(function(){
-          })
-        })
-        .catch((error) => {
-            UIkit.notification({
-                message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
-                status: 'danger',
-                timeout: 2500
-            });
+      TvShowService.loadSeason($routeParams.tvshow_id, $routeParams.season).then((season) => {
+        $scope.season = season;
+        $scope.season.episodes.forEach(function(episode){
+          loadEpisodeActions(episode)
         });
+        $('.full-loading').hide();
+
+      })
 
 
-    $scope.markAsWatched = function(tvshowId){
-        WatchedService.markAsWatched($scope.user._id, tvshowId)
+      }).catch(function(){
+    })
+  })
+  .catch((error) => {
+      UIkit.notification({
+          message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+          status: 'danger',
+          timeout: 2500
+      });
+  });
+
+  var loadEpisodeActions = function(episode){
+    var episodeId = episode._id;
+
+    WatchedService.isWatched($scope.user._id, episodeId).then((watched) => {
+        episode.watched = watched;
+        if (!watched.watched_id)
+          episode.watched = false;
+    }).catch((error) => {
+      UIkit.notification({
+          message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+          status: 'danger',
+          timeout: 2500
+      });
+    });
+
+  $scope.goToMedia = function (media) {
+    if (media.__t === 'TvShow') {
+      $location.path('tvshow/' + media._id);
+    } else if (media.__t === "Movie") {
+      $location.path('movie/' + media._id);
+    } else if (media.__t === "Episode"){
+      $location.path('tvshow/' + media._tvshow_id + '/season/'+ media.season_number);
+    }
+
+  }
+
+    RatedService.isRated($scope.user._id, episode._id).then((rated) => {
+      var episodeId = episode._id;
+      episode.rated = rated;
+      if (! rated.rated_id){
+        episode.rated = false;
+      }else{
+        RatedService.getRated(episode.rated.rated_id).then((rated) => {
+          $scope.updateRating(episode, rated.rating);
+        }).catch((error) => {
+          UIkit.notification({
+            message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+            status: 'danger',
+            timeout: 2500
+          });
+        })
+      }
+    }).catch(function(){
+    })
+
+  }
+
+
+    $scope.markAsWatched = function(episode){
+      var episodeId = episode._id;
+        WatchedService.markAsWatched($scope.user._id, episodeId)
         .then((watched) => {
-            $scope.tvshow.watched = watched;
+            episode.watched = watched;
         })
         .catch((error) => {
             UIkit.notification({
@@ -75,10 +92,11 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
         });
     }
 
-    $scope.markAsNotWatched = function(watchedId){
+    $scope.markAsNotWatched = function(episode){
+      var watchedId = episode.watched.watched_id;
         WatchedService.markAsNotWatched(watchedId)
         .then(() => {
-            $scope.tvshow.watched = false;
+            episode.watched = false;
         })
         .catch((error) => {
             UIkit.notification({
@@ -194,8 +212,8 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
       RatedService.updateRated(ratedObj);
     }
 
-    $scope.updateRating = function(rating){
-      $scope.tvshow.rating = rating;
+    $scope.updateRating = function(episode, rating){
+      episode.rating = rating;
     }
 
     $scope.range = function(count){

@@ -9,8 +9,47 @@ kitso.service('TvShowService', ['$q', '$http', function ($q, $http) {
         loadTvShow: loadTvShow,
         getTvShow: getTvShow,
         updateTvShow: updateTvShow,
-        getAllShows: getAllShows
+        getAllShows: getAllShows,
+        loadEpisode: loadEpisode,
+        loadSeason: loadSeason
     });
+
+    function loadSeason(showId, season){
+      var deferred = $q.defer();
+
+      $http.get('/api/tvShow/' + showId + '/season/' + season)
+          .then((response) => {
+              if (response.status === 200) {
+                  var found_season = response.data;
+                  deferred.resolve(found_season);
+              } else {
+                  deferred.reject();
+              }
+          })
+          .catch((error) => {
+              deferred.reject(error.data);
+          });
+
+      return deferred.promise;
+    }
+
+    function loadEpisode(showId, season, episode){
+      $http.get('/api/tvShow/' + showId + '/season/' + season + '/' + episode)
+          .then((response) => {
+              if (response.status === 200) {
+                  var found_episode = response.data;
+                  deferred.resolve(found_episode);
+              } else {
+                  deferred.reject();
+              }
+          })
+          .catch((error) => {
+              deferred.reject(error.data);
+          });
+
+      return deferred.promise;
+
+    }
 
     function loadTvShow(id) {
         var deferred = $q.defer();

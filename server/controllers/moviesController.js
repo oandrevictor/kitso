@@ -2,6 +2,7 @@ var Movie = require('../models/Movie');
 var RequestStatus = require('../constants/requestStatus');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 
+
 // Todos filmes
 exports.index = function(req, res) {
     Movie.find({})
@@ -37,8 +38,8 @@ exports.create = function(req, res) {
             "message": "Movie created.",
             "data": {
                 "movieId": createdMovie._id,
-            }            
-        }        
+            }
+        }
         res.status(200).json(res_json);
     });
 };
