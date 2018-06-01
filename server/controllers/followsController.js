@@ -40,7 +40,7 @@ exports.is_following = async function(req, res) {
             }
         }
     });
-}
+};
 
 exports.following_me = async function(req, res) {
     let user_id = req.query.user_id;
@@ -55,7 +55,7 @@ exports.following_me = async function(req, res) {
     } catch (err) {
         res.status(RequestStatus.BAD_REQUEST).json(err);
     }
-}
+};
 
 exports.create = async function(req, res) {
     var follow = new Follows(req.body);
@@ -98,15 +98,15 @@ exports.delete = async function(req, res) {
 
 var getFollowedFromFollow = async function(follow) {
     return User.findById(follow._following).exec();
-}
+};
 
 var getFollowFromFollowed = async function(follow) {
     return User.findById(follow._user).exec();
-}
+};
 
 var delete_action = function(action_id) {
     Action.remove({ _id: action_id}).exec();
-}
+};
 
 var delete_action_from_user_history = async function(user_id, action_id) {
     User.findById(user_id, function (err, user) {
@@ -117,4 +117,4 @@ var delete_action_from_user_history = async function(user_id, action_id) {
         }
         user.save();
     });
-}
+};
