@@ -2,7 +2,6 @@ var Show = require('../models/TvShow');
 var Season = require('../models/Season');
 var Person = require('../models/Person');
 var Episode = require('../models/Episode');
-var Media = require('../models/Media');
 var AppearsIn = require('../models/AppearsIn');
 var redis = require('redis');
 const https = require('https');
@@ -13,6 +12,7 @@ var client = redis.createClient(19990, 'redis-19990.c16.us-east-1-2.ec2.cloud.re
 client.auth('nsXmMM8VvJ7PrbYc4q6WZ50ilryBdbmM', function (err) {
     if (err) throw err;
 });
+
 // Todas as séries
 exports.index = function(req, res) {
     Show.find({})
@@ -65,10 +65,6 @@ exports.index = function(req, res) {
       })
     });
 };
-
-inject_seasons = function(season) {
-  return Season.findById(season).exec();
-}
 
 exports.show = function(req, res) {
     Show.findById(req.params.show_id)
@@ -179,7 +175,7 @@ exports.delete = async function(req, res) {
     }
 };
 
-getShowFromTMDB = function(tmdb_id){
+getShowFromTMDB = function(tmdb_id) {
   return new Promise(function(resolve, reject) {
     var query = 'tvshow/' + tmdb_id
     console.log("Could not get from redis, requesting info from The Movie DB")
@@ -383,13 +379,12 @@ var alreadyExists = async function(personId, mediaId) {
   }
 }
 
-
+// TODO: move to expert utils
 var injectPersonJson = async function(personId) {
-    let personObj = await getPersonObj(personId);
+    let personObj = await DataStoreUtils.getPersonObjById(personId);
     return personObj;
-}
+};
 
-
-var getPersonObj = async function(personId) {
-    return Person.findById(personId).exec();
+inject_seasons = function(season) {
+  return Season.findById(season).exec();
 }

@@ -1,5 +1,4 @@
 var Media = require('../models/Media');
-var Person = require('../models/Person');
 var RequestStatus = require('../constants/requestStatus');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 
@@ -116,10 +115,6 @@ exports.delete = async function(req, res) {
 };
 
 var injectPersonJson = async function(personId) {
-    let personObj = await getPersonObj(personId);
+    let personObj = await DataStoreUtils.getPersonObjById(personId);
     return personObj;
-}
-
-var getPersonObj = async function(personId) {
-    return Person.findById(personId).exec();
-}
+};
