@@ -61,7 +61,7 @@ exports.getActionByTypeAndId = async function(type, id) {
     } else if (type == ActionType.FOLLOWED_USER) {
         return Follows.findById(id).exec();
     } else if (type == ActionType.FOLLOWED_PAGE) {
-        return FollowsṔage.findById(id).exec();
+        return FollowsPage.findById(id).exec();
     } else {
         let errorMsg = "There is no such action type!";
         throw new Erro(errorMsg);

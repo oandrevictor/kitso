@@ -1,7 +1,7 @@
 const WATCHED_TYPE = "watched";
 const RATED_TYPE = "rated";
-const FOLLOWED_USER_TYPE = "followed_user";
-const FOLLOWED_PAGE_TYPE = "followed_page";
+const FOLLOWED_USER_TYPE = "followed";
+const FOLLOWED_PAGE_TYPE = "followed-page";
 
 class ActionType {
 
