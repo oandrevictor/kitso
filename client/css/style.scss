@@ -837,8 +837,7 @@ html, body {
 
   .episode-airing {
     font-size: 0.8em;
-    margin-bottom: 6px;
-    color: #5e5e5e;
+    color: #999;
   }
   .episode-list-title {
     display: inline-block;
@@ -990,6 +989,7 @@ html, body {
 
     &.episode-overview {
       font-size: 0.8em;
+      margin-bottom: 6px;
     }
 
     &.tvshow-link {
