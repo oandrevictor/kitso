@@ -501,6 +501,8 @@ html, body {
     padding-bottom: 0px !important;
     padding-top: 4%;
     position: relative; }
+  .movie .uk-dotnav {
+    margin-bottom: 10px; }
   .movie .title {
     bottom: 10px;
     position: absolute;
@@ -560,16 +562,18 @@ html, body {
   .movie .section {
     margin-top: 8px;
     margin-bottom: 4px; }
-    .movie .section .cast-info {
-      width: 156px;
-      display: flex; }
-      .movie .section .cast-info .cast-image {
-        height: 100px; }
-      .movie .section .cast-info .cast-name {
-        padding-left: 6px;
-        display: block;
-        margin-top: auto;
-        margin-bottom: auto; }
+    .movie .section .cast-info .cast-image {
+      display: block;
+      background: #502274;
+      background-repeat: no-repeat;
+      background-size: cover;
+      width: 191px;
+      height: 183px;
+      overflow: hidden;
+      box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
+      border: 4px solid white; }
+    .movie .section .cast-info .cast-name {
+      margin-top: 10px; }
   .movie .section-title {
     font-size: 2.5vh;
     color: #773095;
@@ -598,6 +602,8 @@ html, body {
     padding-bottom: 0px !important;
     padding-top: 4%;
     position: relative; }
+  .tvshow .uk-dotnav {
+    margin-bottom: 10px; }
   .tvshow .poster {
     display: block;
     background: #502274;
@@ -655,16 +661,18 @@ html, body {
   .tvshow .section {
     margin-top: 8px;
     margin-bottom: 4px; }
-    .tvshow .section .cast-info {
-      width: 156px;
-      display: flex; }
-      .tvshow .section .cast-info .cast-image {
-        height: 100px; }
-      .tvshow .section .cast-info .cast-name {
-        padding-left: 6px;
-        display: block;
-        margin-top: auto;
-        margin-bottom: auto; }
+    .tvshow .section .cast-info .cast-image {
+      display: block;
+      background: #502274;
+      background-repeat: no-repeat;
+      background-size: cover;
+      width: 191px;
+      height: 183px;
+      overflow: hidden;
+      box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
+      border: 4px solid white; }
+    .tvshow .section .cast-info .cast-name {
+      margin-top: 10px; }
   .tvshow .section-title {
     font-size: 2.5vh;
     color: #773095;
