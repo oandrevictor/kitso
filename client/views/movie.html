@@ -57,25 +57,22 @@
       <div class="section-title">
         Cast
       </div>
-      <div uk-grid>
-        <div class="cast-info">
-          <img class="cast-image" src="/images/angelina-picture.jpg" />
-          <p class="cast-name">Angelina Jolie</p>
-        </div>
-        <div class="cast-info">
-          <img class="cast-image" src="/images/angelina-picture.jpg" />
-          <p class="cast-name">Jean-Claude Van Damme</p>
-        </div>
-        <div class="cast-info">
-          <img class="cast-image" src="/images/angelina-picture.jpg" />
-          <p class="cast-name">Angelina Jolie</p>
-        </div>
-        <div class="cast-info">
-          <img class="cast-image" src="/images/angelina-picture.jpg" />
-          <p class="cast-name">Angelina Jolie</p>
-        </div>
-      </div>
 
+      <div uk-slider>
+        <div class="uk-position-relative uk-visible-toggle uk-light">
+          <ul class="uk-slider-items uk-child-width-1-5@s">
+            <li ng-repeat="person in movie._actors">
+              <div class="uk-card uk-grid-match uk-card-default uk-card-hover appears-in cast-info" >
+                <a ng-href="person/{{person._id}}"> <img class="cast-image" style="background-image: url({{ person['image_url'] }})" /></a>
+                <p class="uk-align-center uk-text-uppercase cast-name" align="center"> {{person.name}}</p>
+              </div>
+            </li>
+          </ul>
+          <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
+          <a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slider-item="next"></a>
+        </div>
+        <ul class="uk-slider-nav uk-dotnav uk-flex-center"></ul>
+      </div>
     </div>
   </div>
 </div>
