@@ -1,15 +1,25 @@
 var redis = require('redis');
 var RedisClientConstants = require('../../constants/redisClient');
 
+var redisClient = null;
+
 exports.createAndAuthClient = function() {
-    let client = redis.createClient(
+
+    if (redisClient && redisClient.connected)
+        return redisClient;
+
+    if (redisClient)
+        redisClient.quit();
+
+    redisClient = redis.createClient(
         RedisClientConstants.PORT,
         RedisClientConstants.SERVER,
         RedisClientConstants.OPTIONS);
 
-    client.auth(RedisClientConstants.ACCESS_TOKEN, function (err) {
+    redisClient.auth(RedisClientConstants.ACCESS_TOKEN, function (err) {
         if (err) throw err;
     });
 
-    return client;
+    return redisClient;
 };
+
