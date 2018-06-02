@@ -6,7 +6,7 @@
       <div class="bar-content uk-width-xxlarge">
       <div class="uk-width-3-4">
         <div class="title tvshow-name">
-          <a><p>{{tvshow.name}}</p></a>
+          <a><p class="tvshow-link">{{tvshow.name}}</p></a>
           <b>{{ season.name }} </b> <div class="hour-info"> ({{ season.air_date | date: 'yyyy' }})</div>
         </div>
         <div class="more-info">
@@ -22,11 +22,9 @@
         <div ng-show="tvshow.rated" class="rating-info"> {{tvshow.rating}} </div>
         <img class="poster" style="background-image: url({{ tvshow.poster_path }})" />
         <button ng-hide="tvshow.watched" ng-click="markAsWatched(tvshow._id)" class="uk-button uk-button-default watch-button">
-          <span uk-icon="icon: check;"></span> Mark all as watched</button>
+          <span uk-icon="icon: check;"></span> Mark as watched</button>
         <button ng-show="tvshow.watched" ng-click="markAsNotWatched(tvshow.watched.watched_id)" class="uk-button uk-button-default watch-button watched">
           <span uk-icon="icon: check;"></span> Watched (undo) </button>
-        <button ng-click="goToMedia(tvshow)" class="uk-button uk-button-default watch-button">
-          <span uk-icon="icon: chevron-left;"></span> {{ tvshow.name }} </button>
       </div>
 
       <div class="uk-width-3-4">
@@ -56,45 +54,45 @@
           </p>
         </div>
       </div>
-            <div class="section">
+            <div class="uk-width-xxlarge section episode">
                 <div class="section-title">
                   Episodes
                 </div>
 
             <ul uk-accordion="multiple: true" ng-repeat="episode in season.episodes">
               <li>
-                <a class="uk-accordion-title" href="#">{{episode.episode_number}}: {{episode.name}}</a>
+                <a class="uk-accordion-title" href="#">{{episode.episode_number}}: <div class="episode-list-title">{{episode.name}}</div></a>
                 <div class="uk-accordion-content">
                   <div class="uk-card uk-card-default uk-grid-collapse uk-child-width-1-2@s uk-margin" uk-grid>
-                    <div class="uk-card-media-left uk-cover-container">
+                    <div class="uk-card-media-left uk-cover-container episode-image">
                       <img ng-src="https://image.tmdb.org/t/p/w500/{{episode.still_path}}" alt="" uk-cover>
                     </div>
                     <div>
                       <div class="episode-details">
-                        <h3 class="uk-card-title">{{episode.name}}</h3>
-                        <p>Aired: {{episode.air_date}}</p>
-                          <p>{{episode.overview}}</p>
-                          <button ng-hide="episode.watched" ng-click="markAsWatched(episode)" class="uk-button uk-button-default watch-button">
-                          <span uk-icon="icon: check;"></span> Mark as watched</button>
-                          <button ng-show="episode.watched" ng-click="markAsNotWatched(episode)" class="uk-button uk-button-default watch-button watched">
-                          <span uk-icon="icon: check;"></span> Watched (undo) </button>
-                          <div>
-                          <button ng-show="episode.rating == 0" class="uk-button uk-button-default watch-button">
-                          <span uk-icon="icon: check;"></span> Rate</button>
-                          <button ng-show="episode.rating > 0" class="uk-button uk-button-default watch-button watched">
-                          <span uk-icon="icon: star;"></span> Rated {{episode.rating}}/10 </button>
-                          </div>
-                          <div uk-dropdown="pos: bottom-center; mode: hover" style="z-index: 999">
-                            <center>
-                              <ul class="uk-iconnav">
-                                <div ng-repeat="n in range('10')">
-                                  <a ng-if="n <= episode.rating" class="rating-star" ng-click="rate(episode, n)"></a>
-                                  <a ng-if="n > episode.rating" uk-icon="icon: star; ratio: .6" ng-click="rate(episode, n)"></a>
-                                </div>
-                              </ul>
-                            </center>
-                          </div>
+                        <h3 class="uk-card-title episode-title">{{episode.name}}</h3>
+                        <button ng-hide="episode.watched" ng-click="markAsWatched(episode)" class="uk-button uk-button-default episode-button">
+                        <span uk-icon="icon: history;"></span> Mark as watched</button>
+                        <button ng-show="episode.watched" ng-click="markAsNotWatched(episode)" class="uk-button uk-button-default episode-button active">
+                        <span uk-icon="icon: clock;"></span> Watched (undo) </button>
+                        <div class="episode-button">
+                        <button ng-show="episode.rating == 0" class="uk-button uk-button-default episode-button">
+                        <span uk-icon="icon: star;"></span> Rate</button>
+                        <button ng-show="episode.rating > 0" class="uk-button uk-button-default episode-button active">
+                        <span uk-icon="icon: star;"></span> Rated {{episode.rating}}/10 </button>
+                        </div>
+                        <div uk-dropdown="pos: bottom-center; mode: hover" style="z-index: 999">
+                          <center>
+                            <ul class="uk-iconnav">
+                              <div ng-repeat="n in range('10')">
+                                <a ng-if="n <= episode.rating" class="rating-star" ng-click="rate(episode, n)"></a>
+                                <a ng-if="n > episode.rating" uk-icon="icon: star; ratio: .6" ng-click="rate(episode, n)"></a>
+                              </div>
+                            </ul>
+                          </center>
+                        </div>
 
+                          <p class="episode-overview">{{episode.overview}}</p>
+                          <p class="episode-airing">Aired: {{episode.air_date}}</p>
                       </div>
                     </div>
                   </div>

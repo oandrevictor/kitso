@@ -806,8 +806,58 @@ html, body {
     margin: 2px;
   }
 
+  .uk-accordion {
+    border-bottom: #f0f0f0 solid 1px;
+    margin: 0px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+
+    .uk-accordion-title {
+      display: block;
+      font-size: 1rem;
+      line-height: 1.4;
+      color: #773095;
+      overflow: hidden;
+    }
+  }
+  .episode-button {
+    width: 120px;
+    padding: 0%;
+    color: #f84264;
+    border: 0px;
+    display: inline-block;
+    font-size: 10px;
+    margin-bottom: 2px;
+
+    &.active {
+      background: #f84264;
+      color: white;
+    }
+  }
+
+  .episode-airing {
+    font-size: 0.8em;
+    margin-bottom: 6px;
+    color: #5e5e5e;
+  }
+  .episode-list-title {
+    display: inline-block;
+    font-weight: 100;
+    color: #666;
+  }
+
   .episode-details {
+    width: 100%;
     padding-left: 40px;
+
+    .episode-title {
+      font-size: 1.3rem;
+      margin-bottom: 4px;
+    }
+  }
+  .episode-image {
+    width: 300px !important;
+    height: 168px !important;
   }
 
   .uk-background-cover {
@@ -906,6 +956,10 @@ html, body {
     margin-top: 8px;
     margin-bottom: 4px;
 
+    &.episode {
+      display: flow-root !important;
+    }
+
     .cast-info {
       .cast-image {
         display:block;
@@ -933,6 +987,17 @@ html, body {
   p {
     margin-top: 0px;
     font-size: 14px;
+
+    &.episode-overview {
+      font-size: 0.8em;
+    }
+
+    &.tvshow-link {
+      margin-bottom: 2px;
+      font-size: 18px;
+      color: white;
+      font-weight: 600;
+    }
   }
 }
 

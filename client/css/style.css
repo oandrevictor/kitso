@@ -587,8 +587,45 @@ html, body {
   .tvshow .tvshow-name {
     text-shadow: 1px 1px 2px black, 0 0 1em #000000, 0 0 0.2em #000000;
     margin: 2px; }
+  .tvshow .uk-accordion {
+    border-bottom: #f0f0f0 solid 1px;
+    margin: 0px;
+    padding-top: 12px;
+    padding-bottom: 12px; }
+    .tvshow .uk-accordion .uk-accordion-title {
+      display: block;
+      font-size: 1rem;
+      line-height: 1.4;
+      color: #773095;
+      overflow: hidden; }
+  .tvshow .episode-button {
+    width: 120px;
+    padding: 0%;
+    color: #f84264;
+    border: 0px;
+    display: inline-block;
+    font-size: 10px;
+    margin-bottom: 2px; }
+    .tvshow .episode-button.active {
+      background: #f84264;
+      color: white; }
+  .tvshow .episode-airing {
+    font-size: 0.8em;
+    margin-bottom: 6px;
+    color: #5e5e5e; }
+  .tvshow .episode-list-title {
+    display: inline-block;
+    font-weight: 100;
+    color: #666; }
   .tvshow .episode-details {
+    width: 100%;
     padding-left: 40px; }
+    .tvshow .episode-details .episode-title {
+      font-size: 1.3rem;
+      margin-bottom: 4px; }
+  .tvshow .episode-image {
+    width: 300px !important;
+    height: 168px !important; }
   .tvshow .uk-background-cover {
     z-index: -1;
     background: url("/images/changeling.jpg");
@@ -661,6 +698,8 @@ html, body {
   .tvshow .section {
     margin-top: 8px;
     margin-bottom: 4px; }
+    .tvshow .section.episode {
+      display: flow-root !important; }
     .tvshow .section .cast-info .cast-image {
       display: block;
       background: #502274;
@@ -680,6 +719,13 @@ html, body {
   .tvshow p {
     margin-top: 0px;
     font-size: 14px; }
+    .tvshow p.episode-overview {
+      font-size: 0.8em; }
+    .tvshow p.tvshow-link {
+      margin-bottom: 2px;
+      font-size: 18px;
+      color: white;
+      font-weight: 600; }
 
 .content {
   padding-top: 20px;
