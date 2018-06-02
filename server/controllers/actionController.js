@@ -13,7 +13,7 @@ exports.index = async function(req, res) {
     let action_list, promises;
     try {
         action_list = await Action.find({}).exec();
-        promises = action_list.map(injectMediaJson);
+        promises = action_list.map(injectMediaJsonInAction);
     } catch (err) {
         res.status(RequestStatus.BAD_REQUEST).json(err);
     }
@@ -29,7 +29,7 @@ exports.show = async function(req, res) {
         res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((result) => {
-        injectMediaJson(result).then(function(results) {
+        injectMediaJsonInAction(result).then(function(results) {
             res.status(RequestStatus.OK).json(results);
         });
     });
@@ -81,19 +81,19 @@ exports.delete = function(req, res) {
 
 // AUXILIARY FUNCTIONS ============================================================================
 
-var injectMediaJson = async function(action) {
+var injectMediaJsonInAction = async function(action) {
     let user_id = action._user;
     let action_id = action._action;
 
-    user_obj = await DataStoreUtils.getUserById(user_id);
-    action_obj = await getAction(action.action_type, action_id);
+    let user_obj = await DataStoreUtils.getUserById(user_id);
+    let action_obj = await getAction(action.action_type, action_id);
 
     let action_complete = action;
     action_complete._user = user_obj;
     action_complete._action = action_obj;
 
     return action_complete;
-} 
+};
 
 var getAction = async function(type, id) {
     if (type == 'rated') {
@@ -105,4 +105,4 @@ var getAction = async function(type, id) {
     } else {
         return FollowsṔage.findById(id).exec();
     }
-}
+};
