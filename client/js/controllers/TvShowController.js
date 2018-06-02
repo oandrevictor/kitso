@@ -9,7 +9,7 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
           AuthService.getStatus().then(function(){
             $scope.user = AuthService.getUser();
             $scope.tvshow = TvShowService.getTvShow();
-            $scope.tvshow.air_date = new Date($scope.tvshow.first_air_date)
+            $scope.tvshow.air_date = new Date($scope.tvshow.first_air_date);
             $('.full-loading').hide();
             WatchedService.isWatched($scope.user._id ,$routeParams.tvshow_id).then((watched) => {
                 $scope.tvshow.watched = watched;

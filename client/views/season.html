@@ -36,11 +36,11 @@
             <button ng-hide="tvshow.followed.is_following" class="uk-button uk-button-default watch-button" ng-click="follow(tvshow)">
             <span uk-icon="icon: rss;"></span> Follow</button>
             <button ng-show="tvshow.followed.is_following" class="uk-button uk-button-default watch-button watched" ng-click="unfollow(tvshow)">
-            <span uk-icon="icon: rss;"></span> Following </button>
-            <button ng-hide="tvshow.watched" ng-click="markAsWatched(tvshow._id)" class="uk-button uk-button-default watch-button">
+            <span uk-icon="icon: rss;"></span> Following </button>-->
+            <button ng-hide="tvshow.watched" ng-click="markSeasonAsWatched()" class="uk-button uk-button-default watch-button">
             <span uk-icon="icon: check;"></span> Mark as watched</button>
             <button ng-show="tvshow.watched" ng-click="markAsNotWatched(tvshow.watched.watched_id)" class="uk-button uk-button-default watch-button watched">
-            <span uk-icon="icon: check;"></span> Watched (undo) </button> !-->
+            <span uk-icon="icon: check;"></span> Watched (undo) </button>
             <button ng-click="goToMedia(tvshow)" class="uk-button uk-button-default watch-button">
             <span uk-icon="icon: chevron-left;"></span> {{ tvshow.name }} </button>
         </div>

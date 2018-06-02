@@ -15,9 +15,8 @@ exports.index = async function(req, res) {
         res.status(400).json(err);
     }
     Promise.all(promises).then(function(results) {
-      console.log("Respondeu")
         res.status(200).send(results);
-    })
+    });
 };
 
 exports.is_watched = async function(req, res) {
@@ -54,6 +53,40 @@ exports.create = async function(req, res) {
         res.status(200).json(createdWatched);
     });
 };
+
+exports.watchSeason = async function(req, res) {
+    var episodesIds = req.body.episodesIds;
+    var seasonId = req.body.seasonId;
+    var user_id = req.body._user;
+    //watched Season
+    let seasonWatched = await create_season_watched(seasonId, user_id, req);
+    // watched episodes
+    var requests = 0;
+    var payload = episodesIds.length;
+    episodesIds.forEach(async (episode) => {
+        let watched = new Watched();
+        watched._media = episode;
+        watched._user = user_id;
+        watched.date = req.body.date;
+        let action = await create_action(user_id, watched._id);
+        watched._action = action._id;
+        await add_action_to_user_history(user_id, action._id);
+        watched.save()
+            .then((watched) => {
+                requests++;
+                if (requests == payload) done();
+            })
+            .catch((error) => {
+                requests++;
+                if (requests == payload) done();
+            });
+    });
+
+    function done() {
+      res.status(200).send({message: "Season watched.", watched: seasonWatched});
+    }
+
+}
 
 exports.update = async function(req, res) {
     let watched_id = req.params.watched_id;
@@ -187,3 +220,15 @@ var get_media_obj = async function(media_id) {
 var user_has_watched = async function(user_id, media_id) {
     return Watched.find({_user: user_id, _media: media_id}).exec();
 }
+
+async function create_season_watched(seasonId, user_id, req) {
+    var seasonWatched = new Watched();
+    seasonWatched._media = seasonId;
+    seasonWatched._user = user_id;
+    seasonWatched.date = req.body.date;
+    let seasonAction = await create_action(user_id, seasonWatched);
+    seasonWatched._action = seasonAction._id;
+    await add_action_to_user_history(user_id, seasonAction._id);
+    return seasonWatched.save();
+}
+
