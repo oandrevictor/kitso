@@ -60,7 +60,7 @@ exports.following_me = async function(req, res) {
 exports.create = async function(req, res) {
     var follow = new Follows(req.body);
     let user_id = follow._user;
-    let action = await DataStoreUtils.createAction(user_id, follow._id, ActionType.FOLLOWED);
+    let action = await DataStoreUtils.createAction(user_id, follow._id, ActionType.FOLLOWED_USER);
     follow._action = action._id;
     await DataStoreUtils.addActionToUserHistory(user_id, action._id);
 

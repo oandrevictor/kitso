@@ -1,8 +1,4 @@
 var Action = require('../models/Action');
-var Rated = require('../models/Rated');
-var Watched = require('../models/Watched');
-var Follows = require('../models/Follows');
-var FollowsṔage = require('../models/FollowsPage');
 var RequestStatus = require('../constants/requestStatus');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 
@@ -86,23 +82,11 @@ var injectMediaJsonInAction = async function(action) {
     let action_id = action._action;
 
     let user_obj = await DataStoreUtils.getUserById(user_id);
-    let action_obj = await getAction(action.action_type, action_id);
+    let action_obj = await DataStoreUtils.getActionByTypeAndId(action.action_type, action_id);
 
     let action_complete = action;
     action_complete._user = user_obj;
     action_complete._action = action_obj;
 
     return action_complete;
-};
-
-var getAction = async function(type, id) {
-    if (type == 'rated') {
-        return Rated.findById(id).exec();
-    } else if (type == 'watched') {
-        return Watched.findById(id).exec();
-    } else if (type == 'followed') {
-        return Follows.findById(id).exec();
-    } else {
-        return FollowsṔage.findById(id).exec();
-    }
 };

@@ -8,6 +8,7 @@ var Rated = require('../../models/Rated');
 var Watched = require('../../models/Watched');
 var Utils = require('./utils');
 var UserList = require('../../models/UserList');
+var ActionType = require('../../constants/actionType');
 
 
 // CREATE =========================================================================================
@@ -51,6 +52,21 @@ exports.addPersonToMediaCast = function(personId, mediaId) {
 
 
 // GET ============================================================================================
+
+exports.getActionByTypeAndId = async function(type, id) {
+    if (type == ActionType.RATED) {
+        return Rated.findById(id).exec();
+    } else if (type == ActionType.WATCHED) {
+        return Watched.findById(id).exec();
+    } else if (type == ActionType.FOLLOWED_USER) {
+        return Follows.findById(id).exec();
+    } else if (type == ActionType.FOLLOWED_PAGE) {
+        return FollowsṔage.findById(id).exec();
+    } else {
+        let errorMsg = "There is no such action type!";
+        throw new Erro(errorMsg);
+    }
+};
 
 exports.getUserById = async function(id) {
     return User.findById(id).exec();

@@ -1,6 +1,7 @@
 const WATCHED_TYPE = "watched";
 const RATED_TYPE = "rated";
-const FOLLOWED_TYPE = "followed";
+const FOLLOWED_USER_TYPE = "followed_user";
+const FOLLOWED_PAGE_TYPE = "followed_page";
 
 class ActionType {
 
@@ -12,8 +13,12 @@ class ActionType {
         return RATED_TYPE;
     }
 
-    static get FOLLOWED() {
-        return FOLLOWED_TYPE;
+    static get FOLLOWED_USER() {
+        return FOLLOWED_USER_TYPE;
+    }
+
+    static get FOLLOWED_PAGE() {
+        return FOLLOWED_PAGE_TYPE;
     }
 }
 
