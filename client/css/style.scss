@@ -635,7 +635,8 @@ html, body {
   }
 
   .uk-dotnav {
-    margin-bottom: 10px;
+    margin-top: 2%;
+    margin-bottom: 5%;
   }
 
   .title {
@@ -730,6 +731,7 @@ html, body {
       }
       .cast-name {
         margin-top: 10px;
+        margin-bottom: 0px;
       }
     }
   }
@@ -773,7 +775,8 @@ html, body {
   }
 
   .uk-dotnav {
-    margin-bottom: 10px;
+    margin-top: 2%;
+    margin-bottom: 5%;
   }
 
   .poster {
@@ -786,6 +789,11 @@ html, body {
     overflow:hidden;
     box-shadow: 0 0px 10px rgba(0,0,0,0.1);
     border: 4px solid white;
+  }
+
+  .season-title {
+    margin-top: 10px;
+    margin-bottom: 0px;
   }
 
   .title {
@@ -868,8 +876,10 @@ html, body {
       }
       .cast-name {
         margin-top: 10px;
+        margin-bottom: 0px;
       }
     }
+
   }
 
   .section-title {

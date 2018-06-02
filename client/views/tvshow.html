@@ -66,7 +66,7 @@
             <li ng-repeat="season in tvshow.seasons">
               <div class="uk-card uk-grid-match uk-card-default uk-card-hover appears-in" >
                 <a ng-href="tvshow/{{tvshow._id}}/season/{{season.season_number}}"> <img class="poster" style="background-image: url(https://image.tmdb.org/t/p/w500/{{ season.poster_path }})" /> </a>
-                <p class="uk-align-center uk-text-uppercase" style="margin-top: 10px" align="center"> {{season.name}}</p>
+                <p class="uk-align-center uk-text-uppercase season-title" align="center"> {{season.name}}</p>
               </div>
             </li>
           </ul>
@@ -90,7 +90,7 @@
         <div class="uk-position-relative uk-visible-toggle uk-light">
           <ul class="uk-slider-items uk-child-width-1-6@s">
             <li ng-repeat="person in tvshow._actors">
-              <div class="uk-card uk-grid-match uk-card-default uk-card-hover appears-in cast-info" >
+              <div class="uk-card uk-grid-match uk-card-default uk-card-hover appears-in cast-info">
                 <a ng-href="person/{{person._id}}"> <img class="cast-image" style="background-image: url(https://image.tmdb.org/t/p/w500/{{person.image_url}})" /> </a>
                 <p class="uk-align-center uk-text-uppercase cast-name" align="center"> {{person.name}}</p>
               </div>
