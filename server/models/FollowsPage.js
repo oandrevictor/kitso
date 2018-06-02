@@ -28,7 +28,6 @@ FollowsPageSchema.pre('remove', async function(next) {
   let action_id = this._action;
   await delete_action(action_id);
   await delete_action_from_user_history(user_id, action_id);
-  
   next();
 });
 
@@ -43,7 +42,6 @@ var delete_action_from_user_history = async function(user_id, action_id) {
       if (index > -1) {
           user_history.splice(index, 1);
       }
-      user.save(); 
   });
 };
 
