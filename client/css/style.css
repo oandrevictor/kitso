@@ -344,7 +344,6 @@ html, body {
     background: #8600ca;
     color: white; }
   .profile .uk-background-cover {
-    background: url("/images/strange.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;

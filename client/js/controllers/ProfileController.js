@@ -67,11 +67,13 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         });
 
         $scope.user.ratings = ratings;
+        loadUserBackground();
       })
       .catch(function (error) {
         console.log(error);
       });
   }
+
   var loadUserFollowInfo = function(){
     FollowService.getUsersFollowing($scope.user._id).then( function(following){
         $scope.user.following = following
@@ -99,6 +101,21 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         $scope.user.following.splice($scope.user.following.indexOf(unfollowedUser),1);
         }
     })
+  }
+
+  var loadUserBackground = function () {
+    if ($scope.user.ratings.length > 0) {
+      let greaterRating = $scope.user.ratings[0];
+
+      $scope.user.ratings.forEach((rated) => {
+        if (greaterRating.rating < rated.rating) {
+          greaterRating = rated;
+        }
+      });
+      $scope.profileBackground = $scope.getBackground(greaterRating._media);
+    } else {
+      $scope.profileBackground = "/images/strange.jpg";
+    }
   }
 
   $scope.unfollow_page = function(unfollowedPage){
@@ -134,7 +151,6 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
   }
 
   $scope.getPoster = function(media){
-    console.log(media)
     if (media.poster_path){
       return poster_path;
     }
@@ -143,6 +159,15 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
     }
     if(media.helper && media.helper.poster_path){
       return 'https://image.tmdb.org/t/p/w500/' + media.helper.poster_path;
+    }
+  }
+
+  $scope.getBackground = function(media){
+    if(media.images && media.images.cover){
+      return media.images.cover;
+    }
+    if(media.helper && media.helper.backdrop_path){
+      return media.helper.backdrop_path;
     }
   }
 
@@ -304,5 +329,8 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
   $scope.toggleDescriptionArea = function () {
     $scope.descriptionArea = !$scope.descriptionArea;
   }
+
+
+
 
 }]);
