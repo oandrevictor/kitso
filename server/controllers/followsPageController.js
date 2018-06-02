@@ -59,7 +59,7 @@ exports.create = async function(req, res) {
     let action = await DataStoreUtils.createAction(user_id, follow._id, ActionType.FOLLOWED);
     follow._action = action._id;
     await DataStoreUtils.addActionToUserHistory(user_id, action._id);
-
+    // TODO: add to user._followingpages field
     follow.save()
     .catch((err) => {
         res.status(RequestStatus.BAD_REQUEST).send(err);
@@ -70,21 +70,13 @@ exports.create = async function(req, res) {
 };
 
 exports.delete = async function(req, res) {
-    let follow_id = req.params.followsPage_id;
-
-    FollowsPage.findById(follow_id)
-    .catch((err) => {
+    let followId = req.params.followsPage_id;
+    try {
+        await DataStoreUtils.deleteFollowsPage(followId);
+        res.status(RequestStatus.OK);
+    } catch (err) {
         res.status(RequestStatus.BAD_REQUEST).send(err);
-    })
-    .then((follow) => {
-        follow.remove()
-        .catch((err) => {
-            res.status(RequestStatus.BAD_REQUEST).send(err);
-        })
-        .then((deletedFollows) => {
-            res.status(RequestStatus.OK).json(deletedFollows);
-        });
-    });
+    }
 };
 
 var getFollowedFromFollow = async function(follow) {

@@ -120,21 +120,21 @@ exports.deleteAppearsInByKeys = async function(mediaId, personId) {
 exports.deleteMediaAndFollowsPage = async function(mediaId) {
     let followsPages = await this.getFollowsPage(mediaId, true);
     await followsPages.forEach(async (followPage) => {
-        await followPage.remove();
+        await this.deleteFollowsPage(followPage._id);
     });
 };
 
 exports.deleteMediaAndWatched = async function(mediaId) {
     let watcheds = await this.getWatchedByMediaId(mediaId);
     await watcheds.forEach(async (watched) => {
-        await watched.remove();
+        await this.deleteWatched(watched._id);
     });
 };
 
 exports.deleteMediaAndRated = async function(mediaId) {
     let ratings = await this.getRated(mediaId);
     await ratings.forEach(async (rated) => {
-        await rated.remove();
+        await this.deleteRated(rated._id);
     });
 };
 
@@ -158,6 +158,48 @@ exports.deleteMediaById = async function(mediaId) {
 
 exports.deleteListFromDb = function(listId) {
     return UserList.remove({ _id: listId}).exec();
+};
+
+exports.deleteAction = function(actionId) {
+    Action.remove({ _id: actionId}).exec();
+};
+
+exports.deleteActionFromUserHistory = function(userId, actionId) {
+    User.findById(userId, function (err, user) {
+        let user_history = user._history;
+        let index = user_history.indexOf(actionId);
+        if (index > -1) {
+            user_history.splice(index, 1);
+        }
+        user.save();
+    });
+};
+
+exports.deleteFollowsPage = async function(followsId) {
+    let followObj = await FollowsPage.findById(followsId);
+    let actionId = followObj._action;
+    let userId = followObj._user;
+    await this.deleteAction(actionId);
+    await this.deleteActionFromUserHistory(userId, actionId);
+    followObj.remove();
+};
+
+exports.deleteRated = async function(ratedId) {
+    let ratedObj = await Rated.findById(ratedId);
+    let actionId = ratedObj._action;
+    let userId = ratedObj._user;
+    await this.deleteAction(actionId);
+    await this.deleteActionFromUserHistory(userId, actionId);
+    ratedObj.remove();
+};
+
+exports.deleteWatched = async function(watchedId) {
+    let watchedObj = await Watched.findById(watchedId);
+    let actionId = watchedObj._action;
+    let userId = watchedObj._user;
+    await this.deleteAction(actionId);
+    await this.deleteActionFromUserHistory(userId, actionId);
+    watchedObj.remove();
 };
 
 

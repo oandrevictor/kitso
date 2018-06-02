@@ -75,21 +75,13 @@ exports.update = async function(req, res) {
 };
 
 exports.delete = async function(req, res) {
-    let watched_id = req.params.watched_id;
-
-    Watched.findById(watched_id)
-    .catch((err) => {
+    let watchedId = req.params.watched_id;
+    try {
+        await DataStoreUtils.deleteWatched(watchedId);
+        res.status(RequestStatus.OK);
+    } catch (err) {
         res.status(RequestStatus.BAD_REQUEST).send(err);
-    })
-    .then((watched) => {
-        watched.remove()
-        .catch((err) => {
-            res.status(RequestStatus.BAD_REQUEST).send(err);
-        })
-        .then((deletedWatched) => {
-            res.status(RequestStatus.OK).json(deletedWatched);
-        });
-    });
+    }
 };
 
 var getSeasonFromAPI = function(tv_id, season_number){

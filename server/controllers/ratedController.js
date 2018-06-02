@@ -93,21 +93,13 @@ exports.update = async function(req, res) {
 };
 
 exports.delete = async function(req, res) {
-    let rated_id = req.params.rated_id;
-
-    Rated.findById(rated_id)
-    .catch((err) => {
+    let ratedId = req.params.rated_id;
+    try {
+        await DataStoreUtils.deleteRated(ratedId);
+        res.status(RequestStatus.OK);
+    } catch (err) {
         res.status(RequestStatus.BAD_REQUEST).send(err);
-    })
-    .then((rated) => {
-        rated.remove()
-        .catch((err) => {
-            res.status(RequestStatus.BAD_REQUEST).send(err);
-        })
-        .then((deletedRated) => {
-            res.status(RequestStatus.OK).json(deletedRated);
-        });
-    });
+    }
 };
 
 // TODO: move to DataStoreUtils
