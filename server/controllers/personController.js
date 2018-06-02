@@ -63,7 +63,7 @@ exports.show = async function(req, res) {
       });
 
       let appearsInWithNestedMedia;
-      let appearsInWithNestedMediaPromises = appearsIn.map(injectMediaJson);
+      let appearsInWithNestedMediaPromises = appearsIn.map(injectMediaJsonInAppearsIn);
       await Promise.all(appearsInWithNestedMediaPromises).then(function(results) {
           appearsInWithNestedMedia = results;
       });
@@ -175,21 +175,24 @@ exports.delete = function(req, res) {
     });
 };
 
-var injectMediaJson = async function(appearsInObj) {
+
+// AUXILIARY FUNCTIONS ============================================================================
+
+var injectMediaJsonInAppearsIn = async function(appearsInObj) {
     let mediaId = appearsInObj._media;
     appearsInObj._media = await DataStoreUtils.getMediaObjById(mediaId);
     appearsInObj._media.helper = await getShow(appearsInObj._media._tmdb_id).then(function (show){
       return JSON.stringify(show);
     });
     return appearsInObj;
-}
+};
 
 var getMediaObjFromAppearsInObj = async function(appearsInObj) {
     let mediaId = appearsInObj._media;
     return await DataStoreUtils.getMediaObjById(mediaId);
-}
+};
 
-getPersonFromTMDB = function(tmdb_id){
+var getPersonFromTMDB = function(tmdb_id){
   return new Promise(function(resolve, reject) {
     var query = 'person/' + tmdb_id
     console.log("Could not get from redis, requesting info from The Movie DB")

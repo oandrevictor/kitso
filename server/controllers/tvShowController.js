@@ -171,6 +171,9 @@ exports.delete = async function(req, res) {
     }
 };
 
+
+// AUXILIARY FUNCTIONS ============================================================================
+
 getShowFromTMDB = function(tmdb_id) {
   return new Promise(function(resolve, reject) {
     var query = 'tvshow/' + tmdb_id
@@ -192,7 +195,7 @@ getShowFromTMDB = function(tmdb_id) {
       reject();
     });
   })
-}
+};
 
 getSeasonFromAPI = function(tv_id, season_number){
   return new Promise(function(resolve, reject) {
@@ -214,7 +217,7 @@ getSeasonFromAPI = function(tv_id, season_number){
       reject();
     });
   })
-}
+};
 
 matchApiSeasonsToDb = function(tvshow, dbtvshow){
   var tvshow = JSON.parse(tvshow);
@@ -240,7 +243,7 @@ matchApiSeasonsToDb = function(tvshow, dbtvshow){
       console.log(err);
     })
   })
-}
+};
 
 getCastFromAPI = function(tv_id){
   return new Promise(function(resolve, reject) {
@@ -260,7 +263,7 @@ getCastFromAPI = function(tv_id){
       reject();
     });
   })
-}
+};
 
 matchApiCastToDb = async function(dbtvshow){
   getCastFromAPI(dbtvshow._tmdb_id).then(function(credits){
@@ -294,7 +297,7 @@ matchApiCastToDb = async function(dbtvshow){
     }
 
   });
-}
+};
 
 matchApiEpisodesToDb = function(tvshow, seasonapi, dbseason){
 
@@ -317,52 +320,42 @@ matchApiEpisodesToDb = function(tvshow, seasonapi, dbseason){
         dbseason._episodes.push(created._id);
         dbseason.save().then((saved_season)=>{
         }).catch((err)=>{
-          console.log(err)
+          console.log(err);
+          throw new Error(err);
         })
       }).catch((err)=>{
         console.log(err);
+        throw new Error(err);
       });
     });
   });
-}
+};
 
 createAppearsIn = async function(personId, mediaId) {
-  try {
     let appearsIn = new AppearsIn();
     appearsIn._media = mediaId;
     appearsIn._person = personId;
     let appearsInId = appearsIn._id;
-
     let isDuplicated = await DataStoreUtils.alreadyExistsAppearsInByKeys(personId, mediaId);
     if (isDuplicated) {
-        console.log(RequestMsg.DUPLICATED_ENTITY);
+        throw new Error(RequestMsg.DUPLICATED_ENTITY);
     } else {
         await saveAppearsIn(appearsIn);
         await DataStoreUtils.addAppearsInToPerson(personId, appearsInId);
         await DataStoreUtils.addPersonToMediaCast(personId, mediaId);
-        res_json = {
-            "message": "AppearsIn created",
-            "data": {
-                "appearsInId": appearsInId,
-            }            
-        }
-        console.log(res_json);
     }
-  } catch (err) {
-    console.log(err);
-  } 
-}
+};
 
-var saveAppearsIn = function(appearsIn) {
+saveAppearsIn = function(appearsIn) {
   return appearsIn.save();
-}
+};
 
 // TODO: move to expert utils
-var injectPersonJson = async function(personId) {
+injectPersonJson = async function(personId) {
     let personObj = await DataStoreUtils.getPersonObjById(personId);
     return personObj;
 };
 
 inject_seasons = function(season) {
   return Season.findById(season).exec();
-}
+};
