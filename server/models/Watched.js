@@ -40,8 +40,8 @@ WatchedSchema.pre('remove', async function(next) {
 });
 
 var delete_action = async function(action_id) {
-  Action.remove({ _id: action_id}).exec();
-} 
+  return Action.remove({ _id: action_id}).exec();
+};
 
 var delete_action_from_user_history = async function(user_id, action_id) {
   User.findById(user_id, function (err, user) {
@@ -52,7 +52,7 @@ var delete_action_from_user_history = async function(user_id, action_id) {
       }
       user.save(); 
   });
-}
+};
 
 var Watched = mongoose.model('Watched', WatchedSchema);
 

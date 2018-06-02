@@ -48,10 +48,12 @@ RatedSchema.pre('remove', async function(next) {
   next();
 });
 
+// TODO: move to DataStoreUtils
 var delete_action = async function(action_id) {
   Action.remove({ _id: action_id}).exec();
-} 
+};
 
+// TODO: move to DataStoreUtils
 var delete_action_from_user_history = async function(user_id, action_id) {
   User.findById(user_id, async function (err, user) {
       let user_history = user._history;
@@ -61,7 +63,7 @@ var delete_action_from_user_history = async function(user_id, action_id) {
       }
       user.save(); 
   });
-}
+};
 
 var Rated = mongoose.model('Rated', RatedSchema);
 
