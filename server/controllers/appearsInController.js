@@ -1,5 +1,4 @@
 var AppearsIn = require('../models/AppearsIn');
-var Media = require('../models/Media');
 var RequestStatus = require('../constants/requestStatus');
 var RequestMsg = require('../constants/requestMsg');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
@@ -89,4 +88,4 @@ exports.delete = function(req, res) {
 
 var saveAppearsIn = function(appearsIn) {
     return appearsIn.save();
-}
+};

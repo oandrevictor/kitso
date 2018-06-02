@@ -7,6 +7,9 @@ const https = require('https');
 
 const redisClient = RedisClient.createAndAuthClient();
 
+
+// CRUD PERSON ====================================================================================
+
 exports.index = function(req, res) {
     Person.find({})
     .catch((err) => {

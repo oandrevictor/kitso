@@ -7,6 +7,7 @@ const https = require('https');
 
 const redisClient = RedisClient.createAndAuthClient();
 
+
 exports.show = function(req, res) {
   Show.findById(req.params.show_id)
   .catch((err) => {
@@ -30,7 +31,7 @@ exports.show = function(req, res) {
               else{
                 console.log('got query from redis');
                 var parsed_result = JSON.parse(JSON.parse(data));
-                let promises = parsed_result.episodes.map(inject_episode_ip(season._id));
+                let promises = parsed_result.episodes.map(injectEpisodeId(season._id));
 
                 Promise.all(promises).then(function(results) {
                   parsed_result.episodes = results;
@@ -46,7 +47,7 @@ exports.show = function(req, res) {
         } else {
           getSeasonFromTMDB(tmdb_id, season_num).then(async function(data) {
             dataJson = JSON.parse(data);
-            let promises = dataJson.episodes.map(inject_episode_ip(season._id));
+            let promises = dataJson.episodes.map(injectEpisodeId(season._id));
 
             Promise.all(promises).then(function(results) {
               dataJson.episodes = results;
@@ -62,21 +63,6 @@ exports.show = function(req, res) {
   });
 };
 
-inject_episode_ip = function(season) {
-  return async function(episode){
-    episode_obj = await Episode.findOne({ _season_id: season, number: episode.episode_number}).exec();
-
-    episode_with_id = episode;
-    episode_with_id._id = episode_obj._id;
-
-    return episode_with_id;
-  }
-}
-
-getSeason = function(show, num) {
-  return Season.findOne({ _tvshow_id: show, number: num}).exec();
-}
-
 exports.delete = function(req, res) {
     Season.remove({ _id: req.params.season_id})
     .catch((err) => {
@@ -86,6 +72,9 @@ exports.delete = function(req, res) {
         res.status(RequestStatus.OK).send('Season removed.');
     });
 };
+
+
+// AUXILIARY FUNCTIONS ============================================================================
 
 getSeasonFromTMDB = function(tmdb_id, season){
   return new Promise(function(resolve, reject) {
@@ -107,4 +96,19 @@ getSeasonFromTMDB = function(tmdb_id, season){
       reject();
     });
   })
-}
+};
+
+injectEpisodeId = function(season) {
+  return async function(episode){
+    episode_obj = await Episode.findOne({ _season_id: season, number: episode.episode_number}).exec();
+
+    episode_with_id = episode;
+    episode_with_id._id = episode_obj._id;
+
+    return episode_with_id;
+  }
+};
+
+getSeason = function (show, num) {
+    return Season.findOne({_tvshow_id: show, number: num}).exec();
+};

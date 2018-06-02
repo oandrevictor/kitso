@@ -2,6 +2,9 @@ var Media = require('../models/Media');
 var RequestStatus = require('../constants/requestStatus');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 
+
+// CRUD MEDIA =====================================================================================
+
 exports.index = function(req, res) {
     Media.find({})
     .catch((err) => {
@@ -114,6 +117,10 @@ exports.delete = async function(req, res) {
     }
 };
 
+
+// AUXILIARY FUNCTIONS ============================================================================
+
+// TODO: move to expert utils
 var injectPersonJson = async function(personId) {
     let personObj = await DataStoreUtils.getPersonObjById(personId);
     return personObj;
