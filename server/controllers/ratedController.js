@@ -1,13 +1,11 @@
 var Rated = require('../models/Rated');
-var redis = require('redis');
 var RequestStatus = require('../constants/requestStatus');
 var ActionType = require('../constants/actionType');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
+var RedisClient = require('../utils/lib/redisClient');
 const https = require('https');
-var client = redis.createClient(19990, 'redis-19990.c16.us-east-1-2.ec2.cloud.redislabs.com', {no_ready_check: true});
-client.auth('nsXmMM8VvJ7PrbYc4q6WZ50ilryBdbmM', function (err) {
-    if (err) throw err;
-  });
+
+const redisClient = RedisClient.createAndAuthClient();
 
 exports.index = async function(req, res) {
     let user_id = req.params.user_id;
@@ -154,10 +152,10 @@ var injectMediaJsonInRated = async function(rated_obj) {
 var getShow = function(tmdb_id) {
     return new Promise(function(resolve, reject) {
     var query = 'tvshow/' + tmdb_id;
-    client.exists('tvshow/' + tmdb_id, function(err, reply) {
+    redisClient.exists('tvshow/' + tmdb_id, function(err, reply) {
       if (reply === 1) {
           console.log('exists');
-          client.get(query, async function(err,data) {
+          redisClient.get(query, async function(err,data) {
               if(err)
                 console.log(err)
               else{
@@ -193,7 +191,7 @@ var getShowFromTMDB = function(tmdb_id){
       });
       resp.on('end', () => {
         console.log("saving result to redis: "+ query)
-        client.set(query, JSON.stringify(data));
+        redisClient.set(query, JSON.stringify(data));
         resolve(data)
       });
 

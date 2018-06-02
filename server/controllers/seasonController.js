@@ -2,15 +2,11 @@ var Show = require('../models/TvShow');
 var Season = require('../models/Season');
 var Episode = require('../models/Episode');
 var RequestStatus = require('../constants/requestStatus');
-var redis = require('redis');
-var redis = require('redis');
-var client = redis.createClient(19990, 'redis-19990.c16.us-east-1-2.ec2.cloud.redislabs.com', {no_ready_check: true});
-client.auth('nsXmMM8VvJ7PrbYc4q6WZ50ilryBdbmM', function (err) {
-    if (err) throw err;
-});
+var RedisClient = require('../utils/lib/redisClient');
 const https = require('https');
 
-// One season
+const redisClient = RedisClient.createAndAuthClient();
+
 exports.show = function(req, res) {
   Show.findById(req.params.show_id)
   .catch((err) => {
@@ -25,10 +21,10 @@ exports.show = function(req, res) {
       query = "tvShow/"+ tmdb_id + "/season/" + season_num;
       season = await getSeason(result._id, season_num);
 
-      client.exists(query,function(err, reply) {
+      redisClient.exists(query,function(err, reply) {
         if (reply == 1) {
           console.log('exists');
-          client.get(query, async function(err,data) {
+          redisClient.get(query, async function(err,data) {
               if(err)
                 console.log(err)
               else{
@@ -102,7 +98,7 @@ getSeasonFromTMDB = function(tmdb_id, season){
       });
       resp.on('end', () => {
         console.log("saving result tso redis: " + query)
-        client.set(query, JSON.stringify(data));
+        redisClient.set(query, JSON.stringify(data));
         resolve(data)
       });
 

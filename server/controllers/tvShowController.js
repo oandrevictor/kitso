@@ -3,17 +3,14 @@ var Season = require('../models/Season');
 var Person = require('../models/Person');
 var Episode = require('../models/Episode');
 var AppearsIn = require('../models/AppearsIn');
-var redis = require('redis');
-const https = require('https');
 var RequestStatus = require('../constants/requestStatus');
 var RequestMsg = require('../constants/requestMsg');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
-var client = redis.createClient(19990, 'redis-19990.c16.us-east-1-2.ec2.cloud.redislabs.com', {no_ready_check: true});
-client.auth('nsXmMM8VvJ7PrbYc4q6WZ50ilryBdbmM', function (err) {
-    if (err) throw err;
-});
+var RedisClient = require('../utils/lib/redisClient');
+const https = require('https');
 
-// Todas as séries
+const redisClient = RedisClient.createAndAuthClient();
+
 exports.index = function(req, res) {
     Show.find({})
     .catch((err) => {
@@ -25,10 +22,10 @@ exports.index = function(req, res) {
       tv_result.forEach((tvshow, index)=>{
         var tmdb_id = tvshow._tmdb_id;
         var query = 'tvshow/' + tmdb_id;
-        client.exists(query, function(err, reply) {
+        redisClient.exists(query, function(err, reply) {
           if (reply === 1) {
 
-            client.get(query, async function(err,data) {
+            redisClient.get(query, async function(err,data) {
               if(err)
                 console.log(err)
               else{
@@ -74,9 +71,9 @@ exports.show = function(req, res) {
     .then((result) => {
       var tmdb_id = result._tmdb_id;
       var query = 'tvshow/' + tmdb_id
-      client.exists('tvshow/' + tmdb_id, function(err, reply) {
+      redisClient.exists('tvshow/' + tmdb_id, function(err, reply) {
         if (reply === 1) {
-            client.get(query, async function(err,data) {
+            redisClient.get(query, async function(err,data) {
                 if(err)
                   console.log(err)
                 else{
@@ -164,7 +161,6 @@ exports.update = function(req, res) {
     });
 };
 
-// Deletar série
 exports.delete = async function(req, res) {
     try {
         DataStoreUtils.deleteMediaById(req.params.show_id);
@@ -187,7 +183,7 @@ getShowFromTMDB = function(tmdb_id) {
       });
       resp.on('end', () => {
         console.log("saving result to redis: "+ query)
-        client.set(query, JSON.stringify(data));
+        redisClient.set(query, JSON.stringify(data));
         resolve(data)
       });
 
@@ -209,7 +205,7 @@ getSeasonFromAPI = function(tv_id, season_number){
       });
       resp.on('end', () => {
         console.log("saving season result to redis:"+  query)
-        client.set(query, JSON.stringify(data));
+        redisClient.set(query, JSON.stringify(data));
         resolve(data)
       });
 
