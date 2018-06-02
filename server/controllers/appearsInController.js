@@ -34,14 +34,14 @@ exports.create = async function(req, res) {
         let personId = appearsIn._person;
         let mediaId = appearsIn._media;
 
-        let isDuplicated = await alreadyExists(personId, mediaId);
+        let isDuplicated = await DataStoreUtils.alreadyExistsAppearsInByKeys(personId, mediaId);
         if (isDuplicated) {
             res.status(RequestStatus.UNPROCESSABLE_ENTITY)
                 .send(RequestMsg.DUPLICATED_ENTITY);
         } else {
             await saveAppearsIn(appearsIn);
             await DataStoreUtils.addAppearsInToPerson(personId, appearsInId);
-            await addPersonToMediaCast(personId, mediaId);
+            await DataStoreUtils.addPersonToMediaCast(personId, mediaId);
             res_json = {
                 "message": "AppearsIn created",
                 "data": {
@@ -89,22 +89,4 @@ exports.delete = function(req, res) {
 
 var saveAppearsIn = function(appearsIn) {
     return appearsIn.save();
-}
-
-var addPersonToMediaCast = function(personId, mediaId) {
-    Media.findById(mediaId, function (err, media) {
-        if (!media._actors.includes(personId)) {
-            media._actors.push(personId);
-        }
-        return media.save();
-    });
-}
-
-var alreadyExists = async function(personId, mediaId) {
-    let isDuplicated = await AppearsIn.find({_person: personId, _media: mediaId}).exec();
-    if (isDuplicated.length > 0) {
-        return true;
-    } else {
-        return false;
-    }
 }

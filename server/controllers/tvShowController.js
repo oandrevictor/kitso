@@ -337,13 +337,13 @@ createAppearsIn = async function(personId, mediaId) {
     appearsIn._person = personId;
     let appearsInId = appearsIn._id;
 
-    let isDuplicated = await alreadyExists(personId, mediaId);
+    let isDuplicated = await DataStoreUtils.alreadyExistsAppearsInByKeys(personId, mediaId);
     if (isDuplicated) {
         console.log(RequestMsg.DUPLICATED_ENTITY);
     } else {
         await saveAppearsIn(appearsIn);
         await DataStoreUtils.addAppearsInToPerson(personId, appearsInId);
-        await addPersonToMediaCast(personId, mediaId);
+        await DataStoreUtils.addPersonToMediaCast(personId, mediaId);
         res_json = {
             "message": "AppearsIn created",
             "data": {
@@ -359,24 +359,6 @@ createAppearsIn = async function(personId, mediaId) {
 
 var saveAppearsIn = function(appearsIn) {
   return appearsIn.save();
-}
-
-var addPersonToMediaCast = function(personId, mediaId) {
-  Show.findById(mediaId, function (err, show) {
-      if (!show._actors.includes(personId)) {
-        show._actors.push(personId);
-      }
-      return show.save();
-  });
-}
-
-var alreadyExists = async function(personId, mediaId) {
-  let isDuplicated = await AppearsIn.find({_person: personId, _media: mediaId}).exec();
-  if (isDuplicated.length > 0) {
-      return true;
-  } else {
-      return false;
-  }
 }
 
 // TODO: move to expert utils

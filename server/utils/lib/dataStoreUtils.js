@@ -40,6 +40,15 @@ exports.addAppearsInToPerson = function(personId, appearsInId) {
     });
 };
 
+exports.addPersonToMediaCast = function(personId, mediaId) {
+    Media.findById(mediaId, function (err, media) {
+        if (!media._actors.includes(personId)) {
+            media._actors.push(personId);
+        }
+        return media.save();
+    });
+};
+
 
 // GET ============================================================================================
 
@@ -150,3 +159,12 @@ exports.deleteMediaById = async function(mediaId) {
 exports.deleteListFromDb = function(listId) {
     return UserList.remove({ _id: listId}).exec();
 };
+
+
+// OTHER AUXILIARIES FUNCTIONS =====================================================================
+
+exports.alreadyExistsAppearsInByKeys = async function(personId, mediaId) {
+    let results = await AppearsIn.find({_person: personId, _media: mediaId}).exec();
+    return results.length > 0;
+};
+
