@@ -104,15 +104,8 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
   }
 
   var loadUserBackground = function () {
-    if ($scope.user.ratings.length > 0) {
-      let greaterRating = $scope.user.ratings[0];
-
-      $scope.user.ratings.forEach((rated) => {
-        if (greaterRating.rating < rated.rating) {
-          greaterRating = rated;
-        }
-      });
-      $scope.profileBackground = $scope.getBackground(greaterRating._media);
+    if (getUserFavoriteMovie() != null) {
+      $scope.profileBackground = $scope.getBackground(getUserFavoriteMovie()._media);
     } else {
       $scope.profileBackground = "/images/strange.jpg";
     }
@@ -148,6 +141,25 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
       $location.path('tvshow/' + media._tvshow_id + '/season/'+ media.season_number);
     }
 
+  }
+
+  var getUserFavoriteMovie = function () {
+    if ($scope.user.ratings.length > 0) {
+      let greaterRating = null;
+      $scope.user.ratings.forEach((rated) => {
+        if (rated._media.__t == "Movie") {
+          if (greaterRating == null) {
+            greaterRating = rated;
+          } else if (greaterRating.rating < rated.rating) {
+            greaterRating = rated;
+          }
+        }
+      });
+
+      return greaterRating;
+    }
+
+    return null;
   }
 
   $scope.getPoster = function(media){
