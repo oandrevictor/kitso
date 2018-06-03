@@ -1,3 +1,4 @@
+var Person = require('../models/Person');
 var AppearsIn = require('../models/AppearsIn');
 var RequestStatus = require('../constants/requestStatus');
 var Utils = require('../utils/lib/utils');
@@ -169,6 +170,8 @@ exports.delete = function(req, res) {
         await appearsIns.forEach(async (appearsInId) => {
             await AppearsIn.remove({_id: appearsInId}).exec();
         });
+
+        // TODO: delete followpages refs to this person
 
         person.remove();
         res.status(RequestStatus.OK).send('Person removed.');
