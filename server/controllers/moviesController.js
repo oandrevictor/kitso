@@ -4,11 +4,10 @@ var Person = require('../models/Person');
 
 var RequestStatus = require('../constants/requestStatus');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
-var redis = require('redis');
-const https = require('https');
 var RequestMsg = require('../constants/requestMsg');
+var redisClient = require('../utils/lib/redisClient');
+const https = require('https');
 
-// Todos filmes
 exports.index = function(req, res) {
   Movie.find({})
   .catch((err) => {
@@ -21,10 +20,10 @@ exports.index = function(req, res) {
       var tmdb_id = movie._tmdb_id;
       console.log("current indexing:" + tmdb_id);
       var query = 'movie/' + tmdb_id;
-      client.exists(query, function(err, reply) {
+      redisClient.exists(query, function(err, reply) {
         if (reply === 1) {
 
-          client.get(query, async function(err,data) {
+          redisClient.get(query, async function(err,data) {
             if(err)
               console.log(err)
             else{
@@ -58,7 +57,6 @@ exports.index = function(req, res) {
   });
 };
 
-// Um filme
 exports.show = function(req, res) {
   Movie.findById(req.params.movie_id)
   .catch((err) => {
@@ -67,9 +65,9 @@ exports.show = function(req, res) {
   .then((result) => {
     var tmdb_id = result._tmdb_id;
     var query = 'movie/' + tmdb_id
-    client.exists(query, function(err, reply) {
+    redisClient.exists(query, function(err, reply) {
       if (reply === 1) {
-        client.get(query, async function(err,data) {
+        redisClient.get(query, async function(err,data) {
           if(err)
             console.log(err)
           else{
@@ -101,7 +99,6 @@ exports.show = function(req, res) {
   });
 };
 
-// Criar filme
 exports.create = function(req, res) {
   var movie = new Movie(req.body);
 
@@ -116,18 +113,16 @@ exports.create = function(req, res) {
       result._seasons = createdMovie._seasons;
       result.__t = createdMovie.__t;
       result._actors = await matchApiMovieCastToDb(createdMovie);
-      console.log("result._actors: " + result._actors);
       res.setHeader('Content-Type', 'application/json');
       res.status(200).send(result);
     })
   });
 };
 
-// Editar filme
 exports.update = function(req, res) {
     Movie.findById(req.params.movie_id)
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((movie) => {
         if (req.body.name) movie.name = req.body.name;
@@ -142,15 +137,14 @@ exports.update = function(req, res) {
 
         movie.save()
         .catch((err) => {
-            res.status(400).send(err);
+            res.status(RequestStatus.BAD_REQUEST).send(err);
         })
         .then((updatedMovie) => {
-            res.status(200).json(updatedMovie);
+            res.status(RequestStatus.OK).json(updatedMovie);
         });
     });
 };
 
-// Deletar filme
 exports.delete = function(req, res) {
     try {
         DataStoreUtils.deleteMediaById(req.params.movie_id);
@@ -173,7 +167,7 @@ getMovieFromTMDB = function(tmdb_id){
       });
       resp.on('end', () => {
         console.log("saving result to redis: "+ query)
-        client.set(query, JSON.stringify(data));
+        redisClient.set(query, JSON.stringify(data));
         resolve(data)
       });
 

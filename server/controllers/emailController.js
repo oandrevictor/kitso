@@ -1,4 +1,5 @@
 var nodemailer = require('nodemailer');
+var RequestStatus = require('../constants/requestStatus');
 
 var transport = nodemailer.createTransport({
   host: 'smtp.gmail.com',
@@ -34,9 +35,9 @@ exports.sendPasswordRecoverEmail = function(req, res) {
 
     transport.sendMail(email)
       .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
       })
       .then((info) => {
-        res.status(200).send("Email sent!");
+        res.status(RequestStatus.OK).send("Email sent!");
       });
 }

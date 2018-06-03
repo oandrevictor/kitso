@@ -1,9 +1,9 @@
 var UserList = require('../models/UserList');
 var ListItem = UserList.base.models.ListItem;
 var User = require('../models/User');
-var Media = require('../models/Media');
 var RequestStatus = require('../constants/requestStatus');
 var RequestMsg = require('../constants/requestMsg');
+var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 
 
 // CRUD USERLIST ==================================================================================
@@ -11,19 +11,19 @@ var RequestMsg = require('../constants/requestMsg');
 exports.show = async function(req, res) {
     try {
         let userListId = req.params.userlist_id;
-        let userList = await getUserList(userListId);
+        let userList = await DataStoreUtils.getUserListById(userListId);
         let itens = userList.itens;
-        let promises = itens.map(injectMediaJson);
+        let promises = itens.map(injectMediaJsonInItemList);
         Promise.all(promises).then(function(results) {
             results.sort(sortUserListByRank);
             userList.itens = results;
             res.status(RequestStatus.OK).json(userList);
         })
     } catch (err) {
-        console.log(err)
+        console.log(err);
         res.status(RequestStatus.BAD_REQUEST).send(err);
     }    
-}
+};
 
 exports.create = async function(req, res) {
     try {
@@ -41,7 +41,7 @@ exports.create = async function(req, res) {
 exports.update = async function(req, res) {
     try {
         let userListId = req.params.userlist_id;
-        let userList = await getUserList(userListId);
+        let userList = await DataStoreUtils.getUserListById(userListId);
         if (req.body.description) {
             userList.description = req.body.description;
         }
@@ -51,7 +51,7 @@ exports.update = async function(req, res) {
         await saveUserList(userList);
         res.status(RequestStatus.OK).json(userList);
     } catch (err) {
-        console.log(err)
+        console.log(err);
         res.status(RequestStatus.BAD_REQUEST).send(err);
     }
 };
@@ -62,7 +62,7 @@ exports.delete = async function(req, res) {
         let userListId = req.params.userlist_id;
         await checkIfUserIsAuthorizedToManipulateList(userId, userListId);
         let deletedList = await removeListFromUserLists(userListId, userId);
-        await deleteListFromDb(userListId);
+        await DataStoreUtils.deleteListFromDb(userListId);
         res.status(RequestStatus.OK).json(deletedList);
     } catch (err) {
         console.log(err);
@@ -71,7 +71,7 @@ exports.delete = async function(req, res) {
         }
         res.status(RequestStatus.BAD_REQUEST).send(err.message);
     }
-}
+};
 
 
 // LIST ITENS FUNCTIONS ===========================================================================
@@ -81,7 +81,7 @@ exports.addItem = async function(req, res) {
         let userId = req.headers.user_id;
         let userListId = req.params.userlist_id;
         await checkIfUserIsAuthorizedToManipulateList(userId, userListId);
-        let userList = await getUserList(userListId);
+        let userList = await DataStoreUtils.getUserListById(userListId);
         let itens = userList.itens;
         let lastListIndex = itens.length;
         let newItem = new ListItem({
@@ -98,20 +98,20 @@ exports.addItem = async function(req, res) {
         }
         res.status(RequestStatus.BAD_REQUEST).send(err.message);
     }    
-}
+};
 
 exports.removeItem = async function(req, res) {
     try {
         let userId = req.headers.user_id;
         let userListId = req.params.userlist_id;
         await checkIfUserIsAuthorizedToManipulateList(userId, userListId);
-        let userList = await getUserList(userListId);
+        let userList = await DataStoreUtils.getUserListById(userListId);
         let itens = userList.itens;
         let itemToRemoveRank = req.params.item_rank;
         if (itemToRemoveRank > itens.length) {            
             res.status(RequestStatus.BAD_REQUEST);
         }
-        removeItemFromList(itemToRemoveRank, itens);
+        removeRankedItemFromList(itemToRemoveRank, itens);
         await saveUserList(userList);
         res.status(RequestStatus.OK).json(userList); 
     } catch(err) {
@@ -121,14 +121,14 @@ exports.removeItem = async function(req, res) {
         }
         res.status(RequestStatus.BAD_REQUEST).send(err.message);
     }  
-}
+};
 
 exports.changeItemRank = async function(req, res) {
     try {
         let userId = req.headers.user_id;
         let userListId = req.params.userlist_id;
         await checkIfUserIsAuthorizedToManipulateList(userId, userListId);
-        let userList = await getUserList(userListId);
+        let userList = await DataStoreUtils.getUserListById(userListId);
         let itens = userList.itens;
         changeRank(req.body.current_rank, req.body.new_rank, itens);
         await saveUserList(userList);
@@ -140,21 +140,20 @@ exports.changeItemRank = async function(req, res) {
         }
         res.status(RequestStatus.BAD_REQUEST).send(err.message);
     } 
-}
+};
 
 
 // AUXILIARY FUNCTIONS ============================================================================
 
 var saveUserList = function(userList) {
     return userList.save();
-}
+};
 
-var addListToUserLists = function(userListId, userId) {
-    User.findById(userId, function (err, user) {
-        user._lists.push(userListId);
-        return user.save();
-    });    
-}
+var addListToUserLists = async function(userListId, userId) {
+    let user = await DataStoreUtils.getUserById(userId);
+    user._lists.push(userListId);
+    return user.save();
+};
 
 var removeListFromUserLists = function(userListId, userId) {
     User.findById(userId, function (err, user) {
@@ -165,19 +164,7 @@ var removeListFromUserLists = function(userListId, userId) {
         }
         return user.save();
     });
-}
-
-var deleteListFromDb = function(listId) {
-    return UserList.remove({ _id: listId}).exec();
-}
-
-var getUserList = function(userListId) {
-    return UserList.findById(userListId).exec(); 
-}
-
-var getUser = function(userId) {
-    return User.findById(userId).exec(); 
-}
+};
 
 var userHasList = function(user, listId) {
     var userLists = user._lists;
@@ -188,20 +175,16 @@ var userHasList = function(user, listId) {
         }
     }
     return userHasList;
-}
+};
 
-var injectMediaJson = async function(item) {
+var injectMediaJsonInItemList = async function(item) {
     let mediaId = item._media;
-    let mediaObj = await getMediaObj(mediaId);
+    let mediaObj = await DataStoreUtils.getMediaObjById(mediaId);
     item._media = mediaObj;
     return item;
-}
+};
 
-var getMediaObj = function(mediaId) {
-    return Media.findById(mediaId).exec();
-}
-
-var removeItemFromList = function(itemToRemoveRank, itens) {
+var removeRankedItemFromList = function(itemToRemoveRank, itens) {
     var indexOfItemToRemove = -1;
     for(var i=0; i < itens.length; i++) {
         let item = itens[i];
@@ -220,7 +203,7 @@ var removeItemFromList = function(itemToRemoveRank, itens) {
             }        
         }
     }
-}
+};
 
 var changeRank = function(itemCurrentRank, itemNewRank, itens) {
     if (itemNewRank > itens.length) {            
@@ -243,16 +226,16 @@ var changeRank = function(itemCurrentRank, itemNewRank, itens) {
             }
         }        
     }
-}
+};
 
 var checkIfUserIsAuthorizedToManipulateList = async function(userId, userListId) {
-    let user = await getUser(userId);
+    let user = await DataStoreUtils.getUserById(userId);
     let isAuthorized = userHasList(user, userListId);
     if (!isAuthorized) { 
         throw new Error(RequestMsg.UNAUTHORIZED);
     }
-}
+};
 
 var sortUserListByRank = function(itemA, itemB) { 
     return itemA.ranked - itemB.ranked;
-}
+};

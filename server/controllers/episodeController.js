@@ -1,14 +1,8 @@
 var Show = require('../models/TvShow');
-var Season = require('../models/Season');
-var Episode = require('../models/Episode');
-var redis = require('redis');
-var client = redis.createClient(19990, 'redis-19990.c16.us-east-1-2.ec2.cloud.redislabs.com', {no_ready_check: true});
-client.auth('nsXmMM8VvJ7PrbYc4q6WZ50ilryBdbmM', function (err) {
-    if (err) throw err;
-});
+var redisClient = require('../utils/lib/redisClient');
 const https = require('https');
 
-// Uma episodio
+
 exports.show = function(req, res) {
     Show.findById(req.params.show_id)
     .catch((err) => {
@@ -20,14 +14,14 @@ exports.show = function(req, res) {
       episode = req.params.episode_num;
       query = "tvShow/"+ tmdb_id + "/season/" + season + "/episode/" + episode;
 
-      client.exists(query, function(err, reply) {
+      redisClient.exists(query, function(err, reply) {
         if (reply == 1) {
           console.log('exists');
-          client.get(query,(err,data)=>{
+          redisClient.get(query,(err,data)=>{
               if(err)
                 console.log(err)
               else{
-                console.log('got query from redis');
+                console.log('Got query from redis');
                 console.log(data);
                 //var parsed_result = JSON.parse(JSON.parse(data));
                 // parsed_result._seasons = result._seasons;
@@ -63,7 +57,7 @@ getEpisodeFromTMDB = function(tmdb_id, season, episode){
       });
       resp.on('end', () => {
         console.log("saving result tso redis: " + query)
-        client.set(query, JSON.stringify(data));
+        redisClient.set(query, JSON.stringify(data));
         resolve(data)
       });
 
@@ -72,4 +66,4 @@ getEpisodeFromTMDB = function(tmdb_id, season, episode){
       reject();
     });
   })
-}
+};

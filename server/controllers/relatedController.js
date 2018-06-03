@@ -1,22 +1,23 @@
 var Related = require('../models/Related');
+var RequestStatus = require('../constants/requestStatus');
 
 exports.index = function(req, res) {
     Related.find({})
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((result) => {
-        res.status(200).json(result);
+        res.status(RequestStatus.OK).json(result);
     });
 };
 
 exports.show = function(req, res) {
     Related.findById(req.params.related_id)
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((result) => {
-        res.status(200).json(result);
+        res.status(RequestStatus.OK).json(result);
     });
 };
 
@@ -25,17 +26,17 @@ exports.create = function(req, res) {
 
     related.save()
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((createdRelated) => {
-        res.status(200).send('Related created.');
+        res.status(RequestStatus.OK).send('Related created.');
     });
 };
 
 exports.update = function(req, res) {
     Related.findById(req.params.related_id)
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((related) => {
         if (req.body._news) related._news = req.body._news;
@@ -44,10 +45,10 @@ exports.update = function(req, res) {
 
         related.save()
         .catch((err) => {
-            res.status(400).send(err);
+            res.status(RequestStatus.BAD_REQUEST).send(err);
         })
         .then((updatedRelated) => {
-            res.status(200).json(updatedRelated);
+            res.status(RequestStatus.OK).json(updatedRelated);
         });
     });
 };
@@ -55,9 +56,9 @@ exports.update = function(req, res) {
 exports.delete = function(req, res) {
     Related.remove({ _id: req.params.related_id})
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then(() => {
-        res.status(200).send('Related deleted.');
+        res.status(RequestStatus.OK).send('Related deleted.');
     });
 };
