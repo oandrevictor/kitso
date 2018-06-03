@@ -1,24 +1,26 @@
 
 var News = require('../models/News');
 var Related = require('../models/Related');
+var RequestStatus = require('../constants/requestStatus');
+
 
 exports.index = function(req, res) {
     News.find({})
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((result) => {
-        res.status(200).json(result);
+        res.status(RequestStatus.OK).json(result);
     });
 };
 
 exports.show = function(req, res) {
     News.findById(req.params.news_id)
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((result) => {
-        res.status(200).json(result);
+        res.status(RequestStatus.OK).json(result);
     });
 };
 
@@ -34,17 +36,17 @@ exports.create = async function(req, res) {
 
         news._related.push(related._id);
         await news.save();
-        res.status(200).send(news);
+        res.status(RequestStatus.OK).send(news);
     } catch(err) {
         console.log(err);
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     }
 };
 
 exports.update = function(req, res) {
     News.findById(req.params.news_id)
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((news) => {
         if (req.body._posted_by) news._posted_by = req.body._posted_by;
@@ -54,10 +56,10 @@ exports.update = function(req, res) {
 
         news.save()
         .catch((err) => {
-            res.status(400).send(err);
+            res.status(RequestStatus.BAD_REQUEST).send(err);
         })
         .then((updatedNews) => {
-            res.status(200).json(updatedNews);
+            res.status(RequestStatus.OK).json(updatedNews);
         });
     });
 };
@@ -70,9 +72,9 @@ exports.delete = async function(req, res) {
         await delete_news(req.params.news_id);
     } catch(err) {
         console.log(err);
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     }
-    res.status(200).send('News deleted.');
+    res.status(RequestStatus.OK).send('News deleted.');
 };
 
 var create_news = function(news_obj) {

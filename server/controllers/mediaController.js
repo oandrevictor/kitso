@@ -1,15 +1,17 @@
 var Media = require('../models/Media');
-var Person = require('../models/Person');
 var RequestStatus = require('../constants/requestStatus');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
+
+
+// CRUD MEDIA =====================================================================================
 
 exports.index = function(req, res) {
     Media.find({})
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((result) => {
-        res.status(200).json(result);
+        res.status(RequestStatus.OK).json(result);
     });
 };
 
@@ -59,10 +61,10 @@ exports.showAll = function(req, res) {
         }
     
         function done() {
-            res.status(200).send(response);
+            res.status(RequestStatus.OK).send(response);
         }
     } else {
-        res.status(400).json({message: "Body medias field is empty."});
+        res.status(RequestStatus.BAD_REQUEST).json({message: "Body medias field is empty."});
     }
     
 };
@@ -72,17 +74,17 @@ exports.create = function(req, res) {
 
     media.save()
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((createdMedia) => {
-        res.status(200).send(createdMedia);
+        res.status(RequestStatus.OK).send(createdMedia);
     });
 };
 
 exports.update = function(req, res) {
     Media.findById(req.params.media_id)
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((media) => {
         if (req.body.name) media.name = req.body.name;
@@ -97,10 +99,10 @@ exports.update = function(req, res) {
 
         media.save()
         .catch((err) => {
-            res.status(400).send(err);
+            res.status(RequestStatus.BAD_REQUEST).send(err);
         })
         .then((updatedMedia) => {
-            res.status(200).json(updatedMedia);
+            res.status(RequestStatus.OK).json(updatedMedia);
         });
     });
 };
@@ -115,11 +117,11 @@ exports.delete = async function(req, res) {
     }
 };
 
-var injectPersonJson = async function(personId) {
-    let personObj = await getPersonObj(personId);
-    return personObj;
-}
 
-var getPersonObj = async function(personId) {
-    return Person.findById(personId).exec();
-}
+// AUXILIARY FUNCTIONS ============================================================================
+
+// TODO: move to expert utils
+var injectPersonJson = async function(personId) {
+    let personObj = await DataStoreUtils.getPersonObjById(personId);
+    return personObj;
+};
