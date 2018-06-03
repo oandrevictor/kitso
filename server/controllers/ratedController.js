@@ -3,9 +3,10 @@ var RequestStatus = require('../constants/requestStatus');
 var ActionType = require('../constants/actionType');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 var RedisClient = require('../utils/lib/redisClient');
+var TMDBController = require('../external/TMDBController');
 const https = require('https');
-
 const redisClient = RedisClient.createAndAuthClient();
+
 
 exports.index = async function(req, res) {
     let user_id = req.params.user_id;
@@ -159,7 +160,7 @@ var getShow = function(tmdb_id) {
               }
             });
       } else {
-        getShowFromTMDB(tmdb_id).then(async function(data) {
+          TMDBController.getShowFromTMDB(tmdb_id).then(async function(data) {
           var data = JSON.parse(data)
             data._id = result._id;
             data.__t = result.__t;
@@ -168,30 +169,6 @@ var getShow = function(tmdb_id) {
       }
     })
     })
-};
-
-// TODO: move to tmdb expert class
-var getShowFromTMDB = function(tmdb_id){
-  return new Promise(function(resolve, reject) {
-    var query = 'tvshow/' + tmdb_id;
-    console.log("Could not get from redis, requesting info from The Movie DB")
-    https.get("https://api.themoviedb.org/3/tv/"+ tmdb_id + "?api_key=db00a671b1c278cd4fa362827dd02620",
-    (resp) => {
-      let data = '';
-      resp.on('data', (chunk) => {
-        data += chunk;
-      });
-      resp.on('end', () => {
-        console.log("saving result to redis: "+ query)
-        redisClient.set(query, JSON.stringify(data));
-        resolve(data)
-      });
-
-    }).on("error", (err) => {
-      console.log("Error: " + err.message);
-      reject();
-    });
-  })
 };
 
 var userHasRated = async function(user_id, media_id) {
