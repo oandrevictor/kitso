@@ -23,7 +23,6 @@ exports.index = function(req, res) {
       var total_waiting = 500;
         var final_result = [];
         result.forEach((person, index)=> {
-          total_waiting += 500;
           waiting_time.push(total_waiting + 500);
           var tmdb_id = person._tmdb_id;
           var query = 'person/' + tmdb_id;
@@ -33,7 +32,7 @@ exports.index = function(req, res) {
                 if(err)
                   console.log(err)
                 else{
-                  console.log('got query from redis');
+                  console.log('got query from redis: ' + query);
                   var parsed_result = JSON.parse(data);
                   parsed_result._id = person._id;
                   final_result.push(parsed_result);
@@ -42,6 +41,7 @@ exports.index = function(req, res) {
                   }
                 });
             } else {
+              total_waiting += 500;
               setTimeout(function() {
                 getPersonFromTMDB(tmdb_id).then(async function(data) {
                   data = JSON.parse(data);
@@ -79,19 +79,18 @@ exports.show = async function(req, res) {
 
 
       var tmdb_id = result._tmdb_id;
-      var query = 'person/' + tmdb_id;
+      var query = 'person/show/' + tmdb_id;
       redisClient.exists(query, function(err, reply) {
         if (reply === 1) {
           redisClient.get(query, async function(err,data) {
             if(err)
               console.log(err)
             else{
-              console.log('got query from redis');
-              var parsed_result = JSON.parse(JSON.parse(data));
+              console.log('got query from redis: ' + query);
+              var parsed_result = JSON.parse(data);
               parsed_result._id = result._id;
               parsed_result.helper = result.helper;
               parsed_result._appears_in = result._appears_in;
-              parsed_result.profile_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.profile_path;
               res.status(RequestStatus.OK).send(parsed_result);
               }
             });
@@ -191,9 +190,17 @@ exports.delete = function(req, res) {
 var injectMediaJsonInAppearsIn = async function(appearsInObj) {
     let mediaId = appearsInObj._media;
     appearsInObj._media = await DataStoreUtils.getMediaObjById(mediaId);
-    appearsInObj._media.helper = await TMDBController.getShow(appearsInObj._media._tmdb_id).then(function (show){
-      return JSON.stringify(show);
-    });
+    if(appearsInObj._media._t == "TvShow"){
+      appearsInObj._media.helper = await TMDBController.getShow(appearsInObj._media._tmdb_id).then(function (show){
+        return JSON.stringify(show);
+      });
+    }
+    else {
+      appearsInObj._media.helper = await TMDBController.getMovie(appearsInObj._media._tmdb_id).then(function (movie){
+        return JSON.stringify(movie);
+      });
+    }
+
     return appearsInObj;
 };
 

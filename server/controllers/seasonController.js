@@ -27,7 +27,7 @@ exports.show = function(req, res) {
               if(err)
                 console.log(err)
               else{
-                console.log('got query from redis');
+                console.log('got query from redis:' + query);
                 var parsed_result = JSON.parse(JSON.parse(data));
                 let promises = parsed_result.episodes.map(injectEpisodeId(season._id));
 

@@ -1,6 +1,8 @@
 var TMDBConstants = require('./constants/TMDBConstants');
 var RequestGenerals = require('../constants/requestGenerals');
 var RedisClient = require('../utils/lib/redisClient');
+var Show = require('../models/TvShow');
+
 
 const https = require('https');
 const redisClient = RedisClient.createAndAuthClient();
@@ -12,6 +14,7 @@ exports.getShowFromTMDB = function(tmdb_id) {
 
         var query = RequestGenerals.TVSHOW_ENDPOINT + tmdb_id;
         let tmdbQuery = TMDBConstants.TMDB_API_ROUTE + tmdb_id + TMDBConstants.TMDB_API_KEY;
+        console.log(tmdbQuery)
         https.get(tmdbQuery,
             (resp) => {
                 let data = '';
@@ -55,9 +58,12 @@ exports.getSeasonFromAPI = function(tv_id, season_number){
 
 exports.getShow = function(tmdb_id){
     return new Promise(function(resolve, reject) {
+      console.log("Get show:" + tmdb_id)
+      Show.find({_tmdb_id: tmdb_id}).catch((err)=> console.log(err)). then(async (result)=>{
         var query = RequestGenerals.TVSHOW_ENDPOINT + tmdb_id;
         redisClient.exists(query, function(err, reply) {
             if (reply === 1) {
+              console.log("got query from redis: " + query)
                 redisClient.get(query, async function(err,data) {
                     if (err)
                         console.log(err);
@@ -68,7 +74,7 @@ exports.getShow = function(tmdb_id){
                     }
                 });
             } else {
-                this.getShowFromTMDB(tmdb_id).then(async function(data) {
+                exports.getShowFromTMDB(tmdb_id).then(async function(data) {
                     var data = JSON.parse(data);
                     data._id = result._id;
                     data.__t = result.__t;
