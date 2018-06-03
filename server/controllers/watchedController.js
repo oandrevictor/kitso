@@ -3,6 +3,7 @@ var RequestStatus = require('../constants/requestStatus');
 var ActionType = require('../constants/actionType');
 var TMDBController = require('../external/TMDBController');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
+var RedisClient = require('../utils/lib/redisClient');
 
 exports.index = async function(req, res) {
     let user_id = req.params.user_id;
@@ -53,6 +54,37 @@ exports.create = async function(req, res) {
     });
 };
 
+exports.watchSeason = async function(req, res) {
+    var episodesIds = req.body.episodesIds;
+    var seasonId = req.body.seasonId;
+    var user_id = req.body._user;
+    var date = req.body.date;
+    //watched Season
+    let seasonWatched = await create_season_watched(seasonId, user_id, date);
+    // watched episodes
+    let result = await watch_season_episodes(episodesIds, user_id, date);
+
+    res.status(RequestStatus.OK).json({message: result, watched: seasonWatched});
+}
+
+exports.watchTvshow = async function(req, res) {
+    var user_id = req.body._user;
+    var date = req.body.date;
+    var seasons = req.body.seasons;
+    let seasonsIds = getSeasonsIds(seasons);
+    let result = [];
+    seasonsIds.forEach(async (seasonId, i) => {
+        result[i] = await create_season_watched(seasonId, user_id, date);
+    });
+    // watched episodes
+    let seasonEpisodesIds = getSeasonsEpisodesIds(seasons);
+    seasonEpisodesIds.forEach(async (episodesIds) => {
+        await watch_season_episodes(episodesIds, user_id, date);
+    });
+    res.status(RequestStatus.OK).json(result);
+
+}
+
 exports.update = async function(req, res) {
     let watched_id = req.params.watched_id;
     try {
@@ -86,7 +118,6 @@ exports.delete = async function(req, res) {
     }
 };
 
-
 var injectMediaJsonInWatched = async function(watchedObj) {
     let mediaId = watchedObj._media;
     let mediaObj = await DataStoreUtils.getMediaObjById(mediaId);
@@ -108,4 +139,62 @@ var injectMediaJsonInWatched = async function(watchedObj) {
 
 var user_has_watched = async function(user_id, media_id) {
     return Watched.find({_user: user_id, _media: media_id}).exec();
-};
+}
+
+function getSeasonsEpisodesIds(seasons) {
+    let seasonsEpisodesIds = [];
+    seasons.forEach((season, i) => {
+        seasonsEpisodesIds[i] = [];
+        season._episodes.forEach((episode) => {
+            seasonsEpisodesIds[i].push(episode);
+        });
+    });
+    return seasonsEpisodesIds;
+}
+
+function getSeasonsIds(seasons) {
+    let seasonsIds = [];
+    seasons.forEach((season) => {
+        seasonsIds.push(season._id);
+    });
+    return seasonsIds;
+}
+
+async function watch_season_episodes(episodesIds, user_id, date) {
+    var requests = 0;
+    var payload = episodesIds.length;
+    episodesIds.forEach(async (episode) => {
+        let watched = new Watched();
+        watched._media = episode;
+        watched._user = user_id;
+        watched.date = date;
+        let action = await DataStoreUtils.createAction(user_id, watched._id, ActionType.WATCHED);
+        watched._action = action._id;
+        await DataStoreUtils.addActionToUserHistory(user_id, action._id);
+        watched.save()
+            .then((watched) => {
+                requests++;
+                if (requests == payload)
+                    done();
+            })
+            .catch((error) => {
+                requests++;
+                if (requests == payload)
+                    done();
+            });
+    });
+    function done() {
+        return "Season watched.";
+    }
+}
+
+async function create_season_watched(seasonId, user_id, date) {
+    var seasonWatched = new Watched();
+    seasonWatched._media = seasonId;
+    seasonWatched._user = user_id;
+    seasonWatched.date = date;
+    let seasonAction = await DataStoreUtils.createAction(user_id, seasonWatched._id, ActionType.WATCHED);
+    seasonWatched._action = seasonAction._id;
+    await DataStoreUtils.addActionToUserHistory(user_id, seasonAction._id);
+    return seasonWatched.save();
+}

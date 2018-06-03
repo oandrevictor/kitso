@@ -53,7 +53,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         });
         watched = watched.sort(compareDates);
 
-        $scope.user.watched = watched
+        $scope.user.watched = watched;
       }).catch(function (error) {
         console.log(error);
       });
