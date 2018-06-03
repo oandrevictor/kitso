@@ -33,6 +33,7 @@ kitso.service('WatchedService', ['$q', '$http', function ($q, $http) {
         }
       })
       .catch((error) => {
+        console.log(error);
         deferred.reject(error.data);
       });
 

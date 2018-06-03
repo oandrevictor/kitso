@@ -2,6 +2,9 @@ var Watched = require('../models/Watched');
 var RequestStatus = require('../constants/requestStatus');
 var ActionType = require('../constants/actionType');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
+var RedisClient = require('../utils/lib/redisClient');
+const redisClient = RedisClient.createAndAuthClient();
+const https = require('https');
 
 exports.index = async function(req, res) {
     let user_id = req.params.user_id;
@@ -126,7 +129,7 @@ var getSeasonFromAPI = function(tv_id, season_number){
       });
       resp.on('end', () => {
         console.log("saving season result to redis:"+  query);
-        client.set(query, JSON.stringify(data));
+        redisClient.set(query, JSON.stringify(data));
         resolve(data)
       });
 
@@ -140,8 +143,8 @@ var injectMediaJsonInWatched = async function(watched_obj) {
     let mediaId = watched_obj._media;
     let mediaObj = await DataStoreUtils.getMediaObjById(mediaId);
     if (mediaObj.__t == 'Episode' && mediaObj._tmdb_tvshow_id){
-      var value = await getSeasonFromAPI(media_obj._tmdb_tvshow_id, media_obj.season_number).then((season) => {
-        var watched_with_full_media = watchedObj;
+      var value = await getSeasonFromAPI(mediaObj._tmdb_tvshow_id, mediaObj.season_number).then((season) => {
+        var watched_with_full_media = watched_obj;
         watched_with_full_media._media = mediaObj;
         watched_with_full_media._media.helper = season;
         return watched_with_full_media;
