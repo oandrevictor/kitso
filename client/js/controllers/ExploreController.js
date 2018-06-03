@@ -33,6 +33,7 @@ function($scope, $location, $timeout, MovieService, TvShowService, WatchedServic
 
     TvShowService.getAllShows()
         .then((allShows) => {
+          $('.full-loading').hide();
             $scope.allShows = allShows;
             $scope.allShows = allShows.sort(compareDates)
             $scope.allMedias = $scope.allMedias.concat($scope.allShows).sort(compareDates)

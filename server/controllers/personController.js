@@ -19,8 +19,12 @@ exports.index = function(req, res) {
         res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((result) => {
+      var waiting_time = [500];
+      var total_waiting = 500;
         var final_result = [];
         result.forEach((person, index)=> {
+          total_waiting += 500;
+          waiting_time.push(total_waiting + 500);
           var tmdb_id = person._tmdb_id;
           var query = 'person/' + tmdb_id;
           redisClient.exists(query, function(err, reply) {
@@ -30,8 +34,7 @@ exports.index = function(req, res) {
                   console.log(err)
                 else{
                   console.log('got query from redis');
-                  var parsed_result = JSON.parse(JSON.parse(data));
-                  parsed_result.profile_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.profile_path;
+                  var parsed_result = JSON.parse(data);
                   parsed_result._id = person._id;
                   final_result.push(parsed_result);
 
@@ -45,8 +48,9 @@ exports.index = function(req, res) {
                   data.profile_path = "https://image.tmdb.org/t/p/w500/" + data.profile_path;
                   data._id = person._id;
                   final_result.push(data);
+                  redisClient.set(query, JSON.stringify(data));
                   if (index == result.length -1) res.status(RequestStatus.OK).send(final_result);
-                })}, 500);
+                })}, waiting_time[index]);
             }
           });
     });
@@ -96,6 +100,7 @@ exports.show = async function(req, res) {
             data = JSON.parse(data);
             data._id = result._id;
             data.profile_path = "https://image.tmdb.org/t/p/w500/" + data.profile_path;
+            redisClient.set(query, JSON.stringify(data));
             res.status(RequestStatus.OK).send(data);
           });
         }
@@ -219,4 +224,3 @@ var getPersonFromTMDB = function(tmdb_id){
     });
   })
 };
-

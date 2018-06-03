@@ -15,14 +15,9 @@ exports.createAndAuthClient = function() {
         RedisClientConstants.PORT,
         RedisClientConstants.SERVER,
         RedisClientConstants.OPTIONS);
+        redisClient.auth(RedisClientConstants.ACCESS_TOKEN, function (err) {
+        if (err) throw err;
+    });
 
-redisClient.auth(RedisClientConstants.ACCESS_TOKEN, function (err) {
-    if (err) throw err;
-});
-
-
-redisClient.on('connect', function() {
-    console.log('connected to Redis');
-});
-
-exports = module.exports = redisClient;
+    return redisClient;
+};

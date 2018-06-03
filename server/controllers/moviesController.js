@@ -5,8 +5,10 @@ var Person = require('../models/Person');
 var RequestStatus = require('../constants/requestStatus');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 var RequestMsg = require('../constants/requestMsg');
-var redisClient = require('../utils/lib/redisClient');
 const https = require('https');
+var RedisClient = require('../utils/lib/redisClient');
+var TMDBController = require('../external/TMDBController');
+const redisClient = RedisClient.createAndAuthClient();
 
 exports.index = function(req, res) {
   Movie.find({})
@@ -16,6 +18,8 @@ exports.index = function(req, res) {
   .then((movie_result) => {
     var final_result = [];
     console.log("len:" + movie_result.length)
+    if (movie_result.len == 0)
+      res.status(200).send(final_result);
     movie_result.forEach((movie, index)=>{
       var tmdb_id = movie._tmdb_id;
       console.log("current indexing:" + tmdb_id);
