@@ -94,6 +94,16 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
       })
   }
 
+  var loadUserBackground = function () {
+    $scope.userFavoriteMovie = $scope.getUserFavoriteMovie();
+
+    if ($scope.userFavoriteMovie != null) {
+      $scope.profileBackground = $scope.getBackground($scope.userFavoriteMovie);
+    } else {
+      $scope.profileBackground = "/images/strange.jpg";
+    }
+  }
+
   $scope.unfollow_user = function(unfollowedUser){
     FollowService.isFollowingUser($scope.user._id, unfollowedUser._id).then( function(following){
       if (following.is_following) {
@@ -101,14 +111,6 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         $scope.user.following.splice($scope.user.following.indexOf(unfollowedUser),1);
         }
     })
-  }
-
-  var loadUserBackground = function () {
-    if (getUserFavoriteMovie() != null) {
-      $scope.profileBackground = $scope.getBackground(getUserFavoriteMovie()._media);
-    } else {
-      $scope.profileBackground = "/images/strange.jpg";
-    }
   }
 
   $scope.unfollow_page = function(unfollowedPage){
@@ -143,23 +145,26 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
 
   }
 
-  var getUserFavoriteMovie = function () {
+  $scope.getUserFavoriteMovie = function () {
+    let greaterRating = null;
+
     if ($scope.user.ratings.length > 0) {
-      let greaterRating = null;
       $scope.user.ratings.forEach((rated) => {
         if (rated._media.__t == "Movie") {
           if (greaterRating == null) {
             greaterRating = rated;
-          } else if (greaterRating.rating < rated.rating) {
+          } else if (greaterRating.rating <= rated.rating) {
             greaterRating = rated;
           }
         }
       });
-
-      return greaterRating;
     }
 
-    return null;
+    if (greaterRating != null) {
+      return greaterRating._media;
+    } else {
+      return greaterRating;
+    }
   }
 
   $scope.getPoster = function(media){
