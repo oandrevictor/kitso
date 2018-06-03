@@ -8,8 +8,8 @@ exports.createAndAuthClient = function() {
     if (redisClient && redisClient.connected)
         return redisClient;
 
-    if (redisClient)
-        redisClient.quit();
+    // if (redisClient)
+    //     redisClient.quit();
 
     redisClient = redis.createClient(
         RedisClientConstants.PORT,
