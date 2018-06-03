@@ -1,4 +1,5 @@
 var AppearsIn = require('../models/AppearsIn');
+var Person = require('../models/Person');
 var RequestStatus = require('../constants/requestStatus');
 var Utils = require('../utils/lib/utils');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');

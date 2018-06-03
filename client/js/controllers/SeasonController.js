@@ -12,6 +12,7 @@ kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$route
           .then((season) => {
             $scope.season = season;
             console.log($scope.season)
+            loadEpisodeActions($scope.season);
             $scope.season.episodes.forEach(function (episode) {
               loadEpisodeActions(episode)
             });
@@ -101,7 +102,7 @@ kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$route
 
       WatchedService.markSeasonAsWatched($scope.user._id, episodesIds, $scope.season._id)
         .then((watched) => {
-          $scope.season.watched = watched;
+          console.log(watched);
         })
         .catch((error) => {
           UIkit.notification({

@@ -10,6 +10,7 @@ kitso.service('WatchedService', ['$q', '$http', function ($q, $http) {
     getAllWatched: getAllWatched,
     markAsWatched: markAsWatched,
     markSeasonAsWatched: markSeasonAsWatched,
+    markTvshowAsWatched: markTvshowAsWatched,
     markAsNotWatched: markAsNotWatched,
     isWatched: isWatched,
     updateWatched: updateWatched
@@ -75,6 +76,32 @@ kitso.service('WatchedService', ['$q', '$http', function ($q, $http) {
     };
 
     $http.post('/api/watched/season', data)
+      .then((response) => {
+        if (response.status === 200) {
+          response.data.watched_id = response.data._id;
+          deferred.resolve(response.data);
+        } else {
+          deferred.reject();
+        }
+      })
+      .catch((error) => {
+        deferred.reject(error.data);
+      });
+
+    return deferred.promise;
+  }
+
+  function markTvshowAsWatched(userId, seasons, tvshowId, date = moment()) {
+    var deferred = $q.defer();
+
+    var data = {
+      "_user": userId,
+      "seasons": seasons,
+      "tvshowId": tvshowId,
+      "date": date
+    };
+
+    $http.post('/api/watched/tvshow', data)
       .then((response) => {
         if (response.status === 200) {
           response.data.watched_id = response.data._id;
