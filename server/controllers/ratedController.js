@@ -2,10 +2,7 @@ var Rated = require('../models/Rated');
 var RequestStatus = require('../constants/requestStatus');
 var ActionType = require('../constants/actionType');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
-var RedisClient = require('../utils/lib/redisClient');
 var TMDBController = require('../external/TMDBController');
-const https = require('https');
-const redisClient = RedisClient.createAndAuthClient();
 
 
 exports.index = async function(req, res) {

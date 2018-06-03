@@ -205,6 +205,7 @@ matchApiSeasonsToDb = function(tvshow, dbtvshow){
   })
 };
 
+// TODO: move to TMDBController
 getCastFromAPI = function(tv_id){
   return new Promise(function(resolve, reject) {
     console.log(tv_id)
