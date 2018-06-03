@@ -74,6 +74,7 @@ exports.delete = function(req, res) {
 
 // AUXILIARY FUNCTIONS ============================================================================
 
+// TODO: move to TMDBController
 getSeasonFromTMDB = function(tmdb_id, season){
   return new Promise(function(resolve, reject) {
     query = "tvShow/"+ tmdb_id + "/season/" + season
@@ -96,6 +97,7 @@ getSeasonFromTMDB = function(tmdb_id, season){
   })
 };
 
+// TODO: move to TMDBController
 injectEpisodeId = function(season) {
   return async function(episode){
     episode_obj = await Episode.findOne({ _season_id: season, number: episode.episode_number}).exec();
@@ -107,6 +109,7 @@ injectEpisodeId = function(season) {
   }
 };
 
+// TODO: move to TMDBController
 getSeason = function (show, num) {
     return Season.findOne({_tvshow_id: show, number: num}).exec();
 };

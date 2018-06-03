@@ -46,6 +46,7 @@ exports.show = function(req, res) {
     });
 };
 
+// TODO: move to TMDBController
 getEpisodeFromTMDB = function(tmdb_id, season, episode){
   return new Promise(function(resolve, reject) {
     query = "tvShow/"+ tmdb_id + "/season/" + season + "/episode/" + episode

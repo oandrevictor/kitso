@@ -72,8 +72,8 @@ exports.create = async function(req, res) {
 exports.delete = async function(req, res) {
     let followId = req.params.followsPage_id;
     try {
-        await DataStoreUtils.deleteFollowsPage(followId);
-        res.status(RequestStatus.OK);
+        let deletedFollowedPage = await DataStoreUtils.deleteFollowsPage(followId);
+        res.status(RequestStatus.OK).json(deletedFollowedPage);
     } catch (err) {
         res.status(RequestStatus.BAD_REQUEST).send(err);
     }
@@ -86,4 +86,3 @@ var getFollowedFromFollow = async function(follow) {
         return Person.findById(follow._following).exec();
     } 
 };
-
