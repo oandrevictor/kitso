@@ -44,7 +44,7 @@
                 <a class="uk-link-text uk-text-uppercase uk-align-right" href="">See Ranking</a>
               </p>
               <p class="following-link" align="center" ng-show="!userFavoriteMovie">Você ainda não possui um filme favorito <br> Experimente avaliar algum filme</p>
-              <img class="favorite-movie" ng-show="userFavoriteMovie" style="background-image: url({{ userFavoriteMovie.images.poster }})" />
+              <img class="favorite-movie" ng-show="userFavoriteMovie" ng-click="goToMedia(userFavoriteMovie)" style="background-image: url({{ userFavoriteMovie.images.poster }})" />
             </div>
             <div class="uk-width-1-2">
               <p>Watched Genres</p>
