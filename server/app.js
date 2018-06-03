@@ -127,9 +127,6 @@ app.get('/person/edit/:id', function (req, res) {
 });
 
 // Api routes
-var exampleRoutes = require('./routes/example');
-app.use('/example', exampleRoutes);
-
 var emailRoutes = require('./routes/email');
 app.use('/api/email', emailRoutes);
 
