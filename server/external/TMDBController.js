@@ -52,3 +52,29 @@ exports.getSeasonFromAPI = function(tv_id, season_number){
             });
     })
 };
+
+exports.getShow = function(tmdb_id){
+    return new Promise(function(resolve, reject) {
+        var query = RequestGenerals.TVSHOW_ENDPOINT + tmdb_id;
+        redisClient.exists(query, function(err, reply) {
+            if (reply === 1) {
+                redisClient.get(query, async function(err,data) {
+                    if (err)
+                        console.log(err);
+                    else {
+                        var parsed_result = JSON.parse(JSON.parse(data));
+                        parsed_result.backdrop_path = TMDBConstants.TMDB_BACK_IMAGE_PATH + parsed_result.backdrop_path;
+                        resolve(parsed_result);
+                    }
+                });
+            } else {
+                this.getShowFromTMDB(tmdb_id).then(async function(data) {
+                    var data = JSON.parse(data);
+                    data._id = result._id;
+                    data.__t = result.__t;
+                    resolve(data);
+                })
+            }
+        })
+    })
+};

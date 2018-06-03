@@ -126,7 +126,7 @@ var injectMediaJsonInRated = async function(rated_obj) {
       return value;
     }
     if (media_obj.__t == 'TvShow' && media_obj._tmdb_id){
-      var value = await getShow(media_obj._tmdb_id).then((tvshow)=>{
+      var value = await TMDBController.getShow(media_obj._tmdb_id).then((tvshow)=>{
         var rated_with_full_media = rated_obj;
         rated_with_full_media._media = media_obj;
         rated_with_full_media._media.helper = JSON.stringify(tvshow);
@@ -139,35 +139,6 @@ var injectMediaJsonInRated = async function(rated_obj) {
       rated_with_full_media._media = media_obj
       return rated_with_full_media;
     }
-};
-
-var getShow = function(tmdb_id) {
-    return new Promise(function(resolve, reject) {
-    var query = 'tvshow/' + tmdb_id;
-    redisClient.exists('tvshow/' + tmdb_id, function(err, reply) {
-      if (reply === 1) {
-          console.log('exists');
-          redisClient.get(query, async function(err,data) {
-              if(err)
-                console.log(err)
-              else{
-                console.log('got query from redis');
-                var parsed_result = JSON.parse(JSON.parse(data));
-                  //parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
-                  parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
-                  resolve(parsed_result);
-              }
-            });
-      } else {
-          TMDBController.getShowFromTMDB(tmdb_id).then(async function(data) {
-          var data = JSON.parse(data)
-            data._id = result._id;
-            data.__t = result.__t;
-            resolve(data);
-        })
-      }
-    })
-    })
 };
 
 var userHasRated = async function(user_id, media_id) {
