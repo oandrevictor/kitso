@@ -50,11 +50,10 @@ html, body {
 
 .rating-star {
   background: url("/images/icon/purple-star.svg") center no-repeat;
-  background-size: 16px;
+  background-size: 12px;
   height: 12px;
   width: 12px;
-  padding-left: 0px;
-  padding: 10px; }
+  padding: 0px; }
 
 .purple-button {
   background: #8600CA !important;
@@ -484,7 +483,7 @@ html, body {
     background-size: 12px;
     height: 12px;
     width: 12px;
-    padding-left: 0px; }
+    padding: 0px; }
 
 .movie {
   font-family: 'Roboto' !important; }
@@ -536,7 +535,7 @@ html, body {
       background-size: 12px;
       height: 12px;
       width: 12px;
-      padding-left: 0px; }
+      padding: 0px; }
   .movie .left-bar {
     float: right;
     position: relative;
@@ -681,7 +680,7 @@ html, body {
       background-size: 12px;
       height: 12px;
       width: 12px;
-      padding-left: 0px; }
+      padding: 0px; }
   .tvshow .left-bar {
     position: relative;
     float: right;
