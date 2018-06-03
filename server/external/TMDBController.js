@@ -11,7 +11,8 @@ exports.getShowFromTMDB = function(tmdb_id) {
         console.log("Could not get from redis, requesting info from The Movie DB");
 
         var query = RequestGenerals.TVSHOW_ENDPOINT + tmdb_id;
-        https.get(TMDBConstants.TMDB_API_ROUTE + tmdb_id + TMDBConstants.TMDB_API_KEY,
+        let tmdbQuery = TMDBConstants.TMDB_API_ROUTE + tmdb_id + TMDBConstants.TMDB_API_KEY;
+        https.get(tmdbQuery,
             (resp) => {
                 let data = '';
                 resp.on('data', (chunk) => {
@@ -29,3 +30,25 @@ exports.getShowFromTMDB = function(tmdb_id) {
     })
 };
 
+exports.getSeasonFromAPI = function(tv_id, season_number){
+    return new Promise(function(resolve, reject) {
+
+        var query =  RequestGenerals.TVSHOW_ENDPOINT + tv_id + RequestGenerals.SEASON_ENDPOINT + season_number;
+        let tmdbQuery = TMDBConstants.TMDB_API_ROUTE + tv_id + RequestGenerals.SEASON_ENDPOINT + season_number + TMDBConstants.TMDB_API_KEY;
+        https.get(tmdbQuery,
+            (resp) => {
+                let data = '';
+                resp.on('data', (chunk) => {
+                    data += chunk;
+                });
+                resp.on('end', () => {
+                    console.log("Saving season result to redis: "+  query);
+                    redisClient.set(query, JSON.stringify(data));
+                    resolve(data)
+                });
+            }).on("error", (err) => {
+                console.log("Error: " + err.message);
+                reject();
+            });
+    })
+};

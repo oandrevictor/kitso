@@ -1,6 +1,7 @@
 var Watched = require('../models/Watched');
 var RequestStatus = require('../constants/requestStatus');
 var ActionType = require('../constants/actionType');
+var TMDBController = require('../external/TMDBController');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 
 exports.index = async function(req, res) {
@@ -85,32 +86,12 @@ exports.delete = async function(req, res) {
     }
 };
 
-var getSeasonFromAPI = function(tv_id, season_number){
-  return new Promise(function(resolve, reject) {
-    var query = 'tvshow/' + tv_id + '/season/' + season_number;
-    https.get("https://api.themoviedb.org/3/tv/"+ tv_id + "/season/"+ season_number +"?api_key=db00a671b1c278cd4fa362827dd02620",
-    (resp) => {
-      let data = '';
-      resp.on('data', (chunk) => {
-        data += chunk;
-      });
-      resp.on('end', () => {
-        console.log("saving season result to redis:"+  query);
-        client.set(query, JSON.stringify(data));
-        resolve(data)
-      });
-
-    }).on("error", (err) => {
-      reject();
-    });
-  })
-};
 
 var injectMediaJsonInWatched = async function(watchedObj) {
     let mediaId = watchedObj._media;
     let mediaObj = await DataStoreUtils.getMediaObjById(mediaId);
     if (mediaObj.__t == 'Episode' && mediaObj._tmdb_tvshow_id){
-      var value = await getSeasonFromAPI(mediaObj._tmdb_tvshow_id, mediaObj.season_number).then((season) => {
+      var value = await TMDBController.getSeasonFromAPI(mediaObj._tmdb_tvshow_id, mediaObj.season_number).then((season) => {
         var watched_with_full_media = watchedObj;
         watched_with_full_media._media = mediaObj;
         watched_with_full_media._media.helper = season;

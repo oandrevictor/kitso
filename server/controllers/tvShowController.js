@@ -179,29 +179,6 @@ exports.delete = async function(req, res) {
 
 // AUXILIARY FUNCTIONS =============================================================================
 
-
-getSeasonFromAPI = function(tv_id, season_number){
-  return new Promise(function(resolve, reject) {
-    var query = 'tvshow/' + tv_id + '/season/' + season_number
-    https.get("https://api.themoviedb.org/3/tv/"+ tv_id + "/season/"+ season_number +"?api_key=db00a671b1c278cd4fa362827dd02620",
-    (resp) => {
-      let data = '';
-      resp.on('data', (chunk) => {
-        data += chunk;
-      });
-      resp.on('end', () => {
-        console.log("saving season result to redis:"+  query)
-        redisClient.set(query, JSON.stringify(data));
-        resolve(data)
-      });
-
-    }).on("error", (err) => {
-      console.log("Error: " + err.message);
-      reject();
-    });
-  })
-};
-
 matchApiSeasonsToDb = function(tvshow, dbtvshow){
   var tvshow = JSON.parse(tvshow);
   tvshow.seasons.forEach(function(season){
@@ -285,7 +262,7 @@ matchApiCastToDb = async function(dbtvshow){
 
 matchApiEpisodesToDb = function(tvshow, seasonapi, dbseason){
 
-  getSeasonFromAPI(tvshow.id, seasonapi.season_number).then((season)=>{
+  TMDBController.getSeasonFromAPI(tvshow.id, seasonapi.season_number).then((season)=>{
     var season = JSON.parse(season);
     season.episodes.forEach(function(episode){
       //before create fetch from db
@@ -301,7 +278,7 @@ matchApiEpisodesToDb = function(tvshow, seasonapi, dbseason){
       db_episode.number = episode.episode_number;
       db_episode.save().then((created) =>{
         console.log('Created Ep: '+ created.name)
-        dbseason._episodes.push(created._id);
+          dbseason._episodes.push(created._id);
         dbseason.save().then((saved_season)=>{
         }).catch((err)=>{
           console.log(err);

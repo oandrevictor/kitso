@@ -1,4 +1,5 @@
 const TVSHOW_ENDPOINT = "tvshow/";
+const SEASON_ENDPOINT = "/season/";
 
 class RequestGenerals {
 
@@ -6,6 +7,9 @@ class RequestGenerals {
         return TVSHOW_ENDPOINT ;
     }
 
+    static get SEASON_ENDPOINT() {
+        return SEASON_ENDPOINT;
+    }
 }
 
 module.exports = RequestGenerals;

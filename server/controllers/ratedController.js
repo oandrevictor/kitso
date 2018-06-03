@@ -117,7 +117,7 @@ var injectMediaJsonInRated = async function(rated_obj) {
     var media_id = rated_obj._media;
     var media_obj = await DataStoreUtils.getMediaObjById(media_id);
     if (media_obj.__t == 'Episode' && media_obj._tmdb_tvshow_id){
-      var value = await getSeasonFromAPI(media_obj._tmdb_tvshow_id, media_obj.season_number).then((season)=>{
+      var value = await TMDBController.getSeasonFromAPI(media_obj._tmdb_tvshow_id, media_obj.season_number).then((season)=>{
         var rated_with_full_media = rated_obj;
         rated_with_full_media._media = media_obj
         rated_with_full_media._media.helper = season;
@@ -141,7 +141,6 @@ var injectMediaJsonInRated = async function(rated_obj) {
     }
 };
 
-// TODO: move to tmdb expert class
 var getShow = function(tmdb_id) {
     return new Promise(function(resolve, reject) {
     var query = 'tvshow/' + tmdb_id;
