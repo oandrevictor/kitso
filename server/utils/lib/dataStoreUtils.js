@@ -198,6 +198,7 @@ exports.deleteFollowsPage = async function(followsId) {
     await this.deleteAction(actionId);
     await this.deleteActionFromUserHistory(userId, actionId);
     followObj.remove();
+    return followObj;
 };
 
 exports.deleteRated = async function(ratedId) {
@@ -207,6 +208,7 @@ exports.deleteRated = async function(ratedId) {
     await this.deleteAction(actionId);
     await this.deleteActionFromUserHistory(userId, actionId);
     ratedObj.remove();
+    return ratedObj;
 };
 
 exports.deleteWatched = async function(watchedId) {
@@ -216,6 +218,7 @@ exports.deleteWatched = async function(watchedId) {
     await this.deleteAction(actionId);
     await this.deleteActionFromUserHistory(userId, actionId);
     watchedObj.remove();
+    return watchedObj;
 };
 
 

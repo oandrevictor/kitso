@@ -77,9 +77,10 @@ exports.update = async function(req, res) {
 exports.delete = async function(req, res) {
     let watchedId = req.params.watched_id;
     try {
-        await DataStoreUtils.deleteWatched(watchedId);
-        res.status(RequestStatus.OK);
+        let deletedWatched = await DataStoreUtils.deleteWatched(watchedId);
+        res.status(RequestStatus.OK).json(deletedWatched);
     } catch (err) {
+        console.log(err);
         res.status(RequestStatus.BAD_REQUEST).send(err);
     }
 };
