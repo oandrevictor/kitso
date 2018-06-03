@@ -105,11 +105,11 @@ var getSeasonFromAPI = function(tv_id, season_number){
   })
 };
 
-var injectMediaJsonInWatched = async function(watched_obj) {
-    let mediaId = watched_obj._media;
+var injectMediaJsonInWatched = async function(watchedObj) {
+    let mediaId = watchedObj._media;
     let mediaObj = await DataStoreUtils.getMediaObjById(mediaId);
     if (mediaObj.__t == 'Episode' && mediaObj._tmdb_tvshow_id){
-      var value = await getSeasonFromAPI(media_obj._tmdb_tvshow_id, media_obj.season_number).then((season) => {
+      var value = await getSeasonFromAPI(mediaObj._tmdb_tvshow_id, mediaObj.season_number).then((season) => {
         var watched_with_full_media = watchedObj;
         watched_with_full_media._media = mediaObj;
         watched_with_full_media._media.helper = season;
@@ -118,7 +118,7 @@ var injectMediaJsonInWatched = async function(watched_obj) {
       return value;
     }
     else {
-      let watched_with_full_media = watched_obj;
+      let watched_with_full_media = watchedObj;
       watched_with_full_media._media = mediaObj;
       return watched_with_full_media;
     }
