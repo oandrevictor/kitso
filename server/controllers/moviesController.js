@@ -33,10 +33,10 @@ exports.index = function(req, res) {
             else{
               console.log('got query from redis: movie/' + tmdb_id);
               var parsed_result = JSON.parse(JSON.parse(data));
-              parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
+              parsed_result.poster_path = "https://image.tmdb.org/t/p/w500" + parsed_result.poster_path;
               parsed_result._id = movie._id;
               parsed_result.__t = movie.__t;
-              parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
+              parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original" + parsed_result.backdrop_path;
               final_result.push(parsed_result);
               if (final_result.length == movie_result.length) {
                 res.setHeader('Content-Type', 'application/json');
@@ -79,12 +79,12 @@ exports.show = function(req, res) {
             var parsed_result = JSON.parse(JSON.parse(data));
             var actors = result._actors;
             let actorsPromises = actors.map(injectPersonJson);
-            parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
+            parsed_result.poster_path = "https://image.tmdb.org/t/p/w500" + parsed_result.poster_path;
             parsed_result._id = result._id;
             parsed_result.__t = result.__t;
             await Promise.all(actorsPromises).then(function(nested_actors) {
               parsed_result._actors = nested_actors;
-              parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
+              parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original" + parsed_result.backdrop_path;
               res.setHeader('Content-Type', 'application/json');
               res.status(200).send(parsed_result);
             });
