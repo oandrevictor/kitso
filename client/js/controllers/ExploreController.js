@@ -86,6 +86,15 @@ function($scope, $location, $timeout, MovieService, TvShowService, WatchedServic
       }
     }
 
+    $scope.getName = function(media){
+      if (media.name){
+        return media.name;
+      }
+      if(media.title){
+        return media.title;
+      }
+    }
+
     $scope.markAsNotWatched = function(watchedId){
         WatchedService.markAsNotWatched(watchedId)
         .then(() => {
