@@ -45,7 +45,7 @@ exports.index = function(req, res) {
               }
             });
         } else {
-          getMovieFromTMDB(tmdb_id).then(async function(data) {
+          TMDBController.getMovieFromTMDB(tmdb_id).then(async function(data) {
             console.log("Got from TMDB: " + tmdb_id )
             data._id = movie_result._id;
             data.__t = movie_result.__t;
@@ -91,7 +91,7 @@ exports.show = function(req, res) {
           }
         });
       } else {
-        getMovieFromTMDB(tmdb_id).then(async function(data) {
+        TMDBController.getMovieFromTMDB(tmdb_id).then(async function(data) {
           var data = JSON.parse(data)
           data._seasons = results;
           data._id = result._id;
@@ -112,7 +112,7 @@ exports.create = function(req, res) {
   })
   .then((createdMovie) => {
     console.log("Created movie: " + createdMovie.name)
-    getMovieFromTMDB(createdMovie._tmdb_id).then( async (result)=> {
+    TMDBController.getMovieFromTMDB(createdMovie._tmdb_id).then( async (result)=> {
       result._id = createdMovie._id;
       result._seasons = createdMovie._seasons;
       result.__t = createdMovie.__t;
@@ -158,29 +158,6 @@ exports.delete = function(req, res) {
         res.status(RequestStatus.BAD_REQUEST).send(err);
     }
 };
-
-getMovieFromTMDB = function(tmdb_id){
-  return new Promise(function(resolve, reject) {
-    var query = 'movie/' + tmdb_id
-    console.log("Could not get from redis, requesting info from The Movie DB")
-    https.get("https://api.themoviedb.org/3/movie/"+ tmdb_id + "?api_key=db00a671b1c278cd4fa362827dd02620",
-    (resp) => {
-      let data = '';
-      resp.on('data', (chunk) => {
-        data += chunk;
-      });
-      resp.on('end', () => {
-        console.log("saving result to redis: "+ query)
-        redisClient.set(query, JSON.stringify(data));
-        resolve(data)
-      });
-
-    }).on("error", (err) => {
-      console.log("Error: " + err.message);
-      reject();
-    });
-  })
-}
 
 getMovieCastFromAPI = function(movie_id){
   return new Promise(function(resolve, reject) {
