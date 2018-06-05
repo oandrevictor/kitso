@@ -81,18 +81,8 @@ kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$route
           timeout: 2500
         });
       });
+    };
 
-    }
-
-    $scope.goToMedia = function (media) {
-      if (media.__t === 'TvShow') {
-        $location.path('tvshow/' + media._id);
-      } else if (media.__t === "Movie") {
-        $location.path('movie/' + media._id);
-      } else if (media.__t === "Episode") {
-        $location.path('tvshow/' + media._tvshow_id + '/season/' + media.season_number);
-      }
-    }
 
     $scope.markSeasonAsWatched = function () {
       var episodesIds = [];
@@ -180,11 +170,35 @@ kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$route
       $location.path('tvshow/edit/' + $routeParams.tvshow_id);
     }
 
+    $scope.rateEpisode = function(episode, rating){
+      var episodeId = episode._id;
+      if ($scope.tvshow.rated) {
+          if (rating !== $scope.tvshow.rating) {
+            $scope.updateRated($scope.tvshow.rated.rated_id, rating);
+            $scope.updateRating(episode, rating);
+            UIkit.notification({
+                message: '<span uk-icon=\'icon: check\'></span> Rating edited!',
+                status: 'success',
+                timeout: 1500
+            });
+          } else {
+            $scope.markAsNotRated($scope.tvshow.rated.rated_id);
+            $scope.updateRating(episode, 0);
+            UIkit.notification({
+                message: '<span uk-icon=\'icon: check\'></span> Rating removed.',
+                status: 'warning',
+                timeout: 1500
+            });
+          }
+      } else {
+        $scope.markEpisodeAsRated(episode, rating);
+      }
+    }
     $scope.rate = function (tvshowId, rating) {
       if ($scope.tvshow.rated) {
         if (rating !== $scope.tvshow.rating) {
           $scope.updateRated($scope.tvshow.rated.rated_id, rating);
-          $scope.updateRating(rating);
+          $scope.updateRating($scope.tvshow, rating);
           UIkit.notification({
             message: '<span uk-icon=\'icon: check\'></span> Rating edited!',
             status: 'success',
@@ -192,7 +206,7 @@ kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$route
           });
         } else {
           $scope.markAsNotRated($scope.tvshow.rated.rated_id);
-          $scope.updateRating(0);
+          $scope.updateRating($scope.tvshow, 0);
           UIkit.notification({
             message: '<span uk-icon=\'icon: check\'></span> Rating removed.',
             status: 'warning',
@@ -201,7 +215,7 @@ kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$route
         }
       } else {
         $scope.markAsRated(tvshowId, rating);
-        $scope.updateRating(rating);
+        $scope.updateRating($scope.tvShow, rating);
         UIkit.notification({
           message: '<span uk-icon=\'icon: check\'></span> Rated!',
           status: 'success',
@@ -210,7 +224,21 @@ kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$route
       }
     }
 
-    $scope.markAsRated = function (tvshowId, rating) {
+  $scope.markEpisodeAsRated = function(object, rating) {
+    object.rating = rating;
+    RatedService.markAsRated($scope.user._id, object._id, date = moment(), rating)
+    .then((rated) => {
+        object.rated = rated;
+    })
+    .catch((error) => {
+      UIkit.notification({
+        message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+        status: 'danger',
+        timeout: 2500
+      })});
+      }
+
+  $scope.markAsRated = function (tvshowId, rating) {
       $scope.tvshow.rating = rating;
       RatedService.markAsRated($scope.user._id, tvshowId, date = moment(), rating)
         .then((rated) => {
@@ -258,6 +286,15 @@ kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$route
         ratings.push(i + 1)
       }
       return ratings;
+    }
+    $scope.goToMedia = function (media) {
+      if (media.__t === 'TvShow') {
+        $location.path('tvshow/' + media._id);
+      } else if (media.__t === "Movie") {
+        $location.path('movie/' + media._id);
+      } else if (media.__t === "Episode"){
+        $location.path('tvshow/' + media._tvshow_id + '/season/'+ media.season_number);
+      }
     }
 
   }]);

@@ -2,9 +2,9 @@ var Show = require('../models/TvShow');
 var Season = require('../models/Season');
 var Episode = require('../models/Episode');
 var RequestStatus = require('../constants/requestStatus');
-var redisClient = require('../utils/lib/redisClient');
 const https = require('https');
-
+var RedisClient = require('../utils/lib/redisClient');
+var redisClient = RedisClient.createAndAuthClient();
 
 exports.show = function(req, res) {
   Show.findById(req.params.show_id)
