@@ -385,6 +385,15 @@ html, body {
     padding-right: 8px; }
   .profile .following-list .follow-button {
     background: rgba(0, 0, 0, 0.4); }
+  .profile .favorite-movie {
+    display: block;
+    background: #502274;
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 300px;
+    height: 150px; }
+  .profile .uk-overlay {
+    padding: 2px; }
   .profile .check {
     width: 20px !important;
     min-width: 20px !important;
@@ -395,7 +404,6 @@ html, body {
     background: #8600ca;
     color: white; }
   .profile .uk-background-cover {
-    background: url("/images/strange.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;

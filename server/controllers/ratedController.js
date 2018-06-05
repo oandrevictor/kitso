@@ -2,6 +2,9 @@ var Rated = require('../models/Rated');
 var RequestStatus = require('../constants/requestStatus');
 var ActionType = require('../constants/actionType');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
+var redisClient = require('../utils/lib/redisClient');
+const https = require('https');
+
 var TMDBController = require('../external/TMDBController');
 
 
@@ -128,6 +131,14 @@ var injectMediaJsonInRated = async function(rated_obj) {
         rated_with_full_media._media = media_obj;
         rated_with_full_media._media.helper = JSON.stringify(tvshow);
         return rated_with_full_media;
+      });
+      return value;
+    } else if (media_obj.__t == 'Movie' && media_obj._tmdb_id) {
+      var value = await TMDBController.getMovieFromTMDB(media_obj._tmdb_id).then((movie) => {
+        var watched_with_full_media = rated_obj;
+        watched_with_full_media._media = media_obj;
+        watched_with_full_media._media.helper = movie;
+        return watched_with_full_media;
       });
       return value;
     }

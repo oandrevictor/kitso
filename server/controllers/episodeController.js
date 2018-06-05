@@ -1,8 +1,7 @@
 var Show = require('../models/TvShow');
-var RedisClient = require('../utils/lib/redisClient');
+var redisClient = require('../utils/lib/redisClient');
 const https = require('https');
 
-const redisClient = RedisClient.createAndAuthClient();
 
 exports.show = function(req, res) {
     Show.findById(req.params.show_id)

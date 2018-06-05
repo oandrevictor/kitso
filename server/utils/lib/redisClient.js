@@ -15,11 +15,9 @@ exports.createAndAuthClient = function() {
         RedisClientConstants.PORT,
         RedisClientConstants.SERVER,
         RedisClientConstants.OPTIONS);
-
-    redisClient.auth(RedisClientConstants.ACCESS_TOKEN, function (err) {
+        redisClient.auth(RedisClientConstants.ACCESS_TOKEN, function (err) {
         if (err) throw err;
     });
 
     return redisClient;
 };
-
