@@ -98,6 +98,8 @@ exports.show = async function(req, res) {
           getPersonFromTMDB(tmdb_id).then(async function(data) {
             data = JSON.parse(data);
             data._id = result._id;
+            data.helper = result.helper;
+            data._appears_in = result._appears_in;
             data.profile_path = "https://image.tmdb.org/t/p/w500/" + data.profile_path;
             redisClient.set(query, JSON.stringify(data));
             res.status(RequestStatus.OK).send(data);
@@ -190,7 +192,7 @@ exports.delete = function(req, res) {
 var injectMediaJsonInAppearsIn = async function(appearsInObj) {
     let mediaId = appearsInObj._media;
     appearsInObj._media = await DataStoreUtils.getMediaObjById(mediaId);
-    if(appearsInObj._media._t == "TvShow"){
+    if(appearsInObj._media.__t == "TvShow"){
       appearsInObj._media.helper = await TMDBController.getShow(appearsInObj._media._tmdb_id).then(function (show){
         return JSON.stringify(show);
       });

@@ -6,7 +6,7 @@
       <div class="bar-content uk-width-xxlarge">
       <div class="uk-width-3-4">
         <div class="title tvshow-name">
-          <a><p class="tvshow-link">{{tvshow.name}}</p></a>
+          <a><p ng-click="goToMedia(tvshow)"class="tvshow-link">{{tvshow.name}}</p></a>
           <b>{{ season.name }} </b> <div class="hour-info"> ({{ season.air_date | date: 'yyyy' }})</div>
         </div>
         <div class="more-info">

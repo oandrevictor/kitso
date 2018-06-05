@@ -9,7 +9,7 @@ var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 var RedisClient = require('../utils/lib/redisClient');
 var TMDBController = require('../external/TMDBController');
 const https = require('https');
-const redisClient = RedisClient.createAndAuthClient();
+var redisClient = RedisClient.createAndAuthClient();
 
 // CRUD FUNCTIONS =================================================================================
 
