@@ -26,7 +26,6 @@ exports.index = function(req, res) {
       var query = 'movie/' + tmdb_id;
       redisClient.exists(query, function(err, reply) {
         if (reply === 1) {
-
           redisClient.get(query, async function(err,data) {
             if(err)
               console.log(err)

@@ -511,12 +511,11 @@ html, body {
   .movie .uk-dotnav {
     margin-bottom: 10px; }
   .movie .title {
-    bottom: 10px;
-    position: absolute;
     font-size: 4vh;
     font-weight: 100;
     margin-left: auto;
-    margin-right: auto; }
+    margin-right: auto;
+    display: inline-block; }
   .movie .sinopsis {
     text-align: justify;
     width: 540px; }

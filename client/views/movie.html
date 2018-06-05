@@ -2,16 +2,28 @@
   <!--Cover Content-->
   <div class="uk-background-cover" align="center" style="background-image: url({{ movie.backdrop_path }})">
     <div class="uk-width-xxlarge">
-      <div class="title">{{movie.title}}
-        <span ng-show="movie.isBoxOffice" class="uk-badge purple">In teathers</span>
+    </div>
+  </div>
+
+  <div class="purple-bar">
+    <div class="bar-content uk-width-xxlarge">
+    <div class="uk-width-3-4">
+      <div class="title tvshow-name">
+        <b>{{movie.title}} </b>   <div class="title">
+            <span ng-show="movie.isBoxOffice" class="uk-badge purple">In teathers</span>
+          </div><div class="hour-info"> ({{ movie.release_date | date: 'yyyy' }})</div>
+      </div>
+      <div class="more-info">
+        <span uk-icon="icon: rss"></span> 2.5K Followers
+        </div>
+
       </div>
     </div>
   </div>
   <div class="uk-width-xxlarge content">
     <div class="uk-width-3-4">
       <b>Directed by</b> Directors
-      <br /> Year:
-      <b>{{ release_date_formated }}</b> | Genres:
+       Genres:
       <b ng-repeat="genre in movie.genres">{{ genre.name }}; </b>
       <div class="rating">
         <div>
@@ -61,7 +73,7 @@
           <ul class="uk-slider-items uk-child-width-1-5@s">
             <li ng-repeat="person in movie._actors">
               <div class="uk-card uk-grid-match uk-card-default uk-card-hover appears-in cast-info" >
-                <a ng-href="person/{{person._id}}"> <img class="cast-image" style="background-image: url({{ person['image_url'] }})" /></a>
+                <a ng-href="person/{{person._id}}"> <img class="cast-image" style="background-image: url(https://image.tmdb.org/t/p/w500/{{ person['image_url'] }})" /></a>
                 <p class="uk-align-center uk-text-uppercase cast-name" align="center"> {{person.name}}</p>
               </div>
             </li>

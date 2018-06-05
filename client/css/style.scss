@@ -702,12 +702,11 @@ html, body {
   }
 
   .title {
-    bottom: 10px;
-    position: absolute;
     font-size: 4vh;
     font-weight: 100;
     margin-left: auto;
     margin-right: auto;
+    display: inline-block;
   }
 
   .sinopsis {
