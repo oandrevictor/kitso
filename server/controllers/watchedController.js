@@ -1,4 +1,5 @@
 var Watched = require('../models/Watched');
+var Season = require('../models/Season');
 var RequestStatus = require('../constants/requestStatus');
 var ActionType = require('../constants/actionType');
 var TMDBController = require('../external/TMDBController');
@@ -60,25 +61,24 @@ exports.watchSeason = async function(req, res) {
     var user_id = req.body._user;
     var date = req.body.date;
     //watched Season
-    let seasonWatched = await create_season_watched(seasonId, user_id, date);
     // watched episodes
     let result = await watch_season_episodes(episodesIds, user_id, date);
 
-    res.status(RequestStatus.OK).json({message: result, watched: seasonWatched});
+    res.status(RequestStatus.OK).json({message: result, watched: result});
 }
 
 exports.watchTvshow = async function(req, res) {
     var user_id = req.body._user;
     var date = req.body.date;
-    var seasons = req.body.seasons;
+    var tvshowId = req.body.tvshowId;
+    var seasons = await Season.find({_tvshow_id: tvshowId});
     let seasonsIds = getSeasonsIds(seasons);
-    let result = [];
-    seasonsIds.forEach(async (seasonId, i) => {
-        result[i] = await create_season_watched(seasonId, user_id, date);
-    });
+    var result = [];
     // watched episodes
-    let seasonEpisodesIds = getSeasonsEpisodesIds(seasons);
+    var seasonEpisodesIds = getSeasonsEpisodesIds(seasons);
+
     seasonEpisodesIds.forEach(async (episodesIds) => {
+      episodesIds = Array.from(new Set(episodesIds))
         await watch_season_episodes(episodesIds, user_id, date);
     });
     res.status(RequestStatus.OK).json(result);
@@ -150,11 +150,14 @@ var user_has_watched = async function(user_id, media_id) {
 }
 
 function getSeasonsEpisodesIds(seasons) {
-    let seasonsEpisodesIds = [];
+    var seasonsEpisodesIds = [];
     seasons.forEach((season, i) => {
         seasonsEpisodesIds[i] = [];
         season._episodes.forEach((episode) => {
-            seasonsEpisodesIds[i].push(episode);
+
+          if (seasonsEpisodesIds[i].indexOf(episode.toString()) < 0){
+            seasonsEpisodesIds[i].push(episode.toString());
+          }
         });
     });
     return seasonsEpisodesIds;

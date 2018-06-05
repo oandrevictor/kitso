@@ -61,7 +61,6 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
         });
 
     $scope.markTvshowAsWatched = function (tvshowId) {
-        WatchedService.markAsWatched($scope.user._id, tvshowId);
         WatchedService.markTvshowAsWatched($scope.user._id, $scope.tvshow._seasons, tvshowId)
             .then((watched) => {
                 console.log(watched);
