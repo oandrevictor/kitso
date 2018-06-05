@@ -67,6 +67,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         });
 
         $scope.user.ratings = ratings;
+        $scope.userFavoriteMovie = $scope.getUserFavoriteMovie();
         loadUserBackground();
       })
       .catch(function (error) {
@@ -94,11 +95,15 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
       })
   }
 
-  var loadUserBackground = function () {
-    $scope.userFavoriteMovie = $scope.getUserFavoriteMovie();
+  function isMovie(rating) {
+    return rating._media.__t === "Movie";
+  }
 
-    if ($scope.userFavoriteMovie != null) {
-      $scope.profileBackground = $scope.getBackground($scope.userFavoriteMovie);
+  var loadUserBackground = function () {
+    var ratedMovies = $scope.user.ratings.filter(isMovie);
+
+    if (ratedMovies.length > 0) {
+      $scope.profileBackground = ratedMovies.reverse()[0]._media.images.cover;
     } else {
       $scope.profileBackground = "/images/strange.jpg";
     }
@@ -180,6 +185,9 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
   }
 
   $scope.getBackground = function(media){
+    if (media === undefined || media === null) {
+      return;
+    }
     if(media.images && media.images.cover){
       return media.images.cover;
     }

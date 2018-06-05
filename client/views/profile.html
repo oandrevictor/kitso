@@ -40,11 +40,16 @@
           <hr class="uk-divider-icon">
           <div uk-grid>
             <div class="uk-width-1-2">
-              <p>Favorite Movie
+              <p style="padding-bottom: 10px">Favorite Movie
                 <a class="uk-link-text uk-text-uppercase uk-align-right" href="">See Ranking</a>
               </p>
+              <div class="uk-inline" ng-show="userFavoriteMovie">
+                <img class="favorite-movie" ng-click="goToMedia(userFavoriteMovie)" style="background-image: url({{ getBackground(userFavoriteMovie) }})" />
+                <div class="uk-overlay uk-overlay-primary uk-position-bottom">
+                  <p align="center">{{userFavoriteMovie.name}}</p>
+                </div>
+              </div>
               <p class="following-link" align="center" ng-show="!userFavoriteMovie">Você ainda não possui um filme favorito <br> Experimente avaliar algum filme</p>
-              <img class="favorite-movie" ng-show="userFavoriteMovie" ng-click="goToMedia(userFavoriteMovie)" style="background-image: url({{ userFavoriteMovie.images.poster }})" />
             </div>
             <div class="uk-width-1-2">
               <p>Watched Genres</p>
