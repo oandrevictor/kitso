@@ -460,6 +460,19 @@ html, body {
     }
   }
 
+  .favorite-movie {
+    display:block;
+    background: #502274;
+    background-repeat:no-repeat;
+    background-size:cover;
+    width: 300px;
+    height: 150px;
+  }
+
+  .uk-overlay {
+    padding: 2px;
+  }
+
   .check {
     width: 20px !important;
     min-width: 20px !important;
@@ -472,7 +485,6 @@ html, body {
   }
 
   .uk-background-cover {
-    background: url("/images/strange.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;

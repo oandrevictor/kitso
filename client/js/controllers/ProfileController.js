@@ -67,11 +67,14 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         });
 
         $scope.user.ratings = ratings;
+        $scope.userFavoriteMovie = $scope.getUserFavoriteMovie();
+        loadUserBackground();
       })
       .catch(function (error) {
         console.log(error);
       });
   }
+
   var loadUserFollowInfo = function(){
     FollowService.getUsersFollowing($scope.user._id).then( function(following){
         $scope.user.following = following
@@ -90,6 +93,20 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
       }).catch(function(error){
           console.log(error);
       })
+  }
+
+  function isMovie(rating) {
+    return rating._media.__t === "Movie";
+  }
+
+  var loadUserBackground = function () {
+    var ratedMovies = $scope.user.ratings.filter(isMovie);
+
+    if (ratedMovies.length > 0) {
+      $scope.profileBackground = ratedMovies.reverse()[0]._media.images.cover;
+    } else {
+      $scope.profileBackground = "/images/strange.jpg";
+    }
   }
 
   $scope.unfollow_user = function(unfollowedUser){
@@ -133,8 +150,29 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
 
   }
 
+  $scope.getUserFavoriteMovie = function () {
+    let greaterRating = null;
+
+    if ($scope.user.ratings.length > 0) {
+      $scope.user.ratings.forEach((rated) => {
+        if (rated._media.__t == "Movie") {
+          if (greaterRating == null) {
+            greaterRating = rated;
+          } else if (greaterRating.rating <= rated.rating) {
+            greaterRating = rated;
+          }
+        }
+      });
+    }
+
+    if (greaterRating != null) {
+      return greaterRating._media;
+    } else {
+      return greaterRating;
+    }
+  }
+
   $scope.getPoster = function(media){
-    console.log(media)
     if (media.poster_path){
       return poster_path;
     }
@@ -143,6 +181,18 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
     }
     if(media.helper && media.helper.poster_path){
       return 'https://image.tmdb.org/t/p/w500/' + media.helper.poster_path;
+    }
+  }
+
+  $scope.getBackground = function(media){
+    if (media === undefined || media === null) {
+      return;
+    }
+    if(media.images && media.images.cover){
+      return media.images.cover;
+    }
+    if(media.helper && media.helper.backdrop_path){
+      return media.helper.backdrop_path;
     }
   }
 
@@ -304,5 +354,8 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
   $scope.toggleDescriptionArea = function () {
     $scope.descriptionArea = !$scope.descriptionArea;
   }
+
+
+
 
 }]);
