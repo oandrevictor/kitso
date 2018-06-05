@@ -39,6 +39,20 @@ exports.getSeasonFromAPI = function(tv_id, season_number){
 
         var query =  RequestGenerals.TVSHOW_ENDPOINT + tv_id + RequestGenerals.SEASON_ENDPOINT + season_number;
         let tmdbQuery = TMDBConstants.TMDB_API_SHOW_ROUTE + tv_id + RequestGenerals.SEASON_ENDPOINT + season_number + TMDBConstants.TMDB_API_KEY;
+        redisClient.exists(query, function(err, reply) {
+            if (reply === 1) {
+              console.log("got query from redis: " + query)
+                redisClient.get(query, async function(err,data) {
+                    if (err)
+                        console.log(err);
+                    else {
+                        var parsed_result = JSON.parse(JSON.parse(data));
+                        parsed_result.backdrop_path = TMDBConstants.TMDB_BACK_IMAGE_PATH + parsed_result.backdrop_path;
+                        resolve(JSON.stringify(parsed_result));
+                    }
+                });
+            }
+            else{
         https.get(tmdbQuery,
             (resp) => {
                 let data = '';
@@ -54,7 +68,9 @@ exports.getSeasonFromAPI = function(tv_id, season_number){
                 console.log("Error: " + err.message);
                 reject();
             });
-    })
+          }
+        })
+      })
 };
 
 exports.getShow = function(tmdb_id){
@@ -87,7 +103,7 @@ exports.getShow = function(tmdb_id){
     })
 }
 
-exports.getMovie = function(tmdb_id) { 
+exports.getMovie = function(tmdb_id) {
     return new Promise(function(resolve, reject) {
       console.log("Get movie:" + tmdb_id)
       Movie.find({_tmdb_id: tmdb_id}).catch((err)=> console.log(err)). then(async (result)=>{

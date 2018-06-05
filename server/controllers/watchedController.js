@@ -7,7 +7,7 @@ var RedisClient = require('../utils/lib/redisClient');
 
 exports.index = async function(req, res) {
     let user_id = req.params.user_id;
-    let watched_list, promises;
+    var watched_list, promises;
     try {
         watched_list = await DataStoreUtils.getWatchedByUserId(user_id);
         promises = await watched_list.map(injectMediaJsonInWatched);
