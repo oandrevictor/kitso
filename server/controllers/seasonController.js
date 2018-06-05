@@ -2,10 +2,8 @@ var Show = require('../models/TvShow');
 var Season = require('../models/Season');
 var Episode = require('../models/Episode');
 var RequestStatus = require('../constants/requestStatus');
-var RedisClient = require('../utils/lib/redisClient');
+var redisClient = require('../utils/lib/redisClient');
 const https = require('https');
-
-const redisClient = RedisClient.createAndAuthClient();
 
 
 exports.show = function(req, res) {
@@ -29,7 +27,7 @@ exports.show = function(req, res) {
               if(err)
                 console.log(err)
               else{
-                console.log('got query from redis');
+                console.log('got query from redis:' + query);
                 var parsed_result = JSON.parse(JSON.parse(data));
                 let promises = parsed_result.episodes.map(injectEpisodeId(season._id));
 

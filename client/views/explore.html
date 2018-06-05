@@ -36,7 +36,7 @@
                                       </div>
                                     </div>
                                   <div class="uk-card-body">
-                                      <p class="uk-text">{{media.name}}</p>
+                                      <p class="uk-text">{{getName(media)}}</p>
                                   </div>
                                 </div>
                           </div>
@@ -57,12 +57,12 @@
                   <div class="uk-card-media-top">
                     <div class="uk-visible-toggle">
                       <a ng-href="/movie/{{movie._id}}">
-                        <img class="poster" style="background-image: url({{ movie.images.poster }})" />
+                        <img class="poster" style="background-image: url({{ movie.poster_path }})" />
                       </a>
                     </div>
                   </div>
                   <div class="uk-card-body">
-                    <p class="uk-text">{{movie.name}}</p>
+                    <p class="uk-text">{{movie.title}}</p>
                   </div>
                 </div>
               </div>

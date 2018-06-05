@@ -11,7 +11,6 @@ var TMDBController = require('../external/TMDBController');
 const https = require('https');
 const redisClient = RedisClient.createAndAuthClient();
 
-
 // CRUD FUNCTIONS =================================================================================
 
 exports.index = function(req, res) {

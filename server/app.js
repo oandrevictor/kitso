@@ -11,6 +11,7 @@ var passport       = require('passport');
 var session        = require('express-session');
 var MongoStore     = require('connect-mongo')(session);
 var dotenv         = require('dotenv').load();
+
 var RedisClient = require('./utils/lib/redisClient');
 
 let client = RedisClient.createAndAuthClient();
@@ -19,10 +20,6 @@ let client = RedisClient.createAndAuthClient();
 
 // config files
 var db = require('./config/db');
-
-client.on('connect', function() {
-    console.log('connected to Redis');
-});
 
 // set our port
 var port = process.env.PORT || 8080;

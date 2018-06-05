@@ -174,7 +174,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
 
   $scope.getPoster = function(media){
     if (media.poster_path){
-      return poster_path;
+      return media.poster_path;
     }
     if(media.images && media.images.poster){
       return media.images.poster;
