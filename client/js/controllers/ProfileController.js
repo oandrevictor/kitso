@@ -4,6 +4,7 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$rout
 function ($scope, $location, $timeout, $routeParams, AuthService, UserService, FollowService, WatchedService, RatedService) {
 
   $('.full-loading').show();
+  var loaded = 0;
   AuthService.getStatus()
     .then(() => {
       $scope.user = AuthService.getUser();
@@ -14,7 +15,6 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
           loadUserRatedInfo();
           loadUserFollowInfo();
           loadUserWatchedInfo();
-          $('.full-loading').hide();
           FollowService.isFollowingUser($scope.logged_user._id, $scope.user._id).then((followed) => {
             $scope.user.followed = followed;
           }).catch((error) => {
@@ -34,7 +34,6 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         loadUserRatedInfo();
         loadUserFollowInfo();
         loadUserWatchedInfo();
-        $('.full-loading').hide();
       }
     });
 
@@ -45,6 +44,12 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
     return - moment(a.date).diff(moment(b.date))
   }
 
+  var checkFinishedLoading = function(){
+    if (loaded >=2) {
+      $('.full-loading').hide();
+    }
+  }
+
   var loadUserWatchedInfo = function(){
     WatchedService.getAllWatched($scope.user._id)
       .then(function (watched) {
@@ -52,26 +57,34 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
           watched.date = new Date(watched.date);
         });
         watched = watched.sort(compareDates);
-
         $scope.user.watched = watched;
+        loaded +=1;
+        checkFinishedLoading();
+
       }).catch(function (error) {
+        loaded +=1;
+        checkFinishedLoading();
         console.log(error);
-      });
+      })
   }
 
   var loadUserRatedInfo = function(){
     RatedService.getAllRated($scope.user._id)
       .then((ratings) => {
+        loaded +=1;
         ratings.forEach((rated) => {
           rated.date = new Date(rated.date);
         });
 
-        $scope.user.ratings = ratings;
+        $scope.user.ratings = ratings.sort(compareDates);
         $scope.userFavoriteMovie = $scope.getUserFavoriteMovie();
         loadUserBackground();
+        checkFinishedLoading();
       })
       .catch(function (error) {
         console.log(error);
+        loaded +=1;
+        checkFinishedLoading();
       });
   }
 
@@ -103,7 +116,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
     var ratedMovies = $scope.user.ratings.filter(isMovie);
 
     if (ratedMovies.length > 0) {
-      $scope.profileBackground = ratedMovies.reverse()[0]._media.images.cover;
+      $scope.profileBackground = "https://image.tmdb.org/t/p/original/" + ratedMovies[0]._media.helper.backdrop_path;
     } else {
       $scope.profileBackground = "/images/strange.jpg";
     }
@@ -192,7 +205,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
       return media.images.cover;
     }
     if(media.helper && media.helper.backdrop_path){
-      return media.helper.backdrop_path;
+      return 'https://image.tmdb.org/t/p/original/' + media.helper.backdrop_path;
     }
   }
 
