@@ -1,8 +1,9 @@
 var Follows = require('../models/Follows');
 var Action = require('../models/Action');
 var User = require('../models/User');
-
-const FOLLOWED_ACTION_TYPE = "followed";
+var RequestStatus = require('../constants/requestStatus');
+var ActionType = require('../constants/actionType');
+var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 
 exports.index = async function(req, res) {
     let user_id = req.params.user_id;
@@ -12,10 +13,10 @@ exports.index = async function(req, res) {
         promises = following_list.map(getFollowedFromFollow);
 
         Promise.all(promises).then(function(results) {
-            res.status(200).json(results);
+            res.status(RequestStatus.OK).json(results);
         })  
     } catch (err) {
-        res.status(400).json(err);
+        res.status(RequestStatus.BAD_REQUEST).json(err);
     }
 };
 
@@ -25,21 +26,21 @@ exports.is_following = async function(req, res) {
 
     Follows.find({_user: user_id, _following: following_id}, function(err, result) {
         if (err) {
-            res.status(400).json(err);
+            res.status(RequestStatus.BAD_REQUEST).json(err);
         } else {
             if (result.length > 0) {
                 res_json = {
                     "is_following": true,
                     "following_id": result[0]._id
                 }
-                res.status(200).json(res_json);
+                res.status(RequestStatus.OK).json(res_json);
             } else {
                 json_not_following = {"is_following": false};
-                res.status(200).json(json_not_following);
+                res.status(RequestStatus.OK).json(json_not_following);
             }
         }
     });
-}
+};
 
 exports.following_me = async function(req, res) {
     let user_id = req.query.user_id;
@@ -49,26 +50,26 @@ exports.following_me = async function(req, res) {
         promises = following_me_list.map(getFollowFromFollowed);
 
         Promise.all(promises).then(function(results) {
-            res.status(200).json(results);
+            res.status(RequestStatus.OK).json(results);
         }) 
     } catch (err) {
-        res.status(400).json(err);
+        res.status(RequestStatus.BAD_REQUEST).json(err);
     }
-}
+};
 
 exports.create = async function(req, res) {
     var follow = new Follows(req.body);
     let user_id = follow._user;
-    let action = await create_action(user_id, follow._id);
+    let action = await DataStoreUtils.createAction(user_id, follow._id, ActionType.FOLLOWED_USER);
     follow._action = action._id;
-    await add_action_to_user_history(user_id, action._id);
+    await DataStoreUtils.addActionToUserHistory(user_id, action._id);
 
     follow.save()
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((createdFollow) => {
-        res.status(200).send(createdFollow);
+        res.status(RequestStatus.OK).send(createdFollow);
     });
 };
 
@@ -77,7 +78,7 @@ exports.delete = async function(req, res) {
 
     Follows.findById(follow_id, function(err, followed) {
         if (!followed || err) {
-            res.status(400).send("Follow inexistente");
+            res.status(RequestStatus.BAD_REQUEST).send("Follow inexistente");
         } else {
             let user_id = followed._user;
             let action_id = followed._action;
@@ -86,10 +87,10 @@ exports.delete = async function(req, res) {
 
             Follows.remove({ _id: follow_id})
             .catch((err) => {
-                res.status(400).send(err);
+                res.status(RequestStatus.BAD_REQUEST).send(err);
             })
             .then(() => {
-                res.status(200).send('Follow removido.');
+                res.status(RequestStatus.OK).send('Follow removido.');
             });
         }
     });
@@ -97,33 +98,15 @@ exports.delete = async function(req, res) {
 
 var getFollowedFromFollow = async function(follow) {
     return User.findById(follow._following).exec();
-}
+};
 
 var getFollowFromFollowed = async function(follow) {
     return User.findById(follow._user).exec();
-}
-
-var create_action = async function(user_id, follow_id) {
-    var action = new Action({
-        _user: user_id,
-        date: new Date(),
-        _action: follow_id,
-        action_type: FOLLOWED_ACTION_TYPE,
-    });
-    return action.save();
-}
-
-var add_action_to_user_history = async function(user_id, action_id) {
-    User.findById(user_id, function (err, user) {
-        let user_history = user._history;
-        user_history.push(action_id);
-        return user.save();
-    });
-}
+};
 
 var delete_action = function(action_id) {
     Action.remove({ _id: action_id}).exec();
-}
+};
 
 var delete_action_from_user_history = async function(user_id, action_id) {
     User.findById(user_id, function (err, user) {
@@ -134,4 +117,4 @@ var delete_action_from_user_history = async function(user_id, action_id) {
         }
         user.save();
     });
-}
+};

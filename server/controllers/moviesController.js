@@ -3,35 +3,32 @@ var RequestStatus = require('../constants/requestStatus');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 
 
-// Todos filmes
 exports.index = function(req, res) {
     Movie.find({})
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((result) => {
-        res.status(200).json(result);
+        res.status(RequestStatus.OK).json(result);
     });
 };
 
-// Um filme
 exports.show = function(req, res) {
     Movie.findById(req.params.movie_id)
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((result) => {
-        res.status(200).json(result);
+        res.status(RequestStatus.OK).json(result);
     });
 };
 
-// Criar filme
 exports.create = function(req, res) {
     var movie = new Movie(req.body);
 
     movie.save()
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((createdMovie) => {
         res_json = {
@@ -40,15 +37,14 @@ exports.create = function(req, res) {
                 "movieId": createdMovie._id,
             }
         }
-        res.status(200).json(res_json);
+        res.status(RequestStatus.OK).json(res_json);
     });
 };
 
-// Editar filme
 exports.update = function(req, res) {
     Movie.findById(req.params.movie_id)
     .catch((err) => {
-        res.status(400).send(err);
+        res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((movie) => {
         if (req.body.name) movie.name = req.body.name;
@@ -63,15 +59,14 @@ exports.update = function(req, res) {
 
         movie.save()
         .catch((err) => {
-            res.status(400).send(err);
+            res.status(RequestStatus.BAD_REQUEST).send(err);
         })
         .then((updatedMovie) => {
-            res.status(200).json(updatedMovie);
+            res.status(RequestStatus.OK).json(updatedMovie);
         });
     });
 };
 
-// Deletar filme
 exports.delete = function(req, res) {
     try {
         DataStoreUtils.deleteMediaById(req.params.movie_id);

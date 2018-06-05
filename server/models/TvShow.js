@@ -15,8 +15,6 @@ var TvShowSchema = new Schema({
     }
 });
 
-var TvShow = Media.discriminator('TvShow',
-     TvShowSchema);
-
+var TvShow = Media.discriminator('TvShow', TvShowSchema);
 
 module.exports = TvShow;
