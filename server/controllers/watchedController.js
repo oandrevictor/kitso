@@ -129,6 +129,14 @@ var injectMediaJsonInWatched = async function(watchedObj) {
         return watched_with_full_media;
       });
       return value;
+    } else if (mediaObj.__t == 'Movie' && mediaObj._tmdb_id) {
+      var value = await TMDBController.getMovieFromTMDB(mediaObj._tmdb_id).then((movie) => {
+        var watched_with_full_media = watchedObj;
+        watched_with_full_media._media = mediaObj;
+        watched_with_full_media._media.helper = movie;
+        return watched_with_full_media;
+      });
+      return value;
     }
     else {
       let watched_with_full_media = watchedObj;

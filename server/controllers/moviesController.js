@@ -93,10 +93,9 @@ exports.show = function(req, res) {
       } else {
         TMDBController.getMovieFromTMDB(tmdb_id).then(async function(data) {
           var data = JSON.parse(data)
-          data._seasons = results;
           data._id = result._id;
           data.__t = result.__t;
-          res.status(200).send(data);
+          res.status(RequestStatus.OK).send(data);
         })
       }
     });
