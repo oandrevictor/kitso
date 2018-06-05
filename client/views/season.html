@@ -84,8 +84,8 @@
                           <center>
                             <ul class="uk-iconnav">
                               <div ng-repeat="n in range('10')">
-                                <a ng-if="n <= episode.rating" class="rating-star" ng-click="rate(episode, n)"></a>
-                                <a ng-if="n > episode.rating" uk-icon="icon: star; ratio: .5" ng-click="rate(episode, n)"></a>
+                                <a ng-if="n <= episode.rating" class="rating-star" ng-click="rateEpisode(episode, n)"></a>
+                                <a ng-if="n > episode.rating" uk-icon="icon: star; ratio: .5" ng-click="rateEpisode(episode, n)"></a>
                               </div>
                             </ul>
                           </center>

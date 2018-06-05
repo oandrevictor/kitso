@@ -63,6 +63,7 @@ kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$route
         episode.rated = rated;
         if (!rated.rated_id) {
           episode.rated = false;
+          $scope.updateRating(episode, 0);
         } else {
           RatedService.getRated(episode.rated.rated_id).then((rated) => {
             $scope.updateRating(episode, rated.rating);
@@ -172,9 +173,9 @@ kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$route
 
     $scope.rateEpisode = function(episode, rating){
       var episodeId = episode._id;
-      if ($scope.tvshow.rated) {
-          if (rating !== $scope.tvshow.rating) {
-            $scope.updateRated($scope.tvshow.rated.rated_id, rating);
+      if (episode.rated) {
+          if (rating !== episode.rating) {
+            $scope.updateRated(episode.rated.rated_id, rating);
             $scope.updateRating(episode, rating);
             UIkit.notification({
                 message: '<span uk-icon=\'icon: check\'></span> Rating edited!',
@@ -182,7 +183,7 @@ kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$route
                 timeout: 1500
             });
           } else {
-            $scope.markAsNotRated($scope.tvshow.rated.rated_id);
+            $scope.markAsNotRated(episode.rated.rated_id);
             $scope.updateRating(episode, 0);
             UIkit.notification({
                 message: '<span uk-icon=\'icon: check\'></span> Rating removed.',
