@@ -11,7 +11,6 @@ kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$route
         TvShowService.loadSeason($routeParams.tvshow_id, $routeParams.season)
           .then((season) => {
             $scope.season = season;
-            console.log($scope.season)
             loadEpisodeActions($scope.season);
             $scope.season.episodes.forEach(function (episode) {
               loadEpisodeActions(episode)
@@ -91,8 +90,8 @@ kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$route
       });
 
       WatchedService.markSeasonAsWatched($scope.user._id, episodesIds, $scope.season._id)
-        .then((watched) => {
-          console.log(watched);
+        .then((result) => {
+          $scope.season.watched = result.watched;
         })
         .catch((error) => {
           UIkit.notification({

@@ -21,9 +21,9 @@
       <div class="left-bar uk-width-1-4">
         <div ng-show="tvshow.rated" class="rating-info"> {{tvshow.rating}} </div>
         <img class="poster" style="background-image: url({{ tvshow.poster_path }})" />
-        <button ng-hide="tvshow.watched" ng-click="markAsWatched(tvshow._id)" class="uk-button uk-button-default watch-button">
+        <button ng-hide="season.watched" ng-click="markSeasonAsWatched()" class="uk-button uk-button-default watch-button">
           <span uk-icon="icon: check;"></span> Mark as watched</button>
-        <button ng-show="tvshow.watched" ng-click="markAsNotWatched(tvshow.watched.watched_id)" class="uk-button uk-button-default watch-button watched">
+        <button ng-show="season.watched" ng-click="" class="uk-button uk-button-default watch-button watched">
           <span uk-icon="icon: check;"></span> Watched (undo) </button>
       </div>
 
