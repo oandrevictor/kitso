@@ -30,10 +30,10 @@ exports.logout = function(req, res) {
 
 exports.status = function(req, res) {
   var user = req.user;
-	if (user) {
+  if (user) {
     user = _.omit(user.toJSON(), 'password');
-		res.status(RequestStatus.OK).send({user: user, status: true});
-	} else {
-		res.status(RequestStatus.OK).send({status: false});
-	}
+    res.status(RequestStatus.OK).send({user: user, status: true});
+  } else {
+    res.status(RequestStatus.OK).send({status: false});
+  }
 }

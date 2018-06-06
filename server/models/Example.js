@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var ExampleSchema = new Schema({
-    nome: String
+  nome: String
 });
 
 var Example = mongoose.model('Example', ExampleSchema);

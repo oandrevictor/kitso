@@ -5,22 +5,22 @@ const TMDB_BACK_IMAGE_PATH = "https://image.tmdb.org/t/p/original/";
 
 class TMDBConstants {
 
-    static get TMDB_API_SHOW_ROUTE() {
-        return TMDB_API_SHOW_ROUTE;
-    }
+  static get TMDB_API_SHOW_ROUTE() {
+    return TMDB_API_SHOW_ROUTE;
+  }
 
-    static get TMDB_API_MOVIE_ROUTE() {
-        return TMDB_API_MOVIE_ROUTE;
-    }
+  static get TMDB_API_MOVIE_ROUTE() {
+    return TMDB_API_MOVIE_ROUTE;
+  }
 
 
-    static get TMDB_API_KEY() {
-        return TMDB_API_KEY;
-    }
+  static get TMDB_API_KEY() {
+    return TMDB_API_KEY;
+  }
 
-    static get TMDB_BACK_IMAGE_PATH() {
-        return TMDB_BACK_IMAGE_PATH;
-    }
+  static get TMDB_BACK_IMAGE_PATH() {
+    return TMDB_BACK_IMAGE_PATH;
+  }
 
 }
 

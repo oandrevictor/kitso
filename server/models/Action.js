@@ -25,7 +25,7 @@ var ActionSchema = new Schema({
     type: Boolean,
     default: false,
     required: true
-   }
+  }
 });
 
 var Action = mongoose.model('Action', ActionSchema);

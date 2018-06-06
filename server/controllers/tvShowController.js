@@ -14,165 +14,165 @@ var redisClient = RedisClient.createAndAuthClient();
 // CRUD FUNCTIONS =================================================================================
 
 exports.index = function(req, res) {
-    Show.find({})
-    .catch((err) => {
-        res.status(RequestStatus.BAD_REQUEST).send(err);
-    })
-    .then((tv_result) => {
-      var final_result = [];
-      var answered = 0;
-      tv_result.forEach((tvshow, index)=>{
-        var tmdb_id = tvshow._tmdb_id;
-        var query = 'tvshow/' + tmdb_id;
-        redisClient.exists(query, function(err, reply) {
-          if (reply === 1) {
+  Show.find({})
+  .catch((err) => {
+    res.status(RequestStatus.BAD_REQUEST).send(err);
+  })
+  .then((tv_result) => {
+    var final_result = [];
+    var answered = 0;
+    tv_result.forEach((tvshow, index)=>{
+      var tmdb_id = tvshow._tmdb_id;
+      var query = 'tvshow/' + tmdb_id;
+      redisClient.exists(query, function(err, reply) {
+        if (reply === 1) {
 
-            redisClient.get(query, async function(err,data) {
-              if(err)
-                console.log(err);
-              else{
-                console.log('got query from redis: tvshow/' + tmdb_id);
-                answered +=1;
-                var parsed_result = JSON.parse(JSON.parse(data));
-                var promises = await tvshow._seasons.map(inject_seasons);
-                parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
-                parsed_result._id = tvshow._id;
-                parsed_result.__t = tvshow.__t;
-                parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
-                final_result.push(parsed_result);
-                if (final_result.length == tv_result.length) {
-                  res.setHeader('Content-Type', 'application/json');
-                  res.status(RequestStatus.OK).send(final_result);
-                }
-                }
-              });
-          } else {
-              TMDBController.getShowFromTMDB(tmdb_id).then(async function(data) {
-              answered += 1;
-              console.log("Got from TMDB: " + tmdb_id )
+          redisClient.get(query, async function(err,data) {
+            if(err)
+            console.log(err);
+            else{
+              console.log('got query from redis: tvshow/' + tmdb_id);
+              answered +=1;
+              var parsed_result = JSON.parse(JSON.parse(data));
               var promises = await tvshow._seasons.map(inject_seasons);
-              data._id = tv_result._id;
-              data.__t = tv_result.__t;
-              final_result.push(data)
+              parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
+              parsed_result._id = tvshow._id;
+              parsed_result.__t = tvshow.__t;
+              parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
+              final_result.push(parsed_result);
               if (final_result.length == tv_result.length) {
                 res.setHeader('Content-Type', 'application/json');
                 res.status(RequestStatus.OK).send(final_result);
               }
-            })
-          }
-        });
-      })
-    });
-};
-
-exports.show = function(req, res) {
-    Show.findById(req.params.show_id)
-    .catch((err) => {
-        res.status(RequestStatus.BAD_REQUEST).send(err);
-    })
-    .then((result) => {
-      var tmdb_id = result._tmdb_id;
-      var query = 'tvshow/' + tmdb_id;
-      redisClient.exists('tvshow/' + tmdb_id, function(err, reply) {
-        if (reply === 1) {
-            redisClient.get(query, async function(err,data) {
-                if(err)
-                  console.log(err);
-                else{
-                  var parsed_result = JSON.parse(JSON.parse(data));
-                  promises = await result._seasons.map(inject_seasons);
-                  var actors = result._actors;
-                  let actorsPromises = actors.map(injectPersonJson);
-
-                  Promise.all(promises).then(async function(results) {
-                    parsed_result._seasons = results;
-                    parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
-                    parsed_result._id = result._id;
-                    parsed_result.__t = result.__t;
-                    await Promise.all(actorsPromises).then(function(nested_actors) {
-                      parsed_result._actors = nested_actors;
-                      parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
-                      res.setHeader('Content-Type', 'application/json');
-                      res.status(RequestStatus.OK).send(parsed_result);
-                    });
-
-                  })
-                }
-              });
+            }
+          });
         } else {
-            TMDBController.getShowFromTMDB(tmdb_id).then(async function(data) {
-            var data = JSON.parse(data)
-            var promises = await result._seasons.map(inject_seasons);
-
-            Promise.all(promises).then(function(results) {
-              data._seasons = results;
-              data._id = result._id;
-              data.__t = result.__t;
-              res.status(RequestStatus.OK).send(data);
-            })
+          TMDBController.getShowFromTMDB(tmdb_id).then(async function(data) {
+            answered += 1;
+            console.log("Got from TMDB: " + tmdb_id )
+            var promises = await tvshow._seasons.map(inject_seasons);
+            data._id = tv_result._id;
+            data.__t = tv_result.__t;
+            final_result.push(data)
+            if (final_result.length == tv_result.length) {
+              res.setHeader('Content-Type', 'application/json');
+              res.status(RequestStatus.OK).send(final_result);
+            }
           })
         }
       });
+    })
+  });
+};
+
+exports.show = function(req, res) {
+  Show.findById(req.params.show_id)
+  .catch((err) => {
+    res.status(RequestStatus.BAD_REQUEST).send(err);
+  })
+  .then((result) => {
+    var tmdb_id = result._tmdb_id;
+    var query = 'tvshow/' + tmdb_id;
+    redisClient.exists('tvshow/' + tmdb_id, function(err, reply) {
+      if (reply === 1) {
+        redisClient.get(query, async function(err,data) {
+          if(err)
+          console.log(err);
+          else{
+            var parsed_result = JSON.parse(JSON.parse(data));
+            promises = await result._seasons.map(inject_seasons);
+            var actors = result._actors;
+            let actorsPromises = actors.map(injectPersonJson);
+
+            Promise.all(promises).then(async function(results) {
+              parsed_result._seasons = results;
+              parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
+              parsed_result._id = result._id;
+              parsed_result.__t = result.__t;
+              await Promise.all(actorsPromises).then(function(nested_actors) {
+                parsed_result._actors = nested_actors;
+                parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
+                res.setHeader('Content-Type', 'application/json');
+                res.status(RequestStatus.OK).send(parsed_result);
+              });
+
+            })
+          }
+        });
+      } else {
+        TMDBController.getShowFromTMDB(tmdb_id).then(async function(data) {
+          var data = JSON.parse(data)
+          var promises = await result._seasons.map(inject_seasons);
+
+          Promise.all(promises).then(function(results) {
+            data._seasons = results;
+            data._id = result._id;
+            data.__t = result.__t;
+            res.status(RequestStatus.OK).send(data);
+          })
+        })
+      }
     });
+  });
 };
 
 exports.create = function(req, res) {
-    console.log(req.body);
-    var show = new Show(req.body);
+  console.log(req.body);
+  var show = new Show(req.body);
 
-    show.save()
-    .catch((err) => {
-        res.status(RequestStatus.BAD_REQUEST).send(err);
+  show.save()
+  .catch((err) => {
+    res.status(RequestStatus.BAD_REQUEST).send(err);
+  })
+  .then((createdShow) => {
+    console.log(createdShow);
+    TMDBController.getShowFromTMDB(createdShow._tmdb_id).then( async (result)=> {
+      result._id = createdShow._id;
+      result._seasons = createdShow._seasons;
+      result.__t = createdShow.__t;
+      setTimeout(function(){matchApiSeasonsToDb(result, createdShow);}, 5000);
+      result._actors = await matchApiCastToDb(createdShow);
+      res.setHeader('Content-Type', 'application/json');
+      res.status(RequestStatus.OK).send(result);
     })
-    .then((createdShow) => {
-        console.log(createdShow);
-        TMDBController.getShowFromTMDB(createdShow._tmdb_id).then( async (result)=> {
-        result._id = createdShow._id;
-        result._seasons = createdShow._seasons;
-        result.__t = createdShow.__t;
-        setTimeout(function(){matchApiSeasonsToDb(result, createdShow);}, 5000);
-        result._actors = await matchApiCastToDb(createdShow);
-        res.setHeader('Content-Type', 'application/json');
-        res.status(RequestStatus.OK).send(result);
-      })
-    });
+  });
 };
 
 exports.update = function(req, res) {
-    Show.findById(req.params.show_id)
+  Show.findById(req.params.show_id)
+  .catch((err) => {
+    res.status(RequestStatus.BAD_REQUEST).send(err);
+  })
+  .then((show) => {
+    if (req.body.name) show.name = req.body.name;
+    if (req.body.overview) show.overview = req.body.overview;
+    if (req.body.release_date) show.release_date = req.body.release_date;
+    if (req.body._directors) show._directors = req.body._directors;
+    if (req.body._actors) show._actors = req.body._actors;
+    if (req.body.imdb_id) show.imdb_id = req.body.imdb_id;
+    if (req.body.genres) show.genres = req.body.genres;
+    if (req.body.images) show.images = req.body.images;
+    if (req.body.seasons) show.seasons = req.body.seasons;
+
+
+    show.save()
     .catch((err) => {
-        res.status(RequestStatus.BAD_REQUEST).send(err);
+      res.status(RequestStatus.BAD_REQUEST).send(err);
     })
-    .then((show) => {
-        if (req.body.name) show.name = req.body.name;
-        if (req.body.overview) show.overview = req.body.overview;
-        if (req.body.release_date) show.release_date = req.body.release_date;
-        if (req.body._directors) show._directors = req.body._directors;
-        if (req.body._actors) show._actors = req.body._actors;
-        if (req.body.imdb_id) show.imdb_id = req.body.imdb_id;
-        if (req.body.genres) show.genres = req.body.genres;
-        if (req.body.images) show.images = req.body.images;
-        if (req.body.seasons) show.seasons = req.body.seasons;
-
-
-        show.save()
-        .catch((err) => {
-            res.status(RequestStatus.BAD_REQUEST).send(err);
-        })
-        .then((updatedShow) => {
-            res.status(RequestStatus.OK).json(updatedShow);
-        });
+    .then((updatedShow) => {
+      res.status(RequestStatus.OK).json(updatedShow);
     });
+  });
 };
 
 exports.delete = async function(req, res) {
-    try {
-        DataStoreUtils.deleteMediaById(req.params.show_id);
-        res.status(RequestStatus.OK).send('Show removed.');
-    } catch (err) {
-        console.log(err);
-        res.status(RequestStatus.BAD_REQUEST).send(err);
-    }
+  try {
+    DataStoreUtils.deleteMediaById(req.params.show_id);
+    res.status(RequestStatus.OK).send('Show removed.');
+  } catch (err) {
+    console.log(err);
+    res.status(RequestStatus.BAD_REQUEST).send(err);
+  }
 };
 
 
@@ -211,16 +211,16 @@ getCastFromAPI = function(tv_id){
     console.log()
     https.get("https://api.themoviedb.org/3/tv/"+ tv_id + "/credits"+"?api_key=db00a671b1c278cd4fa362827dd02620",
     (resp) => {
-      let data = '';
-      resp.on('data', (chunk) => {
-        data += chunk;
-      });
-      resp.on('end', () => {
+      let data = '';
+      resp.on('data', (chunk) => {
+        data += chunk;
+      });
+      resp.on('end', () => {
         resolve(data)
-      });
+      });
 
     }).on("error", (err) => {
-      console.log("Error: " + err.message);
+      console.log("Error: " + err.message);
       reject();
     });
   })
@@ -278,7 +278,7 @@ matchApiEpisodesToDb = function(tvshow, seasonapi, dbseason){
       db_episode.number = episode.episode_number;
       db_episode.save().then((created) =>{
         console.log('Created Ep: '+ created.name)
-          dbseason._episodes.push(created._id);
+        dbseason._episodes.push(created._id);
         dbseason.save().then((saved_season)=>{
         }).catch((err)=>{
           console.log(err);
@@ -293,18 +293,18 @@ matchApiEpisodesToDb = function(tvshow, seasonapi, dbseason){
 };
 
 createAppearsIn = async function(personId, mediaId) {
-    let appearsIn = new AppearsIn();
-    appearsIn._media = mediaId;
-    appearsIn._person = personId;
-    let appearsInId = appearsIn._id;
-    let isDuplicated = await DataStoreUtils.alreadyExistsAppearsInByKeys(personId, mediaId);
-    if (isDuplicated) {
-        throw new Error(RequestMsg.DUPLICATED_ENTITY);
-    } else {
-        await saveAppearsIn(appearsIn);
-        await DataStoreUtils.addAppearsInToPerson(personId, appearsInId);
-        await DataStoreUtils.addPersonToMediaCast(personId, mediaId);
-    }
+  let appearsIn = new AppearsIn();
+  appearsIn._media = mediaId;
+  appearsIn._person = personId;
+  let appearsInId = appearsIn._id;
+  let isDuplicated = await DataStoreUtils.alreadyExistsAppearsInByKeys(personId, mediaId);
+  if (isDuplicated) {
+    throw new Error(RequestMsg.DUPLICATED_ENTITY);
+  } else {
+    await saveAppearsIn(appearsIn);
+    await DataStoreUtils.addAppearsInToPerson(personId, appearsInId);
+    await DataStoreUtils.addPersonToMediaCast(personId, mediaId);
+  }
 };
 
 saveAppearsIn = function(appearsIn) {
@@ -313,8 +313,8 @@ saveAppearsIn = function(appearsIn) {
 
 // TODO: move to expert utils
 injectPersonJson = async function(personId) {
-    let personObj = await DataStoreUtils.getPersonObjById(personId);
-    return personObj;
+  let personObj = await DataStoreUtils.getPersonObjById(personId);
+  return personObj;
 };
 
 inject_seasons = function(season) {

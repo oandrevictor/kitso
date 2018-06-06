@@ -13,13 +13,13 @@ const redisClient = RedisClient.createAndAuthClient();
 exports.index = function(req, res) {
   Movie.find({})
   .catch((err) => {
-      res.status(400).send(err);
+    res.status(400).send(err);
   })
   .then((movie_result) => {
     var final_result = [];
     console.log("len:" + movie_result.length)
     if (movie_result.len == 0)
-      res.status(200).send(final_result);
+    res.status(200).send(final_result);
     movie_result.forEach((movie, index)=>{
       var tmdb_id = movie._tmdb_id;
       console.log("current indexing:" + tmdb_id);
@@ -28,7 +28,7 @@ exports.index = function(req, res) {
         if (reply === 1) {
           redisClient.get(query, async function(err,data) {
             if(err)
-              console.log(err)
+            console.log(err)
             else{
               console.log('got query from redis: movie/' + tmdb_id);
               var parsed_result = JSON.parse(JSON.parse(data));
@@ -41,8 +41,8 @@ exports.index = function(req, res) {
                 res.setHeader('Content-Type', 'application/json');
                 res.status(200).send(final_result);
               }
-              }
-            });
+            }
+          });
         } else {
           TMDBController.getMovieFromTMDB(tmdb_id).then(async function(data) {
             console.log("Got from TMDB: " + tmdb_id )
@@ -63,7 +63,7 @@ exports.index = function(req, res) {
 exports.show = function(req, res) {
   Movie.findById(req.params.movie_id)
   .catch((err) => {
-      res.status(400).send(err);
+    res.status(400).send(err);
   })
   .then((result) => {
     var tmdb_id = result._tmdb_id;
@@ -72,7 +72,7 @@ exports.show = function(req, res) {
       if (reply === 1) {
         redisClient.get(query, async function(err,data) {
           if(err)
-            console.log(err)
+          console.log(err)
           else{
             console.log('got query from redis: movie/' + tmdb_id);
             var parsed_result = JSON.parse(JSON.parse(data));
@@ -106,7 +106,7 @@ exports.create = function(req, res) {
 
   movie.save()
   .catch((err) => {
-      res.status(400).send(err);
+    res.status(400).send(err);
   })
   .then((createdMovie) => {
     console.log("Created movie: " + createdMovie.name)
@@ -122,55 +122,55 @@ exports.create = function(req, res) {
 };
 
 exports.update = function(req, res) {
-    Movie.findById(req.params.movie_id)
-    .catch((err) => {
-        res.status(RequestStatus.BAD_REQUEST).send(err);
-    })
-    .then((movie) => {
-        if (req.body.name) movie.name = req.body.name;
-        if (req.body.overview) movie.overview = req.body.overview;
-        if (req.body.release_date) movie.release_date = req.body.release_date;
-        if (req.body._directors) movie._directors = req.body._directors;
-        if (req.body._actors) movie._actors = req.body._actors;
-        if (req.body.imdb_id) movie.imdb_id = req.body.imdb_id;
-        if (req.body.genres) movie.genres = req.body.genres;
-        if (req.body.images) movie.images = req.body.images;
-        if (req.body.isBoxOffice) movie.isBoxOffice = req.body.isBoxOffice;
+  Movie.findById(req.params.movie_id)
+  .catch((err) => {
+    res.status(RequestStatus.BAD_REQUEST).send(err);
+  })
+  .then((movie) => {
+    if (req.body.name) movie.name = req.body.name;
+    if (req.body.overview) movie.overview = req.body.overview;
+    if (req.body.release_date) movie.release_date = req.body.release_date;
+    if (req.body._directors) movie._directors = req.body._directors;
+    if (req.body._actors) movie._actors = req.body._actors;
+    if (req.body.imdb_id) movie.imdb_id = req.body.imdb_id;
+    if (req.body.genres) movie.genres = req.body.genres;
+    if (req.body.images) movie.images = req.body.images;
+    if (req.body.isBoxOffice) movie.isBoxOffice = req.body.isBoxOffice;
 
-        movie.save()
-        .catch((err) => {
-            res.status(RequestStatus.BAD_REQUEST).send(err);
-        })
-        .then((updatedMovie) => {
-            res.status(RequestStatus.OK).json(updatedMovie);
-        });
+    movie.save()
+    .catch((err) => {
+      res.status(RequestStatus.BAD_REQUEST).send(err);
+    })
+    .then((updatedMovie) => {
+      res.status(RequestStatus.OK).json(updatedMovie);
     });
+  });
 };
 
 exports.delete = function(req, res) {
-    try {
-        DataStoreUtils.deleteMediaById(req.params.movie_id);
-        res.status(RequestStatus.OK).send('Movie removed.');
-    } catch (err) {
-        console.log(err);
-        res.status(RequestStatus.BAD_REQUEST).send(err);
-    }
+  try {
+    DataStoreUtils.deleteMediaById(req.params.movie_id);
+    res.status(RequestStatus.OK).send('Movie removed.');
+  } catch (err) {
+    console.log(err);
+    res.status(RequestStatus.BAD_REQUEST).send(err);
+  }
 };
 
 getMovieCastFromAPI = function(movie_id){
   return new Promise(function(resolve, reject) {
     https.get("https://api.themoviedb.org/3/movie/"+ movie_id + "/credits"+"?api_key=db00a671b1c278cd4fa362827dd02620",
     (resp) => {
-      let data = '';
-      resp.on('data', (chunk) => {
-        data += chunk;
-      });
-      resp.on('end', () => {
+      let data = '';
+      resp.on('data', (chunk) => {
+        data += chunk;
+      });
+      resp.on('end', () => {
         resolve(data)
-      });
+      });
 
     }).on("error", (err) => {
-      console.log("Error: " + err.message);
+      console.log("Error: " + err.message);
       reject();
     });
   })
