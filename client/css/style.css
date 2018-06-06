@@ -48,6 +48,13 @@ html, body {
     .home .main-container .home-buttons {
       text-align: center; }
 
+.rating-star {
+  background: url("/images/icon/purple-star.svg") center no-repeat;
+  background-size: 12px;
+  height: 12px;
+  width: 12px;
+  padding: 0px; }
+
 .purple-button {
   background: #8600CA !important;
   color: white !important;
@@ -75,23 +82,23 @@ html, body {
     text-align: center; }
     .toolbar .exploring .explore-icon {
       background: url("/images/icon/explore.svg") center no-repeat;
-      background-size: 20px;
-      height: 20px;
-      width: 20px;
+      background-size: 30px;
+      height: 30px;
+      width: 30px;
       border: 0px;
       padding: 0px; }
     .toolbar .exploring .home-icon {
       background: url("/images/icon/home.svg") center no-repeat;
-      background-size: 21px;
-      height: 21px;
-      width: 21px;
+      background-size: 30px;
+      height: 30px;
+      width: 30px;
       border: 0px;
       padding: 0px; }
     .toolbar .exploring .profile-icon {
       background: url("/images/icon/profile.svg") center no-repeat;
-      background-size: 20px;
-      height: 20px;
-      width: 20px;
+      background-size: 30px;
+      height: 30px;
+      width: 30px;
       border: 0px;
       padding: 0px; }
   .toolbar .icon {
@@ -308,6 +315,50 @@ html, body {
   .explore .explore-container .uk-list ul .uk-iconnav {
     padding-left: 0px; }
 
+.is-rated-star {
+  background: url("/images/icon/white-star.svg") center no-repeat;
+  background-size: 40px;
+  height: 40px;
+  width: 40px;
+  margin-top: 5px; }
+
+.purple-bar {
+  display: flex;
+  height: 160px !important;
+  background: black;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.7));
+  color: white;
+  height: 3em;
+  margin-top: -160px; }
+  .purple-bar .bar-content {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+    padding-top: 0px !important;
+    display: inline-block; }
+
+.hour-info {
+  display: inline-block;
+  font-size: 0.6em; }
+
+.rating-info {
+  width: 40px;
+  position: absolute;
+  text-align: center;
+  font-size: 1em;
+  color: #f8f8f8;
+  float: right;
+  margin-left: 140px;
+  background-image: url(/images/flag.png);
+  background-size: 62px;
+  padding-bottom: 20px;
+  background-position-x: 35px;
+  background-position-y: -11px;
+  margin-top: -7px;
+  padding-top: 5px;
+  font-weight: bold; }
+
 .profile {
   font-family: 'Roboto' !important; }
   .profile .card-rated .rating-star {
@@ -334,6 +385,15 @@ html, body {
     padding-right: 8px; }
   .profile .following-list .follow-button {
     background: rgba(0, 0, 0, 0.4); }
+  .profile .favorite-movie {
+    display: block;
+    background: #502274;
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 300px;
+    height: 150px; }
+  .profile .uk-overlay {
+    padding: 2px; }
   .profile .check {
     width: 20px !important;
     min-width: 20px !important;
@@ -344,7 +404,6 @@ html, body {
     background: #8600ca;
     color: white; }
   .profile .uk-background-cover {
-    background: url("/images/strange.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -432,7 +491,7 @@ html, body {
     background-size: 12px;
     height: 12px;
     width: 12px;
-    padding-left: 0px; }
+    padding: 0px; }
 
 .movie {
   font-family: 'Roboto' !important; }
@@ -449,13 +508,14 @@ html, body {
     padding-bottom: 0px !important;
     padding-top: 4%;
     position: relative; }
+  .movie .uk-dotnav {
+    margin-bottom: 10px; }
   .movie .title {
-    bottom: 10px;
-    position: absolute;
     font-size: 4vh;
     font-weight: 100;
     margin-left: auto;
-    margin-right: auto; }
+    margin-right: auto;
+    display: inline-block; }
   .movie .sinopsis {
     text-align: justify;
     width: 540px; }
@@ -482,9 +542,10 @@ html, body {
       background-size: 12px;
       height: 12px;
       width: 12px;
-      padding-left: 0px; }
+      padding: 0px; }
   .movie .left-bar {
     float: right;
+    position: relative;
     margin-top: -140px; }
   .movie .watch-button {
     display: block;
@@ -507,16 +568,18 @@ html, body {
   .movie .section {
     margin-top: 8px;
     margin-bottom: 4px; }
-    .movie .section .cast-info {
-      width: 156px;
-      display: flex; }
-      .movie .section .cast-info .cast-image {
-        height: 100px; }
-      .movie .section .cast-info .cast-name {
-        padding-left: 6px;
-        display: block;
-        margin-top: auto;
-        margin-bottom: auto; }
+    .movie .section .cast-info .cast-image {
+      display: block;
+      background: #502274;
+      background-repeat: no-repeat;
+      background-size: cover;
+      width: 191px;
+      height: 183px;
+      overflow: hidden;
+      box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
+      border: 4px solid white; }
+    .movie .section .cast-info .cast-name {
+      margin-top: 10px; }
   .movie .section-title {
     font-size: 2.5vh;
     color: #773095;
@@ -530,8 +593,44 @@ html, body {
   .tvshow .tvshow-name {
     text-shadow: 1px 1px 2px black, 0 0 1em #000000, 0 0 0.2em #000000;
     margin: 2px; }
+  .tvshow .uk-accordion {
+    border-bottom: #f0f0f0 solid 1px;
+    margin: 0px;
+    padding-top: 12px;
+    padding-bottom: 12px; }
+    .tvshow .uk-accordion .uk-accordion-title {
+      display: block;
+      font-size: 1rem;
+      line-height: 1.4;
+      color: #773095;
+      overflow: hidden; }
+  .tvshow .episode-button {
+    width: 120px;
+    padding: 0%;
+    color: #f84264;
+    border: 0px;
+    display: inline-block;
+    font-size: 10px;
+    margin-bottom: 2px; }
+    .tvshow .episode-button.active {
+      background: #f84264;
+      color: white; }
+  .tvshow .episode-airing {
+    font-size: 0.8em;
+    color: #999; }
+  .tvshow .episode-list-title {
+    display: inline-block;
+    font-weight: 100;
+    color: #666; }
   .tvshow .episode-details {
+    width: 100%;
     padding-left: 40px; }
+    .tvshow .episode-details .episode-title {
+      font-size: 1.3rem;
+      margin-bottom: 4px; }
+  .tvshow .episode-image {
+    width: 300px !important;
+    height: 168px !important; }
   .tvshow .uk-background-cover {
     z-index: -1;
     background: url("/images/changeling.jpg");
@@ -539,12 +638,14 @@ html, body {
     background-size: cover;
     background-position: center center;
     overflow-y: visible !important;
-    height: 30vh;
+    height: 35vh;
     display: block;
     color: #ffffff !important;
     padding-bottom: 0px !important;
     padding-top: 4%;
     position: relative; }
+  .tvshow .uk-dotnav {
+    margin-bottom: 10px; }
   .tvshow .poster {
     display: block;
     background: #502274;
@@ -556,8 +657,6 @@ html, body {
     box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
     border: 4px solid white; }
   .tvshow .title {
-    bottom: 10px;
-    position: absolute;
     font-size: 4vh;
     font-weight: 100;
     margin-left: auto;
@@ -588,8 +687,9 @@ html, body {
       background-size: 12px;
       height: 12px;
       width: 12px;
-      padding-left: 0px; }
+      padding: 0px; }
   .tvshow .left-bar {
+    position: relative;
     float: right;
     margin-top: -140px; }
   .tvshow .watch-button {
@@ -603,16 +703,20 @@ html, body {
   .tvshow .section {
     margin-top: 8px;
     margin-bottom: 4px; }
-    .tvshow .section .cast-info {
-      width: 156px;
-      display: flex; }
-      .tvshow .section .cast-info .cast-image {
-        height: 100px; }
-      .tvshow .section .cast-info .cast-name {
-        padding-left: 6px;
-        display: block;
-        margin-top: auto;
-        margin-bottom: auto; }
+    .tvshow .section.episode {
+      display: flow-root !important; }
+    .tvshow .section .cast-info .cast-image {
+      display: block;
+      background: #502274;
+      background-repeat: no-repeat;
+      background-size: cover;
+      width: 191px;
+      height: 183px;
+      overflow: hidden;
+      box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
+      border: 4px solid white; }
+    .tvshow .section .cast-info .cast-name {
+      margin-top: 10px; }
   .tvshow .section-title {
     font-size: 2.5vh;
     color: #773095;
@@ -620,6 +724,14 @@ html, body {
   .tvshow p {
     margin-top: 0px;
     font-size: 14px; }
+    .tvshow p.episode-overview {
+      font-size: 0.8em;
+      margin-bottom: 6px; }
+    .tvshow p.tvshow-link {
+      margin-bottom: 2px;
+      font-size: 18px;
+      color: white;
+      font-weight: 600; }
 
 .content {
   padding-top: 20px;

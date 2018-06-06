@@ -9,7 +9,7 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
           AuthService.getStatus().then(function(){
             $scope.user = AuthService.getUser();
             $scope.tvshow = TvShowService.getTvShow();
-            $scope.tvshow.air_date = new Date($scope.tvshow.first_air_date)
+            $scope.tvshow.air_date = new Date($scope.tvshow.first_air_date);
             $('.full-loading').hide();
             WatchedService.isWatched($scope.user._id ,$routeParams.tvshow_id).then((watched) => {
                 $scope.tvshow.watched = watched;
@@ -60,6 +60,19 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
             });
         });
 
+    $scope.markTvshowAsWatched = function (tvshowId) {
+        WatchedService.markTvshowAsWatched($scope.user._id, $scope.tvshow._seasons, tvshowId)
+            .then((watched) => {
+                console.log(watched);
+            })
+            .catch((error) => {
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                    status: 'danger',
+                    timeout: 2500
+                });
+            });
+        };
 
     $scope.markAsWatched = function(tvshowId){
         WatchedService.markAsWatched($scope.user._id, tvshowId)

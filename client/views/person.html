@@ -1,69 +1,67 @@
 <div class="person">
-    <!--Cover Content-->
-    <div class="uk-background-cover" align="center" style="background-image: url({{ background }})">
-        <div class="uk-width-xxlarge">
-            <div class="title person-name">{{person.name}}
-            </div>
-        </div>
+  <!--Cover Content-->
+  <div class="uk-background-cover" align="center" style="background-image: url({{ background }})">
+    <div class="uk-width-xxlarge">
+      <div class="title person-name">{{person.name}}
+      </div>
     </div>
-    <div class="uk-width-xxlarge content">
-        <div class="left-bar uk-width-1-4">
-            <img class="poster" style="background-image: url({{ person.profile_path }})" />
-            <button ng-hide="person.followed.is_following" class="uk-button uk-button-default watch-button" ng-click="follow(person)">
-            <span uk-icon="icon: rss;"></span> Follow</button>
-            <button ng-show="person.followed.is_following" class="uk-button uk-button-default watch-button watched" ng-click="unfollow(person)">
-            <span uk-icon="icon: rss;"></span> Following </button>
-            <button class="uk-button uk-button-default edit-user-button" ng-click="editionMode()">
-            <span uk-icon="icon: pencil;"></span> Edit person</button>
+  </div>
+  <div class="uk-width-xxlarge content">
+    <div class="left-bar uk-width-1-4">
+      <img class="poster" style="background-image: url({{ person.profile_path }})" />
+      <button ng-hide="person.followed.is_following" class="uk-button uk-button-default watch-button" ng-click="follow(person)">
+        <span uk-icon="icon: rss;"></span> Follow</button>
+        <button ng-show="person.followed.is_following" class="uk-button uk-button-default watch-button watched" ng-click="unfollow(person)">
+          <span uk-icon="icon: rss;"></span> Following </button>
         </div>
 
         <div class="section description">
-            <div ng-hide="person.deathday != null" class="section-title">
-                Born {{ birthday_date_formated }}
-            </div>
-            <div ng-show="person.deathday != null" class="section-title">
-                Born {{ birthday_date_formated }} | Died {{ deathday_date_formated }}
-            </div>
+          <div ng-hide="person.deathday != null" class="section-title">
+            Born {{ birthday_date_formated }}
+          </div>
+          <div ng-show="person.deathday != null" class="section-title">
+            Born {{ birthday_date_formated }} | Died {{ deathday_date_formated }}
+          </div>
 
-            <div ng-show="person.place_of_birth != null" class="section-title">
-                Natural of {{ person.place_of_birth }}
-            </div>
+          <div ng-show="person.place_of_birth != null" class="section-title">
+            Natural of {{ person.place_of_birth }}
+          </div>
 
-            <div class="section-title">
-                Description
-            </div>
-            <p>
-                {{person.biography}}
-            </p>
+          <div class="section-title">
+            Description
+          </div>
+          <p>
+            {{person.biography}}
+          </p>
         </div>
         <div class="section">
-            <div class="section-title">
-                Appears in
-            </div>
+          <div class="section-title">
+            Appears in
+          </div>
 
-            <div uk-slider>
-                <div class="uk-position-relative uk-visible-toggle uk-light">
-                    <ul class="uk-slider-items uk-child-width-1-3@s uk-grid">
-                        <div ng-repeat="media in mediasPersonAppears">
-                            <li>
-                                <div class="uk-card uk-grid-match uk-card-default uk-card-hover appears-in" ng-click="goToMedia(media)">
-                                    <img class="poster" style="background-image: url(https://image.tmdb.org/t/p/w500/{{ media.helper.poster_path }})" />
-                                    <div class="uk-card-body">
-                                        <p class="uk-align-center uk-text-uppercase" align="center"> {{media.name}}</p>
-                                    </div>
-                                </div>
-                            </li>
-                        </div>
-                    </ul>
-
-                    <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
-                    <a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slider-item="next"></a>
-
+          <div uk-slider>
+            <div class="uk-position-relative uk-visible-toggle uk-light">
+              <ul class="uk-slider-items uk-child-width-1-3@s uk-grid">
+                <div ng-repeat="media in mediasPersonAppears">
+                  <li>
+                    <div class="uk-card uk-grid-match uk-card-default uk-card-hover appears-in" ng-click="goToMedia(media)">
+                      <img class="poster" style="background-image: url(https://image.tmdb.org/t/p/w500/{{ media.helper.poster_path }})" />
+                      <div class="uk-card-body">
+                        <p class="uk-align-center uk-text-uppercase" align="center"> {{media.name}}</p>
+                      </div>
+                    </div>
+                  </li>
                 </div>
+              </ul>
 
-                <ul class="uk-slider-nav uk-dotnav uk-flex-center uk-margin"></ul>
+              <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
+              <a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slider-item="next"></a>
 
             </div>
+
+            <ul class="uk-slider-nav uk-dotnav uk-flex-center uk-margin"></ul>
+
+          </div>
         </div>
+      </div>
     </div>
-</div>

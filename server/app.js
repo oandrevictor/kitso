@@ -11,20 +11,15 @@ var passport       = require('passport');
 var session        = require('express-session');
 var MongoStore     = require('connect-mongo')(session);
 var dotenv         = require('dotenv').load();
-var redis = require('redis');
-var client = redis.createClient(19990, 'redis-19990.c16.us-east-1-2.ec2.cloud.redislabs.com', {no_ready_check: true});
-client.auth('nsXmMM8VvJ7PrbYc4q6WZ50ilryBdbmM', function (err) {
-    if (err) throw err;
-});
+
+var RedisClient = require('./utils/lib/redisClient');
+
+let client = RedisClient.createAndAuthClient();
 
 // configuration ===========================================
 
 // config files
 var db = require('./config/db');
-
-client.on('connect', function() {
-    console.log('connected to Redis');
-});
 
 // set our port
 var port = process.env.PORT || 8080;
@@ -127,9 +122,6 @@ app.get('/person/edit/:id', function (req, res) {
 });
 
 // Api routes
-var exampleRoutes = require('./routes/example');
-app.use('/example', exampleRoutes);
-
 var emailRoutes = require('./routes/email');
 app.use('/api/email', emailRoutes);
 

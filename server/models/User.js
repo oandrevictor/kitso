@@ -4,8 +4,8 @@ var Schema = mongoose.Schema;
 var bcrypt = require('bcryptjs');
 
 var validateEmail = function(email) {
-    var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    return re.test(email)
+  var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  return re.test(email)
 };
 
 var UserSchema = new Schema({
@@ -59,70 +59,70 @@ var UserSchema = new Schema({
       }],
       default: [],
       required: true
-  },
-  _following: {
-    type: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Follows'
-      }
-    ],
-    default: []
-  },
-  _following_pages: {
-    type: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'FollowsPage'
-      }
-    ],
-    default: []
-  },
-  _followers: {
-    type: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Follows'
-      }
-    ],
-    default: []
-  },
-  vip: {
-    type: Boolean,
-    default: false
-  },
-  _watchlist: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'UserList'
-  },
-  _lists: {
-    type: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'UserList'
-      }
-    ],
-    default: []
-  },
-  _ratings: {
-    type: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Rating'
-      }
-    ],
-    default: []
-  }
-});
+    },
+    _following: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Follows'
+        }
+      ],
+      default: []
+    },
+    _following_pages: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'FollowsPage'
+        }
+      ],
+      default: []
+    },
+    _followers: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Follows'
+        }
+      ],
+      default: []
+    },
+    vip: {
+      type: Boolean,
+      default: false
+    },
+    _watchlist: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'UserList'
+    },
+    _lists: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'UserList'
+        }
+      ],
+      default: []
+    },
+    _ratings: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Rating'
+        }
+      ],
+      default: []
+    }
+  });
 
-UserSchema.methods.generateHash = function(password) {
-  return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null);
-};
+  UserSchema.methods.generateHash = function(password) {
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null);
+  };
 
-UserSchema.methods.validPassword = function(password) {
-  return bcrypt.compareSync(password, this.password);
-};
+  UserSchema.methods.validPassword = function(password) {
+    return bcrypt.compareSync(password, this.password);
+  };
 
-var User = mongoose.model('User', UserSchema);
+  var User = mongoose.model('User', UserSchema);
 
-module.exports = User;
+  module.exports = User;

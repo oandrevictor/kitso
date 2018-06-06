@@ -10,6 +10,10 @@ router.get('/is_watched', watchedController.is_watched);
 
 router.post('/', watchedController.create);
 
+router.post('/season', watchedController.watchSeason);
+
+router.post('/tvshow', watchedController.watchTvshow);
+
 router.put('/:watched_id', watchedController.update);
 
 router.delete('/:watched_id', watchedController.delete);

@@ -3,15 +3,19 @@ var Schema = mongoose.Schema;
 var Media = require('./Media');
 
 var MovieSchema = new Schema({
-    isBoxOffice: {
-        type: Boolean,
-        required: true,
-        default: false
-    }
+  isBoxOffice: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
+  _tmdb_id: {
+    type: String,
+    unique: true,
+  }
 });
 
 var Movie = Media.discriminator('Movie',
-     MovieSchema);
+MovieSchema);
 
 
 module.exports = Movie;
