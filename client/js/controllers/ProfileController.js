@@ -1,7 +1,7 @@
  var kitso = angular.module('kitso');
 
-kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$routeParams', 'AuthService', 'UserService', 'FollowService', 'WatchedService', 'RatedService',
-function ($scope, $location, $timeout, $routeParams, AuthService, UserService, FollowService, WatchedService, RatedService) {
+kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$routeParams', 'AuthService', 'UserService', 'FollowService', 'WatchedService', 'RatedService', 'UserListService',
+function ($scope, $location, $timeout, $routeParams, AuthService, UserService, FollowService, WatchedService, RatedService, UserListService) {
 
   $('.full-loading').show();
   var loaded = 0;
@@ -15,6 +15,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
           loadUserRatedInfo();
           loadUserFollowInfo();
           loadUserWatchedInfo();
+          loadUserWatchList();
           FollowService.isFollowingUser($scope.logged_user._id, $scope.user._id).then((followed) => {
             $scope.user.followed = followed;
           }).catch((error) => {
@@ -34,6 +35,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         loadUserRatedInfo();
         loadUserFollowInfo();
         loadUserWatchedInfo();
+        loadUserWatchList();
       }
     });
 
@@ -106,6 +108,14 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
       }).catch(function(error){
           console.log(error);
       })
+  }
+
+  var loadUserWatchList = function(){
+    UserListService.getUserList($scope.user._watchlist).then( function(watchlist){
+      $scope.user.watchlist = watchlist;
+    }).catch(function(error){
+      console.log(error);
+    })
   }
 
   function isMovie(rating) {
@@ -367,8 +377,5 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
   $scope.toggleDescriptionArea = function () {
     $scope.descriptionArea = !$scope.descriptionArea;
   }
-
-
-
 
 }]);
