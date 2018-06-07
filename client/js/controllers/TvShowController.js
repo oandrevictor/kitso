@@ -62,8 +62,8 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
 
     $scope.markTvshowAsWatched = function (tvshowId) {
         WatchedService.markTvshowAsWatched($scope.user._id, $scope.tvshow._seasons, tvshowId)
-            .then((watched) => {
-                console.log(watched);
+            .then((result) => {
+                console.log(result);
             })
             .catch((error) => {
                 UIkit.notification({

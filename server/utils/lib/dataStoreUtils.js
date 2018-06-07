@@ -113,6 +113,10 @@ exports.getWatchedByUserId = async function(userId) {
   return Watched.find({_user: userId}).exec();
 };
 
+exports.getWatchedByUserIdAndMediaId = async function(userId, mediaId) {
+  return Watched.find({_user: userId, _media: mediaId}).exec();
+};
+
 exports.getRated = async function(mediaId) {
   return Rated.find({_media: mediaId}).exec();
 };

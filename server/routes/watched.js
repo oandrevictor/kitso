@@ -12,6 +12,10 @@ router.post('/', watchedController.create);
 
 router.post('/season', watchedController.watchSeason);
 
+router.post('/season/progress', watchedController.seasonWatchedProgress);
+
+router.post('/season/unwatch', watchedController.unwatchSeason);
+
 router.post('/tvshow', watchedController.watchTvshow);
 
 router.put('/:watched_id', watchedController.update);

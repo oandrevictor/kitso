@@ -60,11 +60,31 @@ exports.watchSeason = async function(req, res) {
   var seasonId = req.body.seasonId;
   var user_id = req.body._user;
   var date = req.body.date;
-  //watched Season
   // watched episodes
-  let result = await watch_season_episodes(episodesIds, user_id, date);
+  watch_season_episodes(episodesIds, user_id, date, function (result) {
+    res.status(RequestStatus.OK).json(result);
+  });
+}
 
-  res.status(RequestStatus.OK).json({message: result, watched: result});
+exports.unwatchSeason = async function(req, res) {
+  var episodesIds = req.body.episodesIds;
+  var seasonId = req.body.seasonId;
+  var watcheds;
+  var watchedPromises = episodesIds.map(DataStoreUtils.getWatchedByMediaId);
+  await Promise.all(watchedPromises).then(function(results) {
+    watcheds = results;
+  });
+  var watchedsIds = watcheds.map((watched) => {
+    return watched[0]._id;
+  });
+  var deleteWatchedPromises = watchedsIds.map(DataStoreUtils.deleteWatched);
+  await Promise.all(deleteWatchedPromises).then((result) => {
+    res.status(RequestStatus.OK).json(result);
+  });
+}
+
+exports.unwatchTvshow = async function(req, res) {
+  
 }
 
 exports.watchTvshow = async function(req, res) {
@@ -77,12 +97,12 @@ exports.watchTvshow = async function(req, res) {
   // watched episodes
   var seasonEpisodesIds = getSeasonsEpisodesIds(seasons);
 
-  seasonEpisodesIds.forEach(async (episodesIds) => {
-    episodesIds = Array.from(new Set(episodesIds))
-    await watch_season_episodes(episodesIds, user_id, date);
+  seasonEpisodesIds.forEach(async (episodesIds, i) => {
+    episodesIds = Array.from(new Set(episodesIds));
+    let season_watcheds = await watch_season_episodes(episodesIds, user_id, date);
+    result[i] = season_watcheds;
   });
   res.status(RequestStatus.OK).json(result);
-
 }
 
 exports.update = async function(req, res) {
@@ -117,6 +137,23 @@ exports.delete = async function(req, res) {
     res.status(RequestStatus.BAD_REQUEST).send(err);
   }
 };
+
+exports.seasonWatchedProgress = async function(req, res) {
+  var seasonId = req.params.seasonId;
+  var userId = req.params.userId;
+  var season = await DataStoreUtils.getMediaObjById(seasonId);
+  console.log(season);
+  var episodesIds = getSeasonsEpisodesIds([season]);
+  var watchedPromises = [];
+  episodesIds.forEach((episodeId) => {
+    watchedPromises.push(DataStoreUtils.getWatchedByUserIdAndMediaId(userId, episodeId));
+  });
+  var watcheds;
+  await Promise.all(watchedPromises).then((result) => {
+    watcheds = result
+  });
+  console.log(watcheds);
+}
 
 var injectMediaJsonInWatched = async function(watchedObj) {
   let mediaId = watchedObj._media;
@@ -171,9 +208,10 @@ function getSeasonsIds(seasons) {
   return seasonsIds;
 }
 
-async function watch_season_episodes(episodesIds, user_id, date) {
+async function watch_season_episodes(episodesIds, user_id, date, done) {
   var requests = 0;
   var payload = episodesIds.length;
+  var response = [];
   episodesIds.forEach(async (episode) => {
     let watched = new Watched();
     watched._media = episode;
@@ -185,18 +223,14 @@ async function watch_season_episodes(episodesIds, user_id, date) {
     watched.save()
     .then((watched) => {
       requests++;
-      if (requests == payload)
-      done();
+      response.push(watched);
+      if (requests == payload) return done(response);
     })
     .catch((error) => {
       requests++;
-      if (requests == payload)
-      done();
+      if (requests == payload) return done(response);
     });
   });
-  function done() {
-    return "Season watched.";
-  }
 }
 
 async function create_season_watched(seasonId, user_id, date) {
@@ -208,4 +242,15 @@ async function create_season_watched(seasonId, user_id, date) {
   seasonWatched._action = seasonAction._id;
   await DataStoreUtils.addActionToUserHistory(user_id, seasonAction._id);
   return seasonWatched.save();
+}
+
+async function getWatchedIds(mediasIds) {
+  let ids = [];
+  let queries = 0;
+  mediasIds.forEach(async(mediaId) => {
+    let watched = DataStoreUtils.getWatchedByMediaId(mediaId);
+    ids.push(watched);
+    queries++;
+    if (queries == mediasIds.length) return ids;
+  });
 }

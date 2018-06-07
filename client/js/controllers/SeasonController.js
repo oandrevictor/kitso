@@ -1,7 +1,7 @@
 var kitso = angular.module('kitso');
 
-kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$routeParams', 'TvShowService', 'WatchedService', 'FollowService', 'RatedService', 'AuthService',
-  function ($scope, $location, $timeout, $routeParams, TvShowService, WatchedService, FollowService, RatedService, AuthService) {
+kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout', '$routeParams', 'TvShowService', 'WatchedService', 'FollowService', 'RatedService', 'AuthService',
+  function ($scope, $location, $route, $timeout, $routeParams, TvShowService, WatchedService, FollowService, RatedService, AuthService) {
     $('.full-loading').show();
     TvShowService.loadTvShow($routeParams.tvshow_id).then(() => {
       AuthService.getStatus().then(function () {
@@ -11,6 +11,8 @@ kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$route
         TvShowService.loadSeason($routeParams.tvshow_id, $routeParams.season)
           .then((season) => {
             $scope.season = season;
+            console.log($scope.user);
+            console.log($scope.season);
             loadEpisodeActions($scope.season);
             $scope.season.episodes.forEach(function (episode) {
               loadEpisodeActions(episode)
@@ -85,6 +87,7 @@ kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$route
 
 
     $scope.markSeasonAsWatched = function () {
+      $scope.watchAction = true;
       var episodesIds = [];
       $scope.season.episodes.forEach((episode) => {
         episodesIds.push(episode._id);
@@ -92,7 +95,32 @@ kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$route
 
       WatchedService.markSeasonAsWatched($scope.user._id, episodesIds, $scope.season._id)
         .then((result) => {
-          $scope.season.watched = result.watched;
+          $route.reload();
+          UIkit.modal('#modal-watchSeason').hide();
+          console.log(result);
+        })
+        .catch((error) => {
+          UIkit.notification({
+            message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+            status: 'danger',
+            timeout: 2500
+          });
+        });
+    };
+
+    $scope.markSeasonAsNotWatched = function () {
+      var episodesIds = [];
+      $scope.season.episodes.forEach((episode) => {
+        if (episode.watched) {
+          episodesIds.push(episode._id);
+        }
+      });
+
+      WatchedService.markSeasonAsNotWatched($scope.user._id, episodesIds)
+        .then((result) => {
+          $route.reload();
+          UIkit.modal('#modal-watchSeason').hide();
+          console.log(result);
         })
         .catch((error) => {
           UIkit.notification({
