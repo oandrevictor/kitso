@@ -70,6 +70,7 @@ exports.create = function (req, res) {
       res.status(RequestStatus.BAD_REQUEST).send(err);
     } else {
       user.password = hash;
+      user._watchlist = createWatchList(user._id);
       user.save(function (err) {
         if (err) {
           if (err.name === 'MongoError' && err.code === 11000) {
@@ -81,7 +82,6 @@ exports.create = function (req, res) {
       });
     }
   });
-  createWatchList(user._id);
 };
 
 exports.update = function (req, res) {
@@ -169,8 +169,7 @@ exports.delete = function (req, res) {
 
 // AUXILIARY FUNCTIONS ============================================================================
 
-var createWatchList = async function(userId) {
-  let user = await DataStoreUtils.getUserById(userId);
+var createWatchList = function(userId) {
   let watchListInfo = {
     title: "WatchList",
     description: "a",
@@ -178,7 +177,6 @@ var createWatchList = async function(userId) {
     _user: userId
   }
   let watchlist = new UserList(watchListInfo);
-  await UserListController.addAndSave(watchlist, userId);
-  user._watchlist = watchlist;
-  return user.save();
+  UserListController.addAndSave(watchlist, userId);
+  return watchlist;
 };
