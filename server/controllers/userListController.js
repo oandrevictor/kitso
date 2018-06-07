@@ -145,6 +145,11 @@ exports.changeItemRank = async function(req, res) {
 
 // AUXILIARY FUNCTIONS ============================================================================
 
+exports.addAndSave = async function(userList, userId){
+  await addListToUserLists(userList._id, userId);
+  await saveUserList(userList);
+}
+
 var saveUserList = function(userList) {
   return userList.save();
 };

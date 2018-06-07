@@ -1,8 +1,11 @@
 var User = require('../models/User');
+var UserList = require('../models/UserList');
+var UserListController = require('../controllers/userListController');
 var bcrypt = require('bcryptjs');
 var _ = require('underscore');
 var mongoose       = require('mongoose');
 var RequestStatus = require('../constants/requestStatus');
+var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 
 exports.index = function (req, res) {
   User.find({})
@@ -78,6 +81,7 @@ exports.create = function (req, res) {
       });
     }
   });
+  createWatchList(user._id);
 };
 
 exports.update = function (req, res) {
@@ -161,4 +165,20 @@ exports.delete = function (req, res) {
       return res.status(RequestStatus.UNAUTHORIZED).json({ status: 401, message: 'Wrong password' });
     }
   });
+};
+
+// AUXILIARY FUNCTIONS ============================================================================
+
+var createWatchList = async function(userId) {
+  let user = await DataStoreUtils.getUserById(userId);
+  let watchListInfo = {
+    title: "WatchList",
+    description: "a",
+    deletable: false,
+    _user: userId
+  }
+  let watchlist = new UserList(watchListInfo);
+  await UserListController.addAndSave(watchlist, userId);
+  user._watchlist = watchlist;
+  return user.save();
 };
