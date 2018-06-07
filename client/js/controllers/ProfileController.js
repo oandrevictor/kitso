@@ -15,7 +15,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
           loadUserRatedInfo();
           loadUserFollowInfo();
           loadUserWatchedInfo();
-          loadUserWatchList();
+          loadUserLists();
           FollowService.isFollowingUser($scope.logged_user._id, $scope.user._id).then((followed) => {
             $scope.user.followed = followed;
           }).catch((error) => {
@@ -35,7 +35,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         loadUserRatedInfo();
         loadUserFollowInfo();
         loadUserWatchedInfo();
-        loadUserWatchList();
+        loadUserLists();
       }
     });
 
@@ -110,12 +110,21 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
       })
   }
 
-  var loadUserWatchList = function(){
-    UserListService.getUserList($scope.user._watchlist).then( function(watchlist){
-      $scope.user.watchlist = watchlist;
+  var loadUserLists = function(){
+    var lists = [];
+    $scope.user._lists.forEach((listId) => {
+      UserListService.loadUserList(listId).then( function(){
+        lists.push(UserListService.getUserList());
+      }).catch(function(error){
+        console.log(error);
+      })
+    });
+    $scope.user.lists = lists;
+    UserListService.loadUserList($scope.user._watchlist).then( function(){
+      $scope.user.watchlist = UserListService.getUserList();
     }).catch(function(error){
       console.log(error);
-    })
+    });
   }
 
   function isMovie(rating) {
@@ -364,6 +373,10 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
       });
     }
   };
+
+  $scope.goToList = function (listId) {
+    $location.path('user/list/' + listId);
+  }
 
   $scope.isInvalid = function (field) {
     return (field.$invalid && !field.$pristine);
