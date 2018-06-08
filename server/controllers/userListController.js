@@ -85,6 +85,7 @@ exports.addItem = async function(req, res) {
     let itens = userList.itens;
     let lastListIndex = itens.length;
     let newItem = new ListItem({
+      date: req.body.date,
       ranked: lastListIndex + 1,
       _media: req.body._media
     });
@@ -146,8 +147,8 @@ exports.changeItemRank = async function(req, res) {
 // AUXILIARY FUNCTIONS ============================================================================
 
 exports.addAndSave = async function(userList, userId){
-  await addListToUserLists(userList._id, userId);
   await saveUserList(userList);
+  await addListToUserLists(userList._id, userId);
 }
 
 var saveUserList = function(userList) {

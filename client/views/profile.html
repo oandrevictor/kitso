@@ -49,7 +49,7 @@
                   <p align="center">{{userFavoriteMovie.name}}</p>
                 </div>
               </div>
-              <p class="following-link" align="center" ng-show="!userFavoriteMovie">Você ainda não possui um filme favorito <br> Experimente avaliar algum filme</p>
+              <p class="following-link" align="center" ng-show="!userFavoriteMovie">You don't have a favorite movie yet <br> Try rating a movie</p>
             </div>
             <div class="uk-width-1-2">
               <p>Watched Genres</p>
@@ -61,8 +61,15 @@
             <div class="section-title">
               {{user.name}}'s Lists
             </div>
-            <div ng-repeat="list in user.lists">
-              <a ng-click="goToList(list._id)">{{list.title}}</a>
+            <div class="uk-grid">
+              <div class="uk-width-1-2" ng-repeat="list in user.lists">
+                <div class="uk-inline" ng-show="!$scope.user.lists.isEmpty()">
+                  <img class="list-movie" src="/images/despicable.jpg" />
+                  <div class="uk-overlay uk-overlay-primary uk-position-bottom">
+                    <a ng-click="goToList(list._id)">{{list.title}}</a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </li>

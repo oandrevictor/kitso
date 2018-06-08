@@ -14,6 +14,17 @@ function($scope, $location, $timeout, UserListService, MovieService, $routeParam
       });
   });
 
+  $scope.goToMedia = function (media) {
+    if (media.__t === 'TvShow') {
+      $location.path('tvshow/' + media._id);
+    } else if (media.__t === "Movie") {
+      $location.path('movie/' + media._id);
+    } else if (media.__t === "Episode"){
+      $location.path('tvshow/' + media._tvshow_id + '/season/'+ media.season_number);
+    }
+
+  }
+
   $scope.getPoster = function(media){
     if (media.poster_path){
       return media.poster_path;
@@ -26,10 +37,6 @@ function($scope, $location, $timeout, UserListService, MovieService, $routeParam
     }
   }
 
-  function isMovie(media) {
-    return media.__t === "Movie";
-  }
-
   var loadUserListBackground = function () {
     var addedMovies = [];
     $scope.userlist.itens.forEach((item) => {
@@ -39,7 +46,11 @@ function($scope, $location, $timeout, UserListService, MovieService, $routeParam
     if (addedMovies.length > 0) {
       $scope.background = "https://image.tmdb.org/t/p/original/" + addedMovies[0]._media.helper.backdrop_path;
     } else {
-      $scope.background = "/images/strange.jpg";
+      $scope.background = "/images/coco.jpg";
     }
   }
+
+  $scope.formatDate = function (date) {
+    return moment(date).format('DD/MM/YYYY')
+  };
 }]);

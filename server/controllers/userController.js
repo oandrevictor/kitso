@@ -65,12 +65,12 @@ exports.findByEmail = function (req, res) {
 exports.create = function (req, res) {
   var user = new User(req.body);
 
-  bcrypt.hash(req.body.password, 10, function (err, hash) {
+  bcrypt.hash(req.body.password, 10, async function (err, hash) {
     if (err) {
       res.status(RequestStatus.BAD_REQUEST).send(err);
     } else {
       user.password = hash;
-      user._watchlist = createWatchList(user._id);
+      user._watchlist = await createWatchList(user._id);
       user.save(function (err) {
         if (err) {
           if (err.name === 'MongoError' && err.code === 11000) {
@@ -172,7 +172,7 @@ exports.delete = function (req, res) {
 var createWatchList = function(userId) {
   let watchListInfo = {
     title: "WatchList",
-    description: "a",
+    description: "Things I will watch someday.",
     deletable: false,
     _user: userId
   }

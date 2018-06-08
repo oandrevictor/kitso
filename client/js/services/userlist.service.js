@@ -6,10 +6,44 @@ kitso.service('UserListService', ['$q','$http', function ($q, $http) {
 
     // return available functions for use in the controllers
     return ({
+        addItem: addItem,
         loadUserList: loadUserList,
         getUserList: getUserList,
-        updateUserList: updateUserList
+        updateUserList: updateUserList,
+        isAdded: isAdded
     });
+
+    function addItem(userlistId, mediaId, userId, date) {
+      var deferred = $q.defer();
+
+      var req = {
+        method: 'POST',
+        url: '/api/userlist/' + userlistId + '/item',
+        headers: {
+          'Content-Type': 'application/json',
+          'user_id': userId
+        },
+        data: {
+          "_media": mediaId,
+          "date": date
+          }
+      }
+
+      $http(req)
+        .then((response) => {
+          if (response.status === 200) {
+            response.data.item_id = response.data._id
+            deferred.resolve(response.data);
+          } else {
+            deferred.reject();
+          }
+        })
+        .catch((error) => {
+          deferred.reject(error.data);
+        });
+
+      return deferred.promise;
+    }
 
     function loadUserList(id) {
         var deferred = $q.defer();
@@ -50,5 +84,21 @@ kitso.service('UserListService', ['$q','$http', function ($q, $http) {
           });
 
       return deferred.promise;
+    }
+
+    function isAdded(mediaId) {
+      var list = getUserList();
+      list.forEach((item) => {
+        if (item._media._id === mediaId) {
+          return {
+            "added": true,
+            "date": item.date,
+            "userlist": list
+          };
+        };
+      });
+      return {
+        "added": false
+      };
     }
 }]);

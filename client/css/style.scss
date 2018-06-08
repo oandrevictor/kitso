@@ -1146,8 +1146,10 @@ html, body {
     position: relative;
   }
 
-  .uk-dotnav {
-    margin-bottom: 10px;
+  .page-link {
+    text-decoration: none;
+    color:  #666 !important;
+    font-weight: 300;
   }
 
   .title {
@@ -1163,61 +1165,43 @@ html, body {
     width: 540px;
   }
 
-  .left-bar {
-    float: right;
-    position: relative;
-    margin-top: -140px;
-  }
-
-  .watch-button {
-    display: block;
-    width: 191px;
-    border: 1px solid #FFFFFF;
-    font-size: 10px !important;
-    &.watched {
-      color: white;
-      background: #773095;
-    }
-  }
-
-  .poster {
-    display:block;
-    background: #502274;
-    background-repeat:no-repeat;
-    background-size:cover;
-    width: 191px;
-    height: 275px;
-    overflow:hidden;
-    box-shadow: 0 0px 10px rgba(0,0,0,0.1);
-    border: 4px solid white;
-  }
-
   .section {
     margin-top: 8px;
     margin-bottom: 4px;
-
-    .cast-info {
-      .cast-image {
-        display:block;
-        background: #502274;
-        background-repeat:no-repeat;
-        background-size:cover;
-        width: 191px;
-        height: 183px;
-        overflow:hidden;
-        box-shadow: 0 0px 10px rgba(0,0,0,0.1);
-        border: 4px solid white;
-      }
-      .cast-name {
-        margin-top: 10px;
-      }
-    }
   }
 
   .section-title {
     font-size: 2.5vh;
     color: #773095;
     font-weight: 100;
+  }
+
+  .uk-card-primary {
+    background: #fff;
+    box-shadow: none;
+
+    .uk-text {
+      color: #666 !important;
+    }
+
+    .uk-text-muted {
+      color: #999 !important;
+    }
+
+    .uk-card-body {
+      padding-left: 0px;
+      padding-top: 5px;
+
+      .uk-text-muted {
+        color: #999 !important;
+      }
+
+      .more {
+        padding-left: 1px;
+        padding-right: 4px;
+        color: #666 !important;
+      }
+    }
   }
 
   p {

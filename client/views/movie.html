@@ -53,6 +53,19 @@
             <span uk-icon="icon: check;"></span> Mark as watched</button>
             <button ng-show="movie.watched" ng-click="markAsNotWatched(movie.watched.watched_id)" class="uk-button uk-button-default watch-button watched">
               <span uk-icon="icon: check;"></span> Watched (undo) </button>
+              <button ng-hide="movie.isadded.added" class="uk-button uk-button-default watch-button">
+                <span uk-icon="icon: plus;"></span> Add to List</button>
+                <div uk-dropdown="pos: bottom-center; mode: hover" style="z-index: 999">
+                  <center>
+                    <ul class="uk-iconnav">
+                      <div ng-repeat="list in user.lists">
+                        <a ng-click="addToList(movie._id, list._id)">{{list.title}}</a>
+                      </div>
+                    </ul>
+                  </center>
+                </div>
+                <button ng-show="movie.isadded.added" ng-click="removeFromList(movie.isadded.userlist)" class="uk-button uk-button-default watch-button watched">
+                  <span uk-icon="icon: plus;"></span> Added to {{movie.isadded.userlist.title}} (undo) </button>
             </div>
 
             <div class="section sinopsis">
