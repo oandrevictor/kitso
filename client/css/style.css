@@ -819,4 +819,75 @@ html, body {
     margin-bottom: 0px;
     font-size: 14px; }
 
+.userlist {
+  font-family: 'Roboto' !important; }
+  .userlist .uk-background-cover {
+    z-index: -1;
+    background: url("/images/It-Follows-background.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    overflow-y: visible !important;
+    height: 30vh;
+    display: block;
+    color: #ffffff !important;
+    padding-bottom: 0px !important;
+    padding-top: 4%;
+    position: relative; }
+  .userlist .uk-dotnav {
+    margin-bottom: 10px; }
+  .userlist .title {
+    font-size: 4vh;
+    font-weight: 100;
+    margin-left: auto;
+    margin-right: auto;
+    display: inline-block; }
+  .userlist .description {
+    text-align: justify;
+    width: 540px; }
+  .userlist .left-bar {
+    float: right;
+    position: relative;
+    margin-top: -140px; }
+  .userlist .watch-button {
+    display: block;
+    width: 191px;
+    border: 1px solid #FFFFFF;
+    font-size: 10px !important; }
+    .userlist .watch-button.watched {
+      color: white;
+      background: #773095; }
+  .userlist .poster {
+    display: block;
+    background: #502274;
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 191px;
+    height: 275px;
+    overflow: hidden;
+    box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
+    border: 4px solid white; }
+  .userlist .section {
+    margin-top: 8px;
+    margin-bottom: 4px; }
+    .userlist .section .cast-info .cast-image {
+      display: block;
+      background: #502274;
+      background-repeat: no-repeat;
+      background-size: cover;
+      width: 191px;
+      height: 183px;
+      overflow: hidden;
+      box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
+      border: 4px solid white; }
+    .userlist .section .cast-info .cast-name {
+      margin-top: 10px; }
+  .userlist .section-title {
+    font-size: 2.5vh;
+    color: #773095;
+    font-weight: 100; }
+  .userlist p {
+    margin-top: 0px;
+    font-size: 14px; }
+
 /*# sourceMappingURL=style.css.map */

@@ -93,6 +93,10 @@ app.get('/user/:id', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
 
+app.get('/user/list/:userlist_id', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
 app.get('/tvshow/:id', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
