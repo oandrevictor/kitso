@@ -70,15 +70,17 @@ exports.create = function (req, res) {
       res.status(RequestStatus.BAD_REQUEST).send(err);
     } else {
       user.password = hash;
-      user._watchlist = await createWatchList(user._id);
-      user.save(function (err) {
-        if (err) {
-          if (err.name === 'MongoError' && err.code === 11000) {
-            return res.status(RequestStatus.FORBIDDEN).send(err);
+      user.save(async function (err) {
+        user._watchlist = await createWatchList(user._id);
+        user.save(function(err){
+          if (err) {
+            if (err.name === 'MongoError' && err.code === 11000) {
+              return res.status(RequestStatus.FORBIDDEN).send(err);
+            }
+          } else {
+            res.status(RequestStatus.OK).send('User created.');
           }
-        } else {
-          res.status(RequestStatus.OK).send('User created.');
-        }
+        })
       });
     }
   });
