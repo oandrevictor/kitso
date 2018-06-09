@@ -32,7 +32,7 @@ var UserListSchema = new Schema({
     required: true
   },
   itens: {
-    type: [ListItemSchema],
+    type: [Schema.Types.Mixed],
     required: true,
     default: []
   }
