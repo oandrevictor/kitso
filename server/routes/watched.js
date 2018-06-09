@@ -18,6 +18,10 @@ router.post('/season/unwatch', watchedController.unwatchSeason);
 
 router.post('/tvshow', watchedController.watchTvshow);
 
+router.post('/tvshow/progress', watchedController.tvshowWatchedProgress);
+
+router.post('/tvshow/unwatch', watchedController.unwatchTvshow);
+
 router.put('/:watched_id', watchedController.update);
 
 router.delete('/:watched_id', watchedController.delete);

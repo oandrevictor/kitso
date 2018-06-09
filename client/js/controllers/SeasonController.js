@@ -11,13 +11,24 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
         TvShowService.loadSeason($routeParams.tvshow_id, $routeParams.season)
           .then((season) => {
             $scope.season = season;
-            console.log($scope.user);
-            console.log($scope.season);
             loadEpisodeActions($scope.season);
             $scope.season.episodes.forEach(function (episode) {
               loadEpisodeActions(episode)
             });
             $('.full-loading').hide();
+
+            WatchedService.seasonProgress($scope.user._id ,$scope.season._id)
+            .then((progress) => {
+              $scope.season.progress = progress;
+              $scope.updateProgress($scope.season.progress, 0);
+            })
+            .catch((error) => {
+              UIkit.notification({
+                message: '<span uk-icon=\'icon: check\'></span> ' + "Get progress error.",
+                status: 'danger',
+                timeout: 2500
+              });
+            });
           })
           .catch((error) => {
             UIkit.notification({
@@ -116,7 +127,7 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
         }
       });
 
-      WatchedService.markSeasonAsNotWatched($scope.user._id, episodesIds)
+      WatchedService.markSeasonAsNotWatched(episodesIds)
         .then((result) => {
           $route.reload();
           UIkit.modal('#modal-watchSeason').hide();
@@ -136,6 +147,7 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
       WatchedService.markAsWatched($scope.user._id, episodeId)
         .then((watched) => {
           episode.watched = watched;
+          $scope.updateProgress($scope.season.progress, 1);
         })
         .catch((error) => {
           UIkit.notification({
@@ -151,6 +163,7 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
       WatchedService.markAsNotWatched(watchedId)
         .then(() => {
           episode.watched = false;
+          $scope.updateProgress($scope.season.progress, -1);
         })
         .catch((error) => {
           UIkit.notification({
@@ -323,6 +336,13 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
       } else if (media.__t === "Episode"){
         $location.path('tvshow/' + media._tvshow_id + '/season/'+ media.season_number);
       }
+    }
+
+    $scope.updateProgress = function (progress, value) {
+      progress.episodes_watched += value;
+      progress.ratio = progress.episodes_watched / progress.total_episodes;
+      if (progress.ratio == 1) $scope.season.watched = true;
+      else $scope.season.watched = false;
     }
 
   }]);

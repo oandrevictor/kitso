@@ -12,8 +12,11 @@ kitso.service('WatchedService', ['$q', '$http', function ($q, $http) {
     markSeasonAsWatched: markSeasonAsWatched,
     markSeasonAsNotWatched: markSeasonAsNotWatched,
     markTvshowAsWatched: markTvshowAsWatched,
+    markTvshowAsNotWatched: markTvshowAsNotWatched,
     markAsNotWatched: markAsNotWatched,
     isWatched: isWatched,
+    seasonProgress: seasonProgress,
+    tvshowProgress: tvshowProgress,
     updateWatched: updateWatched
   });
 
@@ -92,13 +95,11 @@ kitso.service('WatchedService', ['$q', '$http', function ($q, $http) {
     return deferred.promise;
   }
 
-  function markSeasonAsNotWatched(userId, episodesIds, date = moment()) {
+  function markSeasonAsNotWatched(episodesIds) {
     var deferred = $q.defer();
 
     var data = {
-      "_user": userId,
-      "episodesIds": episodesIds,
-      "date": date
+      "episodesIds": episodesIds
     };
 
     $http.post('/api/watched/season/unwatch', data)
@@ -127,6 +128,28 @@ kitso.service('WatchedService', ['$q', '$http', function ($q, $http) {
     };
 
     $http.post('/api/watched/tvshow', data)
+      .then((response) => {
+        if (response.status === 200) {
+          deferred.resolve(response.data);
+        } else {
+          deferred.reject();
+        }
+      })
+      .catch((error) => {
+        deferred.reject(error.data);
+      });
+
+    return deferred.promise;
+  }
+
+  function markTvshowAsNotWatched(_seasons) {
+    var deferred = $q.defer();
+
+    var data = {
+      "seasons": _seasons
+    };
+
+    $http.post('/api/watched/tvshow/unwatch', data)
       .then((response) => {
         if (response.status === 200) {
           deferred.resolve(response.data);
@@ -190,6 +213,52 @@ kitso.service('WatchedService', ['$q', '$http', function ($q, $http) {
       .then((response) => {
         if (response.status === 200) {
           watched = response.data.is_watched;
+          deferred.resolve(response.data);
+        } else {
+          deferred.reject();
+        }
+      })
+      .catch((error) => {
+        deferred.reject(error.data);
+      });
+
+    return deferred.promise;
+  }
+
+  function seasonProgress(userId, seasonId) {
+    var deferred = $q.defer();
+
+    var data = {
+      "userId": userId,
+      "seasonId": seasonId
+    };
+
+    $http.post('/api/watched/season/progress', data)
+      .then((response) => {
+        if (response.status === 200) {
+          deferred.resolve(response.data);
+        } else {
+          deferred.reject();
+        }
+      })
+      .catch((error) => {
+        deferred.reject(error.data);
+      });
+
+    return deferred.promise;
+  }
+
+  function tvshowProgress(userId, tvshowId) {
+    var deferred = $q.defer();
+
+    var data = {
+      "userId": userId,
+      "tvshowId": tvshowId
+    };
+
+    $http.post('/api/watched/tvshow/progress', data)
+      .then((response) => {
+        if (response.status === 200) {
           deferred.resolve(response.data);
         } else {
           deferred.reject();
