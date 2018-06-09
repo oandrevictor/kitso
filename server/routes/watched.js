@@ -18,6 +18,8 @@ router.post('/season/progress', watchedController.seasonWatchedProgress);
 
 router.post('/season/unwatch', watchedController.unwatchSeason);
 
+router.post('/entireTvshow', watchedController.watchEntireTvshow);
+
 router.post('/tvshow', watchedController.watchTvshow);
 
 router.post('/tvshow/progress', watchedController.tvshowWatchedProgress);

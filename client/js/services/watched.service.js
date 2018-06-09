@@ -12,6 +12,7 @@ kitso.service('WatchedService', ['$q', '$http', function ($q, $http) {
     markSeasonAsWatched: markSeasonAsWatched,
     markEntireSeasonAsWatched: markEntireSeasonAsWatched,
     markSeasonAsNotWatched: markSeasonAsNotWatched,
+    markEntireTvshowAsWatched: markEntireTvshowAsWatched,
     markTvshowAsWatched: markTvshowAsWatched,
     markTvshowAsNotWatched: markTvshowAsNotWatched,
     markAsNotWatched: markAsNotWatched,
@@ -142,12 +143,35 @@ kitso.service('WatchedService', ['$q', '$http', function ($q, $http) {
     return deferred.promise;
   }
 
-  function markTvshowAsWatched(userId, seasons, tvshowId, date = moment()) {
+  function markEntireTvshowAsWatched(userId, tvshowId, date = moment()) {
     var deferred = $q.defer();
 
     var data = {
-      "_user": userId,
-      "seasons": seasons,
+      "userId": userId,
+      "tvshowId": tvshowId,
+      "date": date
+    };
+
+    $http.post('/api/watched/entireTvshow', data)
+      .then((response) => {
+        if (response.status === 200) {
+          deferred.resolve(response.data);
+        } else {
+          deferred.reject();
+        }
+      })
+      .catch((error) => {
+        deferred.reject(error.data);
+      });
+
+    return deferred.promise;
+  }
+
+  function markTvshowAsWatched(userId, tvshowId, date = moment()) {
+    var deferred = $q.defer();
+
+    var data = {
+      "userId": userId,
       "tvshowId": tvshowId,
       "date": date
     };

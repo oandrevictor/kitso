@@ -15,6 +15,7 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
             $scope.season.episodes.forEach(function (episode) {
               loadEpisodeActions(episode)
             });
+            UIkit.modal('#modal-watchSeason').hide();
             $('.full-loading').hide();
 
             WatchedService.seasonProgress($scope.user._id ,$scope.season._id)
@@ -103,6 +104,7 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
 
       WatchedService.markEntireSeasonAsWatched($scope.user._id, $scope.season._id)
         .then((result) => {
+          $scope.watchAction = false;
           $route.reload();
           UIkit.modal('#modal-watchSeason').hide();
           console.log(result);
@@ -121,6 +123,7 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
 
       WatchedService.markSeasonAsWatched($scope.user._id, $scope.season._id)
         .then((result) => {
+          $scope.watchAction = false;
           $route.reload();
           UIkit.modal('#modal-watchSeason').hide();
           console.log(result);

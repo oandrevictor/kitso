@@ -68,7 +68,6 @@ exports.watchEntireSeason = async function(req, res) {
 }
 
 exports.watchSeason = async function(req, res) {
-  console.log('WATCH SAEASON -----------------');
   var seasonId = req.body.seasonId;
   var userId = req.body.userId;
   var date = req.body.date;
@@ -93,18 +92,36 @@ exports.unwatchSeason = async function(req, res) {
   });
 }
 
-exports.watchTvshow = async function(req, res) {
-  var user_id = req.body._user;
+exports.watchEntireTvshow = async function(req, res) {
+  var seasons = await Season.find({_tvshow_id: req.body.tvshowId});
+  let userId = req.body.userId;
   var date = req.body.date;
-  var tvshowId = req.body.tvshowId;
-  var seasons = await Season.find({_tvshow_id: tvshowId});
+  let seasonsEpisodesIds = getSeasonsEpisodesIds(seasons);
   var result = [];
-  // watched episodes
-  var seasonEpisodesIds = getSeasonsEpisodesIds(seasons);
-
-  seasonEpisodesIds.forEach(async (episodesIds, i) => {
+  seasonsEpisodesIds.forEach(async (episodesIds) => {
     episodesIds = Array.from(new Set(episodesIds));
-    let season_watcheds = watch_season_episodes(episodesIds, user_id, date);
+    let season_watcheds = watch_season_episodes(episodesIds, userId, date);
+    result.push(season_watcheds);
+  });
+  
+  await Promise.all(result).then(() => {
+    res.status(RequestStatus.OK).json("Tvshow watched.");
+  });
+}
+
+exports.watchTvshow = async function(req, res) {
+  var seasons = await Season.find({_tvshow_id: req.body.tvshowId});
+  let userId = req.body.userId;
+  var date = req.body.date;
+  let seasonsEpisodesIds = getSeasonsEpisodesIds(seasons);
+  var result = [];
+  seasonsEpisodesIds.forEach(async (seasonEpisodeIds) => {
+    seasonEpisodeIds = [seasonEpisodeIds];
+    let watchedMediasIds = await getMediasIdsFromWatchedObjects(seasonEpisodeIds, userId);
+    let nonWatchedEpisodes = seasonEpisodeIds[0].map((episode) => {
+      if (!watchedMediasIds.includes(episode)) return episode;
+    });
+    let season_watcheds = watch_season_episodes(nonWatchedEpisodes, userId, date);
     result.push(season_watcheds);
   });
 
@@ -247,21 +264,17 @@ var user_has_watched = async function(user_id, media_id) {
 
 async function getMediasIdsFromWatchedObjects(episodesIds, userId) {
   var watchedPromises = [];
-  console.log(userId);
   episodesIds.forEach((episodeId) => {
-    console.log('EpisodeIds: ', episodeId);
     watchedPromises.push(DataStoreUtils.getWatchedByUserIdAndMediaId(userId, episodeId));
   });
   var watcheds;
   await Promise.all(watchedPromises).then((result) => {
     watcheds = result;
-    console.log('Watcheds: ', result);
   });
   
   var watchedMediasIds = watcheds[0].map(function (watched) {
     return watched._media.toString();
   });
-  console.log('WatchedMedias: ', watchedMediasIds);
   return watchedMediasIds;
 }
 

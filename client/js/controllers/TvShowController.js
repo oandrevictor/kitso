@@ -69,10 +69,31 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
             });
         });
 
-    $scope.markTvshowAsWatched = function (tvshowId) {
-        WatchedService.markTvshowAsWatched($scope.user._id, $scope.tvshow._seasons, tvshowId)
+    $scope.markEntireTvshowAsWatched = function (tvshowId) {
+        $scope.watchAction = true;
+        WatchedService.markEntireTvshowAsWatched($scope.user._id, tvshowId)
             .then((result) => {
+                $scope.watchAction = false;
                 $route.reload();
+                UIkit.modal('#modal-watchTvshow').hide();
+                console.log(result);
+            })
+            .catch((error) => {
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                    status: 'danger',
+                    timeout: 2500
+                });
+            });
+        };
+
+    $scope.markTvshowAsWatched = function (tvshowId) {
+        $scope.watchAction = true;
+        WatchedService.markTvshowAsWatched($scope.user._id, tvshowId)
+            .then((result) => {
+                $scope.watchAction = false;
+                $route.reload();
+                UIkit.modal('#modal-watchTvshow').hide();
                 console.log(result);
             })
             .catch((error) => {
