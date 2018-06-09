@@ -98,14 +98,28 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
     };
 
 
+    $scope.markEntireSeasonAsWatched = function () {
+      $scope.watchAction = true;
+
+      WatchedService.markEntireSeasonAsWatched($scope.user._id, $scope.season._id)
+        .then((result) => {
+          $route.reload();
+          UIkit.modal('#modal-watchSeason').hide();
+          console.log(result);
+        })
+        .catch((error) => {
+          UIkit.notification({
+            message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+            status: 'danger',
+            timeout: 2500
+          });
+        });
+    };
+
     $scope.markSeasonAsWatched = function () {
       $scope.watchAction = true;
-      var episodesIds = [];
-      $scope.season.episodes.forEach((episode) => {
-        episodesIds.push(episode._id);
-      });
 
-      WatchedService.markSeasonAsWatched($scope.user._id, episodesIds, $scope.season._id)
+      WatchedService.markSeasonAsWatched($scope.user._id, $scope.season._id)
         .then((result) => {
           $route.reload();
           UIkit.modal('#modal-watchSeason').hide();

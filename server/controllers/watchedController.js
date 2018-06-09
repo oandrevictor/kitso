@@ -55,12 +55,30 @@ exports.create = async function(req, res) {
   });
 };
 
-exports.watchSeason = async function(req, res) {
-  var episodesIds = req.body.episodesIds;
-  var user_id = req.body._user;
+exports.watchEntireSeason = async function(req, res) {
+  var seasonId = req.body.seasonId;
+  var userId = req.body.userId;
   var date = req.body.date;
+  var season = await DataStoreUtils.getMediaObjById(seasonId);
+  var episodesIds = getSeasonsEpisodesIds([season]);
   // watched episodes
-  watch_season_episodes(episodesIds, user_id, date, function (result) {
+  watch_season_episodes(episodesIds[0], userId, date, function (result) {
+    res.status(RequestStatus.OK).json(result);
+  });
+}
+
+exports.watchSeason = async function(req, res) {
+  console.log('WATCH SAEASON -----------------');
+  var seasonId = req.body.seasonId;
+  var userId = req.body.userId;
+  var date = req.body.date;
+  var season = await DataStoreUtils.getMediaObjById(seasonId);
+  var episodesIds = getSeasonsEpisodesIds([season]);
+  var watchedMediasIds = await getMediasIdsFromWatchedObjects(episodesIds, userId);
+  var nonWatchedEpisodes = episodesIds[0].map((episode) => {
+    if (!watchedMediasIds.includes(episode)) return episode;
+  });
+  watch_season_episodes(nonWatchedEpisodes, userId, date, function (result) {
     res.status(RequestStatus.OK).json(result);
   });
 }
@@ -229,16 +247,21 @@ var user_has_watched = async function(user_id, media_id) {
 
 async function getMediasIdsFromWatchedObjects(episodesIds, userId) {
   var watchedPromises = [];
+  console.log(userId);
   episodesIds.forEach((episodeId) => {
+    console.log('EpisodeIds: ', episodeId);
     watchedPromises.push(DataStoreUtils.getWatchedByUserIdAndMediaId(userId, episodeId));
   });
   var watcheds;
   await Promise.all(watchedPromises).then((result) => {
     watcheds = result;
+    console.log('Watcheds: ', result);
   });
+  
   var watchedMediasIds = watcheds[0].map(function (watched) {
     return watched._media.toString();
   });
+  console.log('WatchedMedias: ', watchedMediasIds);
   return watchedMediasIds;
 }
 
@@ -292,23 +315,28 @@ async function watch_season_episodes(episodesIds, user_id, date, done) {
   var payload = episodesIds.length;
   var response = [];
   episodesIds.forEach(async (episode) => {
-    let watched = new Watched();
-    watched._media = episode;
-    watched._user = user_id;
-    watched.date = date;
-    let action = await DataStoreUtils.createAction(user_id, watched._id, ActionType.WATCHED);
-    watched._action = action._id;
-    await DataStoreUtils.addActionToUserHistory(user_id, action._id);
-    watched.save()
-    .then((watched) => {
+    if (episode) {
+      let watched = new Watched();
+      watched._media = episode;
+      watched._user = user_id;
+      watched.date = date;
+      let action = await DataStoreUtils.createAction(user_id, watched._id, ActionType.WATCHED);
+      watched._action = action._id;
+      await DataStoreUtils.addActionToUserHistory(user_id, action._id);
+      watched.save()
+      .then((watched) => {
+        response.push(watched);
+        requests++;
+        if (requests == payload) return done(response);
+      })
+      .catch((error) => {
+        requests++;
+        if (requests == payload) return done(response);
+      });
+    } else {
       requests++;
-      response.push(watched);
       if (requests == payload) return done(response);
-    })
-    .catch((error) => {
-      requests++;
-      if (requests == payload) return done(response);
-    });
+    }
   });
 }
 
