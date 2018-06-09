@@ -197,7 +197,6 @@ var injectDataFromTmdb = async function(item) {
     itemJson._media = await TMDBController.getSeasonFromAPI(tv_show._tmdb_id, mediaObj.number);
   }
 
-  console.log(itemJson);
   return itemJson;
 };
 
