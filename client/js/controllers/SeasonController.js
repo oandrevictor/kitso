@@ -127,7 +127,7 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
         }
       });
 
-      WatchedService.markSeasonAsNotWatched(episodesIds)
+      WatchedService.markSeasonAsNotWatched(episodesIds, $scope.user._id)
         .then((result) => {
           $route.reload();
           UIkit.modal('#modal-watchSeason').hide();

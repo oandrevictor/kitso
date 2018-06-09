@@ -95,11 +95,12 @@ kitso.service('WatchedService', ['$q', '$http', function ($q, $http) {
     return deferred.promise;
   }
 
-  function markSeasonAsNotWatched(episodesIds) {
+  function markSeasonAsNotWatched(episodesIds, userId) {
     var deferred = $q.defer();
 
     var data = {
-      "episodesIds": episodesIds
+      "episodesIds": episodesIds,
+      "userId": userId
     };
 
     $http.post('/api/watched/season/unwatch', data)
@@ -142,11 +143,12 @@ kitso.service('WatchedService', ['$q', '$http', function ($q, $http) {
     return deferred.promise;
   }
 
-  function markTvshowAsNotWatched(_seasons) {
+  function markTvshowAsNotWatched(_seasons, userId) {
     var deferred = $q.defer();
 
     var data = {
-      "seasons": _seasons
+      "seasons": _seasons,
+      "userId": userId
     };
 
     $http.post('/api/watched/tvshow/unwatch', data)

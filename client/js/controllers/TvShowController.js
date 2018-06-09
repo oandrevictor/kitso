@@ -1,7 +1,7 @@
 var kitso = angular.module('kitso');
 
-kitso.controller("TvShowController", ['$scope', '$location', '$timeout', '$routeParams', 'TvShowService',  'WatchedService',  'FollowService', 'RatedService', 'AuthService',
-function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedService, FollowService, RatedService, AuthService) {
+kitso.controller("TvShowController", ['$scope', '$location', '$route', '$timeout', '$routeParams', 'TvShowService',  'WatchedService',  'FollowService', 'RatedService', 'AuthService',
+function($scope, $location, $route, $timeout, $routeParams, TvShowService,  WatchedService, FollowService, RatedService, AuthService) {
   $('.full-loading').show();
 
     TvShowService.loadTvShow($routeParams.tvshow_id)
@@ -72,6 +72,7 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
     $scope.markTvshowAsWatched = function (tvshowId) {
         WatchedService.markTvshowAsWatched($scope.user._id, $scope.tvshow._seasons, tvshowId)
             .then((result) => {
+                $route.reload();
                 console.log(result);
             })
             .catch((error) => {
@@ -84,8 +85,9 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
         };
 
     $scope.markTvshowAsNotWatched = function () {
-        WatchedService.markTvshowAsNotWatched($scope.tvshow._seasons)
+        WatchedService.markTvshowAsNotWatched($scope.tvshow._seasons, $scope.user._id)
             .then((result) => {
+                $route.reload();
                 console.log(result);
             })
             .catch((error) => {

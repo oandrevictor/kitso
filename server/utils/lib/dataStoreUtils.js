@@ -219,8 +219,22 @@ exports.deleteWatched = async function(watchedId) {
   let watchedObj = await Watched.findById(watchedId);
   let actionId = watchedObj._action;
   let userId = watchedObj._user;
-  await this.deleteAction(actionId);
-  await this.deleteActionFromUserHistory(userId, actionId);
+  await Action.remove({ _id: actionId}).exec();
+  var deleteActionFromUserHistory = function(userId, actionId) {
+    User.findById(userId, function (err, user) {
+      let user_history = user._history;
+      let index = user_history.indexOf(actionId);
+      if (index > -1) {
+        user_history.splice(index, 1);
+      }
+      user.save((error) => {
+        if (error) {
+          console.log('Action removed.')
+        }
+      });
+    });
+  };
+  await deleteActionFromUserHistory(userId, actionId);
   watchedObj.remove();
   return watchedObj;
 };
