@@ -20,6 +20,7 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
             WatchedService.seasonProgress($scope.user._id ,$scope.season._id)
             .then((progress) => {
               $scope.season.progress = progress;
+              console.log(progress)
               $scope.updateProgress($scope.season.progress, 0);
             })
             .catch((error) => {
