@@ -20,7 +20,13 @@ kitso.service('RatedService', ['$q','$http', function ($q, $http) {
       $http.get('/api/rated/user/' + userId)
           .then((response) => {
             if (response.status === 200) {
-                  deferred.resolve(response.data);
+              var result = response.data;
+              result.forEach(function(rated){
+                if(rated._media.helper){
+                  rated._media.helper = JSON.parse(rated._media.helper)
+                }
+              })
+                  deferred.resolve(result);
               } else {
                   deferred.reject();
               }
@@ -39,7 +45,7 @@ kitso.service('RatedService', ['$q','$http', function ($q, $http) {
             if (response.status === 200) {
                   deferred.resolve(response.data);
               } else {
-                  deferred.reject();
+                  deferred.reject(response.data);
               }
           })
           .catch((error) => {

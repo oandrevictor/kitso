@@ -1,79 +1,111 @@
-<div class="tvshow">
-    <!--Cover Content-->
-    <div class="uk-background-cover" align="center" style="background-image: url({{ tvshow.images.cover }})">
-        <div class="uk-width-xxlarge">
-            <div class="title tvshow-name">{{ tvshow.name }}</div>
+<!-- <div class="tvshow">
+<!--Cover Content-->
+<div class="uk-background-cover" align="center" style="background-image: url({{ tvshow.backdrop_path }})">
+</div>
+<div class="purple-bar">
+  <div class="bar-content uk-width-xxlarge">
+    <div class="uk-width-3-4">
+      <div class="title tvshow-name">
+        <b>{{ tvshow.name }} </b> <div class="hour-info"> ({{ tvshow.air_date | date: 'yyyy' }})</div>
+      </div>
+      <div class="more-info">
+        <span uk-icon="icon: rss"></span> 2.5K Followers
+      </div>
 
-        </div>
     </div>
+  </div>
+</div>
 
-    <div class="uk-width-xxlarge content">
-        <div class="uk-width-3-4">
-            <b>Directed by</b> {{ 'Directors' }}
-            <br /> Year:
-            <b> {{ tvshow.release_date | date: 'yyyy' }}</b> | Genres:
-            <b ng-repeat="genre in tvshow.genres">{{ genre }}</b>
+<div class="uk-width-xxlarge content">
+  <div class="left-bar uk-width-1-4">
+    <div ng-show="tvshow.rated" class="rating-info"> {{tvshow.rating}} </div>
+    <img class="poster" style="background-image: url({{ tvshow.poster_path }})" />
+    <button ng-hide="tvshow.followed.is_following" class="uk-button uk-button-default watch-button" ng-click="follow(tvshow)">
+      <span uk-icon="icon: rss;"></span> Follow</button>
+      <button ng-show="tvshow.followed.is_following" class="uk-button uk-button-default watch-button watched" ng-click="unfollow(tvshow)">
+        <span uk-icon="icon: rss;"></span> Following </button>
+        <button ng-hide="tvshow.watched" ng-click="markTvshowAsWatched(tvshow._id)" class="uk-button uk-button-default watch-button">
+          <span uk-icon="icon: check;"></span> Mark as watched</button>
+          <button ng-show="tvshow.watched" ng-click="" class="uk-button uk-button-default watch-button watched">
+            <span uk-icon="icon: check;"></span> Watched (undo) </button>
+          </div>
+
+          <div class="uk-width-3-4">
             <div class="rating">
               <div>
                 <div class="is-rated-star" ng-show="tvshow.rated"></div>
                 <a ng-hide="tvshow.rated" uk-icon="icon: star; ratio: 2"></a>
               </div>
-                  <div uk-dropdown="pos: bottom-center; mode: hover" style="z-index: 999">
-                    <center>
-                      <ul class="uk-iconnav">
-                        <div ng-repeat="n in range('10')">
-                          <a ng-if="n <= tvshow.rating" class="rating-star" ng-click="rate(tvshow._id, n)"></a>
-                          <a ng-if="n > tvshow.rating" uk-icon="icon: star; ratio: .6" ng-click="rate(tvshow._id, n)"></a>
+              <div uk-dropdown="pos: bottom-center; mode: hover" style="z-index: 999">
+                <center>
+                  <ul class="uk-iconnav">
+                    <div ng-repeat="n in range('10')">
+                      <a ng-if="n <= tvshow.rating" class="rating-star" ng-click="rate(tvshow._id, n)"></a>
+                      <a ng-if="n > tvshow.rating" uk-icon="icon: star; ratio: .5" ng-click="rate(tvshow._id, n)"></a>
+                    </div>
+                  </ul>
+                </center>
+              </div>
+              <div class="rating-value"> 8.3</div>
+            </div>
+            <p>Created by <b ng-repeat="person in tvshow.created_by">{{ person.name }}; </b> <br />
+              Genres: <b ng-repeat="genre in tvshow.genres">{{ genre.name }} </b> /  Runtime: <b>{{tvshow.episode_run_time[0]}} minutes </b></p>
+
+              <div class="section sinopsis">
+                <p>
+                  {{ tvshow.overview }}
+                </p>
+              </div>
+
+
+              <div class="section">
+                <div class="section-title">
+                  Seasons
+                </div>
+                <div uk-slider>
+                  <div class="uk-position-relative uk-visible-toggle uk-light">
+                    <ul class="uk-slider-items uk-child-width-1-3@s">
+
+                      <li ng-repeat="season in tvshow.seasons">
+                        <div class="uk-card uk-grid-match uk-card-default uk-card-hover appears-in" >
+                          <a ng-href="tvshow/{{tvshow._id}}/season/{{season.season_number}}"> <img class="poster" style="background-image: url(https://image.tmdb.org/t/p/w500/{{ season.poster_path }})" /> </a>
+                          <p class="uk-align-center uk-text-uppercase" style="margin-top: 10px" align="center"> {{season.name}}</p>
                         </div>
-                      </ul>
-                    </center>
+                      </li>
+                    </ul>
+
+                    <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
+                    <a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slider-item="next"></a>
+
                   </div>
-                <div class="rating-value"> 8.3</div>
-            </div>
-        </div>
-        <div class="left-bar uk-width-1-4">
-            <img class="poster" style="background-image: url({{ tvshow.images.poster }})" />
-            <button ng-hide="tvshow.followed.is_following" class="uk-button uk-button-default watch-button" ng-click="follow(tvshow)">
-            <span uk-icon="icon: rss;"></span> Follow</button>
-            <button ng-show="tvshow.followed.is_following" class="uk-button uk-button-default watch-button watched" ng-click="unfollow(tvshow)">
-            <span uk-icon="icon: rss;"></span> Following </button>
-            <button ng-hide="tvshow.watched" ng-click="markAsWatched(tvshow._id)" class="uk-button uk-button-default watch-button">
-            <span uk-icon="icon: check;"></span> Mark as watched</button>
-            <button ng-show="tvshow.watched" ng-click="markAsNotWatched(tvshow.watched.watched_id)" class="uk-button uk-button-default watch-button watched">
-            <span uk-icon="icon: check;"></span> Watched (undo) </button>
-            <button class="uk-button uk-button-default watch-button" ng-click="editionMode()">
-            <span uk-icon="icon: pencil;"></span> Edit TvShow</button>
-        </div>
+                </div>
 
 
-        <div class="section sinopsis">
-            <div class="section-title">
-                Overview
+                <ul class="uk-slider-nav uk-dotnav uk-flex-center"></ul>
+
+              </div>
             </div>
-            <p>
-                {{ tvshow.overview }}
-            </p>
-        </div>
-        <div class="section">
-            <div class="section-title">
+
+            <div class="section">
+              <div class="section-title">
                 Cast
-            </div>
-            <div uk-grid>
-                <!-- <div class="cast-info" ng-repeat="person in tvshow.actors">
-                    <img class="cast-image" src="{{ person.image }}" />
-                    <p class="cast-name">{{ person.name }}</p>
-                </div> Quando tiver persons na serie.-->
-                <div class="cast-info">
-                    <img class="cast-image" src="https://ia.media-imdb.com/images/M/MV5BMTkwODE2MDg5N15BMl5BanBnXkFtZTcwNDM3MDQ0OA@@._V1_UY317_CR5,0,214,317_AL_.jpg" />
-                    <p class="cast-name">Maika Monroe</p>
-                </div>
-                <div class="cast-info">
-                    <img class="cast-image" src="https://ia.media-imdb.com/images/M/MV5BMTg4MzcwMjcyN15BMl5BanBnXkFtZTgwODAxMzg3NzE@._V1_UY317_CR25,0,214,317_AL_.jpg" />
-                    <p class="cast-name">Keir Gilchrist</p>
-                </div>
-                </div>
-            </div>
+              </div>
 
-        </div>
-    </div>
-</div>
+              <div uk-slider>
+                <div class="uk-position-relative uk-visible-toggle uk-light">
+                  <ul class="uk-slider-items uk-child-width-1-6@s">
+                    <li ng-repeat="person in tvshow._actors">
+                      <div class="uk-card uk-grid-match uk-card-default uk-card-hover appears-in cast-info" >
+                        <a ng-href="person/{{person._id}}"> <img class="cast-image" style="background-image: url(https://image.tmdb.org/t/p/w500/{{person.image_url}})" /> </a>
+                        <p class="uk-align-center uk-text-uppercase cast-name" align="center"> {{person.name}}</p>
+                      </div>
+                    </li>
+                  </ul>
+                  <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
+                  <a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slider-item="next"></a>
+                </div>
+                <ul class="uk-slider-nav uk-dotnav uk-flex-center"></ul>
+              </div>
+            </div>
+          </div>
+        </div> -->

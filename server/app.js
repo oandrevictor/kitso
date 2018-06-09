@@ -11,6 +11,11 @@ var passport       = require('passport');
 var session        = require('express-session');
 var MongoStore     = require('connect-mongo')(session);
 var dotenv         = require('dotenv').load();
+
+var RedisClient = require('./utils/lib/redisClient');
+
+let client = RedisClient.createAndAuthClient();
+
 // configuration ===========================================
 
 // config files
@@ -21,7 +26,7 @@ var port = process.env.PORT || 8080;
 
 // connect to our mongoDB database
 // (uncomment after you enter in your own credentials in config/db.js)
-mongoose.connect(db.local_url);
+mongoose.connect(db.url);
 
 // Passport and sessions
 require('./config/passport')(passport);
@@ -92,6 +97,10 @@ app.get('/tvshow/:id', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
 
+app.get('/tvshow/:id/season/:number', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
 app.get('/tvshow/edit/:id', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
@@ -113,9 +122,6 @@ app.get('/person/edit/:id', function (req, res) {
 });
 
 // Api routes
-var exampleRoutes = require('./routes/example');
-app.use('/example', exampleRoutes);
-
 var emailRoutes = require('./routes/email');
 app.use('/api/email', emailRoutes);
 

@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var ActionType = require('../constants/actionType');
 
 var ActionSchema = new Schema({
   date: {
@@ -17,14 +18,14 @@ var ActionSchema = new Schema({
   },
   action_type: {
     type: String,
-    enum: ['rated','watched','followed', 'followed-page'],
+    enum: [ActionType.RATED, ActionType.WATCHED, ActionType.FOLLOWED_USER, ActionType.FOLLOWED_PAGE],
     required: true
   },
   hidden: {
     type: Boolean,
     default: false,
     required: true
-   }
+  }
 });
 
 var Action = mongoose.model('Action', ActionSchema);

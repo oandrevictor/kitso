@@ -1,74 +1,74 @@
 <div class="login">
-    <div class="uk-width-large uk-margin uk-container login-container">
-      <h1 class="uk-text-center login-title">Login</h1>
+  <div class="uk-width-large uk-margin uk-container login-container">
+    <h1 class="uk-text-center login-title">Login</h1>
 
-        <div class="uk-card uk-card-small uk-card-default uk-card-body login-form uk-container-center">
-            <form name="userForm" ng-submit="submitForm()" novalidate>
+    <div class="uk-card uk-card-small uk-card-default uk-card-body login-form uk-container-center">
+      <form name="userForm" ng-submit="submitForm()" novalidate>
 
-                <!--Username Field-->
-                <div uk-grid>
-                  <div class="uk-width-10 uk-margin-small uk-margin-top">
-                    <div><label class="uk-form-label" for="username" ng-class="{ 'uk-text-danger' : isInvalid(userForm.username) }">Username</label></div>
-                    <div class="uk-width-1-1 uk-inline uk-form-controls">
-                    <span class="uk-form-icon" uk-icon="icon: user"></span>
-                        <input class="uk-input" type="text" id="username" name="username" placeholder="Username"
-                               ng-class="{ 'uk-form-danger' : isInvalid(userForm.username) }"
-                               ng-model="user.username" required>
-                    </div>
-                    <div><label class="uk-text-small uk-text-danger uk-align-right" for="username"
-                           ng-show="isInvalid(userForm.username)" >* Username can't be blank</label></div>
-                </div>
+        <!--Username Field-->
+        <div uk-grid>
+          <div class="uk-width-10 uk-margin-small uk-margin-top">
+            <div><label class="uk-form-label" for="username" ng-class="{ 'uk-text-danger' : isInvalid(userForm.username) }">Username</label></div>
+            <div class="uk-width-1-1 uk-inline uk-form-controls">
+              <span class="uk-form-icon" uk-icon="icon: user"></span>
+              <input class="uk-input" type="text" id="username" name="username" placeholder="Username"
+              ng-class="{ 'uk-form-danger' : isInvalid(userForm.username) }"
+              ng-model="user.username" required>
+            </div>
+            <div><label class="uk-text-small uk-text-danger uk-align-right" for="username"
+              ng-show="isInvalid(userForm.username)" >* Username can't be blank</label></div>
+            </div>
 
-                <!--Password Field-->
+            <!--Password Field-->
 
-                  <div class="uk-width-10 uk-margin-small">
-                    <div><label class="uk-form-label" for="password" ng-class="{ 'uk-text-danger' : isInvalid(userForm.password) }">Password</label></div>
-                    <div class="uk-width-1-1 uk-inline uk-form-controls">
-                    <span class="uk-form-icon" uk-icon="icon: lock"></span>
-                        <input class="uk-input" type="password" id="password" name="password" placeholder="Password"
-                               ng-class="{ 'uk-form-danger' : isInvalid(userForm.password) }" ng-change="resetValidity()"
-                               ng-model="user.password" required>
-                    </div>
-                    <div><label class="uk-text-small uk-text-danger uk-align-right" ng-show="isInvalid(userForm.password)" >* Password can't be blank</label></div>
-                </div>
-                </div>
+            <div class="uk-width-10 uk-margin-small">
+              <div><label class="uk-form-label" for="password" ng-class="{ 'uk-text-danger' : isInvalid(userForm.password) }">Password</label></div>
+              <div class="uk-width-1-1 uk-inline uk-form-controls">
+                <span class="uk-form-icon" uk-icon="icon: lock"></span>
+                <input class="uk-input" type="password" id="password" name="password" placeholder="Password"
+                ng-class="{ 'uk-form-danger' : isInvalid(userForm.password) }" ng-change="resetValidity()"
+                ng-model="user.password" required>
+              </div>
+              <div><label class="uk-text-small uk-text-danger uk-align-right" ng-show="isInvalid(userForm.password)" >* Password can't be blank</label></div>
+            </div>
+          </div>
 
-                <button class="uk-button uk-button-small uk-align-center" ng-class="{ 'uk-button-login': userForm.$valid }" ng-disabled="userForm.$invalid">Login</button>
-                <hr>
-                <p align="center" style="margin-top: 5px; margin-bottom: 10px">
-                    <a class="uk-link-text" uk-toggle="target: #my-id" >Forgot password?</a>
-                    <br> <span class="uk-text-muted">New to Kitso? </span><a class="uk-link-text" href="/signup">Create an account</a>
-                </p>
-            </form>
-        </div>
+          <button class="uk-button uk-button-small uk-align-center" ng-class="{ 'uk-button-login': userForm.$valid }" ng-disabled="userForm.$invalid">Login</button>
+          <hr>
+          <p align="center" style="margin-top: 5px; margin-bottom: 10px">
+            <a class="uk-link-text" uk-toggle="target: #my-id" >Forgot password?</a>
+            <br> <span class="uk-text-muted">New to Kitso? </span><a class="uk-link-text" href="/signup">Create an account</a>
+          </p>
+        </form>
+      </div>
     </div>
-</div>
+  </div>
 
-<!-- This is the modal -->
-<div id="my-id" class="uk-flex-top" uk-modal>
+  <!-- This is the modal -->
+  <div id="my-id" class="uk-flex-top" uk-modal>
     <div class="uk-modal-dialog uk-margin-auto-vertical">
-            <button class="uk-modal-close-default" type="button" uk-close></button>
-            <div class="uk-modal-header">
-                <h2 class="uk-modal-title uk-text-bold uk-text-danger">Recover password</h2>
-            </div>
-            <div class="uk-modal-body">
-                <p>Please input your account e-mail address and your new password.</p>
-                <div class="uk-margin">
-                    <label class="uk-form-label" for="email">Email</label>
-                    <div class="uk-form-controls">
-                        <input class="uk-input" type="email" id="email" name="email" ng-model="recoverEmailAddress" placeholder="Email" required>
-                    </div>
-                </div>
-                <div class="uk-margin">
-                    <label class="uk-form-label" for="new-password">New password</label>
-                    <div class="uk-form-controls">
-                        <input class="uk-input" type="password" id="new-password" name="new-password" ng-model="newPassword" placeholder="New password" required>
-                    </div>
-                </div>
-            </div>
-            <div class="uk-modal-footer uk-text-right">
-                <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
-                <button ng-disabled="recover" class="uk-button uk-button-primary home purple-button" type="button" ng-click="recoverPassword()">Send</button>
-            </div>
+      <button class="uk-modal-close-default" type="button" uk-close></button>
+      <div class="uk-modal-header">
+        <h2 class="uk-modal-title uk-text-bold uk-text-danger">Recover password</h2>
+      </div>
+      <div class="uk-modal-body">
+        <p>Please input your account e-mail address and your new password.</p>
+        <div class="uk-margin">
+          <label class="uk-form-label" for="email">Email</label>
+          <div class="uk-form-controls">
+            <input class="uk-input" type="email" id="email" name="email" ng-model="recoverEmailAddress" placeholder="Email" required>
+          </div>
+        </div>
+        <div class="uk-margin">
+          <label class="uk-form-label" for="new-password">New password</label>
+          <div class="uk-form-controls">
+            <input class="uk-input" type="password" id="new-password" name="new-password" ng-model="newPassword" placeholder="New password" required>
+          </div>
+        </div>
+      </div>
+      <div class="uk-modal-footer uk-text-right">
+        <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+        <button ng-disabled="recover" class="uk-button uk-button-primary home purple-button" type="button" ng-click="recoverPassword()">Send</button>
+      </div>
     </div>
-</div>
+  </div>

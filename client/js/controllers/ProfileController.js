@@ -4,6 +4,7 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$rout
 function ($scope, $location, $timeout, $routeParams, AuthService, UserService, FollowService, WatchedService, RatedService) {
 
   $('.full-loading').show();
+  var loaded = 0;
   AuthService.getStatus()
     .then(() => {
       $scope.user = AuthService.getUser();
@@ -14,7 +15,6 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
           loadUserRatedInfo();
           loadUserFollowInfo();
           loadUserWatchedInfo();
-          $('.full-loading').hide();
           FollowService.isFollowingUser($scope.logged_user._id, $scope.user._id).then((followed) => {
             $scope.user.followed = followed;
           }).catch((error) => {
@@ -34,13 +34,21 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         loadUserRatedInfo();
         loadUserFollowInfo();
         loadUserWatchedInfo();
-        $('.full-loading').hide();
       }
     });
 
   $scope.formatDate = function (date) {
     return moment(date).format('DD/MM/YYYY')
   };
+  var compareDates = function(a,b){
+    return - moment(a.date).diff(moment(b.date))
+  }
+
+  var checkFinishedLoading = function(){
+    if (loaded >=2) {
+      $('.full-loading').hide();
+    }
+  }
 
   var loadUserWatchedInfo = function(){
     WatchedService.getAllWatched($scope.user._id)
@@ -48,26 +56,38 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         watched.forEach(function (watched) {
           watched.date = new Date(watched.date);
         });
+        watched = watched.sort(compareDates);
+        $scope.user.watched = watched;
+        loaded +=1;
+        checkFinishedLoading();
 
-        $scope.user.watched = watched
       }).catch(function (error) {
+        loaded +=1;
+        checkFinishedLoading();
         console.log(error);
-      });
+      })
   }
 
   var loadUserRatedInfo = function(){
     RatedService.getAllRated($scope.user._id)
       .then((ratings) => {
+        loaded +=1;
         ratings.forEach((rated) => {
           rated.date = new Date(rated.date);
         });
 
-        $scope.user.ratings = ratings;
+        $scope.user.ratings = ratings.sort(compareDates);
+        $scope.userFavoriteMovie = $scope.getUserFavoriteMovie();
+        loadUserBackground();
+        checkFinishedLoading();
       })
       .catch(function (error) {
         console.log(error);
+        loaded +=1;
+        checkFinishedLoading();
       });
   }
+
   var loadUserFollowInfo = function(){
     FollowService.getUsersFollowing($scope.user._id).then( function(following){
         $scope.user.following = following
@@ -86,6 +106,20 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
       }).catch(function(error){
           console.log(error);
       })
+  }
+
+  function isMovie(rating) {
+    return rating._media.__t === "Movie";
+  }
+
+  var loadUserBackground = function () {
+    var ratedMovies = $scope.user.ratings.filter(isMovie);
+
+    if (ratedMovies.length > 0) {
+      $scope.profileBackground = "https://image.tmdb.org/t/p/original/" + ratedMovies[0]._media.helper.backdrop_path;
+    } else {
+      $scope.profileBackground = "/images/strange.jpg";
+    }
   }
 
   $scope.unfollow_user = function(unfollowedUser){
@@ -115,7 +149,64 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
       }
     } else {
       $location.path('person/' + followble_obj._id);
-    } 
+    }
+  }
+
+  $scope.goToMedia = function (media) {
+    if (media.__t === 'TvShow') {
+      $location.path('tvshow/' + media._id);
+    } else if (media.__t === "Movie") {
+      $location.path('movie/' + media._id);
+    } else if (media.__t === "Episode"){
+      $location.path('tvshow/' + media._tvshow_id + '/season/'+ media.season_number);
+    }
+
+  }
+
+  $scope.getUserFavoriteMovie = function () {
+    let greaterRating = null;
+
+    if ($scope.user.ratings.length > 0) {
+      $scope.user.ratings.forEach((rated) => {
+        if (rated._media.__t == "Movie") {
+          if (greaterRating == null) {
+            greaterRating = rated;
+          } else if (greaterRating.rating <= rated.rating) {
+            greaterRating = rated;
+          }
+        }
+      });
+    }
+
+    if (greaterRating != null) {
+      return greaterRating._media;
+    } else {
+      return greaterRating;
+    }
+  }
+
+  $scope.getPoster = function(media){
+    if (media.poster_path){
+      return media.poster_path;
+    }
+    if(media.images && media.images.poster){
+      return media.images.poster;
+    }
+    if(media.helper && media.helper.poster_path){
+      return 'https://image.tmdb.org/t/p/w500/' + media.helper.poster_path;
+    }
+  }
+
+  $scope.getBackground = function(media){
+    if (media === undefined || media === null) {
+      return;
+    }
+    if(media.images && media.images.cover){
+      return media.images.cover;
+    }
+    if(media.helper && media.helper.backdrop_path){
+      return 'https://image.tmdb.org/t/p/original/' + media.helper.backdrop_path;
+    }
   }
 
   $scope.range = function(count){
@@ -276,5 +367,8 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
   $scope.toggleDescriptionArea = function () {
     $scope.descriptionArea = !$scope.descriptionArea;
   }
+
+
+
 
 }]);

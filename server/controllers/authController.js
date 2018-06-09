@@ -1,5 +1,6 @@
 var passport = require('passport');
 var _        = require('underscore');
+var RequestStatus = require('../constants/requestStatus');
 
 exports.login = function(req, res, next) {
   passport.authenticate('local', function(err, user, info) {
@@ -8,15 +9,15 @@ exports.login = function(req, res, next) {
     }
 
     if (!user) {
-      return res.status(401).json({ err: info });
+      return res.status(RequestStatus.UNAUTHORIZED).json({ err: info });
     }
 
     req.logIn(user, function(err) {
       if (err) {
-        return res.status(500).json({ err: 'Could not log in user' });
+        return res.status(RequestStatus.INTERNAL_SERVER_ERROR).json({ err: 'Could not log in user' });
       }
 
-      res.status(200).json({ status: 'Login successful!' });
+      res.status(RequestStatus.OK).json({ status: 'Login successful!' });
 
     });
   })(req, res, next);
@@ -24,15 +25,15 @@ exports.login = function(req, res, next) {
 
 exports.logout = function(req, res) {
   req.logout();
-  res.status(200).send('Logged out!')
+  res.status(RequestStatus.OK).send('Logged out!')
 }
 
 exports.status = function(req, res) {
   var user = req.user;
-	if (user) {
+  if (user) {
     user = _.omit(user.toJSON(), 'password');
-		res.status(200).send({user: user, status: true});
-	} else {
-		res.status(200).send({status: false});
-	}
+    res.status(RequestStatus.OK).send({user: user, status: true});
+  } else {
+    res.status(RequestStatus.OK).send({status: false});
+  }
 }

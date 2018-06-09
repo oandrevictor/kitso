@@ -1,17 +1,16 @@
-
 @import url('https://fonts.googleapis.com/css?family=Roboto:100i,300,400,500,700');
 
 html, body {
-    max-width: 100%;
-    overflow-x: hidden;
-    height: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  height: 100%;
 }
 .uk-tab>*{
-margin-right: auto;
-margin-left: auto;
+  margin-right: auto;
+  margin-left: auto;
 }
 .kitso-wrapper {
-  min-height: 90vh;
+  min-height: 100vh;
 }
 .kitso-content{
   overflow-y: auto;
@@ -47,6 +46,7 @@ margin-left: auto;
     h1, h2 {
       color: #EDEDED;
     }
+
     h1 {
       font-weight: 500;
     }
@@ -61,17 +61,21 @@ margin-left: auto;
     }
   }
 }
-
+.rating-star {
+  background: url("/images/icon/purple-star.svg") center no-repeat;
+  background-size: 12px;
+  height: 12px;
+  width: 12px;
+  padding: 0px;
+}
 .purple-button {
   background: #8600CA !important;
   color: white !important;
   border: #8600CA solid 1px !important;
 }
 
-
 .toolbar {
   font-family: 'Roboto', sans-serif;
-  width: 60vw;
   height: 6vh;
   min-height: 60px;
   background: linear-gradient(155deg, #9730a0 0%, #7c1b7a 51%, #502274 75%);
@@ -102,9 +106,9 @@ margin-left: auto;
 
     .home-icon{
       background: url("/images/icon/home.svg") center no-repeat;
-      background-size: 31px;
-      height: 31px;
-      width: 31px;
+      background-size: 30px;
+      height: 30px;
+      width: 30px;
       border: 0px;
       padding: 0px;
     }
@@ -184,7 +188,7 @@ margin-left: auto;
   clear: both;
   position: relative;
   font-family: 'Roboto', sans-serif;
-  width: 100vw;
+  width: 100%;
   height: 6vh;
   background: #f9f9f9;
   color: #502274;
@@ -215,7 +219,7 @@ margin-left: auto;
   }
 
   .uk-link-text{
-  	color: #502274 !important;
+    color: #502274 !important;
   }
 
   .login-container {
@@ -227,19 +231,21 @@ margin-left: auto;
       max-width: 450px;
       min-width: 300px;
       padding-bottom: 0px!important;
-
       .uk-form-label {
         color: #502274 !important;
       }
+
       .uk-input {
         color: #707070;
         font-weight: 300;
         border: #f0f0f0 solid 1px;
       }
+
       .uk-form-danger {
         color: #f0506e;
         border-color: #f0506e;
       }
+
       .uk-select {
         font-weight: 300;
       }
@@ -250,10 +256,8 @@ margin-left: auto;
       font-weight: 300;
       font-family: 'Roboto' !important;
     }
-
   }
 }
-
 
 .signup {
   background: url('/images/blade_runner.jpg');
@@ -274,25 +278,26 @@ margin-left: auto;
   .signup-container {
     margin-top: auto;
     margin-bottom: auto;
-
     .signup-form {
       height: 100%;
       max-width: 450px;
       min-width: 300px;
       padding-bottom: 0px!important;
-
       .uk-form-label {
         color: #502274 !important;
       }
+
       .uk-input {
         color: #707070;
         font-weight: 300;
         border: #f0f0f0 solid 1px;
       }
+
       .uk-form-danger {
         color: #f0506e;
         border-color: #f0506e;
       }
+
       .uk-select {
         font-weight: 300;
       }
@@ -305,8 +310,8 @@ margin-left: auto;
     }
   }
 }
-.explore {
 
+.explore {
   .uk-background-cover {
     text-shadow: 1px 0px 5px #333333e3;
     background: url("/images/interstellar.jpg");
@@ -325,6 +330,16 @@ margin-left: auto;
     }
   }
 
+  .poster {
+    display:block;
+    background: #502274;
+    background-repeat:no-repeat;
+    background-size:cover;
+    width: 183px;
+    height: 268px;
+    overflow:hidden;
+  }
+
   .date-change{
     width: 85% !important;
   }
@@ -338,7 +353,6 @@ margin-left: auto;
     padding-right: 4px;
     background: #8600ca;
     color: white;
-
   }
 
   .explore-container {
@@ -347,38 +361,38 @@ margin-left: auto;
     font-weight: 300;
 
     .button-switcher{
-       text-align: right;
+      text-align: right;
 
-       .uk-button{
-            padding: 0 15px;
-            border-color: transparent;
-            color: #ccc;
-       }
+      .uk-button{
+        padding: 0 15px;
+        border-color: transparent;
+        color: #ccc;
+      }
 
-       .uk-button-default.uk-active, .uk-button-default:active .uk-icon{
-         color: #333;
-    }
+      .uk-button-default.uk-active, .uk-button-default:active .uk-icon{
+        color: #333;
+      }
     }
 
     .uk-switcher {
-     p{
-      margin-bottom: 0px;
-     }
-     .uk-text-muted{
-      margin-bottom: 10px;
-      margin-top: 5px;
-      font-size: 13px;
-     }
+      p{
+        margin-bottom: 0px;
+      }
+      .uk-text-muted{
+        margin-bottom: 10px;
+        margin-top: 5px;
+        font-size: 13px;
+      }
 
-     .uk-divider-icon {
-      margin-top: 0px;
-     }
+      .uk-divider-icon {
+        margin-top: 0px;
+      }
     }
 
     .uk-tab>.uk-active>a {
       font-weight: 400;
       border-color: #db2399 !important;
-  }
+    }
 
     .uk-width-1-2{
       p{
@@ -388,35 +402,78 @@ margin-left: auto;
     }
 
     .uk-list-divider>li:nth-child(n+2) {
-       border-top: 1px solid #f7f7f7;
+      border-top: 1px solid #f7f7f7;
     }
 
     .uk-card-primary{
-       background: #fff;
-       box-shadow: none;
+      background: #fff;
+      box-shadow: none;
 
-       .uk-text{
-          color: #666;
-       }
+      .uk-text{
+        color: #666;
+      }
 
-       .uk-text-muted{
-          color: #999 !important;
-       }
+      .uk-text-muted{
+        color: #999 !important;
+      }
 
-       .uk-card-body{
-          padding-left: 0px;
-          padding-top: 5px;
-       }
+      .uk-card-body{
+        padding-left: 0px;
+        padding-top: 5px;
+      }
     }
 
     .uk-list ul .uk-iconnav{
-       padding-left: 0px;
+      padding-left: 0px;
     }
   }
-
-
+}
+.is-rated-star {
+  background: url("/images/icon/white-star.svg") center no-repeat;
+  background-size: 40px;
+  height: 40px;
+  width: 40px;
+  margin-top: 5px;
 }
 
+.purple-bar {
+  display: flex;
+  height: 160px !important;
+  background: black;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.7));
+  color: white;
+  height: 3em;
+  margin-top: -160px;
+  .bar-content {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+    padding-top: 0px !important;
+    display: inline-block;
+  }
+}
+.hour-info {
+  display: inline-block;
+  font-size: 0.6em;
+}
+.rating-info {
+  width: 40px;
+  position: absolute;
+  text-align: center;
+  font-size: 1em;
+  color: #f8f8f8;
+  float: right;
+  margin-left: 140px;
+  background-image: url(/images/flag.png);
+  background-size: 62px;
+  padding-bottom: 20px;
+  background-position-x: 35px;
+  background-position-y: -11px;
+  margin-top: -7px;
+  padding-top: 5px;
+  font-weight: bold;
+}
 .profile {
   font-family: 'Roboto' !important;
   .card-rated{
@@ -433,9 +490,9 @@ margin-left: auto;
     padding-left: 3px !important;
   }
   .page-link {
-      text-decoration: none;
-      color:  #666 !important;
-      font-weight: 300;
+    text-decoration: none;
+    color:  #666 !important;
+    font-weight: 300;
   }
   .date-change{
     width: 85% !important;
@@ -454,6 +511,19 @@ margin-left: auto;
     }
   }
 
+  .favorite-movie {
+    display:block;
+    background: #502274;
+    background-repeat:no-repeat;
+    background-size:cover;
+    width: 300px;
+    height: 150px;
+  }
+
+  .uk-overlay {
+    padding: 2px;
+  }
+
   .check {
     width: 20px !important;
     min-width: 20px !important;
@@ -463,10 +533,9 @@ margin-left: auto;
     padding-right: 4px;
     background: #8600ca;
     color: white;
-
   }
+
   .uk-background-cover {
-    background: url("/images/strange.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -477,104 +546,109 @@ margin-left: auto;
     padding-bottom: 0px !important;
     padding-top: 4%;
   }
+
   .uk-button-save-changes {
     background-color: #502274 !important;
     color: #ffffff !important;
     font-weight: bold;
   }
 
-  .uk-link-text{
-  	color: #502274 !important;
-  	font-size: 0.575rem;
-  	margin-left: 0px;
-  	margin-bottom: 0px;
-  	padding-top: 4px;
+  .uk-link-text {
+    color: #502274 !important;
+    font-size: 0.575rem;
+    margin-left: 0px;
+    margin-bottom: 0px;
+    padding-top: 4px;
   }
+
   .profile-container {
     margin-top: -50px;
     margin-bottom: auto;
     font-weight: 300;
 
     .button-switcher{
-       text-align: right;
+      text-align: right;
 
-       .uk-button{
-            padding: 0 15px;
-            border-color: transparent;
-            color: #ccc;
-       }
+      .uk-button{
+        padding: 0 15px;
+        border-color: transparent;
+        color: #ccc;
+      }
 
-       .uk-button-default.uk-active, .uk-button-default:active .uk-icon{
-    	   color: #333;
-		}
+      .uk-button-default.uk-active, .uk-button-default:active .uk-icon{
+        color: #333;
+      }
     }
 
     .uk-switcher {
-     p{
-      margin-bottom: 0px;
-     }
-     .uk-text-muted{
-      margin-bottom: 10px;
-      margin-top: 5px;
-      font-size: 13px;
-     }
+      p{
+        margin-bottom: 0px;
+      }
+      .uk-text-muted{
+        margin-bottom: 10px;
+        margin-top: 5px;
+        font-size: 13px;
+      }
 
-     .uk-divider-icon {
-      margin-top: 0px;
-     }
+      .uk-divider-icon {
+        margin-top: 0px;
+      }
     }
 
     .uk-tab>.uk-active>a {
       font-weight: 400;
       border-color: #db2399 !important;
-	}
+    }
 
     .uk-width-1-2{
-   	  p{
-   	  	margin-bottom: 0px;
-   	  	width: 300px
-   	  }
+      p{
+        margin-bottom: 0px;
+        width: 300px
+      }
     }
 
     .uk-list-divider>li:nth-child(n+2) {
-       border-top: 1px solid #f7f7f7;
+      border-top: 1px solid #f7f7f7;
     }
 
-    .uk-card-primary{
-       background: #fff;
-       box-shadow: none;
+    .uk-card-primary {
+      background: #fff;
+      box-shadow: none;
 
-       .uk-text{
-          color: #666;
-       }
+      .uk-text {
+        color: #666;
+      }
 
-       .uk-text-muted{
-          color: #999 !important;
-       }
+      .uk-text-muted {
+        color: #999 !important;
+      }
 
-       .uk-card-body{
-          padding-left: 0px;
-          padding-top: 5px;
-       }
+      .uk-card-body {
+        padding-left: 0px;
+        padding-top: 5px;
+      }
     }
 
-    .uk-list ul .uk-iconnav{
-       padding-left: 0px;
+    .uk-list ul .uk-iconnav {
+      padding-left: 0px;
     }
 
-    .following-link{
+    .following-link {
       color: #db2399 !important
     }
   }
+
   .profile-image {
     border-style: solid;
     display: block;
   }
+
   .profile-name {
     display: inline-block;
     text-shadow: 1px 1px 2px black, 0 0 1em #000000, 0 0 0.2em #000000;
     margin: 2px;
   }
+
   .profile-username {
     text-shadow: 1px 1px 2px black, 0 0 1em #000000, 0 0 0.2em #000000;
     margin-top: 2px;
@@ -582,7 +656,6 @@ margin-left: auto;
   }
 
   .rating {
-
     .is-rated-star {
       background: url("/images/icon/white-star.svg") center no-repeat;
       background-size: 40px;
@@ -602,7 +675,7 @@ margin-left: auto;
       background-size: 12px;
       height: 12px;
       width: 12px;
-      padding-left: 0px;
+      padding: 0px;
     }
   }
 }
@@ -623,13 +696,17 @@ margin-left: auto;
     padding-top: 4%;
     position: relative;
   }
+
+  .uk-dotnav {
+    margin-bottom: 10px;
+  }
+
   .title {
-    bottom: 10px;
-    position: absolute;
     font-size: 4vh;
     font-weight: 100;
     margin-left: auto;
     margin-right: auto;
+    display: inline-block;
   }
 
   .sinopsis {
@@ -665,14 +742,16 @@ margin-left: auto;
       background-size: 12px;
       height: 12px;
       width: 12px;
-      padding-left: 0px;
+      padding: 0px;
     }
   }
 
   .left-bar {
     float: right;
+    position: relative;
     margin-top: -140px;
   }
+
   .watch-button {
     display: block;
     width: 191px;
@@ -683,7 +762,15 @@ margin-left: auto;
       background: #773095;
     }
   }
+
   .poster {
+    display:block;
+    background: #502274;
+    background-repeat:no-repeat;
+    background-size:cover;
+    width: 191px;
+    height: 275px;
+    overflow:hidden;
     box-shadow: 0 0px 10px rgba(0,0,0,0.1);
     border: 4px solid white;
   }
@@ -692,27 +779,31 @@ margin-left: auto;
     margin-top: 8px;
     margin-bottom: 4px;
 
-    .cast-info{
-      width: 156px;
-      display: flex;
-
+    .cast-info {
       .cast-image {
-        height: 100px;
+        display:block;
+        background: #502274;
+        background-repeat:no-repeat;
+        background-size:cover;
+        width: 191px;
+        height: 183px;
+        overflow:hidden;
+        box-shadow: 0 0px 10px rgba(0,0,0,0.1);
+        border: 4px solid white;
       }
       .cast-name {
-        padding-left: 6px;
-        display: block;
-        margin-top: auto;
-        margin-bottom: auto;
+        margin-top: 10px;
       }
     }
   }
+
   .section-title {
     font-size: 2.5vh;
     color: #773095;
     font-weight: 100;
   }
-  p{
+
+  p {
     margin-top: 0px;
     font-size: 14px;
   }
@@ -725,6 +816,59 @@ margin-left: auto;
     margin: 2px;
   }
 
+  .uk-accordion {
+    border-bottom: #f0f0f0 solid 1px;
+    margin: 0px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+
+    .uk-accordion-title {
+      display: block;
+      font-size: 1rem;
+      line-height: 1.4;
+      color: #773095;
+      overflow: hidden;
+    }
+  }
+  .episode-button {
+    width: 120px;
+    padding: 0%;
+    color: #f84264;
+    border: 0px;
+    display: inline-block;
+    font-size: 10px;
+    margin-bottom: 2px;
+
+    &.active {
+      background: #f84264;
+      color: white;
+    }
+  }
+
+  .episode-airing {
+    font-size: 0.8em;
+    color: #999;
+  }
+  .episode-list-title {
+    display: inline-block;
+    font-weight: 100;
+    color: #666;
+  }
+
+  .episode-details {
+    width: 100%;
+    padding-left: 40px;
+
+    .episode-title {
+      font-size: 1.3rem;
+      margin-bottom: 4px;
+    }
+  }
+  .episode-image {
+    width: 300px !important;
+    height: 168px !important;
+  }
+
   .uk-background-cover {
     z-index: -1;
     background: url("/images/changeling.jpg");
@@ -732,7 +876,7 @@ margin-left: auto;
     background-size: cover;
     background-position: center center;
     overflow-y: visible !important;
-    height: 30vh;
+    height: 35vh;
     display: block;
     color: #ffffff !important;
     padding-bottom: 0px !important;
@@ -740,7 +884,12 @@ margin-left: auto;
     position: relative;
   }
 
+  .uk-dotnav {
+    margin-bottom: 10px;
+  }
+
   .poster {
+    display:block;
     background: #502274;
     background-repeat:no-repeat;
     background-size:cover;
@@ -752,8 +901,6 @@ margin-left: auto;
   }
 
   .title {
-    bottom: 10px;
-    position: absolute;
     font-size: 4vh;
     font-weight: 100;
     margin-left: auto;
@@ -793,14 +940,16 @@ margin-left: auto;
       background-size: 12px;
       height: 12px;
       width: 12px;
-      padding-left: 0px;
+      padding: 0px;
     }
   }
 
   .left-bar {
+    position: relative;
     float: right;
     margin-top: -140px;
   }
+
   .watch-button {
     display: block;
     width: 191px;
@@ -811,38 +960,54 @@ margin-left: auto;
       background: #773095;
     }
   }
-  .poster {
-    box-shadow: 0 0px 10px rgba(0,0,0,0.1);
-    border: 4px solid white;
-  }
 
   .section {
     margin-top: 8px;
     margin-bottom: 4px;
 
-    .cast-info{
-      width: 156px;
-      display: flex;
+    &.episode {
+      display: flow-root !important;
+    }
 
+    .cast-info {
       .cast-image {
-        height: 100px;
+        display:block;
+        background: #502274;
+        background-repeat:no-repeat;
+        background-size:cover;
+        width: 191px;
+        height: 183px;
+        overflow:hidden;
+        box-shadow: 0 0px 10px rgba(0,0,0,0.1);
+        border: 4px solid white;
       }
       .cast-name {
-        padding-left: 6px;
-        display: block;
-        margin-top: auto;
-        margin-bottom: auto;
+        margin-top: 10px;
       }
     }
   }
+
   .section-title {
     font-size: 2.5vh;
     color: #773095;
     font-weight: 100;
   }
-  p{
+
+  p {
     margin-top: 0px;
     font-size: 14px;
+
+    &.episode-overview {
+      font-size: 0.8em;
+      margin-bottom: 6px;
+    }
+
+    &.tvshow-link {
+      margin-bottom: 2px;
+      font-size: 18px;
+      color: white;
+      font-weight: 600;
+    }
   }
 }
 
@@ -917,6 +1082,7 @@ margin-left: auto;
   }
 
   .poster {
+    display:block;
     background: url("/images/person-edited.png");
     background: #502274;
     background-repeat:no-repeat;
