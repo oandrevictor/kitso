@@ -189,12 +189,14 @@ var injectDataFromTmdb = async function(item) {
   if (mediaObj.__t == "Movie") {
     itemJson._media = await TMDBController.getMovie(mediaObj._tmdb_id);
   } else if  (mediaObj.__t == "Episode") {
-    itemJson._media = await TMDBController.getEpisodeFromTMDB(mediaObj._tmdb_tvshow_id, mediaObj.season_number, mediaObj.number);
+    response = await TMDBController.getEpisodeFromTMDB(mediaObj._tmdb_tvshow_id, mediaObj.season_number, mediaObj.number);
+    itemJson._media = JSON.parse(response)
   } else if (mediaObj.__t == "TvShow") {
     itemJson._media = await TMDBController.getShow(mediaObj._tmdb_id);
   } if (mediaObj.__t == "Season") {
     tv_show = await DataStoreUtils.getMediaObjById(mediaObj._tvshow_id);
-    itemJson._media = await TMDBController.getSeasonFromAPI(tv_show._tmdb_id, mediaObj.number);
+    response = await TMDBController.getSeasonFromAPI(tv_show._tmdb_id, mediaObj.number);
+    itemJson._media = JSON.parse(response)
   }
 
   return itemJson;
