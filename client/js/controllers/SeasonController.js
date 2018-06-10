@@ -31,6 +31,14 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
                 timeout: 2500
               });
             });
+
+            FollowService.friendsWatchingTvshow($scope.user._id, $scope.getEpisodesIds())
+            .then((response) => {
+                $scope.friendsWatching = response;
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
           })
           .catch((error) => {
             UIkit.notification({
@@ -362,5 +370,9 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
       if (progress.ratio == 1) $scope.season.watched = true;
       else $scope.season.watched = false;
     }
+
+    $scope.getEpisodesIds = function() {
+      return [$scope.season.episodes];
+  }
 
   }]);

@@ -15,7 +15,9 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
         isFollowingPage: isFollowingPage,
         isFollowingUser: isFollowingUser,
         followPage: followPage,
-        followUser: followUser
+        followUser: followUser,
+        friendsWatchingMedia: friendsWatchingMedia,
+        friendsWatchingTvshow: friendsWatchingTvshow
     });
 
     function getFollowing(userId, url){
@@ -236,4 +238,46 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
 
       return deferred.promise;
     }
+
+    function friendsWatchingMedia(userId, mediaId) {
+        var deferred = $q.defer();
+
+        $http.get('/api/follows/is_watching_media?userId=' + userId + '&mediaId=' + mediaId)
+            .then((response) => {
+                if (response.status === 200) {
+                    deferred.resolve(response.data);
+                } else {
+                    deferred.reject();
+                }
+            })
+            .catch((error) => {
+                deferred.reject(error.data);
+            });
+        
+        return deferred.promise;
+    }
+
+
+    function friendsWatchingTvshow(userId, seasonEpisodesIds) {
+        var deferred = $q.defer();
+
+        var data = {
+            seasonEpisodesIds: seasonEpisodesIds
+        }
+
+        $http.post('/api/follows/is_watching_tvshow?userId=' + userId, data)
+            .then((response) => {
+                if (response.status === 200) {
+                    deferred.resolve(response.data);
+                } else {
+                    deferred.reject();
+                }
+            })
+            .catch((error) => {
+                deferred.reject(error.data);
+            });
+        
+        return deferred.promise;
+    }
+
 }]);

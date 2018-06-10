@@ -55,6 +55,14 @@ function($scope, $location, $timeout, MovieService, WatchedService,  FollowServi
                   timeout: 2500
               });
             });
+
+            FollowService.friendsWatchingMedia($scope.user._id, $scope.movie._id)
+            .then((response) => {
+                $scope.friendsWatching = response;
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
           }).catch(function(){
 
           })
