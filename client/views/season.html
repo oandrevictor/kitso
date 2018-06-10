@@ -24,7 +24,15 @@
       <button uk-toggle="#modal-watchSeason" class="uk-button uk-button-default watch-button">
         <span uk-icon="icon: check;"></span> Mark as watched</button>
         <button ng-show="season.watched" ng-click="markSeasonAsNotWatched()" class="uk-button uk-button-default watch-button watched">
-          <span uk-icon="icon: check;"></span> Watched (undo) </button>
+        <span uk-icon="icon: check;"></span> Watched (undo) </button>
+        <div class="uk-inline">
+          <button id="friendDropButton" class="uk-button uk-button-default watch-button" ng-class="{watched: friendsWatching.length > 0}" type="button">Friends Watching ({{ friendsWatching.length || 0 }})</button>
+          <div id="friendDrop" uk-drop="pos: bottom-justify; delay-hide: 200; animation: uk-animation-slide-bottom-medium;">
+              <div class="uk-card uk-card-body uk-card-default uk-height-max-medium" style="border: 5px">
+                <p ng-repeat="friend in friendsWatching">{{ friend.name }}<a ng-href="/user/{{friend._id}}">{{' @' + friend.username}}</a></p>
+              </div>
+          </div>
+        </div>
         </div>
 
         <div class="uk-width-3-4">
