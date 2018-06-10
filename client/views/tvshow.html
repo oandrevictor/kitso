@@ -24,9 +24,9 @@
       <span uk-icon="icon: rss;"></span> Follow</button>
       <button ng-show="tvshow.followed.is_following" class="uk-button uk-button-default watch-button watched" ng-click="unfollow(tvshow)">
         <span uk-icon="icon: rss;"></span> Following </button>
-        <button ng-hide="tvshow.watched" ng-click="markTvshowAsWatched(tvshow._id)" class="uk-button uk-button-default watch-button">
+        <button uk-toggle="#modal-watchTvshow" class="uk-button uk-button-default watch-button">
           <span uk-icon="icon: check;"></span> Mark as watched</button>
-          <button ng-show="tvshow.watched" ng-click="" class="uk-button uk-button-default watch-button watched">
+          <button ng-show="tvshow.watched" ng-click="markTvshowAsNotWatched()" class="uk-button uk-button-default watch-button watched">
             <span uk-icon="icon: check;"></span> Watched (undo) </button>
           </div>
 
@@ -108,4 +108,17 @@
               </div>
             </div>
           </div>
-        </div> -->
+        </div>
+
+        <!-- This is the modal -->
+<div id="modal-watchTvshow" class="uk-flex-top" uk-modal>
+  <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+      <button class="uk-modal-close-default" type="button" uk-close></button>
+      <h2 class="uk-modal-title">Mark tvshow as watched</h2>
+      <p>Mark <span class="uk-text-bold uk-text-danger">all</span> episodes as watched or <strong>only</strong> the unwatched episodes?</p>
+      <p class="uk-text-right">
+          <button class="uk-button uk-button-danger uk-modal-close" type="button" ng-click="markEntireTvshowAsWatched(tvshow._id)" ng-disabled="watchAction">All episodes</button>
+          <button class="uk-button uk-button uk-modal-close" type="button" ng-click="markTvshowAsWatched(tvshow._id)" ng-disabled="watchAction || tvshow.watched"><span class="uk-text-danger">Unwatched episodes</span></button>
+      </p>
+  </div>
+</div>
