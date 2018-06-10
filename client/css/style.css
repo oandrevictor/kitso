@@ -510,6 +510,26 @@ html, body {
     position: relative; }
   .movie .uk-dotnav {
     margin-bottom: 10px; }
+  .movie .uk-dropdown {
+    padding: 0px; }
+  .movie .uk-grid-margin, .movie .uk-grid + .uk-grid, .movie .uk-grid > .uk-grid-margin {
+    margin-top: 10px;
+    margin-bottom: 10px; }
+  .movie .friend {
+    padding-top: 10px; }
+    .movie .friend .friendImage {
+      padding-left: 20px;
+      padding-bottom: 0px; }
+    .movie .friend .friendContent {
+      padding-left: 10px;
+      padding-bottom: 0px;
+      padding-top: 0px; }
+    .movie .friend .friendName {
+      margin-bottom: 0px;
+      font-size: 16px; }
+    .movie .friend .friendLink {
+      font-size: 14px;
+      color: #773095; }
   .movie .title {
     font-size: 4vh;
     font-weight: 100;
@@ -646,6 +666,26 @@ html, body {
     position: relative; }
   .tvshow .uk-dotnav {
     margin-bottom: 10px; }
+  .tvshow .uk-dropdown {
+    padding: 0px; }
+  .tvshow .uk-grid-margin, .tvshow .uk-grid + .uk-grid, .tvshow .uk-grid > .uk-grid-margin {
+    margin-top: 10px;
+    margin-bottom: 10px; }
+  .tvshow .friend {
+    padding-top: 10px; }
+    .tvshow .friend .friendImage {
+      padding-left: 20px;
+      padding-bottom: 0px; }
+    .tvshow .friend .friendContent {
+      padding-left: 10px;
+      padding-bottom: 0px;
+      padding-top: 0px; }
+    .tvshow .friend .friendName {
+      margin-bottom: 0px;
+      font-size: 16px; }
+    .tvshow .friend .friendLink {
+      font-size: 14px;
+      color: #773095; }
   .tvshow .poster {
     display: block;
     background: #502274;
