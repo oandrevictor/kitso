@@ -872,13 +872,19 @@ html, body {
   .userlist .uk-card-primary {
     background: #fff;
     box-shadow: none; }
+    .userlist .uk-card-primary .uk-grid {
+      padding-left: 0px; }
     .userlist .uk-card-primary .uk-text {
       color: #666 !important; }
     .userlist .uk-card-primary .uk-text-muted {
       color: #999 !important; }
     .userlist .uk-card-primary .uk-card-body {
       padding-left: 0px;
+      padding-right: 0px;
       padding-top: 5px; }
+      .userlist .uk-card-primary .uk-card-body .uk-grid {
+        padding-left: 0px;
+        padding-right: 3px; }
       .userlist .uk-card-primary .uk-card-body .uk-text-muted {
         color: #999 !important; }
       .userlist .uk-card-primary .uk-card-body .more {
@@ -890,7 +896,8 @@ html, body {
     color: #666 !important;
     border: none !important; }
   .userlist p {
-    margin-top: 0px;
+    margin-top: 5px;
+    margin-bottom: 10px;
     font-size: 14px; }
 
 /*# sourceMappingURL=style.css.map */

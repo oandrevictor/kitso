@@ -1198,6 +1198,10 @@ html, body {
     background: #fff;
     box-shadow: none;
 
+    .uk-grid {
+      padding-left: 0px;
+    }
+
     .uk-text {
       color: #666 !important;
     }
@@ -1208,7 +1212,13 @@ html, body {
 
     .uk-card-body {
       padding-left: 0px;
+      padding-right: 0px;
       padding-top: 5px;
+
+      .uk-grid {
+        padding-left: 0px;
+        padding-right: 3px;
+      }
 
       .uk-text-muted {
         color: #999 !important;
@@ -1231,7 +1241,8 @@ html, body {
   }
 
   p {
-    margin-top: 0px;
+    margin-top: 5px;
+    margin-bottom: 10px;
     font-size: 14px;
   }
 }
