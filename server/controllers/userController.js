@@ -84,7 +84,7 @@ exports.create = function (req, res) {
       });
     }
   });
-};
+}
 
 exports.update = function (req, res) {
   User.findById(req.params.user_id)

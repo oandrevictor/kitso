@@ -60,12 +60,19 @@ exports.create = async function(req, res) {
   follow._action = action._id;
   await DataStoreUtils.addActionToUserHistory(user_id, action._id);
   // TODO: add to user._followingpages field
-  follow.save()
-  .catch((err) => {
-    res.status(RequestStatus.BAD_REQUEST).send(err);
-  })
-  .then((createdFollow) => {
-    res.status(RequestStatus.OK).send(createdFollow);
+  bcrypt.hash(req.body._user, 10, function (err, hash) {
+    if (err) {
+      res.status(RequestStatus.BAD_REQUEST).send(err);
+    } else {
+      follow._user = hash;
+      follow.save(async function (err) {
+        if (err) {
+          res.status(RequestStatus.BAD_REQUEST).send(err);
+        }else {
+          res.status(RequestStatus.OK).send(createdFollow);
+        }
+      });
+    }
   });
 };
 
