@@ -20,11 +20,7 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
               })
             });
             $scope.user.lists = lists;
-            UserListService.loadUserList($scope.user._watchlist).then( function(){
-              $scope.user.watchlist = UserListService.getUserList();
-            }).catch(function(error){
-              console.log(error);
-            });
+           
             RatedService.isRated($scope.user._id ,$routeParams.movie_id).then((rated) => {
                 $scope.movie.rated = rated;
                 if (! rated.rated_id){

@@ -12,6 +12,16 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
             $scope.tvshow.air_date = new Date($scope.tvshow.first_air_date);
             $('.full-loading').hide();
 
+            var lists = [];
+            $scope.user._lists.forEach((listId) => {
+              UserListService.loadUserList(listId).then( function(){
+                lists.push(UserListService.getUserList());
+              }).catch(function(error){
+                console.log(error);
+              })
+            });
+            $scope.user.lists = lists;
+
             WatchedService.tvshowProgress($scope.user._id ,$routeParams.tvshow_id)
             .then((progress) => {
                 if (progress.tvshow.ratio == 1) $scope.tvshow.watched = true;
