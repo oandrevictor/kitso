@@ -21,9 +21,9 @@
     <div class="left-bar uk-width-1-4">
       <div ng-show="tvshow.rated" class="rating-info"> {{tvshow.rating}} </div>
       <img class="poster" style="background-image: url({{ tvshow.poster_path }})" />
-      <button ng-hide="tvshow.watched" ng-click="markAsWatched(tvshow._id)" class="uk-button uk-button-default watch-button">
+      <button uk-toggle="#modal-watchSeason" class="uk-button uk-button-default watch-button">
         <span uk-icon="icon: check;"></span> Mark as watched</button>
-        <button ng-show="tvshow.watched" ng-click="markAsNotWatched(tvshow.watched.watched_id)" class="uk-button uk-button-default watch-button watched">
+        <button ng-show="season.watched" ng-click="markSeasonAsNotWatched()" class="uk-button uk-button-default watch-button watched">
           <span uk-icon="icon: check;"></span> Watched (undo) </button>
       <button class="uk-button uk-button-default watch-button">
         <span uk-icon="icon: list;"></span> UserLists</button>
@@ -126,3 +126,16 @@
 
               </div>
             </div>
+
+<!-- This is the modal -->
+<div id="modal-watchSeason" class="uk-flex-top" uk-modal>
+  <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+      <button class="uk-modal-close-default" type="button" uk-close></button>
+      <h2 class="uk-modal-title">Mark season as watched</h2>
+      <p>Mark <span class="uk-text-bold uk-text-danger">all</span> episodes as watched or <strong>only</strong> the unwatched episodes?</p>
+      <p class="uk-text-right">
+          <button class="uk-button uk-button-danger uk-modal-close" type="button" ng-click="markEntireSeasonAsWatched()" ng-disabled="watchAction">All episodes</button>
+          <button class="uk-button uk-button uk-modal-close" type="button" ng-click="markSeasonAsWatched()" ng-disabled="watchAction || season.progress.ratio == 1"><span class="uk-text-danger">Unwatched episodes</span></button>
+      </p>
+  </div>
+</div>

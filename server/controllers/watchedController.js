@@ -55,34 +55,95 @@ exports.create = async function(req, res) {
   });
 };
 
-exports.watchSeason = async function(req, res) {
-  var episodesIds = req.body.episodesIds;
+exports.watchEntireSeason = async function(req, res) {
   var seasonId = req.body.seasonId;
-  var user_id = req.body._user;
+  var userId = req.body.userId;
   var date = req.body.date;
-  //watched Season
+  var season = await DataStoreUtils.getMediaObjById(seasonId);
+  var episodesIds = getSeasonsEpisodesIds([season]);
   // watched episodes
-  let result = await watch_season_episodes(episodesIds, user_id, date);
+  watch_season_episodes(episodesIds[0], userId, date, function (result) {
+    res.status(RequestStatus.OK).json(result);
+  });
+}
 
-  res.status(RequestStatus.OK).json({message: result, watched: result});
+exports.watchSeason = async function(req, res) {
+  var seasonId = req.body.seasonId;
+  var userId = req.body.userId;
+  var date = req.body.date;
+  var season = await DataStoreUtils.getMediaObjById(seasonId);
+  var episodesIds = getSeasonsEpisodesIds([season]);
+  var watchedMediasIds = await getMediasIdsFromWatchedObjects(episodesIds, userId);
+  var nonWatchedEpisodes = episodesIds[0].map((episode) => {
+    if (!watchedMediasIds.includes(episode)) return episode;
+  });
+  watch_season_episodes(nonWatchedEpisodes, userId, date, function (result) {
+    res.status(RequestStatus.OK).json(result);
+  });
+}
+
+exports.unwatchSeason = async function(req, res) {
+  var episodesIds = req.body.episodesIds;
+  var userId = req.body.userId;
+  var watchedsIds = await getWatchedIdsFromEpisodesIds(episodesIds, userId);
+  var deleteWatchedPromises = watchedsIds.map(DataStoreUtils.deleteWatched);
+  await Promise.all(deleteWatchedPromises).then((result) => {
+    res.status(RequestStatus.OK).json(result);
+  });
+}
+
+exports.watchEntireTvshow = async function(req, res) {
+  var seasons = await Season.find({_tvshow_id: req.body.tvshowId});
+  let userId = req.body.userId;
+  var date = req.body.date;
+  let seasonsEpisodesIds = getSeasonsEpisodesIds(seasons);
+  var result = [];
+  seasonsEpisodesIds.forEach(async (episodesIds) => {
+    episodesIds = Array.from(new Set(episodesIds));
+    let season_watcheds = watch_season_episodes(episodesIds, userId, date);
+    result.push(season_watcheds);
+  });
+  
+  await Promise.all(result).then(() => {
+    res.status(RequestStatus.OK).json("Tvshow watched.");
+  });
 }
 
 exports.watchTvshow = async function(req, res) {
-  var user_id = req.body._user;
+  var seasons = await Season.find({_tvshow_id: req.body.tvshowId});
+  let userId = req.body.userId;
   var date = req.body.date;
-  var tvshowId = req.body.tvshowId;
-  var seasons = await Season.find({_tvshow_id: tvshowId});
-  let seasonsIds = getSeasonsIds(seasons);
+  let seasonsEpisodesIds = getSeasonsEpisodesIds(seasons);
   var result = [];
-  // watched episodes
-  var seasonEpisodesIds = getSeasonsEpisodesIds(seasons);
-
-  seasonEpisodesIds.forEach(async (episodesIds) => {
-    episodesIds = Array.from(new Set(episodesIds))
-    await watch_season_episodes(episodesIds, user_id, date);
+  seasonsEpisodesIds.forEach(async (seasonEpisodeIds) => {
+    seasonEpisodeIds = [seasonEpisodeIds];
+    let watchedMediasIds = await getMediasIdsFromWatchedObjects(seasonEpisodeIds, userId);
+    let nonWatchedEpisodes = seasonEpisodeIds[0].map((episode) => {
+      if (!watchedMediasIds.includes(episode)) return episode;
+    });
+    let season_watcheds = watch_season_episodes(nonWatchedEpisodes, userId, date);
+    result.push(season_watcheds);
   });
-  res.status(RequestStatus.OK).json(result);
 
+  await Promise.all(result).then(() => {
+    res.status(RequestStatus.OK).json("Tvshow watched.");
+  });
+}
+
+exports.unwatchTvshow = async function(req, res) {
+  let seasons = removeDuplicatedSeasons(req.body.seasons);
+  var seasonsEpisodesIds = getSeasonsEpisodesIds(seasons);
+  var deleteWatchedPromises = [];
+
+  seasonsEpisodesIds.forEach(async (seasonEpisodeIds) => {
+    let watchedIds = await getWatchedIdsFromEpisodesIds(seasonEpisodeIds, req.body.userId);
+    let deleteSeasonWatchedPromises = watchedIds.map(DataStoreUtils.deleteWatched);
+    deleteWatchedPromises.push(deleteSeasonWatchedPromises);
+  });
+
+  await Promise.all(deleteWatchedPromises).then((result) => {
+    res.status(RequestStatus.OK).json(result);
+  });
 }
 
 exports.update = async function(req, res) {
@@ -118,6 +179,58 @@ exports.delete = async function(req, res) {
   }
 };
 
+exports.seasonWatchedProgress = async function(req, res) {
+  var seasonId = req.body.seasonId;
+  var userId = req.body.userId;
+  var season = await DataStoreUtils.getMediaObjById(seasonId);
+  var episodesIds = getSeasonsEpisodesIds([season]);
+
+  var watchedMediasIds = await getMediasIdsFromWatchedObjects(episodesIds, userId);
+
+  var seasonProgress = {episodes_watched: 0, total_episodes: episodesIds[0].length, ratio: 0};
+  episodesIds[0].forEach((episodeId,i) => {
+    if (watchedMediasIds.includes(episodeId)) {
+      seasonProgress.episodes_watched += 1;
+    }
+  });
+  seasonProgress.ratio = seasonProgress.episodes_watched / seasonProgress.total_episodes;
+  
+  res.status(RequestStatus.OK).json(seasonProgress);
+}
+
+exports.tvshowWatchedProgress = async function(req, res) {
+  var seasons = await Season.find({_tvshow_id: req.body.tvshowId});
+  let userId = req.body.userId;
+  let seasonsEpisodesIds = getSeasonsEpisodesIds(seasons);
+  let tvshowProgress = {seasons: [], tvshow: {episodes_watched: 0, total_episodes: 0, ratio: 0}};
+
+  seasonsEpisodesIds.forEach(async (seasonEpisodeIds) => {
+    seasonEpisodeIds = [seasonEpisodeIds];
+    let watchedMediasIds = await getMediasIdsFromWatchedObjects(seasonEpisodeIds, userId);
+    let seasonProgress = {episodes_watched: 0, total_episodes: seasonEpisodeIds[0].length, ratio: 0};
+    seasonEpisodeIds[0].forEach((episodeId,i) => {
+      if (watchedMediasIds.includes(episodeId)) {
+        seasonProgress.episodes_watched += 1;
+      }
+    });
+    seasonProgress.ratio = seasonProgress.episodes_watched / seasonProgress.total_episodes;
+
+    tvshowProgress.seasons.push(seasonProgress);
+    tvshowProgress.tvshow.episodes_watched += seasonProgress.episodes_watched;
+    tvshowProgress.tvshow.total_episodes += seasonEpisodeIds[0].length;
+    tvshowProgress.tvshow.ratio += seasonProgress.ratio;
+
+    if (tvshowProgress.seasons.length == seasons.length) {
+      tvshowProgress.tvshow.ratio = tvshowProgress.tvshow.ratio / seasons.length;
+      done();
+    }
+  });
+
+  function done() {
+    res.status(RequestStatus.OK).json(tvshowProgress);
+  }
+}
+
 var injectMediaJsonInWatched = async function(watchedObj) {
   let mediaId = watchedObj._media;
   let mediaObj = await DataStoreUtils.getMediaObjById(mediaId);
@@ -149,6 +262,45 @@ var user_has_watched = async function(user_id, media_id) {
   return Watched.find({_user: user_id, _media: media_id}).exec();
 }
 
+async function getMediasIdsFromWatchedObjects(episodesIds, userId) {
+  var watchedPromises = [];
+  episodesIds.forEach((episodeId) => {
+    watchedPromises.push(DataStoreUtils.getWatchedByUserIdAndMediaId(userId, episodeId));
+  });
+  var watcheds;
+  await Promise.all(watchedPromises).then((result) => {
+    watcheds = result;
+  });
+  
+  var watchedMediasIds = watcheds[0].map(function (watched) {
+    return watched._media.toString();
+  });
+  return watchedMediasIds;
+}
+
+async function getWatchedIdsFromEpisodesIds(episodesIds, userId) {
+  var watchedPromises = [];
+  episodesIds.forEach((episodeId) => {
+    watchedPromises.push(DataStoreUtils.getWatchedByUserIdAndMediaId(userId, episodeId));
+  });
+  var watcheds;
+  await Promise.all(watchedPromises).then((result) => {
+    watcheds = result;
+  });
+  var watchedMediasIds = watcheds.map(function (watched) {
+    return watched[0]._id;
+  });
+  return watchedMediasIds;
+}
+
+function removeDuplicatedSeasons(body) {
+  let seasons = [];
+  body.forEach((season) => {
+    seasons[season.number] = season;
+  });
+  return seasons;
+}
+
 function getSeasonsEpisodesIds(seasons) {
   var seasonsEpisodesIds = [];
   seasons.forEach((season, i) => {
@@ -171,32 +323,34 @@ function getSeasonsIds(seasons) {
   return seasonsIds;
 }
 
-async function watch_season_episodes(episodesIds, user_id, date) {
+async function watch_season_episodes(episodesIds, user_id, date, done) {
   var requests = 0;
   var payload = episodesIds.length;
+  var response = [];
   episodesIds.forEach(async (episode) => {
-    let watched = new Watched();
-    watched._media = episode;
-    watched._user = user_id;
-    watched.date = date;
-    let action = await DataStoreUtils.createAction(user_id, watched._id, ActionType.WATCHED);
-    watched._action = action._id;
-    await DataStoreUtils.addActionToUserHistory(user_id, action._id);
-    watched.save()
-    .then((watched) => {
+    if (episode) {
+      let watched = new Watched();
+      watched._media = episode;
+      watched._user = user_id;
+      watched.date = date;
+      let action = await DataStoreUtils.createAction(user_id, watched._id, ActionType.WATCHED);
+      watched._action = action._id;
+      await DataStoreUtils.addActionToUserHistory(user_id, action._id);
+      watched.save()
+      .then((watched) => {
+        response.push(watched);
+        requests++;
+        if (requests == payload) return done(response);
+      })
+      .catch((error) => {
+        requests++;
+        if (requests == payload) return done(response);
+      });
+    } else {
       requests++;
-      if (requests == payload)
-      done();
-    })
-    .catch((error) => {
-      requests++;
-      if (requests == payload)
-      done();
-    });
+      if (requests == payload) return done(response);
+    }
   });
-  function done() {
-    return "Season watched.";
-  }
 }
 
 async function create_season_watched(seasonId, user_id, date) {
@@ -208,4 +362,15 @@ async function create_season_watched(seasonId, user_id, date) {
   seasonWatched._action = seasonAction._id;
   await DataStoreUtils.addActionToUserHistory(user_id, seasonAction._id);
   return seasonWatched.save();
+}
+
+async function getWatchedIds(mediasIds) {
+  let ids = [];
+  let queries = 0;
+  mediasIds.forEach(async(mediaId) => {
+    let watched = DataStoreUtils.getWatchedByMediaId(mediaId);
+    ids.push(watched);
+    queries++;
+    if (queries == mediasIds.length) return ids;
+  });
 }
