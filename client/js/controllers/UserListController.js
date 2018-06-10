@@ -26,15 +26,7 @@ function($scope, $location, $timeout, UserListService, MovieService, $routeParam
   }
 
   $scope.getPoster = function(media){
-    if (media.poster_path){
-      return media.poster_path;
-    }
-    if(media.images && media.images.poster){
-      return media.images.poster;
-    }
-    if(media.helper && media.helper.poster_path){
-      return 'https://image.tmdb.org/t/p/w500/' + media.helper.poster_path;
-    }
+    return 'https://image.tmdb.org/t/p/w500/' + media.poster_path;
   }
 
   var loadUserListBackground = function () {
@@ -44,7 +36,7 @@ function($scope, $location, $timeout, UserListService, MovieService, $routeParam
     });
 
     if (addedMovies.length > 0) {
-      $scope.background = "https://image.tmdb.org/t/p/original/" + addedMovies[0]._media.helper.backdrop_path;
+      $scope.background = addedMovies[0].backdrop_path;
     } else {
       $scope.background = "/images/coco.jpg";
     }

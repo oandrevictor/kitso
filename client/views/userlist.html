@@ -7,54 +7,64 @@
 
   <div class="purple-bar">
     <div class="bar-content uk-width-xxlarge">
-      <div class="uk-width-3-4">
-        <div class="title">
-          <b>{{userlist.title}} </b>
+      <div class="uk-grid">
+        <div class="uk-width-3-4">
+          <div class="title">
+            <b>{{userlist.title}} </b>
+          </div>
+          <div class="section sinopsis">
+            <p>
+              {{userlist.description}}
+            </p>
+          </div>
         </div>
-        <div class="section sinopsis">
-          <p>
-            {{userlist.description}}
-          </p>
+        <div class="uk-width-1-4">
+          <button class="uk-button" ng-show="userlist.deletable">Delete List</button>
         </div>
       </div>
     </div>
   </div>
+
   <div class="uk-width-xxlarge content">
-    <div class="section">
-      <div class="section-title">
-        Items
-      </div>
-      <div class="uk-child-width-1-3@m"  uk-grid>
-        <div class="uk-card uk-card-primary" ng-repeat="item in userlist.itens">
-          <div class="uk-card-media-top">
-            <div class="uk-inline uk-dark">
-              <div class="uk-visible-toggle">
-                <a class="page-link" ng-href="/{{item._media.__t.toLowerCase()}}/{{item._media._id}}">
-                  <img ng-src="{{getPoster(item._media)}}" style="z-index:-1" alt="">
-                </a>
-              </div>
+    <div class="uk-child-width-1-3@m" uk-grid>
+      <div class="uk-card uk-card-primary" ng-repeat="item in userlist.itens">
+        <div class="uk-card-media-top">
+          <a class="page-link" ng-href="/{{item._media.__t.toLowerCase()}}/{{item._media._id}}">
+            <img ng-src="{{getPoster(item._media)}}" style="z-index:-1" alt="">
+          </a>
+        </div>
+        <div class="uk-card-body">
+          <div class="uk-grid">
+            <div class="uk-width-3-4">
+              <p class="uk-text"><a class="page-link" ng-click="goToMedia(item._media)">{{item._media.title}}</a></p>
+              <p class="uk-text uk-text-small uk-text-muted">Added | {{formatDate(item.date)}}</p>
             </div>
-          </div>
-          <div class="uk-card-body">
-            <div class="uk-grid">
-              <div class="uk-width-3-4">
-                <p class="uk-text"><a class="page-link" ng-click="goToMedia(item._media)">{{item._media.name}}</a></p>
-                <p class="uk-text uk-text-small uk-text-muted">Added | {{formatDate(item.date)}}</p>
-              </div>
-              <div class="uk-width-1-4">
-                <button class="uk-button uk-button-default more">
-                  <span uk-icon="icon: more-vertical;">
-                </button>
-                <div uk-dropdown="pos: bottom-center; mode: click" style="z-index: 999">
-                  <center>
-                    <ul class="uk-iconnav">
-                      <div>
-                        <p>Remove from {{userlist.title}}</p>
-                        <p style="margin-bottom:0px">Change Order</p>
+            <div class="uk-width-1-4">
+              <button class="uk-button uk-button-default more">
+                <span uk-icon="icon: more-vertical;">
+              </button>
+              <div uk-dropdown="pos: bottom-center; mode: click" style="z-index: 999">
+                <center>
+                  <ul class="uk-nav uk-dropdown-nav">
+                    <p>Remove from {{userlist.title}}</p>
+                    <a href="#order-modal" class="page-link" uk-toggle>Change Order</a>
+                    <div id="order-modal" uk-modal>
+                      <div class="uk-modal-dialog uk-modal-body">
+                        <button class="uk-button uk-button-default modal-icon">
+                          <span uk-icon="icon: chevron-up;">
+                        </button>
+                        <input type="number">
+                        <button class="uk-button uk-button-default modal-icon">
+                          <span uk-icon="icon: chevron-down;">
+                        </button>
+                        <br>
+                        <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+                        <button class="uk-button uk-button-primary" type="button">Save</button>
+                        </p>
                       </div>
-                    </ul>
-                  </center>
-                </div>
+                    </div>
+                  </ul>
+                </center>
               </div>
             </div>
           </div>
