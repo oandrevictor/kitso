@@ -516,7 +516,8 @@ html, body {
     margin-top: 10px;
     margin-bottom: 10px; }
   .movie .friend {
-    padding-top: 10px; }
+    padding-top: 10px;
+    padding-bottom: 10px; }
     .movie .friend .friendImage {
       padding-left: 20px;
       padding-bottom: 0px; }
@@ -672,7 +673,8 @@ html, body {
     margin-top: 10px;
     margin-bottom: 10px; }
   .tvshow .friend {
-    padding-top: 10px; }
+    padding-top: 10px;
+    padding-bottom: 10px; }
     .tvshow .friend .friendImage {
       padding-left: 20px;
       padding-bottom: 0px; }
