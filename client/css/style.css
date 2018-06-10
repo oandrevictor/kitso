@@ -855,8 +855,7 @@ html, body {
       display: inline-block; }
   .userlist .page-link {
     text-decoration: none;
-    color: #666 !important;
-    font-weight: 300; }
+    color: #773095 !important; }
   .userlist .title {
     font-size: 4vh;
     font-weight: 100;
@@ -903,5 +902,19 @@ html, body {
     margin-top: 5px;
     margin-bottom: 10px;
     font-size: 14px; }
+  .userlist .action-button {
+    padding-left: 20px;
+    display: block;
+    width: 191px;
+    border: 1px solid #773095;
+    font-size: 10px !important;
+    color: #773095;
+    background: white; }
+  .userlist .uk-icon {
+    padding-right: 2px; }
+  .userlist .uk-dropdown {
+    padding: 3px; }
+  .userlist .uk-button {
+    margin: 3px; }
 
 /*# sourceMappingURL=style.css.map */

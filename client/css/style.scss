@@ -1175,8 +1175,7 @@ html, body {
 
   .page-link {
     text-decoration: none;
-    color:  #666 !important;
-    font-weight: 300;
+    color:  #773095 !important;
   }
 
   .title {
@@ -1253,5 +1252,27 @@ html, body {
     margin-top: 5px;
     margin-bottom: 10px;
     font-size: 14px;
+  }
+
+  .action-button {
+    padding-left: 20px;
+    display: block;
+    width: 191px;
+    border: 1px solid #773095;
+    font-size: 10px !important;
+    color: #773095;
+    background: white;
+  }
+
+  .uk-icon {
+    padding-right: 2px;
+  }
+
+  .uk-dropdown {
+    padding: 3px;
+  }
+
+  .uk-button{
+    margin: 3px;
   }
 }

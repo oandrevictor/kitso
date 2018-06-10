@@ -46,8 +46,11 @@
               <div uk-dropdown="pos: bottom-center; mode: click" style="z-index: 999">
                 <center>
                   <ul class="uk-nav uk-dropdown-nav">
-                    <p>Remove from {{userlist.title}}</p>
-                    <a href="#order-modal" class="page-link" uk-toggle>Change Order</a>
+                    <button ng-click="removeFromList(userlist._id, item.ranked)" class="uk-button action-button">
+                      <span uk-icon="icon: trash;"></span>Remove from {{userlist.title}}</button>
+                    <button  class="uk-button action-button">
+                      <span uk-icon="icon: move;"></span><a href="#order-modal" class="page-link" uk-toggle>Change Order</a>
+                    </button>
                     <div id="order-modal" uk-modal>
                       <div class="uk-modal-dialog uk-modal-body">
                         <button class="uk-button uk-button-default modal-icon">
