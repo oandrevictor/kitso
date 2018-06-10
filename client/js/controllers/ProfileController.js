@@ -228,6 +228,19 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
     }
   }
 
+  $scope.getListBackground = function(userlist){
+    var addedMovies = [];
+    userlist.itens.forEach((item) => {
+      addedMovies.push(item._media);
+    });
+
+    if (addedMovies.length > 0) {
+      return addedMovies[0].backdrop_path;
+    } else {
+      return "/images/budapest.jpg";
+    }
+  }
+
   $scope.range = function(count){
       var ratings = [];
       for (var i = 0; i < count; i++) {
