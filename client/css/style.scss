@@ -701,6 +701,41 @@ html, body {
     margin-bottom: 10px;
   }
 
+  .uk-dropdown {
+    padding: 0px;
+  }
+
+  .uk-grid-margin, .uk-grid+.uk-grid, .uk-grid>.uk-grid-margin {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .friend {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    
+    .friendImage {
+      padding-left: 20px;
+      padding-bottom: 0px;
+    }
+
+    .friendContent{
+      padding-left: 10px;
+      padding-bottom: 0px;
+      padding-top: 0px;
+    }
+
+    .friendName {
+      margin-bottom: 0px;
+      font-size: 16px;
+    }
+
+    .friendLink {
+      font-size: 14px;
+      color: #773095;
+    }
+  }
+
   .title {
     font-size: 4vh;
     font-weight: 100;
@@ -886,6 +921,41 @@ html, body {
 
   .uk-dotnav {
     margin-bottom: 10px;
+  }
+
+  .uk-dropdown {
+    padding: 0px;
+  }
+
+  .uk-grid-margin, .uk-grid+.uk-grid, .uk-grid>.uk-grid-margin {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .friend {
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    .friendImage {
+      padding-left: 20px;
+      padding-bottom: 0px;
+    }
+
+    .friendContent{
+      padding-left: 10px;
+      padding-bottom: 0px;
+      padding-top: 0px;
+    }
+
+    .friendName {
+      margin-bottom: 0px;
+      font-size: 16px;
+    }
+
+    .friendLink {
+      font-size: 14px;
+      color: #773095;
+    }
   }
 
   .poster {
