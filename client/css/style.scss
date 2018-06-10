@@ -1275,4 +1275,19 @@ html, body {
   .uk-button{
     margin: 3px;
   }
+
+  .change-button {
+    padding: 1px;
+  }
+
+  .rankValue {
+    width: 50px;
+    height: 36px;
+    border: 1px solid #cccccc;
+    text-align: right;
+  }
+
+  .save-button {
+    width: 90%;
+  }
 }

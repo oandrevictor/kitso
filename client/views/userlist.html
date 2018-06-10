@@ -48,23 +48,20 @@
                   <ul class="uk-nav uk-dropdown-nav">
                     <button ng-click="removeFromList(userlist._id, item.ranked)" class="uk-button action-button">
                       <span uk-icon="icon: trash;"></span>Remove from {{userlist.title}}</button>
-                    <button  class="uk-button action-button">
-                      <span uk-icon="icon: move;"></span><a href="#order-modal" class="page-link" uk-toggle>Change Order</a>
-                    </button>
-                    <div id="order-modal" uk-modal>
-                      <div class="uk-modal-dialog uk-modal-body">
-                        <button class="uk-button uk-button-default modal-icon">
+                    <button ng-click="optionToggle()"  class="uk-button action-button">
+                      <span uk-icon="icon: move;"></span>Change Order</button>
+                    <div ng-show="showChangeOptions" class="inline" ng-init="item.newRanked = item.ranked">
+                      <li class="uk-nav-divider"></li>
+                      <p> Choose the new position</p>
+                      <input class="rankValue" type="number" align="center" value="{{item.ranked}}" ng-model="item.newRanked" min="1" class="inline">
+                      <button class="uk-button change-button" ng-click="item.newRanked = incrementaRanked(item.newRanked, userlist.itens.length + 1)">
                           <span uk-icon="icon: chevron-up;">
-                        </button>
-                        <input type="number">
-                        <button class="uk-button uk-button-default modal-icon">
+                      </button>
+                      <button class="uk-button change-button" ng-click="item.newRanked = decrementaRanked(item.newRanked)">
                           <span uk-icon="icon: chevron-down;">
-                        </button>
-                        <br>
-                        <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
-                        <button class="uk-button uk-button-primary" type="button">Save</button>
-                        </p>
-                      </div>
+                      </button>
+                      <br>
+                      <button class="uk-button uk-button-primary save-button" ng-click="changeOrder(userlist._id, item.ranked, item.newRanked)" type="button">Save</button>
                     </div>
                   </ul>
                 </center>

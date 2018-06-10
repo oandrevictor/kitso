@@ -916,5 +916,14 @@ html, body {
     padding: 3px; }
   .userlist .uk-button {
     margin: 3px; }
+  .userlist .change-button {
+    padding: 1px; }
+  .userlist .rankValue {
+    width: 50px;
+    height: 36px;
+    border: 1px solid #cccccc;
+    text-align: right; }
+  .userlist .save-button {
+    width: 90%; }
 
 /*# sourceMappingURL=style.css.map */
