@@ -4,6 +4,7 @@ var Person = require('../models/Person');
 var RequestStatus = require('../constants/requestStatus');
 var ActionType = require('../constants/actionType');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
+var bcrypt = require('bcryptjs');
 
 exports.index = async function(req, res) {
   let user_id = req.params.user_id;
@@ -43,7 +44,7 @@ exports.is_following = async function(req, res) {
 };
 
 exports.following_me = async function(req, res) {
-  let page_id = req.params.page_id;
+  let page_id = req.query.page_id;
   let following_me_list;
   try {
     following_me_list = await FollowsPage.find({_following: page_id}).exec();
