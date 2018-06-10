@@ -100,6 +100,18 @@
                                     </ul>
                                   </center>
                                 </div>
+                                <button class="uk-button uk-button-default episode-button">
+                                  <span uk-icon="icon: list;"></span> UserLists</button>
+                                <div uk-dropdown="pos: bottom-center; mode: hover" style="z-index: 999">
+                                  <center>
+                                    <div ng-repeat="list in user.lists">
+                                      <button ng-click="addToList(episode._id, list._id)" class="uk-button uk-button-default episode-button">
+                                        <span uk-icon="icon: plus;"></span> {{list.title}} </button>
+                                      <button ng-click="removeFromList(episode._id, list._id)" class="uk-button uk-button-default episode-button">
+                                        <span uk-icon="icon: minus;"></span> {{list.title}} (undo) </button>
+                                    </div>
+                                  </center>
+                                </div>
                                 <p class="episode-overview">{{episode.overview}}</p>
                                 <p class="episode-airing">Aired: {{episode.air_date}}</p>
                               </div>

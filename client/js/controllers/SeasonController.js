@@ -56,8 +56,8 @@ kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$route
         });
       });
 
-    $scope.addToList = function(seasonId, userListId){
-      UserListService.addItem(userListId, seasonId, $scope.user._id, date = moment())
+    $scope.addToList = function(id, userListId){
+      UserListService.addItem(userListId, id, $scope.user._id, date = moment())
         .then((added) => {
           $scope.seasonAdded = true;
         })
@@ -70,10 +70,10 @@ kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$route
         });
     }
 
-    $scope.removeFromList = function(seasonId, userListId) {
+    $scope.removeFromList = function(id, userListId) {
       UserListService.loadUserList(userListId).then( function() {
         UserListService.getUserList()['itens'].forEach(function(item){
-          if (item['_media']['_id'] == seasonId) {
+          if (item['_media']['_id'] == id) {
             UserListService.deleteItem(userListId, $scope.user._id, item['ranked'])
               .then((deleted) => {
                 $scope.seasonAdded = false;
