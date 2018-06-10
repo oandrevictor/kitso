@@ -25,7 +25,17 @@
         <span uk-icon="icon: check;"></span> Mark as watched</button>
         <button ng-show="tvshow.watched" ng-click="markAsNotWatched(tvshow.watched.watched_id)" class="uk-button uk-button-default watch-button watched">
           <span uk-icon="icon: check;"></span> Watched (undo) </button>
+      <button class="uk-button uk-button-default watch-button">
+        <span uk-icon="icon: list;"></span> UserLists</button>
+      <div uk-dropdown="pos: bottom-center; mode: hover" style="z-index: 999">
+        <div ng-repeat="list in user.lists" ng-init="markAsAdded(season._id, list._id)">
+          <button ng-show="!seasonAdded" ng-click="addToList(season._id, list._id)" class="uk-button uk-button-default watch-button">
+            <span uk-icon="icon: plus;"></span> {{list.title}} </button>
+          <button ng-show="seasonAdded" ng-click="removeFromList(season._id, list._id)" class="uk-button uk-button-default watch-button watched">
+            <span uk-icon="icon: minus;"></span> {{list.title}} (undo) </button>
         </div>
+      </div>
+    </div>
 
         <div class="uk-width-3-4">
           <div class="rating">
@@ -90,7 +100,6 @@
                                     </ul>
                                   </center>
                                 </div>
-
                                 <p class="episode-overview">{{episode.overview}}</p>
                                 <p class="episode-airing">Aired: {{episode.air_date}}</p>
                               </div>

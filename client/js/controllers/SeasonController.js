@@ -1,7 +1,7 @@
 var kitso = angular.module('kitso');
 
-kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$routeParams', 'TvShowService', 'WatchedService', 'FollowService', 'RatedService', 'AuthService',
-  function ($scope, $location, $timeout, $routeParams, TvShowService, WatchedService, FollowService, RatedService, AuthService) {
+kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$routeParams', 'TvShowService', 'WatchedService', 'FollowService', 'RatedService', 'UserListService', 'AuthService',
+  function ($scope, $location, $timeout, $routeParams, TvShowService, WatchedService, FollowService, RatedService, UserListService, AuthService) {
     $('.full-loading').show();
     TvShowService.loadTvShow($routeParams.tvshow_id).then(() => {
       AuthService.getStatus().then(function () {
@@ -16,6 +16,20 @@ kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$route
               loadEpisodeActions(episode)
             });
             $('.full-loading').hide();
+            var lists = [];
+            $scope.user._lists.forEach((listId) => {
+              UserListService.loadUserList(listId).then( function(){
+                lists.push(UserListService.getUserList());
+              }).catch(function(error){
+                console.log(error);
+              })
+            });
+            $scope.user.lists = lists;
+            UserListService.loadUserList($scope.user._watchlist).then( function(){
+              $scope.user.watchlist = UserListService.getUserList();
+            }).catch(function(error){
+              console.log(error);
+            });
           })
           .catch((error) => {
             UIkit.notification({
@@ -41,6 +55,51 @@ kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$route
           timeout: 2500
         });
       });
+
+    $scope.addToList = function(seasonId, userListId){
+      UserListService.addItem(userListId, seasonId, $scope.user._id, date = moment())
+        .then((added) => {
+          $scope.seasonAdded = true;
+        })
+        .catch((error) => {
+          UIkit.notification({
+            message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+            status: 'danger',
+            timeout: 2500
+          });
+        });
+    }
+
+    $scope.removeFromList = function(seasonId, userListId) {
+      UserListService.loadUserList(userListId).then( function() {
+        UserListService.getUserList()['itens'].forEach(function(item){
+          if (item['_media']['_id'] == seasonId) {
+            UserListService.deleteItem(userListId, $scope.user._id, item['ranked'])
+              .then((deleted) => {
+                $scope.seasonAdded = false;
+              })
+              .catch((error) => {
+                UIkit.notification({
+                  message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                  status: 'danger',
+                  timeout: 2500
+                });
+              });
+          }
+        });
+      });
+    }
+
+    $scope.markAsAdded = function(seasonId, userListId) {
+      UserListService.loadUserList(userListId).then( function() {
+        UserListService.getUserList()['itens'].forEach(function(item){
+            if (item['_media']['_id'] == seasonId) {
+              $scope.seasonAdded = true;
+            }
+          }
+        );
+      });
+    }
 
     var loadEpisodeActions = function (episode) {
       var episodeId = episode._id;
@@ -296,5 +355,6 @@ kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$route
         $location.path('tvshow/' + media._tvshow_id + '/season/'+ media.season_number);
       }
     }
+
 
   }]);

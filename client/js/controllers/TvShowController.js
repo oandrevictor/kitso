@@ -1,7 +1,7 @@
 var kitso = angular.module('kitso');
 
-kitso.controller("TvShowController", ['$scope', '$location', '$timeout', '$routeParams', 'TvShowService',  'WatchedService',  'FollowService', 'RatedService', 'AuthService',
-function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedService, FollowService, RatedService, AuthService) {
+kitso.controller("TvShowController", ['$scope', '$location', '$timeout', '$routeParams', 'TvShowService',  'WatchedService',  'FollowService', 'RatedService', 'UserListService', 'AuthService',
+function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedService, FollowService, RatedService, UserListService, AuthService) {
   $('.full-loading').show();
 
     TvShowService.loadTvShow($routeParams.tvshow_id)
@@ -11,6 +11,20 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
             $scope.tvshow = TvShowService.getTvShow();
             $scope.tvshow.air_date = new Date($scope.tvshow.first_air_date);
             $('.full-loading').hide();
+            var lists = [];
+            $scope.user._lists.forEach((listId) => {
+              UserListService.loadUserList(listId).then( function(){
+                lists.push(UserListService.getUserList());
+              }).catch(function(error){
+                console.log(error);
+              })
+            });
+            $scope.user.lists = lists;
+            UserListService.loadUserList($scope.user._watchlist).then( function(){
+              $scope.user.watchlist = UserListService.getUserList();
+            }).catch(function(error){
+              console.log(error);
+            });
             WatchedService.isWatched($scope.user._id ,$routeParams.tvshow_id).then((watched) => {
                 $scope.tvshow.watched = watched;
                 if (! watched.watched_id)
@@ -59,6 +73,50 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
                 timeout: 2500
             });
         });
+
+  $scope.addToList = function(tvshowId, userListId){
+    UserListService.addItem(userListId, tvshowId, $scope.user._id, date = moment())
+      .then((added) => {
+        $scope.tvshowAdded = true;
+      })
+      .catch((error) => {
+        UIkit.notification({
+          message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+          status: 'danger',
+          timeout: 2500
+        });
+      });
+  }
+
+  $scope.removeFromList = function(tvshowId, userListId) {
+    UserListService.loadUserList(userListId).then( function() {
+      UserListService.getUserList()['itens'].forEach(function(item){
+        if (item['_media']['_id'] == tvshowId) {
+          UserListService.deleteItem(userListId, $scope.user._id, item['ranked'])
+            .then((deleted) => {
+              $scope.tvshowAdded = false;
+            })
+            .catch((error) => {
+              UIkit.notification({
+                message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                status: 'danger',
+                timeout: 2500
+              });
+            });
+        }
+      });
+    });
+  }
+
+  $scope.markAsAdded = function(tvshowId, userListId) {
+    UserListService.loadUserList(userListId).then( function() {
+      UserListService.getUserList()['itens'].forEach(function(item){
+        if (item['_media']['_id'] == tvshowId) {
+          $scope.tvshowAdded = true;
+        }
+      });
+    });
+  }
 
     $scope.markTvshowAsWatched = function (tvshowId) {
         WatchedService.markTvshowAsWatched($scope.user._id, $scope.tvshow._seasons, tvshowId)

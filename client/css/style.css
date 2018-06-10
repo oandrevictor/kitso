@@ -510,6 +510,8 @@ html, body {
     position: relative; }
   .movie .uk-dotnav {
     margin-bottom: 10px; }
+  .movie .uk-dropdown {
+    padding: 5px; }
   .movie .title {
     font-size: 4vh;
     font-weight: 100;
@@ -604,6 +606,8 @@ html, body {
       line-height: 1.4;
       color: #773095;
       overflow: hidden; }
+  .tvshow .uk-dropdown {
+    padding: 5px; }
   .tvshow .episode-button {
     width: 120px;
     padding: 0%;

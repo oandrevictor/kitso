@@ -25,11 +25,6 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
             }).catch(function(error){
               console.log(error);
             });
-            UserListService.isAdded($scope.movie._id).then( function(added){
-              $scope.movie.isadded = added;
-            }).catch(function(error){
-              console.log(error);
-            });
             RatedService.isRated($scope.user._id ,$routeParams.movie_id).then((rated) => {
                 $scope.movie.rated = rated;
                 if (! rated.rated_id){
@@ -89,7 +84,7 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
     $scope.addToList = function(movieId, userListId){
         UserListService.addItem(userListId, movieId, $scope.user._id, date = moment())
         .then((added) => {
-            $scope.movie.added = added;
+            $scope.movieAdded = true;
         })
         .catch((error) => {
             UIkit.notification({
@@ -99,6 +94,36 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
             });
         });
     }
+
+    $scope.removeFromList = function(movieId, userListId) {
+      UserListService.loadUserList(userListId).then( function() {
+        UserListService.getUserList()['itens'].forEach(function(item){
+          if (item['_media']['_id'] == movieId) {
+                   UserListService.deleteItem(userListId, $scope.user._id, item['ranked'])
+              .then((deleted) => {
+                $scope.movieAdded = false;
+              })
+              .catch((error) => {
+                UIkit.notification({
+                  message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                  status: 'danger',
+                  timeout: 2500
+                });
+              });
+          }
+        });
+      });
+    }
+
+  $scope.markAsAdded = function(movieId, userListId) {
+    UserListService.loadUserList(userListId).then( function() {
+      UserListService.getUserList()['itens'].forEach(function(item){
+        if (item['_media']['_id'] == movieId) {
+          $scope.movieAdded = true;
+        }
+      });
+    });
+  }
 
     $scope.markAsWatched = function(movieId){
         WatchedService.markAsWatched($scope.user._id, movieId)

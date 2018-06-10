@@ -10,8 +10,8 @@
       <div class="uk-width-3-4">
         <div class="title tvshow-name">
           <b>{{movie.title}} </b>   <div class="title">
-            <span ng-show="movie.isBoxOffice" class="uk-badge purple">In teathers</span>
-          </div><div class="hour-info"> ({{ movie.release_date | date: 'yyyy' }})</div>
+          <span ng-show="movie.isBoxOffice" class="uk-badge purple">In teathers</span>
+        </div><div class="hour-info"> ({{ movie.release_date | date: 'yyyy' }})</div>
         </div>
         <div class="more-info">
           <span uk-icon="icon: rss"></span> 2.5K Followers
@@ -47,55 +47,52 @@
       <img class="poster" style="background-image: url({{ movie.poster_path }})" />
       <button ng-hide="movie.followed.is_following" class="uk-button uk-button-default watch-button" ng-click="follow(movie)">
         <span uk-icon="icon: rss;"></span> Follow</button>
-        <button ng-show="movie.followed.is_following" class="uk-button uk-button-default watch-button watched" ng-click="unfollow(movie)">
-          <span uk-icon="icon: rss;"></span> Following </button>
-          <button ng-hide="movie.watched" ng-click="markAsWatched(movie._id)" class="uk-button uk-button-default watch-button">
-            <span uk-icon="icon: check;"></span> Mark as watched</button>
-            <button ng-show="movie.watched" ng-click="markAsNotWatched(movie.watched.watched_id)" class="uk-button uk-button-default watch-button watched">
-              <span uk-icon="icon: check;"></span> Watched (undo) </button>
-              <button ng-hide="movie.isadded.added" class="uk-button uk-button-default watch-button">
-                <span uk-icon="icon: plus;"></span> Add to List</button>
-                <div uk-dropdown="pos: bottom-center; mode: hover" style="z-index: 999">
-                  <center>
-                    <ul class="uk-iconnav">
-                      <div ng-repeat="list in user.lists">
-                        <a ng-click="addToList(movie._id, list._id)">{{list.title}}</a>
-                      </div>
-                    </ul>
-                  </center>
-                </div>
-                <button ng-show="movie.isadded.added" ng-click="removeFromList(movie.isadded.userlist)" class="uk-button uk-button-default watch-button watched">
-                  <span uk-icon="icon: plus;"></span> Added to {{movie.isadded.userlist.title}} (undo) </button>
-            </div>
-
-            <div class="section sinopsis">
-              <div class="section-title">
-                Sinopse
-              </div>
-              <p>
-                {{movie.overview}}
-              </p>
-            </div>
-            <div class="section">
-              <div class="section-title">
-                Cast
-              </div>
-
-              <div uk-slider>
-                <div class="uk-position-relative uk-visible-toggle uk-light">
-                  <ul class="uk-slider-items uk-child-width-1-5@s">
-                    <li ng-repeat="person in movie._actors">
-                      <div class="uk-card uk-grid-match uk-card-default uk-card-hover appears-in cast-info" >
-                        <a ng-href="person/{{person._id}}"> <img class="cast-image" style="background-image: url(https://image.tmdb.org/t/p/w500/{{ person['image_url'] }})" /></a>
-                        <p class="uk-align-center uk-text-uppercase cast-name" align="center"> {{person.name}}</p>
-                      </div>
-                    </li>
-                  </ul>
-                  <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
-                  <a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slider-item="next"></a>
-                </div>
-                <ul class="uk-slider-nav uk-dotnav uk-flex-center"></ul>
-              </div>
-            </div>
-          </div>
+      <button ng-show="movie.followed.is_following" class="uk-button uk-button-default watch-button watched" ng-click="unfollow(movie)">
+        <span uk-icon="icon: rss;"></span> Following </button>
+      <button ng-hide="movie.watched" ng-click="markAsWatched(movie._id)" class="uk-button uk-button-default watch-button">
+        <span uk-icon="icon: check;"></span> Mark as watched</button>
+      <button ng-show="movie.watched" ng-click="markAsNotWatched(movie.watched.watched_id)" class="uk-button uk-button-default watch-button watched">
+        <span uk-icon="icon: check;"></span> Watched (undo) </button>
+      <button class="uk-button uk-button-default watch-button">
+        <span uk-icon="icon: list;"></span> UserLists</button>
+      <div uk-dropdown="pos: bottom-center; mode: hover" style="z-index: 999">
+        <div ng-repeat="list in user.lists" ng-init="markAsAdded(movie._id, list._id)">
+          <button ng-show="!movieAdded" ng-click="addToList(movie._id, list._id)" class="uk-button uk-button-default watch-button">
+            <span uk-icon="icon: plus;"></span> {{list.title}} </button>
+          <button ng-show="movieAdded" ng-click="removeFromList(movie._id, list._id)" class="uk-button uk-button-default watch-button watched">
+            <span uk-icon="icon: minus;"></span> {{list.title}} (undo) </button>
         </div>
+      </div>
+    </div>
+
+    <div class="section sinopsis">
+      <div class="section-title">
+        Sinopse
+      </div>
+      <p>
+        {{movie.overview}}
+      </p>
+    </div>
+    <div class="section">
+      <div class="section-title">
+        Cast
+      </div>
+
+      <div uk-slider>
+        <div class="uk-position-relative uk-visible-toggle uk-light">
+          <ul class="uk-slider-items uk-child-width-1-5@s">
+            <li ng-repeat="person in movie._actors">
+              <div class="uk-card uk-grid-match uk-card-default uk-card-hover appears-in cast-info" >
+                <a ng-href="person/{{person._id}}"> <img class="cast-image" style="background-image: url(https://image.tmdb.org/t/p/w500/{{ person['image_url'] }})" /></a>
+                <p class="uk-align-center uk-text-uppercase cast-name" align="center"> {{person.name}}</p>
+              </div>
+            </li>
+          </ul>
+          <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
+          <a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slider-item="next"></a>
+        </div>
+        <ul class="uk-slider-nav uk-dotnav uk-flex-center"></ul>
+      </div>
+    </div>
+  </div>
+</div>
