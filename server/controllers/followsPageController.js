@@ -48,7 +48,24 @@ exports.following_me = async function(req, res) {
   let following_me_list;
   try {
     following_me_list = await FollowsPage.find({_following: page_id}).exec();
-    res.status(RequestStatus.OK).json(following_me_list);
+    var result = [];
+    following_me_list.forEach(function (f) {
+      var data = {
+          "_user": f._user.toString(),
+          "_following": f._following,
+          "is_private": f.is_private,
+          "is_media" : f.is_media,
+          "_action": f._action,
+          "__v": f.__v,
+          "_id": f._id
+      };
+      if (f.is_private) {
+        var hash = bcrypt.hashSync(f._user.toString(), 10);
+        data._user = hash;
+      }
+      result.push(data);
+    });
+    res.status(RequestStatus.OK).json(result);
   } catch (err) {
     res.status(RequestStatus.BAD_REQUEST).json(err);
   }
@@ -61,8 +78,7 @@ exports.create = async function(req, res) {
   follow._action = action._id;
   await DataStoreUtils.addActionToUserHistory(user_id, action._id);
   // TODO: add to user._followingpages field
-  follow.save()
-  .catch((err) => {
+  follow.save().catch((err) => {
     res.status(RequestStatus.BAD_REQUEST).send(err);
   })
   .then((createdFollow) => {
