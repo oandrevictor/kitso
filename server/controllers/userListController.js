@@ -4,6 +4,11 @@ var User = require('../models/User');
 var RequestStatus = require('../constants/requestStatus');
 var RequestMsg = require('../constants/requestMsg');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
+var RedisClient = require('../utils/lib/redisClient');
+var TMDBController = require('../external/TMDBController');
+
+const redisClient = RedisClient.createAndAuthClient();
+const https = require('https');
 
 
 // CRUD USERLIST ==================================================================================
@@ -13,7 +18,7 @@ exports.show = async function(req, res) {
     let userListId = req.params.userlist_id;
     let userList = await DataStoreUtils.getUserListById(userListId);
     let itens = userList.itens;
-    let promises = itens.map(injectMediaJsonInItemList);
+    let promises = itens.map(injectDataFromTmdb);
     Promise.all(promises).then(function(results) {
       results.sort(sortUserListByRank);
       userList.itens = results;
@@ -177,11 +182,24 @@ var userHasList = function(user, listId) {
   return userHasList;
 };
 
-var injectMediaJsonInItemList = async function(item) {
-  let mediaId = item._media;
-  let mediaObj = await DataStoreUtils.getMediaObjById(mediaId);
-  item._media = mediaObj;
-  return item;
+var injectDataFromTmdb = async function(item) {
+  let itemJson = JSON.parse(JSON.stringify(item));
+  let mediaId = itemJson._media;
+  let mediaObj= await DataStoreUtils.getMediaObjById(mediaId);
+  if (mediaObj.__t == "Movie") {
+    itemJson._media = await TMDBController.getMovie(mediaObj._tmdb_id);
+  } else if  (mediaObj.__t == "Episode") {
+    response = await TMDBController.getEpisodeFromTMDB(mediaObj._tmdb_tvshow_id, mediaObj.season_number, mediaObj.number);
+    itemJson._media = JSON.parse(response)
+  } else if (mediaObj.__t == "TvShow") {
+    itemJson._media = await TMDBController.getShow(mediaObj._tmdb_id);
+  } if (mediaObj.__t == "Season") {
+    tv_show = await DataStoreUtils.getMediaObjById(mediaObj._tvshow_id);
+    response = await TMDBController.getSeasonFromAPI(tv_show._tmdb_id, mediaObj.number);
+    itemJson._media = JSON.parse(response)
+  }
+
+  return itemJson;
 };
 
 var removeRankedItemFromList = function(itemToRemoveRank, itens) {

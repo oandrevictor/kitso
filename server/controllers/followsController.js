@@ -57,7 +57,7 @@ exports.following_me = async function(req, res) {
   }
 };
 
-exports.follow_activity = async function(req, res) {
+exports.following_activity = async function(req, res) {
   let user_id = req.query.user_id;
   let following_me_list;
   try {
@@ -110,6 +110,74 @@ exports.delete = async function(req, res) {
     }
   });
 };
+
+exports.getFriendsWithWatchedMedia = async function (req, res) {
+  let userId = req.query.userId;
+  let mediaId = req.query.mediaId;
+  let following_list = await Follows.find({_user: userId}).exec();
+  
+  var watchedPromises = [];
+  following_list.forEach((following) => {
+    let friendId = following._following;
+    watchedPromises.push(DataStoreUtils.getWatchedByUserIdAndMediaId(friendId, mediaId));
+  });
+  var watcheds;
+  await Promise.all(watchedPromises).then((result) => {
+    watcheds = result;
+  });
+
+  let userPromises = [];
+  watcheds.forEach((watched) => {
+    watched = watched[0];
+    if (watched) userPromises.push(DataStoreUtils.getUserById(watched._user));
+  });
+  var friends;
+  await Promise.all(userPromises).then((result) => {
+    friends = result;
+  });
+
+  res.status(RequestStatus.OK).json(friends);
+}
+
+exports.getFriendsWithWatchedTvshow = async function (req, res) {
+  let userId = req.query.userId;
+  let seasonEpisodesIds = req.body.seasonEpisodesIds;
+  let following_list = await Follows.find({_user: userId}).exec();
+  let friendsIds = following_list.map(function(friend) {
+    return friend._following;
+  });
+
+  var watchedPromises = [];
+  seasonEpisodesIds.forEach((season) => {
+    watchedPromises.push(DataStoreUtils.getWatchedByUserIdAndMediaId(friendsIds, season));
+  });
+  var seasonWatcheds;
+  await Promise.all(watchedPromises).then((result) => {
+    seasonWatcheds = result;
+  });
+
+  let userPromises = [];
+  seasonWatcheds.forEach((watcheds) => {
+    watcheds.forEach((watched) => {
+      userPromises.push(DataStoreUtils.getUserById(watched._user));
+    });
+  });
+  var unfilteredFriends;
+  await Promise.all(userPromises).then((result) => {
+    unfilteredFriends = result;
+  });
+
+  var friends_ids = [];
+  var friends = [];
+  unfilteredFriends.forEach((friend) => {
+    if (!friends_ids.includes(friend._id.toString())) {
+      friends.push(friend);
+      friends_ids.push(friend._id.toString());
+    }
+  });
+
+  res.status(RequestStatus.OK).json(friends);
+}
 
 var getFollowedFromFollow = async function(follow) {
   return User.findById(follow._following).exec();
