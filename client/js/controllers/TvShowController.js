@@ -1,7 +1,7 @@
 var kitso = angular.module('kitso');
 
-kitso.controller("TvShowController", ['$scope', '$location', '$timeout', '$routeParams', 'TvShowService',  'WatchedService',  'FollowService', 'RatedService', 'AuthService',
-function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedService, FollowService, RatedService, AuthService) {
+kitso.controller("TvShowController", ['$scope', '$location', '$route', '$timeout', '$routeParams', 'TvShowService',  'WatchedService',  'FollowService', 'RatedService', 'AuthService',
+function($scope, $location, $route, $timeout, $routeParams, TvShowService,  WatchedService, FollowService, RatedService, AuthService) {
   $('.full-loading').show();
 
     TvShowService.loadTvShow($routeParams.tvshow_id)
@@ -9,19 +9,23 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
           AuthService.getStatus().then(function(){
             $scope.user = AuthService.getUser();
             $scope.tvshow = TvShowService.getTvShow();
+            console.log($scope.tvshow);
             $scope.tvshow.air_date = new Date($scope.tvshow.first_air_date);
             $('.full-loading').hide();
-            WatchedService.isWatched($scope.user._id ,$routeParams.tvshow_id).then((watched) => {
-                $scope.tvshow.watched = watched;
-                if (! watched.watched_id)
-                  $scope.tvshow.watched = false;
-            }).catch((error) => {
+
+            WatchedService.tvshowProgress($scope.user._id ,$routeParams.tvshow_id)
+            .then((progress) => {
+                if (progress.tvshow.ratio == 1) $scope.tvshow.watched = true;
+                else $scope.tvshow.watched = false;
+            })
+            .catch((error) => {
               UIkit.notification({
-                  message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                  message: '<span uk-icon=\'icon: check\'></span> ' + "Get progress error.",
                   status: 'danger',
                   timeout: 2500
               });
             });
+
             RatedService.isRated($scope.user._id ,$routeParams.tvshow_id).then((rated) => {
                 $scope.tvshow.rated = rated;
                 if (! rated.rated_id){
@@ -39,16 +43,31 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
                   })
                 }
               }).catch(function(){
-              })
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: check\'></span> ' + "Get rating error.",
+                    status: 'danger',
+                    timeout: 2500
+                });
+              });
+
               FollowService.isFollowingPage($scope.user._id ,$routeParams.tvshow_id).then((followed) => {
                 $scope.tvshow.followed = followed;
-            }).catch((error) => {
-              UIkit.notification({
-                  message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
-                  status: 'danger',
-                  timeout: 2500
-              });
+                }).catch((error) => {
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: check\'></span> ' + "Get followspage error.",
+                    status: 'danger',
+                    timeout: 2500
+                });
             });
+
+            FollowService.friendsWatchingTvshow($scope.user._id, $scope.getEpisodesIds())
+            .then((response) => {
+                $scope.friendsWatching = response;
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+            
           }).catch(function(){
           })
         })
@@ -60,10 +79,47 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
             });
         });
 
+    $scope.markEntireTvshowAsWatched = function (tvshowId) {
+        $scope.watchAction = true;
+        WatchedService.markEntireTvshowAsWatched($scope.user._id, tvshowId)
+            .then((result) => {
+                $scope.watchAction = false;
+                $route.reload();
+                UIkit.modal('#modal-watchTvshow').hide();
+                console.log(result);
+            })
+            .catch((error) => {
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                    status: 'danger',
+                    timeout: 2500
+                });
+            });
+        };
+
     $scope.markTvshowAsWatched = function (tvshowId) {
-        WatchedService.markTvshowAsWatched($scope.user._id, $scope.tvshow._seasons, tvshowId)
-            .then((watched) => {
-                console.log(watched);
+        $scope.watchAction = true;
+        WatchedService.markTvshowAsWatched($scope.user._id, tvshowId)
+            .then((result) => {
+                $scope.watchAction = false;
+                $route.reload();
+                UIkit.modal('#modal-watchTvshow').hide();
+                console.log(result);
+            })
+            .catch((error) => {
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                    status: 'danger',
+                    timeout: 2500
+                });
+            });
+        };
+
+    $scope.markTvshowAsNotWatched = function () {
+        WatchedService.markTvshowAsNotWatched($scope.tvshow._seasons, $scope.user._id)
+            .then((result) => {
+                $route.reload();
+                console.log(result);
             })
             .catch((error) => {
                 UIkit.notification({
@@ -217,6 +273,26 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
             ratings.push(i+1)
         }
         return ratings;
+    }
+
+    $scope.getEpisodesIds = function() {
+        var seasonsIds = [];
+        var seasons = [];
+        var episodesIds = [];
+        $scope.tvshow._seasons.forEach((season) => {
+            if (!seasonsIds.includes(season._id)) {
+                seasons.push(season);
+                seasonsIds.push(season._id);
+            };
+        });
+
+        seasons.forEach((season) => {
+            let epiIds = season._episodes;
+            epiIds = Array.from(new Set(epiIds));
+            episodesIds.push(epiIds);
+        });
+
+        return episodesIds;
     }
 
 }]);
