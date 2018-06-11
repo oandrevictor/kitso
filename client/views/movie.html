@@ -10,8 +10,8 @@
       <div class="uk-width-3-4">
         <div class="title tvshow-name">
           <b>{{movie.title}} </b>   <div class="title">
-          <span ng-show="movie.isBoxOffice" class="uk-badge purple">In teathers</span>
-        </div><div class="hour-info"> ({{ movie.release_date | date: 'yyyy' }})</div>
+            <span ng-show="movie.isBoxOffice" class="uk-badge purple">In teathers</span>
+          </div><div class="hour-info"> ({{ movie.release_date | date: 'yyyy' }})</div>
         </div>
         <div class="more-info">
           <span uk-icon="icon: rss"></span> 2.5K Followers
@@ -55,12 +55,24 @@
         <span uk-icon="icon: check;"></span> Watched (undo) </button>
       <button class="uk-button uk-button-default watch-button">
         <span uk-icon="icon: list;"></span> UserLists</button>
-      <div uk-dropdown="pos: bottom-center; mode: hover" style="z-index: 999">
+      <div uk-dropdown="offset: 0; pos: bottom-center; mode: hover" style="z-index: 999">
         <div ng-repeat="list in user.lists" ng-init="markAsAdded(movie._id, list._id)">
           <button ng-show="!movieAdded" ng-click="addToList(movie._id, list._id)" class="uk-button uk-button-default watch-button">
             <span uk-icon="icon: plus;"></span> {{list.title}} </button>
           <button ng-show="movieAdded" ng-click="removeFromList(movie._id, list._id)" class="uk-button uk-button-default watch-button watched">
             <span uk-icon="icon: minus;"></span> {{list.title}} (undo) </button>
+        </div>
+      </div>
+      <button id="friendDropButton" class="uk-button uk-button-default watch-button" ng-class="{watched: friendsWatching.length > 0}" type="button">Friends Watching ({{ friendsWatching.length || 0 }})</button>
+      <div class="uk-grid" id="friendDrop" uk-dropdown="offset: 0; pos: bottom-justify; delay-hide: 200; animation: uk-animation-slide-bottom-medium;">
+        <div class="friend" uk-grid ng-repeat="friend in friendsWatching">
+          <div class="friendImage">
+            <img class="uk-border-circle" src="../images/mask2.png" width="50" height="50" alt="Border circle">
+          </div>
+          <div class="friendContent">
+            <p class="friendName">{{ friend.name }}</p>
+            <a class="friendLink" ng-href="/user/{{friend._id}}">{{' @' + friend.username}}</a>
+          </div>
         </div>
       </div>
     </div>

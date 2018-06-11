@@ -54,10 +54,10 @@
                       <li class="uk-nav-divider"></li>
                       <p> Choose the new position</p>
                       <input class="rankValue" type="number" align="center" value="{{item.ranked}}" ng-model="item.newRanked" min="1" class="inline">
-                      <button class="uk-button change-button" ng-click="item.newRanked = incrementaRanked(item.newRanked, userlist.itens.length + 1)">
+                      <button class="uk-button change-button" ng-click="item.newRanked = rankUp(item.newRanked)">
                           <span uk-icon="icon: chevron-up;">
                       </button>
-                      <button class="uk-button change-button" ng-click="item.newRanked = decrementaRanked(item.newRanked)">
+                      <button class="uk-button change-button" ng-click="item.newRanked = rankDown(item.newRanked, userlist.itens.length + 1)">
                           <span uk-icon="icon: chevron-down;">
                       </button>
                       <br>

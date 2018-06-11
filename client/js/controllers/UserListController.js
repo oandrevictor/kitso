@@ -88,7 +88,6 @@ function($scope, $location, $timeout, UserListService, MovieService, $routeParam
   }
 
   $scope.changeOrder = function (userListId, currentRank, newRank) {
-    console.log(userListId + ' ' + currentRank + ' ' + newRank);
     UserListService.updateRank(userListId, $scope.user._id, currentRank, newRank)
       .then((list) => {
         loadUserList();
@@ -103,13 +102,13 @@ function($scope, $location, $timeout, UserListService, MovieService, $routeParam
     ;
   }
 
-  $scope.incrementaRanked = function(ranked, max) {
+  $scope.rankDown = function(ranked, max) {
     if (ranked + 1 < max) {
       return ranked + 1;
     } return ranked;
   }
 
-  $scope.decrementaRanked = function (ranked) {
+  $scope.rankUp = function (ranked) {
     if ((ranked - 1) > 0) {
       return ranked - 1;
     } return ranked;
