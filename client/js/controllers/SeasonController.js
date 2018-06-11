@@ -21,7 +21,6 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
             WatchedService.seasonProgress($scope.user._id ,$scope.season._id)
             .then((progress) => {
               $scope.season.progress = progress;
-              console.log(progress)
               $scope.updateProgress($scope.season.progress, 0);
             })
             .catch((error) => {
@@ -115,7 +114,6 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
           $scope.watchAction = false;
           $route.reload();
           UIkit.modal('#modal-watchSeason').hide();
-          console.log(result);
         })
         .catch((error) => {
           UIkit.notification({
@@ -134,7 +132,6 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
           $scope.watchAction = false;
           $route.reload();
           UIkit.modal('#modal-watchSeason').hide();
-          console.log(result);
         })
         .catch((error) => {
           UIkit.notification({
@@ -157,7 +154,6 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
         .then((result) => {
           $route.reload();
           UIkit.modal('#modal-watchSeason').hide();
-          console.log(result);
         })
         .catch((error) => {
           UIkit.notification({

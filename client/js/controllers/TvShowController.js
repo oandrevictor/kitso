@@ -9,7 +9,6 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
           AuthService.getStatus().then(function(){
             $scope.user = AuthService.getUser();
             $scope.tvshow = TvShowService.getTvShow();
-            console.log($scope.tvshow);
             $scope.tvshow.air_date = new Date($scope.tvshow.first_air_date);
             $('.full-loading').hide();
 
@@ -86,7 +85,6 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
                 $scope.watchAction = false;
                 $route.reload();
                 UIkit.modal('#modal-watchTvshow').hide();
-                console.log(result);
             })
             .catch((error) => {
                 UIkit.notification({
@@ -104,7 +102,6 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
                 $scope.watchAction = false;
                 $route.reload();
                 UIkit.modal('#modal-watchTvshow').hide();
-                console.log(result);
             })
             .catch((error) => {
                 UIkit.notification({
@@ -119,7 +116,6 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
         WatchedService.markTvshowAsNotWatched($scope.tvshow._seasons, $scope.user._id)
             .then((result) => {
                 $route.reload();
-                console.log(result);
             })
             .catch((error) => {
                 UIkit.notification({

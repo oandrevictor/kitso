@@ -100,8 +100,9 @@ exports.watchEntireTvshow = async function(req, res) {
   var result = [];
   seasonsEpisodesIds.forEach(async (episodesIds) => {
     episodesIds = Array.from(new Set(episodesIds));
-    let season_watcheds = watch_season_episodes(episodesIds, userId, date);
-    result.push(season_watcheds);
+    watch_season_episodes(episodesIds, userId, date, function (response) {
+      result.push(response);
+    });
   });
   
   await Promise.all(result).then(() => {
@@ -121,8 +122,9 @@ exports.watchTvshow = async function(req, res) {
     let nonWatchedEpisodes = seasonEpisodeIds[0].map((episode) => {
       if (!watchedMediasIds.includes(episode)) return episode;
     });
-    let season_watcheds = watch_season_episodes(nonWatchedEpisodes, userId, date);
-    result.push(season_watcheds);
+    watch_season_episodes(nonWatchedEpisodes, userId, date, function (response) {
+      result.push(response);
+    });
   });
 
   await Promise.all(result).then(() => {
