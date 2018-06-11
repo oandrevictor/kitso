@@ -1,7 +1,7 @@
 var kitso = angular.module('kitso');
 
-kitso.controller("TvShowController", ['$scope', '$location', '$timeout', '$routeParams', 'TvShowService',  'WatchedService',  'FollowService', 'RatedService', 'AuthService',
-function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedService, FollowService, RatedService, AuthService) {
+kitso.controller("TvShowController", ['$scope', '$location', '$route', '$timeout', '$routeParams', 'TvShowService',  'WatchedService',  'FollowService', 'RatedService', 'AuthService',
+function($scope, $location, $route, $timeout, $routeParams, TvShowService,  WatchedService, FollowService, RatedService, AuthService) {
   $('.full-loading').show();
 
     TvShowService.loadTvShow($routeParams.tvshow_id)

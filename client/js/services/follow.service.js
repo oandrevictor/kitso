@@ -179,7 +179,7 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
                 "is_media" : false
             };
         }
-        
+
 
         $http.post('/api/followsPage/', data)
             .then((response) => {
@@ -236,4 +236,5 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
 
       return deferred.promise;
     }
+
 }]);

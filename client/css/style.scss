@@ -1164,6 +1164,15 @@ html, body {
     }
   }
 
+  .poster {
+    display:block;
+    background: #502274;
+    background-repeat:no-repeat;
+    background-size:cover;
+    width: 225px;
+    height: 309px;
+  }
+
   .page-link {
     text-decoration: none;
     color:  #666 !important;
