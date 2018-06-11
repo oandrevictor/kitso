@@ -1,7 +1,7 @@
 var kitso = angular.module('kitso');
 
-kitso.controller("TvShowController", ['$scope', '$location', '$route', '$timeout', '$routeParams', 'TvShowService',  'WatchedService',  'FollowService', 'RatedService', 'AuthService',
-function($scope, $location, $route, $timeout, $routeParams, TvShowService,  WatchedService, FollowService, RatedService, AuthService) {
+kitso.controller("TvShowController", ['$scope', '$location', '$timeout', '$routeParams', 'TvShowService',  'WatchedService',  'FollowService', 'RatedService', 'UserListService', 'AuthService',
+function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedService, FollowService, RatedService, UserListService, AuthService) {
   $('.full-loading').show();
 
     TvShowService.loadTvShow($routeParams.tvshow_id)
@@ -12,6 +12,16 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
             console.log($scope.tvshow);
             $scope.tvshow.air_date = new Date($scope.tvshow.first_air_date);
             $('.full-loading').hide();
+
+            var lists = [];
+            $scope.user._lists.forEach((listId) => {
+              UserListService.loadUserList(listId).then( function(){
+                lists.push(UserListService.getUserList());
+              }).catch(function(error){
+                console.log(error);
+              })
+            });
+            $scope.user.lists = lists;
 
             WatchedService.tvshowProgress($scope.user._id ,$routeParams.tvshow_id)
             .then((progress) => {
@@ -158,6 +168,49 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
         });
     }
 
+  $scope.addToList = function(tvshowId, userListId){
+    UserListService.addItem(userListId, tvshowId, $scope.user._id, date = moment())
+      .then((added) => {
+        $scope.tvshowAdded = true;
+      })
+      .catch((error) => {
+        UIkit.notification({
+          message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+          status: 'danger',
+          timeout: 2500
+        });
+      });
+  }
+
+  $scope.removeFromList = function(tvshowId, userListId) {
+    UserListService.loadUserList(userListId).then( function() {
+      UserListService.getUserList()['itens'].forEach(function(item){
+        if (item['_media']['_id'] == tvshowId) {
+          UserListService.deleteItem(userListId, $scope.user._id, item['ranked'])
+            .then((deleted) => {
+              $scope.tvshowAdded = false;
+            })
+            .catch((error) => {
+              UIkit.notification({
+                message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                status: 'danger',
+                timeout: 2500
+              });
+            });
+        }
+      });
+    });
+  }
+
+  $scope.markAsAdded = function(tvshowId, userListId) {
+    UserListService.loadUserList(userListId).then( function() {
+      UserListService.getUserList()['itens'].forEach(function(item){
+        if (item['_media']['_id'] == tvshowId) {
+          $scope.tvshowAdded = true;
+        }
+      });
+    });
+  }
 
     $scope.follow = function(tvshow){
         FollowService.followPage($scope.user._id, tvshow)
