@@ -57,20 +57,41 @@ exports.following_me = async function(req, res) {
   }
 };
 
-exports.following_activity = async function(req, res) {
-  let user_id = req.query.user_id;
-  let following_me_list;
+exports.followed_activity = async function(req, res) {
+  let user_id = req.params.user_id;
+  let following_list;
   try {
-    following_me_list = await Follows.find({_following: user_id}).exec();
-    promises = following_me_list.map(getFollowFromFollowed);
+    following_list = await Follows.find({_user: user_id}).exec();
+    all_activitys = []
+    following_list.forEach(async function(follow, index) {
+      followed = await getFollowedFromFollow(follow);
+      promises = followed._history.map(getActivity);
 
-    Promise.all(promises).then(function(results) {
-      res.status(RequestStatus.OK).json(results);
-    })
+      Promise.all(promises).then(function(results) {
+        all_activitys = all_activitys.concat(results);
+
+        if (index+1 == following_list.length) {
+          res.status(RequestStatus.OK).send(all_activitys);
+        }
+      })
+    });
   } catch (err) {
     res.status(RequestStatus.BAD_REQUEST).json(err);
   }
 };
+
+getActivity = async function(activity) {
+  let action = await Action.findById(activity).exec();
+  let user = await User.findById(action._user).exec();
+  let action_obj = await DataStoreUtils.getActionByTypeAndIdWithDetails(action.action_type, action._action);
+
+  let action_copy = JSON.parse(JSON.stringify(action));
+  action_copy._user = user;
+  action_json = JSON.stringify(action_obj);
+  action_copy._action = JSON.parse(action_json);
+
+  return action_copy;
+}
 
 exports.create = async function(req, res) {
   var follow = new Follows(req.body);
