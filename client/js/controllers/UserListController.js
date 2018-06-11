@@ -26,7 +26,14 @@ function($scope, $location, $timeout, UserListService, MovieService, $routeParam
   }
 
   $scope.getPoster = function(media){
-    return 'https://image.tmdb.org/t/p/w500/' + media.poster_path;
+    var img_path;
+
+    if (media.__t === 'Episode') {
+      img_path = media.still_path;
+    } else {
+      img_path = media.poster_path;
+    }
+    return 'https://image.tmdb.org/t/p/w500/' + img_path;
   }
 
   var loadUserListBackground = function () {
@@ -36,9 +43,17 @@ function($scope, $location, $timeout, UserListService, MovieService, $routeParam
     });
 
     if (addedMovies.length > 0) {
-      $scope.background = addedMovies[0].backdrop_path;
+      var img_path;
+      var first_media = addedMovies[0];
+
+      if (first_media.__t === 'Episode') {
+        img_path = first_media.still_path;
+      } else {
+        img_path = first_media.poster_path;
+      }
+      $scope.background = 'https://image.tmdb.org/t/p/w500/' + img_path;
     } else {
-      $scope.background = "/images/coco.jpg";
+      $scope.background = '/images/coco.jpg';
     }
   }
 
