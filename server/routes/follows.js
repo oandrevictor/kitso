@@ -11,6 +11,8 @@ router.get('/is_following', followsController.is_following);
 //following_me?user_id=user_id
 router.get('/following_me', followsController.following_me);
 
+router.get('/:user_id/follow_activity', followsController.follow_activity);
+
 router.post('/', followsController.create);
 
 router.delete('/:follow_id', followsController.delete);

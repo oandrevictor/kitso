@@ -57,6 +57,21 @@ exports.following_me = async function(req, res) {
   }
 };
 
+exports.follow_activity = async function(req, res) {
+  let user_id = req.query.user_id;
+  let following_me_list;
+  try {
+    following_me_list = await Follows.find({_following: user_id}).exec();
+    promises = following_me_list.map(getFollowFromFollowed);
+
+    Promise.all(promises).then(function(results) {
+      res.status(RequestStatus.OK).json(results);
+    })
+  } catch (err) {
+    res.status(RequestStatus.BAD_REQUEST).json(err);
+  }
+};
+
 exports.create = async function(req, res) {
   var follow = new Follows(req.body);
   let user_id = follow._user;
