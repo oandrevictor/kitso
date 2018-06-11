@@ -15,7 +15,30 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
             $scope.season.episodes.forEach(function (episode) {
               loadEpisodeActions(episode)
             });
+            UIkit.modal('#modal-watchSeason').hide();
             $('.full-loading').hide();
+
+            WatchedService.seasonProgress($scope.user._id ,$scope.season._id)
+            .then((progress) => {
+              $scope.season.progress = progress;
+              console.log(progress)
+              $scope.updateProgress($scope.season.progress, 0);
+            })
+            .catch((error) => {
+              UIkit.notification({
+                message: '<span uk-icon=\'icon: check\'></span> ' + "Get progress error.",
+                status: 'danger',
+                timeout: 2500
+              });
+            });
+
+            FollowService.friendsWatchingTvshow($scope.user._id, $scope.getEpisodesIds())
+            .then((response) => {
+                $scope.friendsWatching = response;
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
           })
           .catch((error) => {
             UIkit.notification({
@@ -84,15 +107,57 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
     };
 
 
+    $scope.markEntireSeasonAsWatched = function () {
+      $scope.watchAction = true;
+
+      WatchedService.markEntireSeasonAsWatched($scope.user._id, $scope.season._id)
+        .then((result) => {
+          $scope.watchAction = false;
+          $route.reload();
+          UIkit.modal('#modal-watchSeason').hide();
+          console.log(result);
+        })
+        .catch((error) => {
+          UIkit.notification({
+            message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+            status: 'danger',
+            timeout: 2500
+          });
+        });
+    };
+
     $scope.markSeasonAsWatched = function () {
+      $scope.watchAction = true;
+
+      WatchedService.markSeasonAsWatched($scope.user._id, $scope.season._id)
+        .then((result) => {
+          $scope.watchAction = false;
+          $route.reload();
+          UIkit.modal('#modal-watchSeason').hide();
+          console.log(result);
+        })
+        .catch((error) => {
+          UIkit.notification({
+            message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+            status: 'danger',
+            timeout: 2500
+          });
+        });
+    };
+
+    $scope.markSeasonAsNotWatched = function () {
       var episodesIds = [];
       $scope.season.episodes.forEach((episode) => {
-        episodesIds.push(episode._id);
+        if (episode.watched) {
+          episodesIds.push(episode._id);
+        }
       });
 
-      WatchedService.markSeasonAsWatched($scope.user._id, episodesIds, $scope.season._id)
+      WatchedService.markSeasonAsNotWatched(episodesIds, $scope.user._id)
         .then((result) => {
-          $scope.season.watched = result.watched;
+          $route.reload();
+          UIkit.modal('#modal-watchSeason').hide();
+          console.log(result);
         })
         .catch((error) => {
           UIkit.notification({
@@ -108,6 +173,7 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
       WatchedService.markAsWatched($scope.user._id, episodeId)
         .then((watched) => {
           episode.watched = watched;
+          $scope.updateProgress($scope.season.progress, 1);
         })
         .catch((error) => {
           UIkit.notification({
@@ -123,6 +189,7 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
       WatchedService.markAsNotWatched(watchedId)
         .then(() => {
           episode.watched = false;
+          $scope.updateProgress($scope.season.progress, -1);
         })
         .catch((error) => {
           UIkit.notification({
@@ -296,5 +363,16 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
         $location.path('tvshow/' + media._tvshow_id + '/season/'+ media.season_number);
       }
     }
+
+    $scope.updateProgress = function (progress, value) {
+      progress.episodes_watched += value;
+      progress.ratio = progress.episodes_watched / progress.total_episodes;
+      if (progress.ratio == 1) $scope.season.watched = true;
+      else $scope.season.watched = false;
+    }
+
+    $scope.getEpisodesIds = function() {
+      return [$scope.season.episodes];
+  }
 
   }]);
