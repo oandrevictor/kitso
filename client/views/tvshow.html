@@ -41,6 +41,18 @@
           <span uk-icon="icon: check;"></span> Mark as watched</button>
           <button ng-show="tvshow.watched" ng-click="" class="uk-button uk-button-default watch-button watched">
             <span uk-icon="icon: check;"></span> Watched (undo) </button>
+          <button id="friendDropButton" class="uk-button uk-button-default watch-button" ng-class="{watched: friendsWatching.length > 0}" type="button">Friends Watching ({{ friendsWatching.length || 0 }})</button>
+          <div class="uk-grid" id="friendDrop" uk-dropdown="pos: bottom-justify; delay-hide: 200; animation: uk-animation-slide-bottom-medium;">
+            <div class="friend" uk-grid ng-repeat="friend in friendsWatching">
+              <div class="friendImage">
+                <img class="uk-border-circle" src="../images/mask2.png" width="50" height="50" alt="Border circle">
+              </div>
+              <div class="friendContent">
+                <p class="friendName">{{ friend.name }}</p>
+                <a class="friendLink" ng-href="/user/{{friend._id}}">{{' @' + friend.username}}</a>
+              </div>
+            </div>
+          </div>
           </div>
 
           <div class="uk-width-3-4">
