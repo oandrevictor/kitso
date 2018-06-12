@@ -7,10 +7,11 @@ kitso.service('UserListService', ['$q','$http', function ($q, $http) {
     // return available functions for use in the controllers
     return ({
         addItem: addItem,
+        deleteItem: deleteItem,
         loadUserList: loadUserList,
         getUserList: getUserList,
         updateUserList: updateUserList,
-        isAdded: isAdded
+        updateRank: updateRank
     });
 
     function addItem(userlistId, mediaId, userId, date) {
@@ -45,7 +46,34 @@ kitso.service('UserListService', ['$q','$http', function ($q, $http) {
       return deferred.promise;
     }
 
-    function loadUserList(id) {
+  function deleteItem(userlistId, userId, rank) {
+    var deferred = $q.defer();
+    var req = {
+      method: 'DELETE',
+      url: '/api/userlist/' + userlistId + '/delete_item/' + rank,
+      headers: {
+        'Content-Type': 'application/json',
+        'user_id': userId
+      }
+    }
+
+    $http(req)
+      .then((response) => {
+        if (response.status === 200) {
+          response.data.item_id = response.data._id
+          deferred.resolve(response.data);
+        } else {
+          deferred.reject();
+        }
+      })
+      .catch((error) => {
+        deferred.reject(error.data);
+      });
+
+    return deferred.promise;
+  }
+
+  function loadUserList(id) {
         var deferred = $q.defer();
 
         $http.get('/api/userlist/' + id)
@@ -61,7 +89,7 @@ kitso.service('UserListService', ['$q','$http', function ($q, $http) {
                 deferred.reject(error.data);
             });
         return deferred.promise;
-    }
+  }
 
     function getUserList() {
         return userlist;
@@ -86,19 +114,35 @@ kitso.service('UserListService', ['$q','$http', function ($q, $http) {
       return deferred.promise;
     }
 
-    function isAdded(mediaId) {
-      var list = getUserList();
-      list.forEach((item) => {
-        if (item._media._id === mediaId) {
-          return {
-            "added": true,
-            "date": item.date,
-            "userlist": list
-          };
-        };
-      });
-      return {
-        "added": false
-      };
+  function updateRank(userlistId, userId, currentRank, newRank) {
+    var deferred = $q.defer();
+
+    var req = {
+      method: 'PUT',
+      url: '/api/userlist/' + userlistId + '/change_rank',
+      headers: {
+        'Content-Type': 'application/json',
+        'user_id': userId
+      },
+      data: {
+        "current_rank": currentRank,
+        "new_rank": newRank
+      }
     }
+
+    $http(req)
+      .then((response) => {
+        if (response.status === 200) {
+          response.data.item_id = response.data._id
+          deferred.resolve(response.data);
+        } else {
+          deferred.reject();
+        }
+      })
+      .catch((error) => {
+        deferred.reject(error.data);
+      });
+
+    return deferred.promise;
+  }
 }]);

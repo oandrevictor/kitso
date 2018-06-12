@@ -137,6 +137,7 @@ exports.changeItemRank = async function(req, res) {
     let userList = await DataStoreUtils.getUserListById(userListId);
     let itens = userList.itens;
     changeRank(req.body.current_rank, req.body.new_rank, itens);
+    userList.markModified('itens');
     await saveUserList(userList);
     res.status(RequestStatus.OK).json(userList);
   } catch(err) {

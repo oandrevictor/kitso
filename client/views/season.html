@@ -21,12 +21,22 @@
     <div class="left-bar uk-width-1-4">
       <div ng-show="tvshow.rated" class="rating-info"> {{tvshow.rating}} </div>
       <img class="poster" style="background-image: url({{ tvshow.poster_path }})" />
-      <button uk-toggle="#modal-watchSeason" class="uk-button uk-button-default watch-button">
+      <button ng-hide="season.watched" uk-toggle="#modal-watchSeason" class="uk-button uk-button-default watch-button">
         <span uk-icon="icon: check;"></span> Mark as watched</button>
         <button ng-show="season.watched" ng-click="markSeasonAsNotWatched()" class="uk-button uk-button-default watch-button watched">
-        <span uk-icon="icon: check;"></span> Watched (undo) </button>
+          <span uk-icon="icon: check;"></span> Watched (undo) </button>
+      <button class="uk-button uk-button-default watch-button">
+        <span uk-icon="icon: list;"></span> Lists</button>
+      <div uk-dropdown="pos: right-center; mode: hover; delay-hide: 100; offset: 20; animation: uk-animation-slide-right-medium" style="z-index: 999">
+        <div ng-repeat="list in user.lists" ng-init="markAsAdded(season._id, list._id)">
+          <button ng-hide="itemIsListed(list._id,season)" ng-click="addToList(season, list._id)" class="uk-button uk-button-default watch-button">
+            <span uk-icon="icon: plus;"></span> {{list.title}} </button>
+          <button ng-show="itemIsListed(list._id,season)" ng-click="removeFromList(season, list._id)" class="uk-button uk-button-default watch-button watched">
+            <span uk-icon="icon: minus;"></span> {{list.title}} (undo) </button>
+        </div>
+      </div>
       <button id="friendDropButton" class="uk-button uk-button-default watch-button" ng-class="{watched: friendsWatching.length > 0}" type="button">Friends Watching ({{ friendsWatching.length || 0 }})</button>
-      <div class="uk-grid" id="friendDrop" uk-dropdown="pos: bottom-justify; delay-hide: 200; animation: uk-animation-slide-bottom-medium;">
+      <div class="uk-grid" id="friendDrop" uk-dropdown="offset: 0; pos: right-center; delay-hide: 100; animation: uk-animation-slide-right-medium; offset: 20">
         <div class="friend" uk-grid ng-repeat="friend in friendsWatching">
           <div class="friendImage">
             <img class="uk-border-circle" src="../images/mask2.png" width="50" height="50" alt="Border circle">
@@ -36,8 +46,13 @@
             <a class="friendLink" ng-href="/user/{{friend._id}}">{{' @' + friend.username}}</a>
           </div>
         </div>
-      </div>
+        <div class="friend" uk-grid ng-if="friendsWatching.length == 0">
+          <div class="friendContent">
+            <p class="friendName uk-text-small uk-text-muted"><span uk-icon="video-camera"></span> None of yours friends watched this.</p>
+          </div>
         </div>
+      </div>
+    </div>
 
         <div class="uk-width-3-4">
           <div class="rating">
@@ -102,7 +117,18 @@
                                     </ul>
                                   </center>
                                 </div>
-
+                                <button class="uk-button uk-button-default episode-button">
+                                  <span uk-icon="icon: list;"></span> Lists</button>
+                                <div uk-dropdown="bottom-center; mode: hover" style="z-index: 999">
+                                  <center>
+                                    <div ng-repeat="list in user.lists">
+                                      <button ng-hide="itemIsListed(list._id, episode)" ng-click="addToList(episode, list._id)" class="uk-button uk-button-default episode-button">
+                                        <span uk-icon="icon: plus;"></span> {{list.title}} </button>
+                                      <button ng-show="itemIsListed(list._id, episode)" ng-click="removeFromList(episode, list._id)" class="uk-button uk-button-default episode-button">
+                                        <span uk-icon="icon: minus;"></span> {{list.title}} (undo) </button>
+                                    </div>
+                                  </center>
+                                </div>
                                 <p class="episode-overview">{{episode.overview}}</p>
                                 <p class="episode-airing">Aired: {{episode.air_date}}</p>
                               </div>

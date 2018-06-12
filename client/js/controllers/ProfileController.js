@@ -47,7 +47,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
   }
 
   var checkFinishedLoading = function(){
-    if (loaded >=2) {
+    if (loaded > 2) {
       $('.full-loading').hide();
     }
   }
@@ -60,11 +60,11 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         });
         watched = watched.sort(compareDates);
         $scope.user.watched = watched;
-        loaded +=1;
+        loaded++;
         checkFinishedLoading();
 
       }).catch(function (error) {
-        loaded +=1;
+        loaded++;
         checkFinishedLoading();
         console.log(error);
       })
@@ -122,6 +122,9 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
     $scope.user.lists = lists;
     UserListService.loadUserList($scope.user._watchlist).then( function(){
       $scope.user.watchlist = UserListService.getUserList();
+      loaded++;
+      checkFinishedLoading();
+
     }).catch(function(error){
       console.log(error);
     });

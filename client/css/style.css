@@ -518,7 +518,7 @@ html, body {
   .movie .uk-dotnav {
     margin-bottom: 10px; }
   .movie .uk-dropdown {
-    padding: 0px; }
+    padding: 5px; }
   .movie .uk-grid-margin, .movie .uk-grid + .uk-grid, .movie .uk-grid > .uk-grid-margin {
     margin-top: 10px;
     margin-bottom: 10px; }
@@ -634,6 +634,8 @@ html, body {
       line-height: 1.4;
       color: #773095;
       overflow: hidden; }
+  .tvshow .uk-dropdown {
+    padding: 5px; }
   .tvshow .episode-button {
     width: 120px;
     padding: 0%;
@@ -677,7 +679,7 @@ html, body {
   .tvshow .uk-dotnav {
     margin-bottom: 10px; }
   .tvshow .uk-dropdown {
-    padding: 0px; }
+    padding: 5px; }
   .tvshow .uk-grid-margin, .tvshow .uk-grid + .uk-grid, .tvshow .uk-grid > .uk-grid-margin {
     margin-top: 10px;
     margin-bottom: 10px; }
@@ -904,17 +906,19 @@ html, body {
       margin-bottom: auto;
       padding-top: 0px !important;
       display: inline-block; }
+  .userlist .w-79 {
+    width: 79% !important; }
   .userlist .poster {
     display: block;
     background: #502274;
     background-repeat: no-repeat;
     background-size: cover;
+    background-position: center center;
     width: 225px;
     height: 309px; }
   .userlist .page-link {
     text-decoration: none;
-    color: #666 !important;
-    font-weight: 300; }
+    color: #773095 !important; }
   .userlist .title {
     font-size: 4vh;
     font-weight: 100;
@@ -944,6 +948,8 @@ html, body {
       padding-left: 0px;
       padding-right: 0px;
       padding-top: 5px; }
+      .userlist .uk-card-primary .uk-card-body .uk-width-4-5 {
+        width: 79%; }
       .userlist .uk-card-primary .uk-card-body .uk-grid {
         padding-left: 0px;
         padding-right: 3px; }
@@ -961,5 +967,28 @@ html, body {
     margin-top: 5px;
     margin-bottom: 10px;
     font-size: 14px; }
+  .userlist .action-button {
+    padding-left: 20px;
+    display: block;
+    width: 191px;
+    border: 1px solid #773095;
+    font-size: 10px !important;
+    color: #773095;
+    background: white; }
+  .userlist .uk-icon {
+    padding-right: 2px; }
+  .userlist .uk-dropdown {
+    padding: 3px; }
+  .userlist .uk-button {
+    margin: 3px; }
+  .userlist .change-button {
+    padding: 1px; }
+  .userlist .rankValue {
+    width: 50px;
+    height: 36px;
+    border: 1px solid #cccccc;
+    text-align: right; }
+  .userlist .save-button {
+    width: 90%; }
 
 /*# sourceMappingURL=style.css.map */

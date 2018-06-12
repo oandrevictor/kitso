@@ -713,7 +713,7 @@ html, body {
   }
 
   .uk-dropdown {
-    padding: 0px;
+    padding: 5px;
   }
 
 
@@ -725,7 +725,7 @@ html, body {
   .friend {
     padding-top: 10px;
     padding-bottom: 10px;
-    
+
     .friendImage {
       padding-left: 20px;
       padding-bottom: 0px;
@@ -881,6 +881,11 @@ html, body {
       overflow: hidden;
     }
   }
+
+  .uk-dropdown {
+    padding: 5px;
+  }
+
   .episode-button {
     width: 120px;
     padding: 0%;
@@ -940,7 +945,7 @@ html, body {
   }
 
   .uk-dropdown {
-    padding: 0px;
+    padding: 5px;
   }
 
   .uk-grid-margin, .uk-grid+.uk-grid, .uk-grid>.uk-grid-margin {
@@ -1258,19 +1263,23 @@ html, body {
     }
   }
 
+  .w-79{
+    width: 79% !important;
+  }
+
   .poster {
     display:block;
     background: #502274;
     background-repeat:no-repeat;
     background-size:cover;
+    background-position: center center;
     width: 225px;
     height: 309px;
   }
 
   .page-link {
     text-decoration: none;
-    color:  #666 !important;
-    font-weight: 300;
+    color:  #773095 !important;
   }
 
   .title {
@@ -1318,6 +1327,10 @@ html, body {
       padding-right: 0px;
       padding-top: 5px;
 
+      .uk-width-4-5 {
+        width: 79%;
+      }
+
       .uk-grid {
         padding-left: 0px;
         padding-right: 3px;
@@ -1347,5 +1360,42 @@ html, body {
     margin-top: 5px;
     margin-bottom: 10px;
     font-size: 14px;
+  }
+
+  .action-button {
+    padding-left: 20px;
+    display: block;
+    width: 191px;
+    border: 1px solid #773095;
+    font-size: 10px !important;
+    color: #773095;
+    background: white;
+  }
+
+  .uk-icon {
+    padding-right: 2px;
+  }
+
+  .uk-dropdown {
+    padding: 3px;
+  }
+
+  .uk-button{
+    margin: 3px;
+  }
+
+  .change-button {
+    padding: 1px;
+  }
+
+  .rankValue {
+    width: 50px;
+    height: 36px;
+    border: 1px solid #cccccc;
+    text-align: right;
+  }
+
+  .save-button {
+    width: 90%;
   }
 }

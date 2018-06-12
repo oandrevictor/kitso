@@ -35,7 +35,7 @@
         </div>
         <div class="uk-card-body">
           <div class="uk-grid">
-            <div class="uk-width-4-5">
+            <div class="uk-width-4-5 w-79">
               <p class="uk-text"><a class="page-link" ng-click="goToMedia(item._media)">{{item._media.name}}{{item._media.title}}</a></p>
               <p class="uk-text uk-text-small uk-text-muted">Added {{formatDate(item.date)}}</p>
             </div>
@@ -46,22 +46,22 @@
               <div uk-dropdown="pos: bottom-center; mode: click" style="z-index: 999">
                 <center>
                   <ul class="uk-nav uk-dropdown-nav">
-                    <p>Remove from {{userlist.title}}</p>
-                    <a href="#order-modal" class="page-link" uk-toggle>Change Order</a>
-                    <div id="order-modal" uk-modal>
-                      <div class="uk-modal-dialog uk-modal-body">
-                        <button class="uk-button uk-button-default modal-icon">
+                    <button ng-click="removeFromList(userlist._id, item.ranked)" class="uk-button action-button">
+                      <span uk-icon="icon: trash;"></span>Remove from {{userlist.title}}</button>
+                    <button ng-click="optionToggle()"  class="uk-button action-button">
+                      <span uk-icon="icon: move;"></span>Change Order</button>
+                    <div ng-show="showChangeOptions" class="inline" ng-init="item.newRanked = item.ranked">
+                      <li class="uk-nav-divider"></li>
+                      <p> Choose the new position</p>
+                      <input class="rankValue" type="number" align="center" value="{{item.ranked}}" ng-model="item.newRanked" min="1" class="inline">
+                      <button class="uk-button change-button" ng-click="item.newRanked = rankUp(item.newRanked)">
                           <span uk-icon="icon: chevron-up;">
-                        </button>
-                        <input type="number">
-                        <button class="uk-button uk-button-default modal-icon">
+                      </button>
+                      <button class="uk-button change-button" ng-click="item.newRanked = rankDown(item.newRanked, userlist.itens.length + 1)">
                           <span uk-icon="icon: chevron-down;">
-                        </button>
-                        <br>
-                        <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
-                        <button class="uk-button uk-button-primary" type="button">Save</button>
-                        </p>
-                      </div>
+                      </button>
+                      <br>
+                      <button class="uk-button uk-button-primary save-button" ng-click="changeOrder(userlist._id, item.ranked, item.newRanked)" type="button">Save</button>
                     </div>
                   </ul>
                 </center>
