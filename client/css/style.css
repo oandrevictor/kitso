@@ -391,7 +391,12 @@ html, body {
     background-repeat: no-repeat;
     background-size: cover;
     width: 300px;
-    height: 150px; }
+    height: 150px;
+    cursor: pointer; }
+  .profile .favorite-movie-title {
+    cursor: pointer;
+    background: #773095 !important;
+    color: white; }
   .profile .uk-overlay {
     padding: 2px; }
   .profile .check {
@@ -476,6 +481,8 @@ html, body {
     text-shadow: 1px 1px 2px black, 0 0 1em #000000, 0 0 0.2em #000000;
     margin-top: 2px;
     margin-bottom: 80px; }
+  .profile .rating .rate-dropdown {
+    padding: 25px; }
   .profile .rating .is-rated-star {
     background: url("/images/icon/white-star.svg") center no-repeat;
     background-size: 40px;
@@ -548,6 +555,8 @@ html, body {
     font-weight: 100;
     padding-right: 20px;
     display: flex; }
+    .movie .rating .rate-dropdown {
+      padding: 25px; }
     .movie .rating .is-rated-star {
       background: url("/images/icon/white-star.svg") center no-repeat;
       background-size: 40px;
@@ -714,6 +723,8 @@ html, body {
     font-weight: 100;
     padding-right: 20px;
     display: flex; }
+    .tvshow .rating .rate-dropdown {
+      padding: 25px; }
     .tvshow .rating .is-rated-star {
       background: url("/images/icon/white-star.svg") center no-repeat;
       background-size: 40px;
@@ -861,6 +872,94 @@ html, body {
   .person p {
     margin-top: 0px;
     margin-bottom: 0px;
+    font-size: 14px; }
+
+.userlist {
+  font-family: 'Roboto' !important; }
+  .userlist .uk-background-cover {
+    z-index: -1;
+    background: url("/images/It-Follows-background.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    overflow-y: visible !important;
+    height: 30vh;
+    display: block;
+    color: #ffffff !important;
+    padding-bottom: 0px !important;
+    padding-top: 4%;
+    position: relative; }
+  .userlist .purple-bar {
+    display: flex;
+    height: 160px !important;
+    background: black;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.7));
+    color: white;
+    height: 3em;
+    margin-top: -160px; }
+    .userlist .purple-bar .bar-content {
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 70px;
+      margin-bottom: auto;
+      padding-top: 0px !important;
+      display: inline-block; }
+  .userlist .poster {
+    display: block;
+    background: #502274;
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 225px;
+    height: 309px; }
+  .userlist .page-link {
+    text-decoration: none;
+    color: #666 !important;
+    font-weight: 300; }
+  .userlist .title {
+    font-size: 4vh;
+    font-weight: 100;
+    margin-left: auto;
+    margin-right: auto;
+    display: inline-block; }
+  .userlist .description {
+    text-align: justify;
+    width: 540px; }
+  .userlist .section {
+    margin-top: 8px;
+    margin-bottom: 4px; }
+  .userlist .section-title {
+    font-size: 2.5vh;
+    color: #773095;
+    font-weight: 100; }
+  .userlist .uk-card-primary {
+    background: #fff;
+    box-shadow: none; }
+    .userlist .uk-card-primary .uk-grid {
+      padding-left: 0px; }
+    .userlist .uk-card-primary .uk-text {
+      color: #666 !important; }
+    .userlist .uk-card-primary .uk-text-muted {
+      color: #999 !important; }
+    .userlist .uk-card-primary .uk-card-body {
+      padding-left: 0px;
+      padding-right: 0px;
+      padding-top: 5px; }
+      .userlist .uk-card-primary .uk-card-body .uk-grid {
+        padding-left: 0px;
+        padding-right: 3px; }
+      .userlist .uk-card-primary .uk-card-body .uk-text-muted {
+        color: #999 !important; }
+      .userlist .uk-card-primary .uk-card-body .more {
+        padding-left: 1px;
+        padding-right: 4px;
+        color: #666 !important; }
+  .userlist .uk-dropdown-nav .modal-icon {
+    padding: 0px;
+    color: #666 !important;
+    border: none !important; }
+  .userlist p {
+    margin-top: 5px;
+    margin-bottom: 10px;
     font-size: 14px; }
 
 /*# sourceMappingURL=style.css.map */

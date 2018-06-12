@@ -90,6 +90,7 @@ exports.addItem = async function(req, res) {
     let itens = userList.itens;
     let lastListIndex = itens.length;
     let newItem = new ListItem({
+      date: req.body.date,
       ranked: lastListIndex + 1,
       _media: req.body._media
     });
@@ -150,6 +151,11 @@ exports.changeItemRank = async function(req, res) {
 
 // AUXILIARY FUNCTIONS ============================================================================
 
+exports.addAndSave = async function(userList, userId){
+  await saveUserList(userList);
+  await addListToUserLists(userList._id, userId);
+}
+
 var saveUserList = function(userList) {
   return userList.save();
 };
@@ -198,6 +204,8 @@ var injectDataFromTmdb = async function(item) {
     response = await TMDBController.getSeasonFromAPI(tv_show._tmdb_id, mediaObj.number);
     itemJson._media = JSON.parse(response)
   }
+  itemJson._media.__t = mediaObj.__t;
+  itemJson._media._id = mediaObj._id;
 
   return itemJson;
 };

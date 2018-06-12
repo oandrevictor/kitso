@@ -518,6 +518,13 @@ html, body {
     background-size:cover;
     width: 300px;
     height: 150px;
+    cursor: pointer;
+  }
+
+  .favorite-movie-title {
+    cursor: pointer;
+    background: #773095 !important;
+    color: white;
   }
 
   .uk-overlay {
@@ -656,6 +663,10 @@ html, body {
   }
 
   .rating {
+    .rate-dropdown {
+      padding: 25px;
+    }
+
     .is-rated-star {
       background: url("/images/icon/white-star.svg") center no-repeat;
       background-size: 40px;
@@ -704,6 +715,7 @@ html, body {
   .uk-dropdown {
     padding: 0px;
   }
+
 
   .uk-grid-margin, .uk-grid+.uk-grid, .uk-grid>.uk-grid-margin {
     margin-top: 10px;
@@ -757,6 +769,10 @@ html, body {
     font-weight: 100;
     padding-right: 20px;
     display: flex;
+
+    .rate-dropdown {
+      padding: 25px;
+    }
 
     .is-rated-star {
       background: url("/images/icon/white-star.svg") center no-repeat;
@@ -991,6 +1007,10 @@ html, body {
     padding-right: 20px;
     display: flex;
 
+    .rate-dropdown {
+      padding: 25px;
+    }
+
     .is-rated-star {
       background: url("/images/icon/white-star.svg") center no-repeat;
       background-size: 40px;
@@ -1199,6 +1219,133 @@ html, body {
   p {
     margin-top: 0px;
     margin-bottom: 0px;
+    font-size: 14px;
+  }
+}
+
+.userlist{
+  font-family: 'Roboto' !important;
+  .uk-background-cover {
+    z-index: -1;
+    background: url("/images/It-Follows-background.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    overflow-y: visible !important;
+    height: 30vh;
+    display: block;
+    color: #ffffff !important;
+    padding-bottom: 0px !important;
+    padding-top: 4%;
+    position: relative;
+  }
+
+  .purple-bar {
+    display: flex;
+    height: 160px !important;
+    background: black;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.7));
+    color: white;
+    height: 3em;
+    margin-top: -160px;
+    .bar-content {
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 70px;
+      margin-bottom: auto;
+      padding-top: 0px !important;
+      display: inline-block;
+    }
+  }
+
+  .poster {
+    display:block;
+    background: #502274;
+    background-repeat:no-repeat;
+    background-size:cover;
+    width: 225px;
+    height: 309px;
+  }
+
+  .page-link {
+    text-decoration: none;
+    color:  #666 !important;
+    font-weight: 300;
+  }
+
+  .title {
+    font-size: 4vh;
+    font-weight: 100;
+    margin-left: auto;
+    margin-right: auto;
+    display: inline-block;
+  }
+
+  .description {
+    text-align: justify;
+    width: 540px;
+  }
+
+  .section {
+    margin-top: 8px;
+    margin-bottom: 4px;
+  }
+
+  .section-title {
+    font-size: 2.5vh;
+    color: #773095;
+    font-weight: 100;
+  }
+
+  .uk-card-primary {
+    background: #fff;
+    box-shadow: none;
+
+    .uk-grid {
+      padding-left: 0px;
+    }
+
+    .uk-text {
+      color: #666 !important;
+    }
+
+    .uk-text-muted {
+      color: #999 !important;
+    }
+
+    .uk-card-body {
+      padding-left: 0px;
+      padding-right: 0px;
+      padding-top: 5px;
+
+      .uk-grid {
+        padding-left: 0px;
+        padding-right: 3px;
+      }
+
+      .uk-text-muted {
+        color: #999 !important;
+      }
+
+      .more {
+        padding-left: 1px;
+        padding-right: 4px;
+        color: #666 !important;
+      }
+    }
+  }
+
+  .uk-dropdown-nav {
+    .modal-icon {
+      padding: 0px;
+      color: #666 !important;
+      border: none !important;
+    }
+  }
+
+  p {
+    margin-top: 5px;
+    margin-bottom: 10px;
     font-size: 14px;
   }
 }

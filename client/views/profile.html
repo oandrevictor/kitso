@@ -49,11 +49,26 @@
                   <p align="center">{{userFavoriteMovie.name}}</p>
                 </div>
               </div>
-              <p class="following-link" align="center" ng-show="!userFavoriteMovie">Você ainda não possui um filme favorito <br> Experimente avaliar algum filme</p>
+              <p class="following-link" align="center" ng-show="!userFavoriteMovie">You don't have a favorite movie yet <br> Try rating a movie</p>
             </div>
             <div class="uk-width-1-2">
               <p>Watched Genres</p>
               <img src="/images/watched.jpg" width="300" height="400">
+            </div>
+          </div>
+          <div class="section">
+            <div class="section-title">
+              {{user.name}}'s Lists
+            </div>
+            <div class="uk-grid">
+              <div class="uk-width-1-2" ng-repeat="list in user.lists">
+                <div class="uk-inline" ng-show="!$scope.user.lists.isEmpty()">
+                  <img class="favorite-movie" ng-click="goToList(list._id)" style="background-image: url({{ getListBackground(list) }})" />
+                  <div class="uk-overlay uk-overlay-primary uk-position-bottom favorite-movie-title">
+                    <p align="center" ng-click="goToList(list._id)">{{list.title}}</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </li>

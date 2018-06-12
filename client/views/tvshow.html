@@ -1,7 +1,6 @@
 <div class="tvshow">
 <!--Cover Content-->
-<div class="uk-background-cover" align="center" style="background-image: url({{ tvshow.backdrop_path }})">
-</div>
+<div class="uk-background-cover" align="center" style="background-image: url({{ tvshow.backdrop_path }})"></div>
 <div class="purple-bar">
   <div class="bar-content uk-width-xxlarge">
     <div class="uk-width-3-4">
@@ -61,7 +60,7 @@
                 <div class="is-rated-star" ng-show="tvshow.rated"></div>
                 <a ng-hide="tvshow.rated" uk-icon="icon: star; ratio: 2"></a>
               </div>
-              <div uk-dropdown="pos: bottom-center; mode: hover" style="z-index: 999">
+              <div class="rate-dropdown" uk-dropdown="pos: bottom-center; mode: hover" style="z-index: 999">
                 <center>
                   <ul class="uk-iconnav">
                     <div ng-repeat="n in range('10')">
@@ -133,4 +132,16 @@
               </div>
             </div>
           </div>
-        </div> -->
+        </div>
+                <!-- Watched modal -->
+<div id="modal-watchTvshow" class="uk-flex-top" uk-modal>
+  <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+      <button class="uk-modal-close-default" type="button" uk-close></button>
+      <h2 class="uk-modal-title">Mark tvshow as watched</h2>
+      <p>Mark <span class="uk-text-bold uk-text-danger">all</span> episodes as watched or <strong>only</strong> the unwatched episodes?</p>
+      <p class="uk-text-right">
+          <button class="uk-button uk-button-danger uk-modal-close" type="button" ng-click="markEntireTvshowAsWatched(tvshow._id)" ng-disabled="watchAction">All episodes</button>
+          <button class="uk-button uk-button uk-modal-close" type="button" ng-click="markTvshowAsWatched(tvshow._id)" ng-disabled="watchAction || tvshow.watched"><span class="uk-text-danger">Unwatched episodes</span></button>
+      </p>
+  </div>
+</div>

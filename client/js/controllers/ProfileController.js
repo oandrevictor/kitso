@@ -1,7 +1,7 @@
  var kitso = angular.module('kitso');
 
-kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$routeParams', 'AuthService', 'UserService', 'FollowService', 'WatchedService', 'RatedService',
-function ($scope, $location, $timeout, $routeParams, AuthService, UserService, FollowService, WatchedService, RatedService) {
+kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$routeParams', 'AuthService', 'UserService', 'FollowService', 'WatchedService', 'RatedService', 'UserListService',
+function ($scope, $location, $timeout, $routeParams, AuthService, UserService, FollowService, WatchedService, RatedService, UserListService) {
 
   $('.full-loading').show();
   var loaded = 0;
@@ -15,6 +15,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
           loadUserRatedInfo();
           loadUserFollowInfo();
           loadUserWatchedInfo();
+          loadUserLists();
           FollowService.isFollowingUser($scope.logged_user._id, $scope.user._id).then((followed) => {
             $scope.user.followed = followed;
           }).catch((error) => {
@@ -34,6 +35,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         loadUserRatedInfo();
         loadUserFollowInfo();
         loadUserWatchedInfo();
+        loadUserLists();
       }
     });
 
@@ -106,6 +108,23 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
       }).catch(function(error){
           console.log(error);
       })
+  }
+
+  var loadUserLists = function(){
+    var lists = [];
+    $scope.user._lists.forEach((listId) => {
+      UserListService.loadUserList(listId).then( function(){
+        lists.push(UserListService.getUserList());
+      }).catch(function(error){
+        console.log(error);
+      })
+    });
+    $scope.user.lists = lists;
+    UserListService.loadUserList($scope.user._watchlist).then( function(){
+      $scope.user.watchlist = UserListService.getUserList();
+    }).catch(function(error){
+      console.log(error);
+    });
   }
 
   function isMovie(rating) {
@@ -206,6 +225,19 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
     }
     if(media.helper && media.helper.backdrop_path){
       return 'https://image.tmdb.org/t/p/original/' + media.helper.backdrop_path;
+    }
+  }
+
+  $scope.getListBackground = function(userlist){
+    var addedMovies = [];
+    userlist.itens.forEach((item) => {
+      addedMovies.push(item._media);
+    });
+
+    if (addedMovies.length > 0) {
+      return addedMovies[0].backdrop_path;
+    } else {
+      return "/images/budapest.jpg";
     }
   }
 
@@ -355,6 +387,10 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
     }
   };
 
+  $scope.goToList = function (listId) {
+    $location.path('user/list/' + listId);
+  }
+
   $scope.isInvalid = function (field) {
     return (field.$invalid && !field.$pristine);
   };
@@ -367,8 +403,5 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
   $scope.toggleDescriptionArea = function () {
     $scope.descriptionArea = !$scope.descriptionArea;
   }
-
-
-
 
 }]);

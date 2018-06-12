@@ -28,7 +28,7 @@
           <div class="is-rated-star" ng-show="movie.rated"></div>
           <a ng-hide="movie.rated" uk-icon="icon: star; ratio: 2"></a>
         </div>
-        <div uk-dropdown="pos: bottom-center; mode: hover" style="z-index: 999">
+        <div class="rate-dropdown" uk-dropdown="pos: bottom-center; mode: hover" style="z-index: 999">
           <center>
             <ul class="uk-iconnav">
               <div ng-repeat="n in range('10')">

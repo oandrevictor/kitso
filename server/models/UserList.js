@@ -2,6 +2,10 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var ListItemSchema = new Schema({
+  date: {
+    type: Date,
+    required: true
+  },
   ranked: {
     type: Number,
     require: true

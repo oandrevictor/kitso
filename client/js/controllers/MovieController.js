@@ -1,8 +1,8 @@
 var kitso = angular.module('kitso');
 
 kitso.controller('MovieController',
-['$scope', '$location', '$timeout', 'MovieService', 'WatchedService', 'FollowService', 'RatedService','$routeParams', 'AuthService',
-function($scope, $location, $timeout, MovieService, WatchedService, FollowService, RatedService, $routeParams, AuthService) {
+['$scope', '$location', '$timeout', 'MovieService', 'WatchedService', 'FollowService', 'RatedService', 'UserListService','$routeParams', 'AuthService',
+function($scope, $location, $timeout, MovieService, WatchedService, FollowService, RatedService, UserListService, $routeParams, AuthService) {
   $('.full-loading').show();
     MovieService.loadMovie($routeParams.movie_id)
         .then(() => {
@@ -10,6 +10,41 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
             $scope.user = AuthService.getUser();
             $scope.movie = MovieService.getMovie();
             $scope.release_date_formated = moment($scope.movie.release_date).format('YYYY');
+
+            WatchedService.isWatched($scope.user._id ,$routeParams.movie_id).then((watched) => {
+                $scope.movie.watched = watched;
+                if (! watched.watched_id)
+                  $scope.movie.watched = false;
+            }).catch((error) => {
+              UIkit.notification({
+                  message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                  status: 'danger',
+                  timeout: 2500
+              });
+            });
+            RatedService.isRated($scope.user._id ,$routeParams.movie_id).then((rated) => {
+                $scope.movie.rated = rated;
+                if (! rated.rated_id){
+                  $scope.movie.rated = false;
+                  $scope.updateRating(0);
+                }else{
+                  RatedService.getRated($scope.movie.rated.rated_id).then((rated) => {
+                    $scope.updateRating(rated.rating);
+                  }).catch((error) => {
+                    UIkit.notification({
+                        message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                        status: 'danger',
+                        timeout: 2500
+                    });
+                  })
+                }
+            }).catch((error) => {
+              UIkit.notification({
+                  message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                  status: 'danger',
+                  timeout: 2500
+              });
+            });
             FollowService.isFollowingPage($scope.user._id ,$routeParams.movie_id).then((followed) => {
               $scope.movie.followed = followed;
             }).catch((error) => {
@@ -35,40 +70,16 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
             .catch((error) => {
                 console.log('error', error);
             });
-            RatedService.isRated($scope.user._id ,$routeParams.movie_id).then((rated) => {
-                $scope.movie.rated = rated;
-                if (! rated.rated_id){
-                  $scope.movie.rated = false;
-                  $scope.updateRating(0);
-                }else{
-                  RatedService.getRated($scope.movie.rated.rated_id).then((rated) => {
-                    $scope.updateRating(rated.rating);
-                  }).catch((error) => {
-                    UIkit.notification({
-                        message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
-                        status: 'danger',
-                        timeout: 2500
-                    });
-                  })
-                }
-            }).catch((error) => {
-              UIkit.notification({
-                  message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
-                  status: 'danger',
-                  timeout: 2500
-              });
+
+            var lists = [];
+            $scope.user._lists.forEach((listId) => {
+              UserListService.loadUserList(listId).then( function(){
+                lists.push(UserListService.getUserList());
+              }).catch(function(error){
+                console.log(error);
+              })
             });
-            WatchedService.isWatched($scope.user._id ,$routeParams.movie_id).then((watched) => {
-                $scope.movie.watched = watched;
-                if (! watched.watched_id)
-                  $scope.movie.watched = false;
-            }).catch((error) => {
-              UIkit.notification({
-                  message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
-                  status: 'danger',
-                  timeout: 2500
-              });
-            });
+            
             $('.full-loading').hide();
           }).catch(function(){
 
@@ -83,6 +94,19 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
         });
 
 
+    $scope.addToList = function(movieId, userListId){
+        UserListService.addItem(userListId, movieId, $scope.user._id, date = moment())
+        .then((added) => {
+            $scope.movie.added = added;
+        })
+        .catch((error) => {
+            UIkit.notification({
+                message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                status: 'danger',
+                timeout: 2500
+            });
+        });
+    }
 
     $scope.markAsWatched = function(movieId){
         WatchedService.markAsWatched($scope.user._id, movieId)
