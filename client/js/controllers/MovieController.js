@@ -2,7 +2,7 @@ var kitso = angular.module('kitso');
 
 kitso.controller('MovieController',
 ['$scope', '$location', '$timeout', 'MovieService', 'WatchedService', 'FollowService', 'RatedService','$routeParams', 'AuthService',
-function($scope, $location, $timeout, MovieService, WatchedService,  FollowService,  RatedService, $routeParams, AuthService) {
+function($scope, $location, $timeout, MovieService, WatchedService, FollowService, RatedService, $routeParams, AuthService) {
   $('.full-loading').show();
     MovieService.loadMovie($routeParams.movie_id)
         .then(() => {
@@ -10,7 +10,31 @@ function($scope, $location, $timeout, MovieService, WatchedService,  FollowServi
             $scope.user = AuthService.getUser();
             $scope.movie = MovieService.getMovie();
             $scope.release_date_formated = moment($scope.movie.release_date).format('YYYY');
-            $('.full-loading').hide();
+            FollowService.isFollowingPage($scope.user._id ,$routeParams.movie_id).then((followed) => {
+              $scope.movie.followed = followed;
+            }).catch((error) => {
+              UIkit.notification({
+                  message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                  status: 'danger',
+                  timeout: 2500
+              });
+            });
+            FollowService.countFollowers($routeParams.movie_id).then((count) => {
+              $scope.movie.followers = count;
+            }).catch((error) => {
+              UIkit.notification({
+                  message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                  status: 'danger',
+                  timeout: 2500
+              });
+            });
+            FollowService.friendsWatchingMedia($scope.user._id, $scope.movie._id)
+            .then((response) => {
+                $scope.friendsWatching = response;
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
             RatedService.isRated($scope.user._id ,$routeParams.movie_id).then((rated) => {
                 $scope.movie.rated = rated;
                 if (! rated.rated_id){
@@ -45,24 +69,7 @@ function($scope, $location, $timeout, MovieService, WatchedService,  FollowServi
                   timeout: 2500
               });
             });
-
-            FollowService.isFollowingPage($scope.user._id ,$routeParams.movie_id).then((followed) => {
-              $scope.movie.followed = followed;
-            }).catch((error) => {
-              UIkit.notification({
-                  message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
-                  status: 'danger',
-                  timeout: 2500
-              });
-            });
-
-            FollowService.friendsWatchingMedia($scope.user._id, $scope.movie._id)
-            .then((response) => {
-                $scope.friendsWatching = response;
-            })
-            .catch((error) => {
-                console.log('error', error);
-            });
+            $('.full-loading').hide();
           }).catch(function(){
 
           })
@@ -74,6 +81,8 @@ function($scope, $location, $timeout, MovieService, WatchedService,  FollowServi
                 timeout: 2500
             });
         });
+
+
 
     $scope.markAsWatched = function(movieId){
         WatchedService.markAsWatched($scope.user._id, movieId)
@@ -89,8 +98,8 @@ function($scope, $location, $timeout, MovieService, WatchedService,  FollowServi
         });
     }
 
-    $scope.follow = function(movie){
-        FollowService.followPage($scope.user._id, movie)
+    $scope.follow = function(movie, is_private){
+        FollowService.followPage($scope.user._id, movie, is_private)
         .then((followed) => {
             $scope.movie.followed = followed;
             $scope.movie.followed.following_id = followed._id;
@@ -103,6 +112,15 @@ function($scope, $location, $timeout, MovieService, WatchedService,  FollowServi
                 status: 'danger',
                 timeout: 2500
             });
+        });
+        FollowService.countFollowers($scope.movie._id).then((count) => {
+          $scope.movie.followers = count;
+        }).catch((error) => {
+          UIkit.notification({
+              message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+              status: 'danger',
+              timeout: 2500
+          });
         });
     };
 
@@ -118,6 +136,15 @@ function($scope, $location, $timeout, MovieService, WatchedService,  FollowServi
                 status: 'danger',
                 timeout: 2500
             });
+        });
+        FollowService.countFollowers($scope.movie._id).then((count) => {
+          $scope.movie.followers = count;
+        }).catch((error) => {
+          UIkit.notification({
+              message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+              status: 'danger',
+              timeout: 2500
+          });
         });
     }
 
