@@ -518,6 +518,13 @@ html, body {
     background-size:cover;
     width: 300px;
     height: 150px;
+    cursor: pointer;
+  }
+
+  .favorite-movie-title {
+    cursor: pointer;
+    background: #773095 !important;
+    color: white;
   }
 
   .uk-overlay {

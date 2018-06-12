@@ -173,7 +173,7 @@ exports.delete = function (req, res) {
 
 var createWatchList = function(userId) {
   let watchListInfo = {
-    title: "WatchList",
+    title: "Watchlist",
     description: "Things I will watch someday.",
     deletable: false,
     _user: userId

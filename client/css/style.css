@@ -391,7 +391,12 @@ html, body {
     background-repeat: no-repeat;
     background-size: cover;
     width: 300px;
-    height: 150px; }
+    height: 150px;
+    cursor: pointer; }
+  .profile .favorite-movie-title {
+    cursor: pointer;
+    background: #773095 !important;
+    color: white; }
   .profile .uk-overlay {
     padding: 2px; }
   .profile .check {
