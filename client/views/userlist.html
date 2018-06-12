@@ -40,7 +40,7 @@
               <p class="uk-text uk-text-small uk-text-muted">Added {{formatDate(item.date)}}</p>
             </div>
             <div class="uk-width-1-5">
-              <button class="uk-button uk-button-default more">
+              <button ng-if="canEdit()" class="uk-button uk-button-default more">
                 <span uk-icon="icon: more-vertical;">
               </button>
               <div uk-dropdown="pos: bottom-center; mode: click" style="z-index: 999">

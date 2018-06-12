@@ -62,7 +62,7 @@ function($scope, $location, $timeout, UserListService, MovieService, $routeParam
       })
       .catch((error) => {
         UIkit.notification({
-          message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+          message: '<span uk-icon=\'icon: check\'></span> ' + error,
           status: 'danger',
           timeout: 2500
         });
@@ -109,7 +109,7 @@ function($scope, $location, $timeout, UserListService, MovieService, $routeParam
       })
       .catch((error) => {
         UIkit.notification({
-          message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+          message: '<span uk-icon=\'icon: check\'></span> ' + error,
           status: 'danger',
           timeout: 2500
         });
@@ -127,5 +127,12 @@ function($scope, $location, $timeout, UserListService, MovieService, $routeParam
     if ((ranked - 1) > 0) {
       return ranked - 1;
     } return ranked;
+  }
+
+  $scope.canEdit = function(user){
+    if (!$scope.user || !$scope.logged_user)
+      return false;
+    else
+      return ($scope.user._id === $scope.logged_user._id);
   }
 }]);
