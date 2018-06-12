@@ -17,19 +17,20 @@ kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$route
             });
             UIkit.modal('#modal-watchSeason').hide();
             $('.full-loading').hide();
+
             WatchedService.seasonProgress($scope.user._id ,$scope.season._id)
-              .then((progress) => {
-                $scope.season.progress = progress;
-                console.log(progress)
-                $scope.updateProgress($scope.season.progress, 0);
-              })
-              .catch((error) => {
-                UIkit.notification({
-                  message: '<span uk-icon=\'icon: check\'></span> ' + "Get progress error.",
-                  status: 'danger',
-                  timeout: 2500
-                });
+            .then((progress) => {
+              $scope.season.progress = progress;
+              $scope.updateProgress($scope.season.progress, 0);
+            })
+            .catch((error) => {
+              UIkit.notification({
+                message: '<span uk-icon=\'icon: check\'></span> ' + "Get progress error.",
+                status: 'danger',
+                timeout: 2500
               });
+            });
+
             var lists = [];
             $scope.user._lists.forEach((listId) => {
               UserListService.loadUserList(listId).then( function(){
@@ -39,11 +40,7 @@ kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$route
               })
             });
             $scope.user.lists = lists;
-            UserListService.loadUserList($scope.user._watchlist).then( function(){
-              $scope.user.watchlist = UserListService.getUserList();
-            }).catch(function(error){
-              console.log(error);
-            });
+
 
             FollowService.friendsWatchingTvshow($scope.user._id, $scope.getEpisodesIds())
             .then((response) => {
@@ -173,7 +170,6 @@ kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$route
           $scope.watchAction = false;
           $route.reload();
           UIkit.modal('#modal-watchSeason').hide();
-          console.log(result);
         })
         .catch((error) => {
           UIkit.notification({
@@ -192,7 +188,6 @@ kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$route
           $scope.watchAction = false;
           $route.reload();
           UIkit.modal('#modal-watchSeason').hide();
-          console.log(result);
         })
         .catch((error) => {
           UIkit.notification({
@@ -215,7 +210,6 @@ kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$route
         .then((result) => {
           $route.reload();
           UIkit.modal('#modal-watchSeason').hide();
-          console.log(result);
         })
         .catch((error) => {
           UIkit.notification({
@@ -429,7 +423,7 @@ kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$route
     }
 
     $scope.getEpisodesIds = function() {
-      return [$scope.season.episodes];
-  }
+        return [$scope.season.episodes];
+    }
 
-  }]);
+    }]);

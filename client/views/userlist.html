@@ -30,14 +30,14 @@
       <div class="uk-card uk-card-primary" ng-repeat="item in userlist.itens">
         <div class="uk-card-media-top">
           <a class="page-link" ng-href="/{{item._media.__t.toLowerCase()}}/{{item._media._id}}">
-            <img ng-src="{{getPoster(item._media)}}" style="z-index:-1" alt="">
+            <img class="poster" style="background-image: url({{getPoster(item._media) }})" style="z-index:-1"/>
           </a>
         </div>
         <div class="uk-card-body">
           <div class="uk-grid">
             <div class="uk-width-4-5">
               <p class="uk-text"><a class="page-link" ng-click="goToMedia(item._media)">{{item._media.name}}{{item._media.title}}</a></p>
-              <p class="uk-text uk-text-small uk-text-muted">Added | {{formatDate(item.date)}}</p>
+              <p class="uk-text uk-text-small uk-text-muted">Added {{formatDate(item.date)}}</p>
             </div>
             <div class="uk-width-1-5">
               <button class="uk-button uk-button-default more">

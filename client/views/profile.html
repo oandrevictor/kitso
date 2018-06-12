@@ -56,7 +56,6 @@
               <img src="/images/watched.jpg" width="300" height="400">
             </div>
           </div>
-          <hr class="uk-divider-icon">
           <div class="section">
             <div class="section-title">
               {{user.name}}'s Lists
@@ -64,9 +63,9 @@
             <div class="uk-grid">
               <div class="uk-width-1-2" ng-repeat="list in user.lists">
                 <div class="uk-inline" ng-show="!$scope.user.lists.isEmpty()">
-                  <img src="/images/budapest.jpg" />
-                  <div class="uk-overlay uk-overlay-primary uk-position-bottom">
-                    <a ng-click="goToList(list._id)">{{list.title}}</a>
+                  <img class="favorite-movie" ng-click="goToList(list._id)" style="background-image: url({{ getListBackground(list) }})" />
+                  <div class="uk-overlay uk-overlay-primary uk-position-bottom favorite-movie-title">
+                    <p align="center" ng-click="goToList(list._id)">{{list.title}}</p>
                   </div>
                 </div>
               </div>

@@ -1,8 +1,7 @@
 <div class="movie">
   <!--Cover Content-->
   <div class="uk-background-cover" align="center" style="background-image: url({{ movie.backdrop_path }})">
-    <div class="uk-width-xxlarge">
-    </div>
+
   </div>
 
   <div class="purple-bar">
@@ -14,7 +13,7 @@
           </div><div class="hour-info"> ({{ movie.release_date | date: 'yyyy' }})</div>
         </div>
         <div class="more-info">
-          <span uk-icon="icon: rss"></span> 2.5K Followers
+          <span uk-icon="icon: rss"></span> {{movie.followers}} Followers
         </div>
 
       </div>
@@ -30,7 +29,7 @@
           <div class="is-rated-star" ng-show="movie.rated"></div>
           <a ng-hide="movie.rated" uk-icon="icon: star; ratio: 2"></a>
         </div>
-        <div uk-dropdown="pos: bottom-center; mode: hover" style="z-index: 999">
+        <div class="rate-dropdown" uk-dropdown="pos: bottom-center; mode: hover" style="z-index: 999">
           <center>
             <ul class="uk-iconnav">
               <div ng-repeat="n in range('10')">
@@ -43,40 +42,52 @@
         <div class="rating-value"> {{movie.vote_average}} </div>
       </div>
     </div>
-    <div class="left-bar uk-width-1-4">
-      <img class="poster" style="background-image: url({{ movie.poster_path }})" />
-      <button ng-hide="movie.followed.is_following" class="uk-button uk-button-default watch-button" ng-click="follow(movie)">
-        <span uk-icon="icon: rss;"></span> Follow</button>
-      <button ng-show="movie.followed.is_following" class="uk-button uk-button-default watch-button watched" ng-click="unfollow(movie)">
-        <span uk-icon="icon: rss;"></span> Following </button>
-      <button ng-hide="movie.watched" ng-click="markAsWatched(movie._id)" class="uk-button uk-button-default watch-button">
-        <span uk-icon="icon: check;"></span> Mark as watched</button>
-      <button ng-show="movie.watched" ng-click="markAsNotWatched(movie.watched.watched_id)" class="uk-button uk-button-default watch-button watched">
-        <span uk-icon="icon: check;"></span> Watched (undo) </button>
-      <button class="uk-button uk-button-default watch-button">
-        <span uk-icon="icon: list;"></span> UserLists</button>
-      <div uk-dropdown="offset: 0; pos: bottom-center; mode: hover" style="z-index: 999">
-        <div ng-repeat="list in user.lists" ng-init="markAsAdded(movie._id, list._id)">
-          <button ng-show="!movieAdded" ng-click="addToList(movie._id, list._id)" class="uk-button uk-button-default watch-button">
-            <span uk-icon="icon: plus;"></span> {{list.title}} </button>
-          <button ng-show="movieAdded" ng-click="removeFromList(movie._id, list._id)" class="uk-button uk-button-default watch-button watched">
-            <span uk-icon="icon: minus;"></span> {{list.title}} (undo) </button>
-        </div>
-      </div>
-      <button id="friendDropButton" class="uk-button uk-button-default watch-button" ng-class="{watched: friendsWatching.length > 0}" type="button">Friends Watching ({{ friendsWatching.length || 0 }})</button>
-      <div class="uk-grid" id="friendDrop" uk-dropdown="offset: 0; pos: bottom-justify; delay-hide: 200; animation: uk-animation-slide-bottom-medium;">
-        <div class="friend" uk-grid ng-repeat="friend in friendsWatching">
-          <div class="friendImage">
-            <img class="uk-border-circle" src="../images/mask2.png" width="50" height="50" alt="Border circle">
+      <div class="left-bar uk-width-1-4">
+          <img class="poster" style="background-image: url({{ movie.poster_path }})" />
+          <button ng-hide="movie.followed.is_following" class="uk-button uk-button-default watch-button" ng-click="follow(movie)">
+              <span uk-icon="icon: rss;"></span> Follow</button>
+          <div id="modal-center" class="uk-flex-top" uk-modal>
+              <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+                  <button class="uk-modal-close-default" type="button" uk-close></button>
+                  <center>
+                      <h3>Do you wish to follow this page privately?</h3>
+                      <p class="uk-text-muted">Other users won't be able to see if you follow this page.</p>
+                      <button class="uk-button uk-button-default watch-button uk-modal-close" ng-click="follow(movie, true)">
+                          <span uk-icon="icon: lock;"></span> Yes </button>
+                      <button class="uk-button uk-button-default watch-button uk-modal-close" ng-click="follow(movie, false)">
+                          <span uk-icon="icon: unlock;"></span> No </button>
+                  </center>
+              </div>
           </div>
-          <div class="friendContent">
-            <p class="friendName">{{ friend.name }}</p>
-            <a class="friendLink" ng-href="/user/{{friend._id}}">{{' @' + friend.username}}</a>
+          <button ng-show="movie.followed.is_following" class="uk-button uk-button-default watch-button watched" ng-click="unfollow(movie)">
+              <span uk-icon="icon: rss;"></span> Following </button>
+          <button ng-hide="movie.watched" ng-click="markAsWatched(movie._id)" class="uk-button uk-button-default watch-button">
+              <span uk-icon="icon: check;"></span> Mark as watched</button>
+          <button ng-show="movie.watched" ng-click="markAsNotWatched(movie.watched.watched_id)" class="uk-button uk-button-default watch-button watched">
+              <span uk-icon="icon: check;"></span> Watched (undo) </button>
+          <button class="uk-button uk-button-default watch-button">
+              <span uk-icon="icon: list;"></span> UserLists</button>
+          <div uk-dropdown="offset: 0; pos: bottom-center; mode: hover" style="z-index: 999">
+              <div ng-repeat="list in user.lists" ng-init="markAsAdded(movie._id, list._id)">
+                  <button ng-show="!movieAdded" ng-click="addToList(movie._id, list._id)" class="uk-button uk-button-default watch-button">
+                      <span uk-icon="icon: plus;"></span> {{list.title}} </button>
+                  <button ng-show="movieAdded" ng-click="removeFromList(movie._id, list._id)" class="uk-button uk-button-default watch-button watched">
+                      <span uk-icon="icon: minus;"></span> {{list.title}} (undo) </button>
+              </div>
           </div>
-        </div>
+          <button id="friendDropButton" class="uk-button uk-button-default watch-button" ng-class="{watched: friendsWatching.length > 0}" type="button">Friends Watching ({{ friendsWatching.length || 0 }})</button>
+          <div class="uk-grid" id="friendDrop" uk-dropdown="pos: bottom-justify; delay-hide: 200; animation: uk-animation-slide-bottom-medium;">
+              <div class="friend" uk-grid ng-repeat="friend in friendsWatching">
+                  <div class="friendImage">
+                      <img class="uk-border-circle" src="../images/mask2.png" width="50" height="50" alt="Border circle">
+                  </div>
+                  <div class="friendContent">
+                      <p class="friendName">{{ friend.name }}</p>
+                      <a class="friendLink" ng-href="/user/{{friend._id}}">{{' @' + friend.username}}</a>
+                  </div>
+              </div>
+          </div>
       </div>
-    </div>
-
     <div class="section sinopsis">
       <div class="section-title">
         Sinopse

@@ -55,7 +55,7 @@
               <div class="is-rated-star" ng-show="season.rated"></div>
               <a ng-hide="season.rated" uk-icon="icon: star; ratio: 2"></a>
             </div>
-            <div uk-dropdown="pos: bottom-center; mode: hover" style="z-index: 999">
+            <div class="rate-dropdown" uk-dropdown="pos: bottom-center; mode: hover" style="z-index: 999">
               <center>
                 <ul class="uk-iconnav">
                   <div ng-repeat="n in range('10')">
@@ -102,7 +102,7 @@
                                 <button ng-show="episode.rating > 0" class="uk-button uk-button-default episode-button active">
                                   <span uk-icon="icon: star;"></span> Rated {{episode.rating}}/10 </button>
                                 </div>
-                                <div uk-dropdown="pos: bottom-center; mode: hover" style="z-index: 999">
+                                <div uk-dropdown="pos: bottom-center; mode: hover" style="padding:25px; z-index: 999">
                                   <center>
                                     <ul class="uk-iconnav">
                                       <div ng-repeat="n in range('10')">

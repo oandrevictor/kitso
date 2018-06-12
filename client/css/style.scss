@@ -448,7 +448,7 @@ html, body {
     margin-left: auto;
     margin-right: auto;
     margin-top: auto;
-    margin-bottom: auto;
+    margin-bottom: 20px;
     padding-top: 0px !important;
     display: inline-block;
   }
@@ -518,6 +518,13 @@ html, body {
     background-size:cover;
     width: 300px;
     height: 150px;
+    cursor: pointer;
+  }
+
+  .favorite-movie-title {
+    cursor: pointer;
+    background: #773095 !important;
+    color: white;
   }
 
   .uk-overlay {
@@ -656,6 +663,10 @@ html, body {
   }
 
   .rating {
+    .rate-dropdown {
+      padding: 25px;
+    }
+
     .is-rated-star {
       background: url("/images/icon/white-star.svg") center no-repeat;
       background-size: 40px;
@@ -704,6 +715,7 @@ html, body {
   .uk-dropdown {
     padding: 5px;
   }
+
 
   .uk-grid-margin, .uk-grid+.uk-grid, .uk-grid>.uk-grid-margin {
     margin-top: 10px;
@@ -757,6 +769,10 @@ html, body {
     font-weight: 100;
     padding-right: 20px;
     display: flex;
+
+    .rate-dropdown {
+      padding: 25px;
+    }
 
     .is-rated-star {
       background: url("/images/icon/white-star.svg") center no-repeat;
@@ -996,6 +1012,10 @@ html, body {
     padding-right: 20px;
     display: flex;
 
+    .rate-dropdown {
+      padding: 25px;
+    }
+
     .is-rated-star {
       background: url("/images/icon/white-star.svg") center no-repeat;
       background-size: 40px;
@@ -1114,6 +1134,10 @@ html, body {
     padding-bottom: 0px !important;
     padding-top: 4%;
     position: relative;
+  }
+
+  .title {
+    display: contents !important;
   }
 
   .uk-card-body {
@@ -1237,6 +1261,15 @@ html, body {
       padding-top: 0px !important;
       display: inline-block;
     }
+  }
+
+  .poster {
+    display:block;
+    background: #502274;
+    background-repeat:no-repeat;
+    background-size:cover;
+    width: 225px;
+    height: 309px;
   }
 
   .page-link {
