@@ -1,16 +1,39 @@
 <div class="person">
   <!--Cover Content-->
   <div class="uk-background-cover" align="center" style="background-image: url({{ background }})">
-    <div class="uk-width-xxlarge">
-      <div class="title person-name">{{person.name}}
+
+  </div>
+
+  <div class="purple-bar">
+    <div class="bar-content uk-width-xxlarge">
+      <div class="uk-width-3-4">
+        <div class="title tvshow-name">
+          <b>{{person.name}} </b>
+        </div>
+        <div class="more-info">
+          <span uk-icon="icon: rss"></span> {{person.followers}} Followers
+        </div>
       </div>
     </div>
   </div>
   <div class="uk-width-xxlarge content">
     <div class="left-bar uk-width-1-4">
       <img class="poster" style="background-image: url({{ person.profile_path }})" />
-      <button ng-hide="person.followed.is_following" class="uk-button uk-button-default watch-button" ng-click="follow(person)">
+      <button ng-hide="person.followed.is_following" class="uk-button uk-button-default watch-button">
         <span uk-icon="icon: rss;"></span> Follow</button>
+        <div id="modal-center" class="uk-flex-top" uk-modal>
+          <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+            <center>
+              <h3>Do you wish to follow this page privately?</h3>
+              <p class="uk-text-muted">Other users won't be able to see if you follow this page.</p>
+              <button class="uk-button uk-button-default watch-button uk-modal-close" ng-click="follow(person, true)">
+              <span uk-icon="icon: lock;"></span> Yes </button>
+              <button class="uk-button uk-button-default watch-button uk-modal-close" ng-click="follow(person, false)">
+              <span uk-icon="icon: unlock;"></span> No </button>
+            </center>
+          </div>
+        </div>
         <button ng-show="person.followed.is_following" class="uk-button uk-button-default watch-button watched" ng-click="unfollow(person)">
           <span uk-icon="icon: rss;"></span> Following </button>
         </div>

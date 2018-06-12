@@ -12,6 +12,11 @@ var FollowsPageSchema = new Schema({
     type: String,
     required: true
   },
+  is_private: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
   is_media: {
     type: Boolean,
     required: true

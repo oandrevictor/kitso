@@ -10,25 +10,17 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
             $scope.user = AuthService.getUser();
             $scope.movie = MovieService.getMovie();
             $scope.release_date_formated = moment($scope.movie.release_date).format('YYYY');
-            $('.full-loading').hide();
-            var lists = [];
-            $scope.user._lists.forEach((listId) => {
-              UserListService.loadUserList(listId).then( function(){
-                lists.push(UserListService.getUserList());
-              }).catch(function(error){
-                console.log(error);
-              })
-            });
-            $scope.user.lists = lists;
-            UserListService.loadUserList($scope.user._watchlist).then( function(){
-              $scope.user.watchlist = UserListService.getUserList();
-            }).catch(function(error){
-              console.log(error);
-            });
-            UserListService.isAdded($scope.movie._id).then( function(added){
-              $scope.movie.isadded = added;
-            }).catch(function(error){
-              console.log(error);
+
+            WatchedService.isWatched($scope.user._id ,$routeParams.movie_id).then((watched) => {
+                $scope.movie.watched = watched;
+                if (! watched.watched_id)
+                  $scope.movie.watched = false;
+            }).catch((error) => {
+              UIkit.notification({
+                  message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                  status: 'danger',
+                  timeout: 2500
+              });
             });
             RatedService.isRated($scope.user._id ,$routeParams.movie_id).then((rated) => {
                 $scope.movie.rated = rated;
@@ -53,18 +45,6 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
                   timeout: 2500
               });
             });
-            WatchedService.isWatched($scope.user._id ,$routeParams.movie_id).then((watched) => {
-                $scope.movie.watched = watched;
-                if (! watched.watched_id)
-                  $scope.movie.watched = false;
-            }).catch((error) => {
-              UIkit.notification({
-                  message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
-                  status: 'danger',
-                  timeout: 2500
-              });
-            });
-
             FollowService.isFollowingPage($scope.user._id ,$routeParams.movie_id).then((followed) => {
               $scope.movie.followed = followed;
             }).catch((error) => {
@@ -74,7 +54,15 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
                   timeout: 2500
               });
             });
-
+            FollowService.countFollowers($routeParams.movie_id).then((count) => {
+              $scope.movie.followers = count;
+            }).catch((error) => {
+              UIkit.notification({
+                  message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                  status: 'danger',
+                  timeout: 2500
+              });
+            });
             FollowService.friendsWatchingMedia($scope.user._id, $scope.movie._id)
             .then((response) => {
                 $scope.friendsWatching = response;
@@ -82,6 +70,17 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
             .catch((error) => {
                 console.log('error', error);
             });
+
+            var lists = [];
+            $scope.user._lists.forEach((listId) => {
+              UserListService.loadUserList(listId).then( function(){
+                lists.push(UserListService.getUserList());
+              }).catch(function(error){
+                console.log(error);
+              })
+            });
+            
+            $('.full-loading').hide();
           }).catch(function(){
 
           })
@@ -93,6 +92,7 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
                 timeout: 2500
             });
         });
+
 
     $scope.addToList = function(movieId, userListId){
         UserListService.addItem(userListId, movieId, $scope.user._id, date = moment())
@@ -122,8 +122,8 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
         });
     }
 
-    $scope.follow = function(movie){
-        FollowService.followPage($scope.user._id, movie)
+    $scope.follow = function(movie, is_private){
+        FollowService.followPage($scope.user._id, movie, is_private)
         .then((followed) => {
             $scope.movie.followed = followed;
             $scope.movie.followed.following_id = followed._id;
@@ -136,6 +136,15 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
                 status: 'danger',
                 timeout: 2500
             });
+        });
+        FollowService.countFollowers($scope.movie._id).then((count) => {
+          $scope.movie.followers = count;
+        }).catch((error) => {
+          UIkit.notification({
+              message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+              status: 'danger',
+              timeout: 2500
+          });
         });
     };
 
@@ -151,6 +160,15 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
                 status: 'danger',
                 timeout: 2500
             });
+        });
+        FollowService.countFollowers($scope.movie._id).then((count) => {
+          $scope.movie.followers = count;
+        }).catch((error) => {
+          UIkit.notification({
+              message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+              status: 'danger',
+              timeout: 2500
+          });
         });
     }
 

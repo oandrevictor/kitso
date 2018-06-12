@@ -1,7 +1,7 @@
 var kitso = angular.module('kitso');
 
-kitso.controller("TvShowController", ['$scope', '$location', '$route', '$timeout', '$routeParams', 'TvShowService',  'WatchedService',  'FollowService', 'RatedService', 'AuthService',
-function($scope, $location, $route, $timeout, $routeParams, TvShowService,  WatchedService, FollowService, RatedService, AuthService) {
+kitso.controller("TvShowController", ['$scope', '$location', '$timeout', '$routeParams', 'TvShowService',  'WatchedService',  'FollowService', 'RatedService', 'AuthService',
+function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedService, FollowService, RatedService, AuthService) {
   $('.full-loading').show();
 
     TvShowService.loadTvShow($routeParams.tvshow_id)
@@ -10,21 +10,17 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
             $scope.user = AuthService.getUser();
             $scope.tvshow = TvShowService.getTvShow();
             $scope.tvshow.air_date = new Date($scope.tvshow.first_air_date);
-            $('.full-loading').hide();
-
-            WatchedService.tvshowProgress($scope.user._id ,$routeParams.tvshow_id)
-            .then((progress) => {
-                if (progress.tvshow.ratio == 1) $scope.tvshow.watched = true;
-                else $scope.tvshow.watched = false;
-            })
-            .catch((error) => {
+            WatchedService.isWatched($scope.user._id ,$routeParams.tvshow_id).then((watched) => {
+                $scope.tvshow.watched = watched;
+                if (! watched.watched_id)
+                  $scope.tvshow.watched = false;
+            }).catch((error) => {
               UIkit.notification({
-                  message: '<span uk-icon=\'icon: check\'></span> ' + "Get progress error.",
+                  message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
                   status: 'danger',
                   timeout: 2500
               });
             });
-
             RatedService.isRated($scope.user._id ,$routeParams.tvshow_id).then((rated) => {
                 $scope.tvshow.rated = rated;
                 if (! rated.rated_id){
@@ -42,23 +38,25 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
                   })
                 }
               }).catch(function(){
-                UIkit.notification({
-                    message: '<span uk-icon=\'icon: check\'></span> ' + "Get rating error.",
-                    status: 'danger',
-                    timeout: 2500
-                });
-              });
-
-              FollowService.isFollowingPage($scope.user._id ,$routeParams.tvshow_id).then((followed) => {
-                $scope.tvshow.followed = followed;
-                }).catch((error) => {
-                UIkit.notification({
-                    message: '<span uk-icon=\'icon: check\'></span> ' + "Get followspage error.",
-                    status: 'danger',
-                    timeout: 2500
-                });
             });
-
+            FollowService.isFollowingPage($scope.user._id ,$routeParams.tvshow_id).then((followed) => {
+              $scope.tvshow.followed = followed;
+            }).catch((error) => {
+              UIkit.notification({
+                  message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                  status: 'danger',
+                  timeout: 2500
+              });
+            });
+            FollowService.countFollowers($routeParams.tvshow_id).then((count) => {
+              $scope.tvshow.followers = count;
+            }).catch((error) => {
+              UIkit.notification({
+                  message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                  status: 'danger',
+                  timeout: 2500
+              });
+            });
             FollowService.friendsWatchingTvshow($scope.user._id, $scope.getEpisodesIds())
             .then((response) => {
                 $scope.friendsWatching = response;
@@ -66,7 +64,7 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
             .catch((error) => {
                 console.log('error', error);
             });
-            
+            $('.full-loading').hide();
           }).catch(function(){
           })
         })
@@ -155,8 +153,8 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
     }
 
 
-    $scope.follow = function(tvshow){
-        FollowService.followPage($scope.user._id, tvshow)
+    $scope.follow = function(tvshow, is_private){
+        FollowService.followPage($scope.user._id, tvshow, is_private)
         .then((followed) => {
             $scope.tvshow.followed = followed;
             $scope.tvshow.followed.following_id = followed._id;
@@ -169,6 +167,15 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
                 status: 'danger',
                 timeout: 2500
             });
+        });
+        FollowService.countFollowers($scope.tvshow._id).then((count) => {
+          $scope.tvshow.followers = count;
+        }).catch((error) => {
+          UIkit.notification({
+              message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+              status: 'danger',
+              timeout: 2500
+          });
         });
     };
 
@@ -184,6 +191,15 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
                 status: 'danger',
                 timeout: 2500
             });
+        });
+        FollowService.countFollowers($scope.tvshow._id).then((count) => {
+          $scope.tvshow.followers = count;
+        }).catch((error) => {
+          UIkit.notification({
+              message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+              status: 'danger',
+              timeout: 2500
+          });
         });
     }
 
