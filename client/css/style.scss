@@ -663,6 +663,10 @@ html, body {
   }
 
   .rating {
+    .rate-dropdown {
+      padding: 25px;
+    }
+
     .is-rated-star {
       background: url("/images/icon/white-star.svg") center no-repeat;
       background-size: 40px;
@@ -711,6 +715,7 @@ html, body {
   .uk-dropdown {
     padding: 0px;
   }
+
 
   .uk-grid-margin, .uk-grid+.uk-grid, .uk-grid>.uk-grid-margin {
     margin-top: 10px;
@@ -764,6 +769,10 @@ html, body {
     font-weight: 100;
     padding-right: 20px;
     display: flex;
+
+    .rate-dropdown {
+      padding: 25px;
+    }
 
     .is-rated-star {
       background: url("/images/icon/white-star.svg") center no-repeat;
@@ -997,6 +1006,10 @@ html, body {
     font-weight: 100;
     padding-right: 20px;
     display: flex;
+
+    .rate-dropdown {
+      padding: 25px;
+    }
 
     .is-rated-star {
       background: url("/images/icon/white-star.svg") center no-repeat;
