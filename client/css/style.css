@@ -948,6 +948,8 @@ html, body {
       padding-left: 0px;
       padding-right: 0px;
       padding-top: 5px; }
+      .userlist .uk-card-primary .uk-card-body .uk-width-4-5 {
+        width: 79%; }
       .userlist .uk-card-primary .uk-card-body .uk-grid {
         padding-left: 0px;
         padding-right: 3px; }
