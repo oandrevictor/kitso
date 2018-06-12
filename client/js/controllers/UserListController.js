@@ -130,9 +130,6 @@ function($scope, $location, $timeout, UserListService, MovieService, $routeParam
   }
 
   $scope.canEdit = function(user){
-    if (!$scope.user || !$scope.logged_user)
-      return false;
-    else
-      return ($scope.user._id === $scope.logged_user._id);
+    return ($scope.user._id.toString() === $scope.userlist._user.toString());
   }
 }]);
