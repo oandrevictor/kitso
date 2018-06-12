@@ -26,12 +26,12 @@
         <button ng-show="season.watched" ng-click="markSeasonAsNotWatched()" class="uk-button uk-button-default watch-button watched">
           <span uk-icon="icon: check;"></span> Watched (undo) </button>
       <button class="uk-button uk-button-default watch-button">
-        <span uk-icon="icon: list;"></span> UserLists</button>
+        <span uk-icon="icon: list;"></span> Lists</button>
       <div uk-dropdown="pos: right-center; mode: hover; delay-hide: 100; offset: 20; animation: uk-animation-slide-right-medium" style="z-index: 999">
         <div ng-repeat="list in user.lists" ng-init="markAsAdded(season._id, list._id)">
-          <button ng-show="!seasonAdded" ng-click="addToList(season._id, list._id)" class="uk-button uk-button-default watch-button">
+          <button ng-hide="itemIsListed(list._id,season)" ng-click="addToList(season, list._id)" class="uk-button uk-button-default watch-button">
             <span uk-icon="icon: plus;"></span> {{list.title}} </button>
-          <button ng-show="seasonAdded" ng-click="removeFromList(season._id, list._id)" class="uk-button uk-button-default watch-button watched">
+          <button ng-show="itemIsListed(list._id,season)" ng-click="removeFromList(season, list._id)" class="uk-button uk-button-default watch-button watched">
             <span uk-icon="icon: minus;"></span> {{list.title}} (undo) </button>
         </div>
       </div>
@@ -118,13 +118,13 @@
                                   </center>
                                 </div>
                                 <button class="uk-button uk-button-default episode-button">
-                                  <span uk-icon="icon: list;"></span> UserLists</button>
+                                  <span uk-icon="icon: list;"></span> Lists</button>
                                 <div uk-dropdown="bottom-center; mode: hover" style="z-index: 999">
                                   <center>
                                     <div ng-repeat="list in user.lists">
-                                      <button ng-click="addToList(episode._id, list._id)" class="uk-button uk-button-default episode-button">
+                                      <button ng-hide="itemIsListed(list._id, episode)" ng-click="addToList(episode, list._id)" class="uk-button uk-button-default episode-button">
                                         <span uk-icon="icon: plus;"></span> {{list.title}} </button>
-                                      <button ng-click="removeFromList(episode._id, list._id)" class="uk-button uk-button-default episode-button">
+                                      <button ng-show="itemIsListed(list._id, episode)" ng-click="removeFromList(episode, list._id)" class="uk-button uk-button-default episode-button">
                                         <span uk-icon="icon: minus;"></span> {{list.title}} (undo) </button>
                                     </div>
                                   </center>

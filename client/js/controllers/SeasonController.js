@@ -31,16 +31,14 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
               });
             });
 
-            var lists = [];
+            $scope.user.lists = [];
             $scope.user._lists.forEach((listId) => {
               UserListService.loadUserList(listId).then( function(){
-                lists.push(UserListService.getUserList());
+                $scope.user.lists.push(UserListService.getUserList());
               }).catch(function(error){
                 console.log(error);
               })
             });
-            $scope.user.lists = lists;
-
 
             FollowService.friendsWatchingTvshow($scope.user._id, $scope.getEpisodesIds())
             .then((response) => {
@@ -75,10 +73,11 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
         });
       });
 
-    $scope.addToList = function(id, userListId){
+    $scope.addToList = function(item, userListId){
+      id = item._id;
       UserListService.addItem(userListId, id, $scope.user._id, date = moment())
         .then((added) => {
-          $scope.seasonAdded = true;
+          item.listed[userListId] = true;
         })
         .catch((error) => {
           UIkit.notification({
@@ -89,13 +88,14 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
         });
     }
 
-    $scope.removeFromList = function(id, userListId) {
+    $scope.removeFromList = function(item, userListId) {
+      id = item._id;
       UserListService.loadUserList(userListId).then( function() {
         UserListService.getUserList()['itens'].forEach(function(item){
           if (item['_media']['_id'] == id) {
             UserListService.deleteItem(userListId, $scope.user._id, item['ranked'])
               .then((deleted) => {
-                $scope.seasonAdded = false;
+                item.listed[userListId] = false;
               })
               .catch((error) => {
                 UIkit.notification({
@@ -122,6 +122,7 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
 
     var loadEpisodeActions = function (episode) {
       var episodeId = episode._id;
+      episode.listed = {};
 
       WatchedService.isWatched($scope.user._id, episodeId).then((watched) => {
         episode.watched = watched;
@@ -160,6 +161,21 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
         });
       });
     };
+
+    $scope.itemIsListed = function(listid, item) {
+      itemid = item._id
+      if (item.listed && item.listed[listid]){
+        return item.listed[listid]
+      }
+      if ($scope.user.lists) {
+        list = $scope.user.lists.filter(list => list._id === listid);
+        if (list.length > 0){
+          list = list[0]
+          return list.itens.some(item => item._media._id === itemid);
+        }
+      }
+      return false;
+    }
 
 
     $scope.markEntireSeasonAsWatched = function () {

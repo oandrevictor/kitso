@@ -911,6 +911,7 @@ html, body {
     background: #502274;
     background-repeat: no-repeat;
     background-size: cover;
+    background-position: center center;
     width: 225px;
     height: 309px; }
   .userlist .page-link {
