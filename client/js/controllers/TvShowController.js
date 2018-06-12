@@ -1,7 +1,7 @@
 var kitso = angular.module('kitso');
 
-kitso.controller("TvShowController", ['$scope', '$location', '$timeout', '$routeParams', 'TvShowService',  'WatchedService',  'FollowService', 'RatedService', 'UserListService', 'AuthService',
-function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedService, FollowService, RatedService, UserListService, AuthService) {
+kitso.controller("TvShowController", ['$scope', '$location', '$route', '$timeout', '$routeParams', 'TvShowService',  'WatchedService',  'FollowService', 'RatedService', 'UserListService', 'AuthService',
+function($scope, $location, $route, $timeout, $routeParams, TvShowService,  WatchedService, FollowService, RatedService, UserListService, AuthService) {
   $('.full-loading').show();
 
     TvShowService.loadTvShow($routeParams.tvshow_id)
@@ -10,17 +10,19 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
             $scope.user = AuthService.getUser();
             $scope.tvshow = TvShowService.getTvShow();
             $scope.tvshow.air_date = new Date($scope.tvshow.first_air_date);
-            WatchedService.isWatched($scope.user._id ,$routeParams.tvshow_id).then((watched) => {
-                $scope.tvshow.watched = watched;
-                if (! watched.watched_id)
-                  $scope.tvshow.watched = false;
-            }).catch((error) => {
-              UIkit.notification({
-                  message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
-                  status: 'danger',
-                  timeout: 2500
-              });
-            });
+
+            WatchedService.tvshowProgress($scope.user._id ,$routeParams.tvshow_id)
+             .then((progress) => {
+                 if (progress.tvshow.ratio == 1) $scope.tvshow.watched = true;
+                 else $scope.tvshow.watched = false;
+             })
+             .catch((error) => {
+               UIkit.notification({
+                   message: '<span uk-icon=\'icon: check\'></span> ' + "Get progress error.",
+                   status: 'danger',
+                   timeout: 2500
+               });
+             });
 
           var lists = [];
           $scope.user._lists.forEach((listId) => {
@@ -49,7 +51,13 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
                   })
                 }
               }).catch(function(){
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: check\'></span> ' + "Get rating error.",
+                    status: 'danger',
+                    timeout: 2500
+                });
             });
+
             FollowService.isFollowingPage($scope.user._id ,$routeParams.tvshow_id).then((followed) => {
               $scope.tvshow.followed = followed;
             }).catch((error) => {
@@ -59,6 +67,7 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
                   timeout: 2500
               });
             });
+            
             FollowService.countFollowers($routeParams.tvshow_id).then((count) => {
               $scope.tvshow.followers = count;
             }).catch((error) => {
