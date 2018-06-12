@@ -77,7 +77,6 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
                   timeout: 2500
               });
             });
-
             FollowService.friendsWatchingTvshow($scope.user._id, $scope.getEpisodesIds())
             .then((response) => {
                 $scope.friendsWatching = response;

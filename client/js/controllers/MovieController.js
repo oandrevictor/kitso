@@ -63,7 +63,6 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
                   timeout: 2500
               });
             });
-
             FollowService.friendsWatchingMedia($scope.user._id, $scope.movie._id)
             .then((response) => {
                 $scope.friendsWatching = response;
