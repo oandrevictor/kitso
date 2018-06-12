@@ -1,7 +1,7 @@
 var kitso = angular.module('kitso');
 
-kitso.controller("SeasonController", ['$scope', '$location', '$timeout', '$routeParams', 'TvShowService', 'WatchedService', 'FollowService', 'RatedService', 'UserListService', 'AuthService',
-  function ($scope, $location, $timeout, $routeParams, TvShowService, WatchedService, FollowService, RatedService, UserListService, AuthService) {
+kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout', '$routeParams', 'TvShowService', 'WatchedService', 'FollowService', 'RatedService', 'UserListService', 'AuthService',
+  function ($scope, $location, $route, $timeout, $routeParams, TvShowService, WatchedService, FollowService, RatedService, UserListService, AuthService) {
     $('.full-loading').show();
     TvShowService.loadTvShow($routeParams.tvshow_id).then(() => {
       AuthService.getStatus().then(function () {
