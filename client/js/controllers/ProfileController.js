@@ -126,6 +126,8 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
       checkFinishedLoading();
 
     }).catch(function(error){
+      loaded++;
+      checkFinishedLoading();
       console.log(error);
     });
   }
