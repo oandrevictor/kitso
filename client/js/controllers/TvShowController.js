@@ -9,6 +9,7 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
           AuthService.getStatus().then(function(){
             $scope.user = AuthService.getUser();
             $scope.tvshow = TvShowService.getTvShow();
+            console.log($scope.tvshow);
             $scope.tvshow.air_date = new Date($scope.tvshow.first_air_date);
             $('.full-loading').hide();
 
@@ -61,13 +62,22 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
 
               FollowService.isFollowingPage($scope.user._id ,$routeParams.tvshow_id).then((followed) => {
                 $scope.tvshow.followed = followed;
-            }).catch((error) => {
-              UIkit.notification({
-                  message: '<span uk-icon=\'icon: check\'></span> ' + "Get followspage error.",
-                  status: 'danger',
-                  timeout: 2500
-              });
+                }).catch((error) => {
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: check\'></span> ' + "Get followspage error.",
+                    status: 'danger',
+                    timeout: 2500
+                });
             });
+
+            FollowService.friendsWatchingTvshow($scope.user._id, $scope.getEpisodesIds())
+            .then((response) => {
+                $scope.friendsWatching = response;
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+            
           }).catch(function(){
           })
         })
@@ -316,6 +326,26 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
             ratings.push(i+1)
         }
         return ratings;
+    }
+
+    $scope.getEpisodesIds = function() {
+        var seasonsIds = [];
+        var seasons = [];
+        var episodesIds = [];
+        $scope.tvshow._seasons.forEach((season) => {
+            if (!seasonsIds.includes(season._id)) {
+                seasons.push(season);
+                seasonsIds.push(season._id);
+            };
+        });
+
+        seasons.forEach((season) => {
+            let epiIds = season._episodes;
+            epiIds = Array.from(new Set(epiIds));
+            episodesIds.push(epiIds);
+        });
+
+        return episodesIds;
     }
 
 }]);

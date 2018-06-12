@@ -10,7 +10,8 @@ kitso.service('UserListService', ['$q','$http', function ($q, $http) {
         deleteItem: deleteItem,
         loadUserList: loadUserList,
         getUserList: getUserList,
-        updateUserList: updateUserList
+        updateUserList: updateUserList,
+        updateRank: updateRank
     });
 
     function addItem(userlistId, mediaId, userId, date) {
@@ -112,4 +113,36 @@ kitso.service('UserListService', ['$q','$http', function ($q, $http) {
 
       return deferred.promise;
     }
+
+  function updateRank(userlistId, userId, currentRank, newRank) {
+    var deferred = $q.defer();
+
+    var req = {
+      method: 'PUT',
+      url: '/api/userlist/' + userlistId + '/change_rank',
+      headers: {
+        'Content-Type': 'application/json',
+        'user_id': userId
+      },
+      data: {
+        "current_rank": currentRank,
+        "new_rank": newRank
+      }
+    }
+
+    $http(req)
+      .then((response) => {
+        if (response.status === 200) {
+          response.data.item_id = response.data._id
+          deferred.resolve(response.data);
+        } else {
+          deferred.reject();
+        }
+      })
+      .catch((error) => {
+        deferred.reject(error.data);
+      });
+
+    return deferred.promise;
+  }
 }]);

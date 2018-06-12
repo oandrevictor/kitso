@@ -20,7 +20,7 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
               })
             });
             $scope.user.lists = lists;
-           
+
             RatedService.isRated($scope.user._id ,$routeParams.movie_id).then((rated) => {
                 $scope.movie.rated = rated;
                 if (! rated.rated_id){
@@ -64,6 +64,14 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
                   status: 'danger',
                   timeout: 2500
               });
+            });
+
+            FollowService.friendsWatchingMedia($scope.user._id, $scope.movie._id)
+            .then((response) => {
+                $scope.friendsWatching = response;
+            })
+            .catch((error) => {
+                console.log('error', error);
             });
           }).catch(function(){
 
