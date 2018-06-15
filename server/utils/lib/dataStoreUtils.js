@@ -70,7 +70,7 @@ exports.getActionByTypeAndId = async function(type, id) {
 };
 
 exports.getActionByTypeAndIdWithDetails = async function(type, id) {
-  if (type == ActionType.RATED) {//
+  if (type == ActionType.RATED) {
     Rated.findById(id, async function(err, result) {
       if(result) {
         media_obj = await Media.findById(result._media).exec();
@@ -87,7 +87,7 @@ exports.getActionByTypeAndIdWithDetails = async function(type, id) {
     watched_copy = JSON.parse(JSON.stringify(watched));
     watched_copy._media = media_obj;
     return watched_copy;
-  } else if (type == ActionType.FOLLOWED_USER) {//
+  } else if (type == ActionType.FOLLOWED_USER) {
     follow = await Follows.findById(id).exec();
     user_obj = await User.findById(follow._following);
 
