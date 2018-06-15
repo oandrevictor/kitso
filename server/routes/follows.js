@@ -11,6 +11,7 @@ router.get('/is_following', followsController.is_following);
 //following_me?user_id=user_id
 router.get('/following_me', followsController.following_me);
 
+//followed_activity/:user_id
 router.get('/followed_activity/:user_id', followsController.followed_activity);
 
 //is_watching_media?userId=userId&mediaId=mediaId

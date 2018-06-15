@@ -87,8 +87,8 @@ getActivity = async function(activity) {
 
   let action_copy = JSON.parse(JSON.stringify(action));
   action_copy._user = user;
-  action_json = JSON.stringify(action_obj);
-  action_copy._action = JSON.parse(action_json);
+  action_json = action_obj;
+  action_copy._action = action_json;
 
   return action_copy;
 }

@@ -70,13 +70,16 @@ exports.getActionByTypeAndId = async function(type, id) {
 };
 
 exports.getActionByTypeAndIdWithDetails = async function(type, id) {
-  if (type == ActionType.RATED) {
-    rating = await Rated.findById(id).exec();
-    media_obj = await Media.findById(rating._media).exec();
+  if (type == ActionType.RATED) {//
+    Rated.findById(id, async function(err, result) {
+      if(result) {
+        media_obj = await Media.findById(result._media).exec();
 
-    rating_copy = JSON.parse(JSON.stringify(rating));
-    rating_copy._media = media_obj;
-    return rating_copy;
+        rating_copy = JSON.parse(JSON.stringify(result));
+        rating_copy._media = media_obj;
+        return rating_copy;
+      }
+    });
   } else if (type == ActionType.WATCHED) {
     watched = await Watched.findById(id).exec();
     media_obj = await Media.findById(watched._media).exec();
@@ -84,11 +87,11 @@ exports.getActionByTypeAndIdWithDetails = async function(type, id) {
     watched_copy = JSON.parse(JSON.stringify(watched));
     watched_copy._media = media_obj;
     return watched_copy;
-  } else if (type == ActionType.FOLLOWED_USER) {
+  } else if (type == ActionType.FOLLOWED_USER) {//
     follow = await Follows.findById(id).exec();
     user_obj = await User.findById(follow._following);
 
-    follow_copy = JSON.parse(JSON.stringify(follow));
+    follow_copy = follow;
     follow_copy._following = user_obj;
     return follow_copy;
   } else if (type == ActionType.FOLLOWED_PAGE) {
