@@ -250,6 +250,9 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
             status: 'success',
             timeout: 1500
         });
+        if($scope.user.autowatch){
+          $scope.markAsWatched(movieId);
+        }
     }
   }
 

@@ -353,6 +353,11 @@ Delete Avatar from history?
       <li>
         <a href="#" id="settings" data-uk-switcher-item="next"></a>
         <p class="uk-text-large">Settings</p>
+        <div class="uk-margin">
+            <label><input class="uk-checkbox" type="checkbox" ng-model="user.autowatch" ng-checked="user.autowatch"> {{user.autowatch}} When I rate something, also mark it as watched.</label>
+        </div>
+        <hr class="uk-divider-icon">
+        <h4>Edit your profile</h4>
         <form name="editForm" ng-submit="submitForm()" novalidate>
           <!--Name Field-->
           <div class="uk-margin">
