@@ -130,11 +130,12 @@ kitso.controller('PersonController',
       });
     }
 
-    $scope.range = function(count){
+    $scope.range = function(count) {
       var ratings = [];
       for (var i = 0; i < count; i++) {
         ratings.push(i+1)
       }
       return ratings;
     }
+
     }]);
