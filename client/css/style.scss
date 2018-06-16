@@ -708,18 +708,29 @@ html, body {
     position: relative;
   }
 
-  .uk-dotnav {
-    margin-bottom: 10px;
+  .slider-page {
+    margin-top: -20px;
+    margin-bottom: 25px;
   }
 
   .uk-dropdown {
     padding: 5px;
   }
 
-
   .uk-grid-margin, .uk-grid+.uk-grid, .uk-grid>.uk-grid-margin {
     margin-top: 10px;
     margin-bottom: 10px;
+  }
+
+  .slider-button-cast {
+    background: rgba(0, 0, 0, 0.31);
+    padding-top: 77px;
+    padding-bottom: 74px;
+    padding-right:  3px;
+    padding-left:  3px;
+    margin-top: 4px;
+    margin-left: 5px;
+    margin-right: 5px;
   }
 
   .friend {
@@ -882,6 +893,11 @@ html, body {
     }
   }
 
+  .slider-page {
+    margin-top: -20px;
+    margin-bottom: 25px;
+  }
+
   .uk-dropdown {
     padding: 5px;
   }
@@ -940,10 +956,6 @@ html, body {
     position: relative;
   }
 
-  .uk-dotnav {
-    margin-bottom: 10px;
-  }
-
   .uk-dropdown {
     padding: 5px;
   }
@@ -951,6 +963,28 @@ html, body {
   .uk-grid-margin, .uk-grid+.uk-grid, .uk-grid>.uk-grid-margin {
     margin-top: 10px;
     margin-bottom: 10px;
+  }
+
+  .slider-button-cast {
+    background: rgba(0, 0, 0, 0.31);
+    padding-top: 77px;
+    padding-bottom: 74px;
+    padding-right:  3px;
+    padding-left:  3px;
+    margin-top: 4px;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+
+  .slider-button-season {
+    background: rgba(0, 0, 0, 0.31);
+    padding-top: 121px;
+    padding-bottom: 121px;
+    padding-right:  3px;
+    padding-left:  3px;
+    margin-top: 4px;
+    margin-left: 5px;
+    margin-right: 5px;
   }
 
   .friend {
@@ -1136,6 +1170,11 @@ html, body {
     position: relative;
   }
 
+  .slider-page {
+    margin-top: -20px;
+    margin-bottom: 25px;
+  }
+
   .title {
     display: contents !important;
   }
@@ -1180,14 +1219,24 @@ html, body {
     margin-top: -92px;
   }
 
+  .slider-button-appears {
+    background: rgba(0, 0, 0, 0.31);
+    padding-top: 121px;
+    padding-bottom: 121px;
+    padding-right:  3px;
+    padding-left:  3px;
+    margin-top: 4px;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+
   .poster {
     display:block;
-    background: url("/images/person-edited.png");
     background: #502274;
     background-repeat:no-repeat;
     background-size:cover;
     width: 191px;
-    height: 240px;
+    height: 275px;
     overflow:hidden;
     box-shadow: 0 0px 10px rgba(0,0,0,0.1);
     border: 4px solid white;
