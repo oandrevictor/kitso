@@ -106,18 +106,22 @@ exports.create = function(req, res) {
 
   movie.save()
   .catch((err) => {
+    console.log(err);
     res.status(400).send(err);
   })
-  .then((createdMovie) => {
-    console.log("Created movie: " + createdMovie.name)
-    TMDBController.getMovieFromTMDB(createdMovie._tmdb_id).then( async (result)=> {
+  .then(async function(createdMovie) {
+    try {
+      let result = await TMDBController.getMovieFromTMDB(createdMovie._tmdb_id);
       result._id = createdMovie._id;
       result._seasons = createdMovie._seasons;
       result.__t = createdMovie.__t;
       result._actors = await matchApiMovieCastToDb(createdMovie);
       res.setHeader('Content-Type', 'application/json');
-      res.status(200).send(result);
-    })
+      res.status(RequestStatus.OK).send(result);
+    } catch (err) {
+      console.log(err);
+      res.status(RequestStatus.BAD_REQUEST).send(err);
+    }
   });
 };
 
@@ -200,8 +204,10 @@ matchApiMovieCastToDb = async function(dbmovieshow){
         castIds[i] = created_db_person._id;
         await createAppearsIn(created_db_person._id, dbmovieshow._id);
         if (nCast == castSize) done();
-        console.log("Person Created:" + name)
-      }).catch((err)=>{console.log(err)});
+      }).catch((err) => {
+        console.log(err);
+        throw new Error(err.message);
+      });
     });
 
     function done() {
@@ -209,4 +215,4 @@ matchApiMovieCastToDb = async function(dbmovieshow){
     }
 
   });
-}
+};
