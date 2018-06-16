@@ -29,6 +29,19 @@ describe('Movie', () => {
         done();
     });
 
+    afterEach(function(done) {
+        Media.remove({}, function(err) {
+            if (err) return done(err);
+        });
+        AppearsIn.remove({}, function(err) {
+            if (err) return done(err);
+        });
+        Person.remove({}, function(err) {
+            if (err) return done(err);
+        });
+        done();
+    });
+
     /*
      * Test the /GET movie
      */
@@ -58,11 +71,6 @@ describe('Movie', () => {
         let movie_without_required_params = {
             name: "The Shawshank Redemption",
         };
-        let movie_with_wrong_imdbid = {
-            name: "The Shawshank Redemption",
-            imdb_id:"wrong_imdb_id",
-            _tmdb_id: "278"
-        };
         let movie_with_wrong_tmdbid = {
             name: "The Shawshank Redemption",
             imdb_id:"tt0111161",
@@ -73,16 +81,6 @@ describe('Movie', () => {
             chai.request(server)
                 .post(API + RequestGenerals.MOVIE_ENDPOINT)
                 .send(movie_without_required_params)
-                .end((err, res) => {
-                    res.should.have.status(RequestStatus.BAD_REQUEST);
-                    done();
-                });
-        });
-
-        it('Movie should not be created and return http status 400', (done) => {
-            chai.request(server)
-                .post(API + RequestGenerals.MOVIE_ENDPOINT)
-                .send(movie_with_wrong_imdbid)
                 .end((err, res) => {
                     res.should.have.status(RequestStatus.BAD_REQUEST);
                     done();

@@ -180,11 +180,11 @@ getMovieCastFromAPI = function(movie_id) {
       reject();
     });
   })
-}
+};
 
 matchApiMovieCastToDb = async function(dbmovieshow){
   getMovieCastFromAPI(dbmovieshow._tmdb_id).then(function(credits){
-    var credits = JSON.parse(credits)
+    var credits = JSON.parse(credits);
     var cast = credits.cast;
     var castSize = cast.length;
     var nCast = 0;
@@ -201,7 +201,7 @@ matchApiMovieCastToDb = async function(dbmovieshow){
       db_person._tmdb_id = tmdb_id;
       db_person.image_url = picture;
       db_person.description = description;
-      db_person.save().then(async (created_db_person)=>{
+      db_person.save().then(async (created_db_person) => {
         nCast++;
         castIds[i] = created_db_person._id;
         await createAppearsIn(created_db_person._id, dbmovieshow._id);

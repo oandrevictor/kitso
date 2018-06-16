@@ -12,7 +12,7 @@ let RequestStatus = require('../../constants/requestStatus');
 let RequestGenerals = require('../../constants/requestGenerals');
 let API = '/api/';
 
-describe('Movies', () => {
+describe('Media', () => {
 
     beforeEach(function(done) {
         Media.remove({}, function(err) {

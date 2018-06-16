@@ -1,5 +1,7 @@
 var TMDBConstants = require('./constants/TMDBConstants');
 var RequestGenerals = require('../constants/requestGenerals');
+var RequestMsgs = require('../constants/requestMsg');
+var RequestStatus = require('../constants/requestStatus');
 var RedisClient = require('../utils/lib/redisClient');
 var Show = require('../models/TvShow');
 var Movie = require('../models/Movie');
@@ -101,7 +103,7 @@ exports.getShow = function(tmdb_id){
       })
     })
   })
-}
+};
 
 exports.getMovie = function(tmdb_id) {
   return new Promise(function(resolve, reject) {
@@ -133,30 +135,30 @@ exports.getMovie = function(tmdb_id) {
   });
 };
 
-exports.getMovieFromTMDB = function(tmdb_id){
+exports.getMovieFromTMDB = function(tmdb_id) {
   return new Promise(function(resolve, reject) {
-    console.log("Could not get from redis, requesting info from The Movie DB")
-
+    // Could not get from redis, requesting info from The Movie DB
     var query = RequestGenerals.MOVIE_ENDPOINT + tmdb_id;
     let tmdbQuery = TMDBConstants.TMDB_API_MOVIE_ROUTE + tmdb_id + TMDBConstants.TMDB_API_KEY;
-    console.log(tmdbQuery)
-    https.get(tmdbQuery,
-      (resp) => {
-        let data = '';
-        resp.on('data', (chunk) => {
-          data += chunk;
-        });
-        resp.on('end', () => {
-          console.log("Saving result to redis: "+ query);
-          redisClient.set(query, JSON.stringify(data));
-          resolve(data)
-        });
-      }).on("error", (err) => {
-        console.log("Error: " + err.message);
-        reject();
+    https.get(tmdbQuery, function(resp) {
+      if (resp.statusCode !== RequestStatus.OK) {
+          reject(RequestMsgs.RESOURCE_NOT_FOUND);
+      }
+      let data = '';
+      resp.on('data', (chunk) => {
+        data += chunk;
       });
-    })
-  };
+      resp.on('end', () => {
+        //Saving result to redis
+        redisClient.set(query, JSON.stringify(data));
+        resolve(data)
+      });
+    }).on("error", (err) => {
+      console.log("Error: " + err.message);
+      reject();
+    });
+  })
+};
 
 exports.getEpisodeFromTMDB = function(tmdb_id, season, episode){
   return new Promise(function(resolve, reject) {
