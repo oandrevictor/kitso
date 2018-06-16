@@ -1,6 +1,8 @@
 
 const UNAUTHORIZED = "Unauthorized!";
-const DUPLICATED_ENTITY = "There is already one entity with same values!"
+const DUPLICATED_ENTITY = "There is already one entity with same values!";
+const RESOURCE_NOT_FOUND = "Resource not found!";
+
 
 class RequestMsgs {
 
@@ -10,6 +12,10 @@ class RequestMsgs {
 
   static get DUPLICATED_ENTITY() {
     return DUPLICATED_ENTITY;
+  }
+
+  static get RESOURCE_NOT_FOUND() {
+    return RESOURCE_NOT_FOUND;
   }
 }
 

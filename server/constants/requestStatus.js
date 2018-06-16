@@ -5,6 +5,7 @@ const FORBIDDEN_STATUS = 403;
 const NOT_FOUND_STATUS = 404;
 const UNPROCESSABLE_ENTITY_STATUS = 422;
 const INTERNAL_SERVER_ERROR_STATUS = 500;
+const RESOURCE_NOT_FOUND = 34;
 
 class RequestStatus {
 
@@ -34,6 +35,10 @@ class RequestStatus {
 
   static get NOT_FOUND() {
     return NOT_FOUND_STATUS;
+  }
+
+  static get RESOURCE_NOT_FOUND() {
+    return RESOURCE_NOT_FOUND;
   }
 }
 
