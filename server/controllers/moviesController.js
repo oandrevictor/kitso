@@ -161,8 +161,10 @@ exports.delete = function(req, res) {
   }
 };
 
-getMovieCastFromAPI = function(movie_id){
-  return new Promise(function(resolve, reject) {
+getMovieCastFromAPI = function(movie_id) {
+    // TODO: refact this method (move to tmdbCtrl)
+    // TODO: lot of bad practices
+    return new Promise(function(resolve, reject) {
     https.get("https://api.themoviedb.org/3/movie/"+ movie_id + "/credits"+"?api_key=db00a671b1c278cd4fa362827dd02620",
     (resp) => {
       let data = '';
