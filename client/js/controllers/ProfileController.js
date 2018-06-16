@@ -314,7 +314,6 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
   }
 
   $scope.submitForm = function () {
-
     if ($scope.editForm.$valid) {
       UserService.editUser($scope.user)
         // handle success

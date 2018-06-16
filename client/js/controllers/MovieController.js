@@ -250,7 +250,7 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
             status: 'success',
             timeout: 1500
         });
-        if($scope.user.autowatch){
+        if($scope.user.autowatch & !$scope.movie.watched){
           $scope.markAsWatched(movieId);
         }
     }

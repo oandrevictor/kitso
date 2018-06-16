@@ -112,6 +112,10 @@ var UserSchema = new Schema({
         }
       ],
       default: []
+    },
+    autowatch: {
+      type: Boolean,
+      default: false
     }
   });
 
