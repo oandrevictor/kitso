@@ -11,8 +11,7 @@ var passport       = require('passport');
 var session        = require('express-session');
 var MongoStore     = require('connect-mongo')(session);
 var dotenv         = require('dotenv').load();
-
-var RedisClient = require('./utils/lib/redisClient');
+var RedisClient    = require('./utils/lib/redisClient');
 
 let client = RedisClient.createAndAuthClient();
 
@@ -24,9 +23,14 @@ var db = require('./config/db');
 // set our port
 var port = process.env.PORT || 8080;
 
-// connect to our mongoDB database
-// (uncomment after you enter in your own credentials in config/db.js)
-mongoose.connect(db.url);
+// connect to our mongoDB database. enter in your own credentials in config/db.js)
+if (process.env.NODE_ENV === 'test') {
+  mongoose.connect(db.test_url);
+} else if (process.env.NODE_ENV !== 'dev') {
+  mongoose.connect(db.local_url);
+} else {
+  mongoose.connect(db.url);
+}
 
 // Passport and sessions
 require('./config/passport')(passport);
@@ -59,6 +63,7 @@ app.use(methodOverride('X-HTTP-Method-Override'));
 
 // set the static files location /public/img will be /img for users
 app.use(express.static(path.join(__dirname, '../client')));
+
 
 // Cliente Routes  ==================================================
 app.get('/', function (req, res) {
