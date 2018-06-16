@@ -1,6 +1,7 @@
 const TVSHOW_ENDPOINT = "tvshow/";
 const SEASON_ENDPOINT = "/season/";
 const MOVIE_ENDPOINT = "movie/";
+const MEDIA_ENDPOINT = "media";
 
 class RequestGenerals {
 
@@ -14,6 +15,10 @@ class RequestGenerals {
 
   static get MOVIE_ENDPOINT () {
     return MOVIE_ENDPOINT;
+  }
+
+  static get MEDIA_ENDPOINT () {
+    return MEDIA_ENDPOINT;
   }
 }
 
