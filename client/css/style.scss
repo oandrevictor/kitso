@@ -5,6 +5,56 @@ html, body {
   overflow-x: hidden;
   height: 100%;
 }
+
+.home-content {
+    margin-bottom: auto;
+    font-weight: 300;
+    height: 90vh;
+    display: block;
+    background: #f8f8f8;
+    .feed {
+      padding-top: 15px;
+      background: white;
+      padding-bottom: 15px;
+
+      article {
+        padding-top: 15px;
+        padding-bottom: 15px;
+      }
+
+      .link-action {
+        font-size: 1.1rem;
+        font-weight: 400;
+        color: #773095;
+
+        &:hover {
+          text-decoration: none;
+          font-weight: bold;
+        }
+      }
+    }
+    .user-name {
+      margin: 0px;
+      display: inline-block;
+      font-size: 1.1rem;
+    }
+    .user-action {
+      margin: 0px;
+      display: inline-block;
+    }
+}
+
+.home-card {
+  height: 140px !important;
+  .home-card-info {
+    width: 50%;
+
+    .uk-card-body {
+      padding-top: 0px !important;
+      }
+    }
+
+}
 .uk-tab>*{
   margin-right: auto;
   margin-left: auto;

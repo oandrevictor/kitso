@@ -4,6 +4,41 @@ html, body {
   overflow-x: hidden;
   height: 100%; }
 
+.home-content {
+  margin-bottom: auto;
+  font-weight: 300;
+  height: 90vh;
+  display: block;
+  background: #f8f8f8; }
+  .home-content .feed {
+    padding-top: 15px;
+    background: white;
+    padding-bottom: 15px; }
+    .home-content .feed article {
+      padding-top: 15px;
+      padding-bottom: 15px; }
+    .home-content .feed .link-action {
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: #773095; }
+      .home-content .feed .link-action:hover {
+        text-decoration: none;
+        font-weight: bold; }
+  .home-content .user-name {
+    margin: 0px;
+    display: inline-block;
+    font-size: 1.1rem; }
+  .home-content .user-action {
+    margin: 0px;
+    display: inline-block; }
+
+.home-card {
+  height: 140px !important; }
+  .home-card .home-card-info {
+    width: 50%; }
+    .home-card .home-card-info .uk-card-body {
+      padding-top: 0px !important; }
+
 .uk-tab > * {
   margin-right: auto;
   margin-left: auto; }

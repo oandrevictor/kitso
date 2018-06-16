@@ -1,2 +1,73 @@
-<b>Página inicial do usuário</b>
-<a ng-click="logout()">Logout</a>
+<div class="home-content">
+  <div class="uk-width-xxlarge uk-container feed">
+
+    <article class="uk-comment uk-visible-toggle">
+        <header class="uk-comment-header uk-position-relative">
+            <div class="uk-grid-medium uk-flex-middle" uk-grid>
+                <div class="uk-width-auto">
+                    <img class="uk-comment-avatar uk-border-circle" src="/images/mask2.png" width="40" height="40" alt="">
+                </div>
+                <div class="uk-width-expand">
+                    <div class="uk-comment-title uk-margin-remove">
+                      <h4 class="user-name">
+                        <a class="uk-link-reset" href="#">Gabriela Motta</a></h4>
+                        <h5 class="user-action"> watched </h5>
+                        <a class="link-action">Movie title</a>
+                      </div>
+                    <p class="uk-comment-meta uk-margin-remove-top"><a class="uk-link-reset" href="#">12 days ago</a></p>
+                </div>
+            </div>
+            <div class="uk-position-top-right uk-position-small uk-hidden-hover"><a class="uk-link-muted" href="#">Reply</a></div>
+        </header>
+        <div class="uk-comment-body">
+          <div class="uk-card uk-card-default uk-grid-collapse uk-margin home-card" uk-grid>
+              <div class="uk-card-media-left uk-cover-container">
+                  <img src="images/avatar.jpg" alt="" uk-cover>
+                  <canvas width="300" height="200"></canvas>
+              </div>
+              <div class="home-card-info">
+                  <div class="uk-card-body">
+                      <h3 class="uk-card-title">Movie Title</h3>
+                      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                  </div>
+              </div>
+          </div>
+        </div>
+    </article>
+
+    <hr>
+    <article class="uk-comment uk-visible-toggle">
+        <header class="uk-comment-header uk-position-relative">
+            <div class="uk-grid-medium uk-flex-middle" uk-grid>
+                <div class="uk-width-auto">
+                    <img class="uk-comment-avatar uk-border-circle" src="/images/mask2.png" width="40" height="40" alt="">
+                </div>
+                <div class="uk-width-expand">
+                    <div class="uk-comment-title uk-margin-remove">
+                      <h4 class="user-name">
+                        <a class="uk-link-reset" href="#">Gabriela Motta</a></h4>
+                        <h5 class="user-action"> followed </h5>
+                        <a class="link-action">Maria Motta</a>
+                      </div>
+                    <p class="uk-comment-meta uk-margin-remove-top"><a class="uk-link-reset" href="#">12 days ago</a></p>
+                </div>
+            </div>
+            <div class="uk-position-top-right uk-position-small uk-hidden-hover"><a class="uk-link-muted" ng-click="show2 = !show2" href="#">More</a></div>
+        </header>
+        <div class="uk-comment-body" ng-show="show2">
+          <div class="uk-card uk-card-default uk-grid-collapse uk-margin home-card" uk-grid>
+              <div class="uk-card-media-left uk-cover-container">
+                  <img src="/images/mask2.png" alt="" uk-cover>
+                  <canvas width="300" height="200"></canvas>
+              </div>
+              <div class="home-card-info">
+                  <div class="uk-card-body">
+                      <h3 class="uk-card-title">Movie Title</h3>
+                      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                  </div>
+              </div>
+          </div>
+        </div>
+    </article>
+  </div>
+</div>
