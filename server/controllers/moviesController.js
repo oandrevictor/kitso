@@ -17,9 +17,9 @@ exports.index = function(req, res) {
   })
   .then((movie_result) => {
     var final_result = [];
-    console.log("len:" + movie_result.length)
-    if (movie_result.len == 0)
-    res.status(200).send(final_result);
+    if (movie_result.length === 0) {
+      res.status(200).send(final_result);
+    }
     movie_result.forEach((movie, index)=>{
       var tmdb_id = movie._tmdb_id;
       console.log("current indexing:" + tmdb_id);
