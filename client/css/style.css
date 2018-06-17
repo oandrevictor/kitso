@@ -518,13 +518,23 @@ html, body {
     padding-bottom: 0px !important;
     padding-top: 4%;
     position: relative; }
-  .movie .uk-dotnav {
-    margin-bottom: 10px; }
+  .movie .slider-page {
+    margin-top: -20px;
+    margin-bottom: 25px; }
   .movie .uk-dropdown {
     padding: 5px; }
   .movie .uk-grid-margin, .movie .uk-grid + .uk-grid, .movie .uk-grid > .uk-grid-margin {
     margin-top: 10px;
     margin-bottom: 10px; }
+  .movie .slider-button-cast {
+    background: rgba(0, 0, 0, 0.31);
+    padding-top: 77px;
+    padding-bottom: 74px;
+    padding-right: 3px;
+    padding-left: 3px;
+    margin-top: 4px;
+    margin-left: 5px;
+    margin-right: 5px; }
   .movie .friend {
     padding-top: 10px;
     padding-bottom: 10px; }
@@ -637,6 +647,9 @@ html, body {
       line-height: 1.4;
       color: #773095;
       overflow: hidden; }
+  .tvshow .slider-page {
+    margin-top: -20px;
+    margin-bottom: 25px; }
   .tvshow .uk-dropdown {
     padding: 5px; }
   .tvshow .episode-button {
@@ -679,13 +692,29 @@ html, body {
     padding-bottom: 0px !important;
     padding-top: 4%;
     position: relative; }
-  .tvshow .uk-dotnav {
-    margin-bottom: 10px; }
   .tvshow .uk-dropdown {
     padding: 5px; }
   .tvshow .uk-grid-margin, .tvshow .uk-grid + .uk-grid, .tvshow .uk-grid > .uk-grid-margin {
     margin-top: 10px;
     margin-bottom: 10px; }
+  .tvshow .slider-button-cast {
+    background: rgba(0, 0, 0, 0.31);
+    padding-top: 77px;
+    padding-bottom: 74px;
+    padding-right: 3px;
+    padding-left: 3px;
+    margin-top: 4px;
+    margin-left: 5px;
+    margin-right: 5px; }
+  .tvshow .slider-button-season {
+    background: rgba(0, 0, 0, 0.31);
+    padding-top: 121px;
+    padding-bottom: 121px;
+    padding-right: 3px;
+    padding-left: 3px;
+    margin-top: 4px;
+    margin-left: 5px;
+    margin-right: 5px; }
   .tvshow .friend {
     padding-top: 10px;
     padding-bottom: 10px; }
@@ -816,6 +845,9 @@ html, body {
     padding-bottom: 0px !important;
     padding-top: 4%;
     position: relative; }
+  .person .slider-page {
+    margin-top: -20px;
+    margin-bottom: 25px; }
   .person .title {
     display: contents !important; }
   .person .uk-card-body {
@@ -845,14 +877,22 @@ html, body {
   .person .left-bar {
     float: right;
     margin-top: -92px; }
+  .person .slider-button-appears {
+    background: rgba(0, 0, 0, 0.31);
+    padding-top: 121px;
+    padding-bottom: 121px;
+    padding-right: 3px;
+    padding-left: 3px;
+    margin-top: 4px;
+    margin-left: 5px;
+    margin-right: 5px; }
   .person .poster {
     display: block;
-    background: url("/images/person-edited.png");
     background: #502274;
     background-repeat: no-repeat;
     background-size: cover;
     width: 191px;
-    height: 240px;
+    height: 275px;
     overflow: hidden;
     box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
     border: 4px solid white; }

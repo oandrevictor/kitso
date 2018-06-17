@@ -95,6 +95,7 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
         });
 
 
+
     $scope.addToList = function(movieId, userListId){
         UserListService.addItem(userListId, movieId, $scope.user._id, date = moment())
         .then((added) => {
@@ -304,5 +305,4 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
         }
         return ratings;
     }
-
 }]);

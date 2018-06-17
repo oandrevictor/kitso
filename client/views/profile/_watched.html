@@ -1,0 +1,41 @@
+<li>
+  <div uk-switcher="animation: uk-animation-fade" class="button-switcher">
+    <button class="uk-button uk-button-default" type="button" uk-icon="grid"></button>
+  </div>
+  <ul class="uk-switcher uk-margin">
+    <li>
+      <div class="uk-child-width-1-3@m" uk-grid>
+        <div class="uk-card uk-card-primary" ng-repeat="watched in user.watched">
+          <div class="uk-card-media-top">
+            <div class="uk-inline uk-dark">
+              <div class="uk-visible-toggle">
+                <a class="page-link" ng-href="/{{watched._media.__t.toLowerCase()}}/{{watched._media._id}}">
+                  <img ng-src="{{getPoster(watched._media)}}" style="z-index:-1" alt="">
+                </a>
+                <div ng-if="canEdit()" class="uk-hidden-hover uk-overlay-default uk-position-cover">
+                  <div class="uk-position-center">
+                    <a href="" class="uk-icon-button uk-margin-small-right" uk-icon="pencil"></a>
+                  </div>
+                  <div id="watched-date-{{watched._id}}" uk-dropdown="pos: bottom-center; mode: click" style="z-index: 999">
+                    <div class="uk-form-controls">
+                      <input class="uk-input date-change" type="date" id="release_date" name="release_date" ng-model="watched.date" required>
+                      <button ng-click="updateWatched(watched)" class="uk-button uk-button-default check">
+                        <span uk-icon="icon: check;">
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="uk-card-body">
+            <p class="uk-text">
+              <a class="page-link" ng-click="goToMedia(watched._media)">{{watched._media.name}}</a>
+            </p>
+            <p class="uk-text uk-text-small uk-text-muted">Watched | {{formatDate(watched.date)}}</p>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</li>

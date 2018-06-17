@@ -1,0 +1,15 @@
+<li>
+  <div class="uk-margin">
+    <p class="uk-text-large">Followers</p>
+  </div>
+  <ul class="uk-list uk-list-divider">
+    <li ng-repeat="follower in user.followers">
+      <div uk-grid>
+        <div class="uk-width-expand">
+          <a ng-href="/user/{{follower._id}}" class="following-link">
+            {{ follower.name }}</a>
+        </div>
+      </div>
+    </li>
+  </ul>
+</li>
