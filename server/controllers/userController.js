@@ -105,6 +105,11 @@ exports.update = function (req, res) {
       if (req.body.birthday) user.birthday = req.body.birthday;
       if (req.body.gender) user.gender = req.body.gender;
       if (req.body.description) user.description = req.body.description;
+      if (req.body.photo) {
+        user.photo = req.body.photo;
+      } else {
+        user.photo = 'http://kitso.herokuapp.com/images/mask2.png';
+      }
       if (req.body._history) user._history = req.body._history;
       if (req.body._following) user._following = req.body._following;
       if (req.body._following_pages) user._following_pages = req.body._following_pages;

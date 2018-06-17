@@ -51,6 +51,10 @@ var UserSchema = new Schema({
     maxlength: 240,
     default: "No description."
   },
+  photo: {
+    type: String,
+    default: 'http://kitso.herokuapp.com/images/mask2.png'
+  },
   _history: {
     type: [
       {

@@ -322,7 +322,8 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         email: $scope.user.email,
         birthday: $scope.user.birthday,
         gender: $scope.user.gender,
-        description: $scope.user.description
+        description: $scope.user.description,
+        photo: $scope.user.photo
       }
 
       UserService.editUser(payload)
@@ -334,6 +335,10 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
             status: 'success',
             timeout: 1500
           });
+
+          if (payload.photo == "") {
+            $location.path('/');
+          }
         })
         // handle error
         .catch(function (error) {

@@ -58,6 +58,15 @@
       <label class="uk-text-small uk-text-danger uk-align-right" for="birthday" ng-show="(isInvalid(editForm.gender))">* You must select a gender</label>
     </div>
 
+    <!--Photo Field-->
+    <div class="uk-margin">
+      <label class="uk-form-label" ng-class="{ 'uk-text-danger' : isInvalid(editForm.photo) }" for="name">Photo URL</label>
+      <div class="uk-form-controls">
+        <input class="uk-input" type="text" id="photo" name="photo" placeholder="Photo URL" ng-class="{ 'uk-form-danger' : isInvalid(editForm.photo) }"
+               ng-model="user.photo">
+      </div>
+    </div>
+
     <button class="uk-button uk-button-small uk-align-center" ng-class="{ 'uk-button-save-changes': editForm.$valid }" ng-disabled="editForm.$invalid">Save Changes</button>
   </form>
 
