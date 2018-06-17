@@ -1,4 +1,4 @@
-angular.module('kitso', ['ngRoute', 'appRoutes']);
+angular.module('kitso', ['ngRoute', 'appRoutes', 'ngSanitize']);
 angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
 
     $routeProvider
@@ -41,12 +41,12 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
         })
         // profile page
         .when('/profile', {
-            templateUrl: 'views/profile.html',
+            templateUrl: 'views/profile/profile.html',
             controller: 'ProfileController',
             access: { restricted: true }
         })
         .when('/user/:user_id', {
-            templateUrl: 'views/profile.html',
+            templateUrl: 'views/profile/profile.html',
             controller: 'ProfileController',
             access: { restricted: true }
         })

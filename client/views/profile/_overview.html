@@ -1,0 +1,54 @@
+<li>
+  <p class="uk-text-large">About
+    <a ng-if="canEdit()" class="uk-icon-button" uk-icon="pencil" ng-click="toggleDescriptionArea()" ng-hide="descriptionArea"></a>
+    <a uk-icon="check" class="uk-icon-button uk-button-save-changes" ng-show="descriptionArea" ng-click="submitForm()"></a>
+    <a uk-icon="close" class="uk-icon-button" ng-show="descriptionArea" ng-click="toggleDescriptionArea()"></a>
+  </p>
+  <p class="uk-text-small" align="center" ng-hide="descriptionArea">
+    {{ user.description }}
+  </p>
+  <div class="uk-margin" ng-show="descriptionArea">
+    <form name="editForm" ng-submit="submitForm()" novalidate>
+      <textarea maxlength="240" class="uk-textarea" placeholder="Description" ng-model="user.description">
+          {{ user.description }}
+        </textarea>
+    </form>
+  </div>
+  <p class="uk-text-small uk-text-muted uk-text-capitalize" align="center">{{ user.birthday | date}} | {{ user.gender }}</p>
+  <hr class="uk-divider-icon">
+  <div uk-grid>
+    <div class="uk-width-1-2">
+      <p style="padding-bottom: 10px">Favorite Movie
+        <a class="uk-link-text uk-text-uppercase uk-align-right" href="">See Ranking</a>
+      </p>
+      <div class="uk-inline" ng-show="userFavoriteMovie">
+        <img class="favorite-movie" ng-click="goToMedia(userFavoriteMovie)" style="background-image: url({{ getBackground(userFavoriteMovie) }})"
+        />
+        <div class="uk-overlay uk-overlay-primary uk-position-bottom">
+          <p align="center">{{userFavoriteMovie.name}}</p>
+        </div>
+      </div>
+      <p class="following-link" align="center" ng-show="!userFavoriteMovie">You don't have a favorite movie yet
+        <br> Try rating a movie</p>
+    </div>
+    <div class="uk-width-1-2">
+      <p>Watched Genres</p>
+      <img src="/images/watched.jpg" width="300" height="400">
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">
+      {{user.name}}'s Lists
+    </div>
+    <div class="uk-grid">
+      <div class="uk-width-1-2" ng-repeat="list in user.lists">
+        <div class="uk-inline" ng-show="!$scope.user.lists.isEmpty()">
+          <img class="favorite-movie" ng-click="goToList(list._id)" style="background-image: url({{ getListBackground(list) }})" />
+          <div class="uk-overlay uk-overlay-primary uk-position-bottom favorite-movie-title">
+            <p align="center" ng-click="goToList(list._id)">{{list.title}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</li>

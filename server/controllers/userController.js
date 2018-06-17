@@ -1,6 +1,12 @@
 var User = require('../models/User');
 var UserList = require('../models/UserList');
 var UserListController = require('../controllers/userListController');
+var Follows = require('../models/Follows');
+var Watched = require('../models/Watched');
+var Rated = require('../models/Rated');
+var UserList = require('../models/UserList');
+var FollowsPage = require('../models/FollowsPage');
+var Action = require('../models/Action');
 var bcrypt = require('bcryptjs');
 var _ = require('underscore');
 var mongoose       = require('mongoose');
@@ -153,15 +159,42 @@ exports.delete = function (req, res) {
   .catch((err) => {
     res.status(RequestStatus.BAD_REQUEST).send(err);
   })
-  .then((user) => {
-    if (req.user && req.user._id == user._id && user.validPassword(req.body.password)) {
-      User.remove({ _id: req.params.user_id })
-      .catch((err) => {
-        res.status(RequestStatus.BAD_REQUEST).send({ status: RequestStatus.BAD_REQUEST, message: err });
-      })
-      .then(() => {
-        req.logout();
-        res.status(RequestStatus.OK).send('User removed.');
+  .then(async (user) => {
+    if (req.user && req.user._id.toString() == user._id.toString() && user.validPassword(req.body.password)) {
+      let following_list = await Follows.find({$or: [{_user: user._id}, {_following: user._id}]}).exec();
+      let follows_page_list = await FollowsPage.find({_user: user._id}).exec();
+      let watched_list = await Watched.find({_user: user._id}).exec();
+      let ratings_list = await Rated.find({_user: user._id}).exec();
+      let user_lists = await UserList.find({_user: user._id}).exec();
+      let promises = [];
+      following_list.map((follow) => {
+        promises.push(Follows.remove(follow).exec());
+        promises.push(Action.remove({_id: follow._action}).exec());
+      });
+      follows_page_list.map((followPage) => {
+        promises.push(FollowsPage.remove(followPage).exec());
+        promises.push(Action.remove({_id: followPage._action}).exec());
+      });
+      watched_list.map((watched) => {
+        promises.push(Watched.remove(watched).exec());
+        promises.push(Action.remove({_id: watched._action}).exec());
+      });
+      ratings_list.map((rated) => {
+        promises.push(Rated.remove(rated).exec());
+        promises.push(Action.remove({_id: rated._action}).exec());
+      });
+      user_lists.map((list) => {
+        promises.push(UserList.remove(list).exec());
+      });
+      await Promise.all(promises).then((result) => {
+        User.remove({ _id: req.params.user_id })
+        .catch((err) => {
+          res.status(RequestStatus.BAD_REQUEST).send({ status: RequestStatus.BAD_REQUEST, message: err });
+        })
+        .then(() => {
+          req.logout();
+          res.status(RequestStatus.OK).send('User removed.');
+        });
       });
     } else {
       return res.status(RequestStatus.UNAUTHORIZED).json({ status: 401, message: 'Wrong password' });
