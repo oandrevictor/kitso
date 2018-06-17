@@ -71,15 +71,12 @@ exports.getActionByTypeAndId = async function(type, id) {
 
 exports.getActionByTypeAndIdWithDetails = async function(type, id) {
   if (type == ActionType.RATED) {
-    Rated.findById(id, async function(err, result) {
-      if(result) {
-        media_obj = await Media.findById(result._media).exec();
+    rating = await Rated.findById(id).exec();
+    media_obj = await Media.findById(rating._media).exec();
 
-        rating_copy = JSON.parse(JSON.stringify(result));
-        rating_copy._media = media_obj;
-        return rating_copy;
-      }
-    });
+    rating_copy = JSON.parse(JSON.stringify(rating));
+    rating_copy._media = media_obj;
+    return rating_copy;
   } else if (type == ActionType.WATCHED) {
     watched = await Watched.findById(id).exec();
     media_obj = await Media.findById(watched._media).exec();
@@ -98,10 +95,12 @@ exports.getActionByTypeAndIdWithDetails = async function(type, id) {
     followPage = await FollowsPage.findById(id).exec();
     let obj;
 
-    if (followPage.isMedia) {
+    if (followPage.is_media) {
       obj = await Media.findById(followPage._following).exec();
+      console.log(obj);
     } else {
       obj = await Person.findById(followPage._following).exec(); 
+      console.log(obj);
     }
 
     followPage_copy = JSON.parse(JSON.stringify(followPage));
