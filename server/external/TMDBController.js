@@ -14,7 +14,7 @@ exports.getShowFromTMDB = function(tmdb_id) {
     console.log("Could not get from redis, requesting info from The Movie DB");
 
     var query = RequestGenerals.TVSHOW_ENDPOINT + tmdb_id;
-    let tmdbQuery = TMDBConstants.TMDB_API_SHOW_ROUTE + tmdb_id + TMDBConstants.TMDB_API_KEY;
+    let tmdbQuery = TMDBConstants.TMDB_API_SHOW_ROUTE + tmdb_id + TMDBConstants.TMDB_API_KEY + TMDBConstants.TMDB_API_MEDIA_RECOMMENDATIONS;
     console.log(tmdbQuery)
     https.get(tmdbQuery,
       (resp) => {
@@ -138,7 +138,7 @@ exports.getMovieFromTMDB = function(tmdb_id){
     console.log("Could not get from redis, requesting info from The Movie DB")
 
     var query = RequestGenerals.MOVIE_ENDPOINT + tmdb_id;
-    let tmdbQuery = TMDBConstants.TMDB_API_MOVIE_ROUTE + tmdb_id + TMDBConstants.TMDB_API_KEY;
+    let tmdbQuery = TMDBConstants.TMDB_API_MOVIE_ROUTE + tmdb_id + TMDBConstants.TMDB_API_KEY + TMDBConstants.TMDB_API_MEDIA_RECOMMENDATIONS;
     console.log(tmdbQuery)
     https.get(tmdbQuery,
       (resp) => {
