@@ -68,6 +68,27 @@ exports.findByEmail = function (req, res) {
   });
 }
 
+//{ filter: , month: , week: , year: }
+exports.timeSpent = async function (req, res) {
+  let user_id = req.params.user_id;
+  let all_watched = await Watched.find({ _user: user_id }).exec();
+  let timeSpent = 0;
+  all_watched.forEach(async function(watched, index) {
+    let filter = req.body.filter;
+    let watched_month = watched.date.getMonth() + 1;
+    let watched_year = watched.date.getFullYear();
+    let watched_week = watched.date.getMonthWeek();
+
+    if(watched_month == req.body.month && watched_year == req.body.year) {
+      if (filter == 'by_month' || (filter == 'by_week' && watched_week == req.body.week)) {
+        timeSpent += watched.time_spent; 
+      }
+    }
+
+    if (index == all_watched.length-1) res.status(RequestStatus.OK).json(timeSpent);
+  });
+}
+
 exports.create = function (req, res) {
   var user = new User(req.body);
 
@@ -203,6 +224,11 @@ exports.delete = function (req, res) {
 };
 
 // AUXILIARY FUNCTIONS ============================================================================
+
+Date.prototype.getMonthWeek = function() {
+  var firstDay = new Date(this.getFullYear(), this.getMonth(), 1).getDay();
+  return Math.ceil((this.getDate() + firstDay)/7);
+} 
 
 var createWatchList = function(userId) {
   let watchListInfo = {

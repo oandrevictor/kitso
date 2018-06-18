@@ -20,6 +20,8 @@ router.post('/login', authController.login);
 
 router.post('/email', userController.findByEmail);
 
+router.post('/timespent/:user_id', userController.timeSpent);
+
 router.post('/password', userController.updatePassword);
 
 router.put('/:user_id', userController.update);
