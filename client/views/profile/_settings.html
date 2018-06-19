@@ -1,13 +1,9 @@
 <li>
   <a href="#" id="settings" data-uk-switcher-item="next"></a>
-  <p class="uk-text-large">Settings</p>
+  <div class="uk-margin">
+    <p class=" uk-text-large">Settings</p>
+  </div>
   <form name="editForm" ng-submit="submitForm()" novalidate>
-    <!--Autowatch Field-->
-    <div class="uk-margin">
-      <div class="uk-form-controls">
-        <label><input class="uk-checkbox" type="checkbox" id="autowatch" ng-model="user.settings.autowatch" ng-checked="user.settings.autowatch"> When I rate something, also mark it as watched.</label>
-      </div>
-    </div>
 
     <!--Name Field-->
     <div class="uk-margin">
@@ -63,6 +59,11 @@
         <option value="other">Other</option>
       </select>
       <label class="uk-text-small uk-text-danger uk-align-right" for="birthday" ng-show="(isInvalid(editForm.gender))">* You must select a gender</label>
+    </div>
+
+    <!--Autowatch Field-->
+    <div class="uk-margin uk-form-controls">
+      <label><input class="uk-checkbox" type="checkbox" id="autowatch" ng-model="user.settings.autowatch" ng-checked="user.settings.autowatch"> When I rate something, also mark it as watched.</label>
     </div>
 
     <button class="uk-button uk-button-small uk-align-center" ng-class="{ 'uk-button-save-changes': editForm.$valid }" ng-disabled="editForm.$invalid">Save Changes</button>
