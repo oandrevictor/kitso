@@ -58,9 +58,9 @@ getMediaWithInfoFromDB = async function(media_obj){
   if (media_obj.__t == "Movie"){
     var media = await TMDBController.getMovie(media_obj._tmdb_id).then(function(movie){
       movie._id = media_obj._id;
+      movie.__t = media_obj.__t;
       return movie;
     }).catch(function(result){
-      console.log(result);
       return result;
     })
     return media;
@@ -68,6 +68,7 @@ getMediaWithInfoFromDB = async function(media_obj){
   else if (media_obj.__t == "TvShow"){
     media = await TMDBController.getShow(media_obj._tmdb_id).then(function(tvshow){
       tvshow._id = media_obj._id;
+      tvshow.__t = media_obj.__t;
       return tvshow;
     }).catch(function(result){
       return result;
@@ -75,14 +76,13 @@ getMediaWithInfoFromDB = async function(media_obj){
     return media;
   }
   else if (media_obj.__t == "Episode"){
-    console.log("HERE")
     media = await TMDBController.getEpisode(media_obj._tmdb_id).then(function(episode){
       episode._id = media_obj._id;
+      episode.__t = media_obj.__t;
       return episode;
     }).catch(function(result){
       return result;
     })
-    console.log(media)
 
     show = await TMDBController.getShow(media_obj._tmdb_tvshow_id).then(function(tvshow){
       tvshow._id = media_obj._tvshow_id;

@@ -1,7 +1,7 @@
 var kitso = angular.module('kitso');
 
-kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthService', 'FeedService', function($scope, $location, $timeout, AuthService, FeedService) {
-
+kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthService', 'FeedService', 'UserListService', 'WatchedService', function($scope, $location, $timeout, AuthService, FeedService, UserListService, WatchedService) {
+	$('.full-loading').show();
 	$scope.logout = function() {
 		AuthService.logout()
                 // handle success
@@ -32,22 +32,131 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
     return - moment(a.date).diff(moment(b.date))
   }
 
+
+	var loadUserLists = function(){
+	  var lists = [];
+	  $scope.user._lists.forEach((listId) => {
+	    UserListService.loadUserList(listId).then( function(){
+	      lists.push(UserListService.getUserList());
+	    }).catch(function(error){
+	      console.log(error);
+	    })
+	  });
+	  $scope.user.lists = lists;
+	  UserListService.loadUserList($scope.user._watchlist).then( function(){
+	    $scope.user.watchlist = UserListService.getUserList();
+	  }).catch(function(error){
+	    console.log(error);
+	  });
+	}
+
+	$scope.getMediaFromActivity = function(activity){
+		return activity._action._media;
+	}
+
+
 	AuthService.getStatus().then(function(){
     $scope.user = AuthService.getUser();
 		loadFeed($scope.user._id);
+		loadUserLists();
 
   }).catch(function(){});
+
+
+	$scope.addToList = function(activity, userListId){
+		item = $scope.getMediaFromActivity(activity);
+		id = item._id;
+		UserListService.addItem(userListId, id, $scope.user._id, date = moment())
+			.then((added) => {
+				activity.listed[userListId] = true;
+			})
+			.catch((error) => {
+				console.log(error)
+				UIkit.notification({
+					message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+					status: 'danger',
+					timeout: 2500
+				});
+			});
+	}
+
+	$scope.removeFromList = function(activity, userListId) {
+		item = $scope.getMediaFromActivity(activity);
+		id = item._id;
+		UserListService.loadUserList(userListId).then( function() {
+			UserListService.getUserList()['itens'].forEach(function(item){
+				if (item['_media']['_id'] == id) {
+					UserListService.deleteItem(userListId, $scope.user._id, item['ranked'])
+						.then((deleted) => {
+							activity.listed[userListId] = false;
+						})
+						.catch((error) => {
+							UIkit.notification({
+								message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+								status: 'danger',
+								timeout: 2500
+							});
+						});
+				}
+			});
+		});
+	}
+
+	$scope.range = function (count) {
+		var ratings = [];
+		for (var i = 0; i < count; i++) {
+			ratings.push(i + 1)
+		}
+		return ratings;
+	}
+
+
+	$scope.itemIsListed = function(listid, activity) {
+		item = $scope.getMediaFromActivity(activity);
+		itemid = item._id
+		if (activity.listed && activity.listed[listid]){
+			return activity.listed[listid]
+		}
+		if ($scope.user.lists) {
+			list = $scope.user.lists.filter(list => list._id === listid);
+			if (list.length > 0){
+				list = list[0]
+				return list.itens.some(item => item._media._id === itemid);
+			}
+		}
+		return false;
+	}
 
 	var loadFeed = function(userId){
 		FeedService.getFollowingUsersActivity(userId).then(function(result){
 			$scope.feed = result;
 
-			$scope.feed.forEach(function(activity){
+			$scope.feed.forEach(function(activity, index){
+				$scope.feed[index].listed = {}
 				if(['watched', 'rated'].includes(activity.action_type)){
 					activity.open = true;
 				}
-			})
+
+				var media = $scope.getMediaFromActivity(activity);
+				if (media && media._id){
+					console.log(media)
+					WatchedService.isWatched($scope.user._id, media._id).then((watched) => {
+		        activity.watched = watched;
+		        if (!watched.watched_id)
+		          activity.watched = false;
+		      }).catch((error) => {
+		        UIkit.notification({
+		          message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+		          status: 'danger',
+		          timeout: 2500
+		        });
+		      });
+
+				}
+			}
+		)
 		$scope.feed = $scope.feed.sort(compareDates)
+		$('.full-loading').hide();
 		})
 		.catch(
 			function(result){
@@ -56,6 +165,37 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 		)
 	}
 
+
+  $scope.markAsWatched = function (activity) {
+    var mediaId = $scope.getMediaFromActivity(activity)._id;
+    WatchedService.markAsWatched($scope.user._id, mediaId)
+      .then((watched) => {
+        activity.watched = watched;
+      })
+      .catch((error) => {
+        UIkit.notification({
+          message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+          status: 'danger',
+          timeout: 2500
+        });
+      });
+  }
+
+  $scope.markAsNotWatched = function (activity) {
+		var media = $scope.getMediaFromActivity(activity)
+    var watchedId = media.watched.watched_id;
+    WatchedService.markAsNotWatched(watchedId)
+      .then(() => {
+        activity.watched = false;
+      })
+      .catch((error) => {
+        UIkit.notification({
+          message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+          status: 'danger',
+          timeout: 2500
+        });
+      });
+  }
 
 
 	$scope.isLogged = function() {
@@ -79,6 +219,41 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 		return seasons[0]
 	}
 
+	$scope.getActivityUserLink = function(activity){
+		return 'user/' + activity._user._id;
+	}
+
+	$scope.getActivitySeasonLink = function(activity){
+		return 'tvshow/' + activity._action._media.show._id + '/season/' + activity._action._media.season_number
+	}
+
+	$scope.getActivityShowLink = function(activity){
+		return 'tvshow/' + activity._action._media.show._id
+	}
+
+	$scope.getActivityObjectLink = function(activity){
+		if (activity._action._media){
+			media = activity._action._media;
+			if (media.__t == "Episode")
+				return 'tvshow/' + media.show._id + '/season/' + media.season_number
+			if (media.__t == "TvShow")
+				return 'tvshow/' + media._id
+			if (media.__t == "Movie")
+				return 'movie/' + media._id
+		}
+		if (activity._action._following){
+			following = activity._action._following;
+			if (following.__t){
+				if (following.__t == "TvShow")
+					return 'tvshow/' + following._id
+				if (following.__t == "Movie")
+					return 'movie/' + following._id
+			}
+			else
+				return 'person/' + following._id
+		}
+	}
+
 	$scope.getActivityImage = function(activity){
 		if(["watched","rated"].includes(activity.action_type)){
 			if(activity._action._media){
@@ -88,6 +263,14 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 				else {
 					return activity._action._media.backdrop_path;
 				}
+			}
+		}
+		else {
+			if(activity._action._following.backdrop_path){
+				return activity._action._following.backdrop_path;
+			}
+			else {
+				return "https://image.tmdb.org/t/p/original" + activity._action._following.image_url;
 			}
 		}
 	}

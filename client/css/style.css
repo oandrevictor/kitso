@@ -9,6 +9,11 @@ html, body {
   font-weight: 300;
   display: block;
   background: #f8f8f8; }
+  .home-content .uk-iconnav {
+    display: inline-flex !important;
+    margin-left: 0px !important; }
+  .home-content .uk-iconnav > * {
+    padding-left: 2px !important; }
   .home-content .episode-button {
     padding: 0%;
     color: #773095;
@@ -17,7 +22,9 @@ html, body {
     font-size: 10px;
     margin-bottom: 2px;
     margin-left: 10px;
-    margin-right: 10px; }
+    margin-right: 10px;
+    padding-left: 8px;
+    padding-right: 8px; }
     .home-content .episode-button.active {
       background: #773095;
       color: white; }
