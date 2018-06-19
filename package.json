@@ -8,6 +8,7 @@
     "dotenv": "^5.0.1",
     "express": "~4.5.1",
     "express-session": "^1.15.6",
+    "filereader": "^0.10.3",
     "jquery": "^3.3.1",
     "method-override": "~2.0.2",
     "moment": "^2.22.1",

@@ -106,9 +106,9 @@ exports.update = function (req, res) {
       if (req.body.gender) user.gender = req.body.gender;
       if (req.body.description) user.description = req.body.description;
       if (req.body.photo) {
-        user.photo = req.body.photo;
-      } else {
-        user.photo = 'http://kitso.herokuapp.com/images/mask2.png';
+        getBase64(req.body.photo).then(
+          data => user.photo = data
+        );
       }
       if (req.body._history) user._history = req.body._history;
       if (req.body._following) user._following = req.body._following;
@@ -132,7 +132,6 @@ exports.update = function (req, res) {
     } else {
       return res.status(RequestStatus.UNAUTHORIZED).send({message: 'You need to be authenticated to edit your user info.' });
     }
-
   });
 };
 
@@ -220,3 +219,12 @@ var createWatchList = function(userId) {
   UserListController.addAndSave(watchlist, userId);
   return watchlist;
 };
+
+var getBase64 = function(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+}

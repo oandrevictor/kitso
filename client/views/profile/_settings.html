@@ -59,13 +59,19 @@
     </div>
 
     <!--Photo Field-->
-    <div class="uk-margin">
-      <label class="uk-form-label" ng-class="{ 'uk-text-danger' : isInvalid(editForm.photo) }" for="name">Photo URL</label>
-      <div class="uk-form-controls">
-        <input class="uk-input" type="text" id="photo" name="photo" placeholder="Photo URL" ng-class="{ 'uk-form-danger' : isInvalid(editForm.photo) }"
-               ng-model="user.photo">
-      </div>
+    <!--<div class="uk-margin">-->
+      <!--<label class="uk-form-label" ng-class="{ 'uk-text-danger' : isInvalid(editForm.photo) }" for="name">Photo URL</label>-->
+      <!--<div class="uk-form-controls">-->
+        <!--<input class="uk-input" type="text" id="photo" name="photo" placeholder="Photo URL" ng-class="{ 'uk-form-danger' : isInvalid(editForm.photo) }"-->
+               <!--ng-model="user.photo">-->
+      <!--</div>-->
+    <!--</div>-->
+
+    <div class="js-upload" uk-form-custom>
+      <input id="file" name="file" type="file" multiple accept=".png, .jpg, .jpeg">
+      <button class="uk-button uk-button-default" type="button" tabindex="-1" ng-model="file">Select Profile Photo</button>
     </div>
+
 
     <button class="uk-button uk-button-small uk-align-center" ng-class="{ 'uk-button-save-changes': editForm.$valid }" ng-disabled="editForm.$invalid">Save Changes</button>
   </form>
