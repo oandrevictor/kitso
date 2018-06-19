@@ -503,6 +503,9 @@ html, body {
     margin-top: -50px;
     margin-bottom: auto;
     font-weight: 300; }
+    .profile .profile-container .uk-checkbox:checked {
+      background-color: #502279 !important;
+      border-color: transparent; }
     .profile .profile-container .button-switcher {
       text-align: right; }
       .profile .profile-container .button-switcher .uk-button {

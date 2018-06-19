@@ -676,6 +676,11 @@ html, body {
     margin-bottom: auto;
     font-weight: 300;
 
+    .uk-checkbox:checked {
+      background-color: #502279 !important;
+      border-color: transparent;
+    }
+
     .button-switcher{
       text-align: right;
 
