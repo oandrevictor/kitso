@@ -315,6 +315,11 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
 
   $scope.submitForm = function () {
     if (this.editForm.$valid) {
+      // var f = document.getElementById('file').files[0];
+      // getBase64(f).then(
+      //   data => $scope.user.photo = data
+      // );
+
       let payload = {
         _id: $scope.user._id,
         name: $scope.user.name,
@@ -322,11 +327,14 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         email: $scope.user.email,
         birthday: $scope.user.birthday,
         gender: $scope.user.gender,
-        description: $scope.user.description
+        description: $scope.user.description,
+        photo: document.getElementById('file').files[0]
       }
 
+      console.log(payload);
+
       UserService.editUser(payload)
-        // handle success
+      // handle success
         .then(function () {
           $scope.descriptionArea = false;
           UIkit.notification({
@@ -334,6 +342,10 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
             status: 'success',
             timeout: 1500
           });
+
+          if (payload.photo == "") {
+            $location.path('/');
+          }
         })
         // handle error
         .catch(function (error) {
@@ -359,6 +371,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
             });
           }
         });
+
     }
   };
 
@@ -417,5 +430,14 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
   $scope.toggleDescriptionArea = function () {
     $scope.descriptionArea = !$scope.descriptionArea;
   }
+
+  // function getBase64(file) {
+  //   return new Promise((resolve, reject) => {
+  //     const reader = new FileReader();
+  //     reader.readAsDataURL(file);
+  //     reader.onload = () => resolve(reader.result);
+  //     reader.onerror = error => reject(error);
+  //   });
+  // }
 
 }]);
