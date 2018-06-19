@@ -12,6 +12,9 @@ router.get('/logout', authController.logout);
 
 router.get('/query', userController.findby);
 
+router.post('/:user_id/timespent', userController.timeSpent);
+
+
 router.get('/:user_id', userController.show);
 
 router.post('/', userController.create);
@@ -20,7 +23,6 @@ router.post('/login', authController.login);
 
 router.post('/email', userController.findByEmail);
 
-router.post('/user/:user_id/timespent', userController.timeSpent);
 
 router.post('/password', userController.updatePassword);
 
