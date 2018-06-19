@@ -68,7 +68,7 @@ exports.followed_activity = async function(req, res) {
     following_list.push(user_id);
 
     all_activitys = []
-    actions = await Action.find({ "_user": { "$in": following_list } });
+    actions = await Action.find({ "_user": { "$in": following_list } }).sort({date: -1}).limit(10);
     promises = actions.map(getActivity);
 
       Promise.all(promises).then(function(results) {
@@ -137,7 +137,7 @@ exports.getFriendsWithWatchedMedia = async function (req, res) {
   let userId = req.query.userId;
   let mediaId = req.query.mediaId;
   let following_list = await Follows.find({_user: userId}).exec();
-  
+
   var watchedPromises = [];
   following_list.forEach((following) => {
     let friendId = following._following;
