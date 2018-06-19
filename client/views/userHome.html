@@ -34,7 +34,6 @@
                   <div class="uk-card-body">
                       <h3 class="uk-card-title">{{getActivityReferedObject(activity).name}}</h3>
                       <p class="overview uk-text-break">
-                      <br>
                         {{getActivityReferedObject(activity).overview.substr(0,140)}}...</p>
                   </div>
               </div>
@@ -47,7 +46,7 @@
         </button>
     <div style="display:inline-block" ng-if="activity._action._media">
       <button class="uk-button uk-button-default episode-button">
-        <span uk-icon="icon: list;"></span> Lists</button>
+        <span uk-icon="icon: list;"></span> Add to List</button>
       <div uk-dropdown="bottom-center; mode: hover" style="z-index: 999">
         <center>
           <div ng-repeat="list in user.lists">

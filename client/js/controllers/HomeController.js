@@ -74,8 +74,9 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 	$scope.getSeasonInfo = function(activity){
 		episode = activity._action._media;
 		seasons = episode.show.seasons;
-		season_number = episode.season_number - 1;
-		return seasons[season_number]
+		season_number = episode.season_number;
+		seasons = seasons.filter(function(season){ return season.season_number == season_number});
+		return seasons[0]
 	}
 
 	$scope.getActivityImage = function(activity){
