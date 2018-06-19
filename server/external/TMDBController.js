@@ -3,6 +3,7 @@ var RequestGenerals = require('../constants/requestGenerals');
 var RedisClient = require('../utils/lib/redisClient');
 var Show = require('../models/TvShow');
 var Movie = require('../models/Movie');
+var Episode = require('../models/Episode');
 
 
 const https = require('https');
@@ -132,6 +133,40 @@ exports.getMovie = function(tmdb_id) {
     })
   });
 };
+
+exports.getEpisode = function(tmdb_id){
+  return new Promise(function(resolve, reject) {
+    console.log("Get episode:" + tmdb_id)
+    Episode.findOne({_tmdb_id: tmdb_id})
+    .catch((err)=> console.log(err))
+    .then(async (result)=>{
+      var query = RequestGenerals.MOVIE_ENDPOINT + tmdb_id;
+      redisClient.exists(query, function(err, reply) {
+        if (reply === 1) {
+          console.log("got query from redis: " + query)
+          redisClient.get(query, async function(err,data) {
+            if (err)
+            console.log(err);
+            else {
+              var parsed_result = JSON.parse(JSON.parse(data));
+              parsed_result.backdrop_path = TMDBConstants.TMDB_BACK_IMAGE_PATH + parsed_result.still_path;
+              resolve(parsed_result);
+            }
+          });
+        } else {
+          console.log(result)
+          exports.getEpisodeFromTMDB(result._tmdb_tvshow_id, result.season_number, result.number).then(async function(data) {
+            var data = JSON.parse(data);
+            data._id = result._id;
+            data.__t = result.__t;
+            resolve(data);
+          })
+        }
+      })
+    })
+  })
+
+}
 
 exports.getMovieFromTMDB = function(tmdb_id){
   return new Promise(function(resolve, reject) {

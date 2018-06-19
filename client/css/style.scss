@@ -9,21 +9,48 @@ html, body {
 .home-content {
     margin-bottom: auto;
     font-weight: 300;
-    height: 90vh;
     display: block;
     background: #f8f8f8;
+
+    .episode-button {
+      padding: 0%;
+      color: #773095;
+      border: 0px;
+      display: inline-block;
+      font-size: 10px;
+      margin-bottom: 2px;
+      margin-left: 10px;
+      margin-right: 10px;
+
+      &.active {
+        background: #773095;
+        color: white;
+      }
+    }
+
+    hr {
+      border-top: 1px solid #f5f5f5 !important;
+    }
+
     .feed {
-      padding-top: 15px;
+      padding-top: 40px;
       background: white;
       padding-bottom: 15px;
 
+      .uk-width-expand {
+        padding-left: 15px;
+      }
+
       article {
-        padding-top: 15px;
-        padding-bottom: 15px;
+        padding-top: 0px;
+        padding-bottom: 0px;
+        header {
+          margin-bottom: 0px;
+        }
       }
 
       .link-action {
-        font-size: 1.1rem;
+        font-size: 1rem;
         font-weight: 400;
         color: #773095;
 
@@ -36,7 +63,7 @@ html, body {
     .user-name {
       margin: 0px;
       display: inline-block;
-      font-size: 1.1rem;
+      font-size: 1rem;
     }
     .user-action {
       margin: 0px;
@@ -45,13 +72,28 @@ html, body {
 }
 
 .home-card {
+  margin-top: 20px !important;
   height: 140px !important;
   .home-card-info {
-    width: 50%;
-
+    width: 55%;
+    .uk-card-title {
+      font-size: 1.1rem;
+    }
+    h3 {
+      margin-bottom: 0px;
+    }
+    p {
+      margin-top: 10px;
+    }
     .uk-card-body {
       padding-top: 0px !important;
+      padding-right: 0px !important;
       }
+    }
+    .overview {
+      height: 100px;
+      text-align: justify;
+      font-size: 0.87rem;
     }
 
 }

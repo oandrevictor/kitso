@@ -18,7 +18,7 @@
   <div class="uk-width-xxlarge content">
     <div class="left-bar uk-width-1-4">
       <img class="poster" style="background-image: url({{ person.profile_path }})" />
-      <button ng-hide="person.followed.is_following" class="uk-button uk-button-default watch-button">
+      <button ng-hide="person.followed.is_following" class="uk-button uk-button-default watch-button" href="#modal-center" uk-toggle>
         <span uk-icon="icon: rss;"></span> Follow</button>
       <div id="modal-center" class="uk-flex-top" uk-modal>
         <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
