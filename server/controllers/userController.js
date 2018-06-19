@@ -9,6 +9,7 @@ var FollowsPage = require('../models/FollowsPage');
 var Action = require('../models/Action');
 var bcrypt = require('bcryptjs');
 var _ = require('underscore');
+var fs = require('fs');
 var mongoose       = require('mongoose');
 var RequestStatus = require('../constants/requestStatus');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
@@ -98,6 +99,7 @@ exports.update = function (req, res) {
     res.status(RequestStatus.BAD_REQUEST).send(err);
   })
   .then((user) => {
+    console.log(req.body);
     if (req.user && req.user._id.toString() === user._id.toString()) {
       if (req.body.name) user.name = req.body.name;
       if (req.body.username) user.username = req.body.username;
@@ -106,9 +108,10 @@ exports.update = function (req, res) {
       if (req.body.gender) user.gender = req.body.gender;
       if (req.body.description) user.description = req.body.description;
       if (req.body.photo) {
-        getBase64(req.body.photo).then(
-          data => user.photo = data
-        );
+        var base64str = base64_encode(req.body.photo);
+        console.log(base64str);
+
+        user.photo = base64str;
       }
       if (req.body._history) user._history = req.body._history;
       if (req.body._following) user._following = req.body._following;
@@ -220,11 +223,10 @@ var createWatchList = function(userId) {
   return watchlist;
 };
 
-var getBase64 = function(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-  });
+// function to encode file data to base64 encoded string
+function base64_encode(file) {
+  // read binary data
+  var bitmap = fs.readFileSync(file);
+  // convert binary data to base64 encoded string
+  return new Buffer(bitmap).toString('base64');
 }
