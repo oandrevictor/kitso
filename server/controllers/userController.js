@@ -113,7 +113,7 @@ exports.update = function (req, res) {
       if (req.body._watchlist) user._watchlist = req.body._watchlist;
       if (req.body._lists) user._lists = req.body._lists;
       if (req.body._ratings) user._ratings = req.body._ratings;
-      user.autowatch = req.body.autowatch;
+      if (req.body.settings.autowatch != undefined) user.settings.autowatch = req.body.settings.autowatch;
 
       user.save(function (err) {
         if (err) {

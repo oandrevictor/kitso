@@ -326,7 +326,7 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
           }
       } else {
         $scope.markEpisodeAsRated(episode, rating);
-        if($scope.user.autowatch & !episode.watched){
+        if($scope.user.settings.autowatch & !episode.watched){
           $scope.markAsWatched(episode);
         }
       }

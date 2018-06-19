@@ -323,7 +323,9 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         birthday: $scope.user.birthday,
         gender: $scope.user.gender,
         description: $scope.user.description,
-        autowatch: $scope.user.autowatch
+        settings: {
+          autowatch: $scope.user.settings.autowatch
+        }
       }
 
       UserService.editUser(payload)
