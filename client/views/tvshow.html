@@ -77,14 +77,18 @@
               <div class="rate-dropdown" uk-dropdown="pos: bottom-center; mode: hover" style="z-index: 999">
                 <center>
                   <ul class="uk-iconnav">
-                    <div ng-repeat="n in range('10')">
+                    <div ng-show="!user.settings.autowatch" ng-repeat="n in range('10')">
+                      <a ng-if="n <= tvshow.rating" class="rating-star" ng-click="rate(tvshow._id, n)"></a>
+                      <a ng-if="n > tvshow.rating" uk-icon="icon: star; ratio: .5" ng-click="rate(tvshow._id, n)"></a>
+                    </div>
+                    <div ng-hide="!user.settings.autowatch" ng-repeat="n in range('10')" uk-toggle="#modal-watchTvshow">
                       <a ng-if="n <= tvshow.rating" class="rating-star" ng-click="rate(tvshow._id, n)"></a>
                       <a ng-if="n > tvshow.rating" uk-icon="icon: star; ratio: .5" ng-click="rate(tvshow._id, n)"></a>
                     </div>
                   </ul>
                 </center>
               </div>
-              <div class="rating-value"> 8.3</div>
+              <div class="rating-value"> {{tvshow.vote_average}}</div>
             </div>
             <p>Created by <b ng-repeat="person in tvshow.created_by">{{ person.name }}; </b> <br />
               Genres: <b ng-repeat="genre in tvshow.genres">{{ genre.name }} </b> /  Runtime: <b>{{tvshow.episode_run_time[0]}} minutes </b></p>
