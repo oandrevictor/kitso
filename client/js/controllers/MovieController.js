@@ -9,7 +9,6 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
           AuthService.getStatus().then(function(){
             $scope.user = AuthService.getUser();
             $scope.movie = MovieService.getMovie();
-            console.log($scope.movie);
             $scope.release_date_formated = moment($scope.movie.release_date).format('YYYY');
 
             WatchedService.isWatched($scope.user._id , $scope.movie._id).then((watched) => {
