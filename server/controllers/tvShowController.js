@@ -10,6 +10,7 @@ var RedisClient = require('../utils/lib/redisClient');
 var TMDBController = require('../external/TMDBController');
 const https = require('https');
 var redisClient = RedisClient.createAndAuthClient();
+var mongoose       = require('mongoose');
 
 // CRUD FUNCTIONS =================================================================================
 
@@ -66,53 +67,63 @@ exports.index = function(req, res) {
 };
 
 exports.show = function(req, res) {
-  Show.findById(req.params.show_id)
-  .catch((err) => {
+  var tvshow;
+  if (mongoose.Types.ObjectId.isValid(req.params.show_id)) {
+    tvshow = Show.findById(req.params.show_id);
+  } else {
+    tvshow = Show.findOne({_tmdb_id: req.params.show_id});
+  }
+
+  tvshow.catch((err) => {
     res.status(RequestStatus.BAD_REQUEST).send(err);
   })
   .then((result) => {
-    var tmdb_id = result._tmdb_id;
-    var query = 'tvshow/' + tmdb_id;
-    redisClient.exists('tvshow/' + tmdb_id, function(err, reply) {
-      if (reply === 1) {
-        redisClient.get(query, async function(err,data) {
-          if(err)
-          console.log(err);
-          else{
-            var parsed_result = JSON.parse(JSON.parse(data));
-            promises = await result._seasons.map(inject_seasons);
-            var actors = result._actors;
-            let actorsPromises = actors.map(injectPersonJson);
+    if (result) {
+      var tmdb_id = result._tmdb_id;
+      var query = 'tvshow/' + tmdb_id;
+      redisClient.exists('tvshow/' + tmdb_id, function(err, reply) {
+        if (reply === 1) {
+          redisClient.get(query, async function(err,data) {
+            if(err)
+            console.log(err);
+            else{
+              var parsed_result = JSON.parse(JSON.parse(data));
+              promises = await result._seasons.map(inject_seasons);
+              var actors = result._actors;
+              let actorsPromises = actors.map(injectPersonJson);
 
-            Promise.all(promises).then(async function(results) {
-              parsed_result._seasons = results;
-              parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
-              parsed_result._id = result._id;
-              parsed_result.__t = result.__t;
-              await Promise.all(actorsPromises).then(function(nested_actors) {
-                parsed_result._actors = nested_actors;
-                parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
-                res.setHeader('Content-Type', 'application/json');
-                res.status(RequestStatus.OK).send(parsed_result);
-              });
+              Promise.all(promises).then(async function(results) {
+                parsed_result._seasons = results;
+                parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
+                parsed_result._id = result._id;
+                parsed_result.__t = result.__t;
+                await Promise.all(actorsPromises).then(function(nested_actors) {
+                  parsed_result._actors = nested_actors;
+                  parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
+                  res.setHeader('Content-Type', 'application/json');
+                  res.status(RequestStatus.OK).send(parsed_result);
+                });
 
+              })
+            }
+          });
+        } else {
+          TMDBController.getShowFromTMDB(tmdb_id).then(async function(data) {
+            var data = JSON.parse(data)
+            var promises = await result._seasons.map(inject_seasons);
+
+            Promise.all(promises).then(function(results) {
+              data._seasons = results;
+              data._id = result._id;
+              data.__t = result.__t;
+              res.status(RequestStatus.OK).send(data);
             })
-          }
-        });
-      } else {
-        TMDBController.getShowFromTMDB(tmdb_id).then(async function(data) {
-          var data = JSON.parse(data)
-          var promises = await result._seasons.map(inject_seasons);
-
-          Promise.all(promises).then(function(results) {
-            data._seasons = results;
-            data._id = result._id;
-            data.__t = result.__t;
-            res.status(RequestStatus.OK).send(data);
           })
-        })
-      }
-    });
+        }
+      });
+    } else {
+      res.status(RequestStatus.NOT_FOUND).send('Media not found.');
+    }
   });
 };
 

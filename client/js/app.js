@@ -100,7 +100,7 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
 
 }]);
 
-angular.module('kitso').run(function ($rootScope, $location, $route, AuthService) {
+angular.module('kitso').run(function ($rootScope, $location, $route, $anchorScroll, AuthService) {
     $rootScope.$on('$routeChangeStart', function (event, next, current) {
       $('.full-loading').show();
         AuthService.getStatus()
@@ -120,4 +120,10 @@ angular.module('kitso').run(function ($rootScope, $location, $route, AuthService
             }
         });
     });
+
+    $rootScope.$on('$routeChangeSuccess',function() {
+        console.log('oi')
+        $("html, body").animate({ scrollTop: 0 }, 500); 
+    });
+
 });

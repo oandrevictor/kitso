@@ -9,9 +9,10 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
           AuthService.getStatus().then(function(){
             $scope.user = AuthService.getUser();
             $scope.movie = MovieService.getMovie();
+            console.log($scope.movie);
             $scope.release_date_formated = moment($scope.movie.release_date).format('YYYY');
 
-            WatchedService.isWatched($scope.user._id ,$routeParams.movie_id).then((watched) => {
+            WatchedService.isWatched($scope.user._id , $scope.movie._id).then((watched) => {
                 $scope.movie.watched = watched;
                 if (! watched.watched_id)
                   $scope.movie.watched = false;
@@ -22,7 +23,7 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
                   timeout: 2500
               });
             });
-            RatedService.isRated($scope.user._id ,$routeParams.movie_id).then((rated) => {
+            RatedService.isRated($scope.user._id ,$scope.movie._id).then((rated) => {
                 $scope.movie.rated = rated;
                 if (! rated.rated_id){
                   $scope.movie.rated = false;
@@ -45,7 +46,7 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
                   timeout: 2500
               });
             });
-            FollowService.isFollowingPage($scope.user._id ,$routeParams.movie_id).then((followed) => {
+            FollowService.isFollowingPage($scope.user._id ,$scope.movie._id).then((followed) => {
               $scope.movie.followed = followed;
             }).catch((error) => {
               UIkit.notification({
@@ -54,7 +55,7 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
                   timeout: 2500
               });
             });
-            FollowService.countFollowers($routeParams.movie_id).then((count) => {
+            FollowService.countFollowers($scope.movie._id).then((count) => {
               $scope.movie.followers = count;
             }).catch((error) => {
               UIkit.notification({
@@ -88,10 +89,11 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
         })
         .catch((error) => {
             UIkit.notification({
-                message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                message: '<span uk-icon=\'icon: check\'></span> ' + error,
                 status: 'danger',
                 timeout: 2500
             });
+            $location.path('/explore');
         });
 
 
@@ -220,7 +222,7 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
     }
 
   $scope.editionMode = function () {
-    $location.path('movie/edit/' + $routeParams.movie_id);
+    $location.path('movie/edit/' + $scope.movie._id.movie_id);
   }
 
   $scope.rate = function(movieId, rating){
