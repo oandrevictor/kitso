@@ -1,0 +1,38 @@
+<li>
+  <div class="uk-margin">
+  </div>
+  <ul class="uk-list uk-list-divider">
+    <p class="uk-text-medium bold">Users</p>
+    <div ng-if="user.following.length == 0">
+      <br>You are not following any user yet.
+    </div>
+    <li ng-repeat="following in user.following">
+      <div class="following-list" uk-grid>
+        <div class="uk-width-expand">
+          <a ng-href="/user/{{following._id}}" class="following-link">
+            {{ following.name }}</a>
+        </div>
+        <div class="uk-width-auto">
+          <div ng-if="canEdit()" class="follow-button" ng-click="unfollow_user(following)">
+            <span uk-icon="icon: rss; ratio: 0.5"></span> Unfollow</div>
+        </div>
+      </div>
+    </li>
+    <p class="uk-text-medium bold">Pages</p>
+    <div ng-if="user.following_pages.length == 0">
+      <br>You are not following any page yet.
+    </div>
+    <li ng-repeat="following_page in user.following_pages">
+      <div class="following-list" uk-grid>
+        <div class="uk-width-expand">
+          <a ng-click="goToPage(following_page)" class="following-link">
+            {{ following_page.name }}</a>
+        </div>
+        <div class="uk-width-auto">
+          <div ng-if="canEdit()" class="follow-button" ng-click="unfollow_page(following_page)">
+            <span uk-icon="icon: rss; ratio: 0.5"></span> Unfollow</div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</li>

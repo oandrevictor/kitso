@@ -1,0 +1,57 @@
+<div class="profile">
+  <!--Cover Content-->
+  <div class="uk-background-cover" align="center" style="background-image: url({{profileBackground}})">
+    <img class="profile-image" src="/images/mask2.png" width="140" height="140">
+    <p class="uk-text-large profile-name">{{ user.name }}</p>
+    <div ng-if="!canEdit()" ng-hide="user.followed.following_id" class="follow-button" ng-click="follow(user)">
+      <span uk-icon="icon: rss; ratio: 0.5"></span> Follow</div>
+    <div ng-show="user.followed.following_id" class="follow-button" ng-click="unfollow(user)">
+      <span uk-icon="icon: rss; ratio: 0.5"></span> Following </div>
+
+    <p class="uk-text-small profile-username">@{{ user.username }}</p>
+  </div>
+  <!--Card Content-->
+  <div class="uk-width-xxlarge uk-container profile-container">
+    <div class="uk-card uk-card-small uk-card-default uk-card-body uk-container-center">
+      <ul class="uk-tab" data-uk-tab="{connect:'#tab-id'}">
+        <li>
+          <a>Overview</a>
+        </li>
+        <li>
+          <a>Watched</a>
+        </li>
+        <li>
+          <a>Ratings</a>
+        </li>
+        <li>
+          <a>Following</a>
+        </li>
+        <li>
+          <a>Followers</a>
+        </li>
+        <li ng-if="canEdit()">
+          <a>Settings</a>
+        </li>
+      </ul>
+      <ul id="tab-id" class="uk-switcher uk-margin">
+        <!--Overview-->
+        <ng-include src="'views/profile/_overview.html'"></ng-include>
+
+        <!--Watched-->
+        <ng-include src="'views/profile/_watched.html'"></ng-include>
+
+        <!--Ratings-->
+        <ng-include src="'views/profile/_ratings.html'"></ng-include>
+
+        <!--Following-->
+        <ng-include src="'views/profile/_following.html'"></ng-include>
+
+        <!--Followers-->
+        <ng-include src="'views/profile/_followers.html'"></ng-include>
+
+        <!--Settings-->
+        <ng-include ng-if="canEdit()" src="'views/profile/_settings.html'"></ng-include>
+      </ul>
+    </div>
+  </div>
+</div>

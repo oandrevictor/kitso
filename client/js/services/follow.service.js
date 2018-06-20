@@ -15,7 +15,10 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
         isFollowingPage: isFollowingPage,
         isFollowingUser: isFollowingUser,
         followPage: followPage,
-        followUser: followUser
+        followUser: followUser,
+        countFollowers: countFollowers,
+        friendsWatchingMedia: friendsWatchingMedia,
+        friendsWatchingTvshow: friendsWatchingTvshow
     });
 
     function getFollowing(userId, url){
@@ -132,7 +135,7 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
         $http.get('/api/followsPage/is_following?user_id='+ userId + "&following_id=" + mediaId)
             .then((response) => {
                 if (response.status === 200) {
-                    watched = response.data.is_watched;
+                    followed = response.data.is_following;
                     deferred.resolve(response.data);
                 } else {
                     deferred.reject();
@@ -162,7 +165,7 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
         return deferred.promise;
     }
 
-    function followPage(userId, object, date = moment()) {
+    function followPage(userId, object, is_private) {
         var deferred = $q.defer();
         var data = {};
 
@@ -170,16 +173,17 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
             var data = {
                 "_user": userId,
                 "_following": object._id,
+                "is_private": is_private,
                 "is_media" : true
             };
         } else {
             var data = {
                 "_user": userId,
                 "_following": object._id,
+                "is_private": is_private,
                 "is_media" : false
             };
         }
-        
 
         $http.post('/api/followsPage/', data)
             .then((response) => {
@@ -236,4 +240,63 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
 
       return deferred.promise;
     }
+
+    function countFollowers(pageId, url){
+      var deferred = $q.defer();
+      $http.get('api/followsPage/following_me?page_id=' + pageId)
+          .then((response) => {
+              if (response.status === 200) {
+                  count = response.data.length;
+                  deferred.resolve(count);
+              } else {
+                  deferred.reject();
+              }
+          })
+          .catch((error) => {
+              deferred.reject(error.data);
+          });
+      return deferred.promise;
+
+    }
+    function friendsWatchingMedia(userId, mediaId) {
+        var deferred = $q.defer();
+
+        $http.get('/api/follows/is_watching_media?userId=' + userId + '&mediaId=' + mediaId)
+            .then((response) => {
+                if (response.status === 200) {
+                    deferred.resolve(response.data);
+                } else {
+                    deferred.reject();
+                }
+            })
+            .catch((error) => {
+                deferred.reject(error.data);
+            });
+
+        return deferred.promise;
+    }
+
+
+    function friendsWatchingTvshow(userId, seasonEpisodesIds) {
+        var deferred = $q.defer();
+
+        var data = {
+            seasonEpisodesIds: seasonEpisodesIds
+        }
+
+        $http.post('/api/follows/is_watching_tvshow?userId=' + userId, data)
+            .then((response) => {
+                if (response.status === 200) {
+                    deferred.resolve(response.data);
+                } else {
+                    deferred.reject();
+                }
+            })
+            .catch((error) => {
+                deferred.reject(error.data);
+            });
+
+        return deferred.promise;
+    }
+
 }]);

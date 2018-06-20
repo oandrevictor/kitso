@@ -5,6 +5,109 @@ html, body {
   overflow-x: hidden;
   height: 100%;
 }
+
+.home-content {
+    margin-bottom: auto;
+    font-weight: 300;
+    display: block;
+    background: #f8f8f8;
+
+    .uk-iconnav {
+      display: inline-flex !important;
+      margin-left: 0px !important;
+    }
+
+    .uk-iconnav>*{
+      padding-left: 2px !important;
+    }
+
+    .episode-button {
+      padding: 0%;
+      color: #773095;
+      border: 0px;
+      display: inline-block;
+      font-size: 10px;
+      margin-bottom: 2px;
+      margin-left: 10px;
+      margin-right: 10px;
+      padding-left: 8px;
+      padding-right: 8px;
+
+      &.active {
+        background: #773095;
+        color: white;
+      }
+    }
+
+    hr {
+      border-top: 1px solid #f5f5f5 !important;
+    }
+
+    .feed {
+      padding-top: 40px;
+      background: white;
+      padding-bottom: 15px;
+
+      .uk-width-expand {
+        padding-left: 15px;
+      }
+
+      article {
+        padding-top: 0px;
+        padding-bottom: 0px;
+        header {
+          margin-bottom: 0px;
+        }
+      }
+
+      .link-action {
+        font-size: 1rem;
+        font-weight: 400;
+        color: #773095;
+
+        &:hover {
+          text-decoration: none;
+          font-weight: bold;
+        }
+      }
+    }
+    .user-name {
+      margin: 0px;
+      display: inline-block;
+      font-size: 1rem;
+    }
+    .user-action {
+      margin: 0px;
+      display: inline-block;
+    }
+}
+
+.home-card {
+  margin-top: 20px !important;
+  height: 140px !important;
+  .home-card-info {
+    width: 55%;
+    .uk-card-title {
+      font-size: 1.1rem;
+    }
+    h3 {
+      margin-bottom: 0px;
+    }
+    p {
+      margin-top: 10px;
+    }
+    .uk-card-body {
+      padding-top: 0px !important;
+      padding-right: 0px !important;
+      }
+    }
+    .overview {
+      height: 100px;
+      text-align: justify;
+      font-size: 0.87rem;
+    }
+
+}
 .uk-tab>*{
   margin-right: auto;
   margin-left: auto;
@@ -36,7 +139,7 @@ html, body {
   background: black;
   .main-container {
     text-align: center;
-    width: 100vw;
+    width: 100%;
     height: 90vh;
     background-color: black;
     .transparet-background{
@@ -448,7 +551,7 @@ html, body {
     margin-left: auto;
     margin-right: auto;
     margin-top: auto;
-    margin-bottom: auto;
+    margin-bottom: 20px;
     padding-top: 0px !important;
     display: inline-block;
   }
@@ -518,6 +621,13 @@ html, body {
     background-size:cover;
     width: 300px;
     height: 150px;
+    cursor: pointer;
+  }
+
+  .favorite-movie-title {
+    cursor: pointer;
+    background: #773095 !important;
+    color: white;
   }
 
   .uk-overlay {
@@ -565,6 +675,11 @@ html, body {
     margin-top: -50px;
     margin-bottom: auto;
     font-weight: 300;
+
+    .uk-checkbox:checked {
+      background-color: #502279 !important;
+      border-color: transparent;
+    }
 
     .button-switcher{
       text-align: right;
@@ -656,6 +771,10 @@ html, body {
   }
 
   .rating {
+    .rate-dropdown {
+      padding: 25px;
+    }
+
     .is-rated-star {
       background: url("/images/icon/white-star.svg") center no-repeat;
       background-size: 40px;
@@ -697,8 +816,55 @@ html, body {
     position: relative;
   }
 
-  .uk-dotnav {
+  .slider-page {
+    margin-top: -20px;
+    margin-bottom: 25px;
+  }
+
+  .uk-dropdown {
+    padding: 5px;
+  }
+
+  .uk-grid-margin, .uk-grid+.uk-grid, .uk-grid>.uk-grid-margin {
+    margin-top: 10px;
     margin-bottom: 10px;
+  }
+
+  .slider-button-cast {
+    background: rgba(0, 0, 0, 0.31);
+    padding-top: 77px;
+    padding-bottom: 74px;
+    padding-right:  3px;
+    padding-left:  3px;
+    margin-top: 4px;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+
+  .friend {
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    .friendImage {
+      padding-left: 20px;
+      padding-bottom: 0px;
+    }
+
+    .friendContent{
+      padding-left: 10px;
+      padding-bottom: 0px;
+      padding-top: 0px;
+    }
+
+    .friendName {
+      margin-bottom: 0px;
+      font-size: 16px;
+    }
+
+    .friendLink {
+      font-size: 14px;
+      color: #773095;
+    }
   }
 
   .title {
@@ -722,6 +888,10 @@ html, body {
     font-weight: 100;
     padding-right: 20px;
     display: flex;
+
+    .rate-dropdown {
+      padding: 25px;
+    }
 
     .is-rated-star {
       background: url("/images/icon/white-star.svg") center no-repeat;
@@ -830,6 +1000,16 @@ html, body {
       overflow: hidden;
     }
   }
+
+  .slider-page {
+    margin-top: -20px;
+    margin-bottom: 25px;
+  }
+
+  .uk-dropdown {
+    padding: 5px;
+  }
+
   .episode-button {
     width: 120px;
     padding: 0%;
@@ -884,8 +1064,61 @@ html, body {
     position: relative;
   }
 
-  .uk-dotnav {
+  .uk-dropdown {
+    padding: 5px;
+  }
+
+  .uk-grid-margin, .uk-grid+.uk-grid, .uk-grid>.uk-grid-margin {
+    margin-top: 10px;
     margin-bottom: 10px;
+  }
+
+  .slider-button-cast {
+    background: rgba(0, 0, 0, 0.31);
+    padding-top: 77px;
+    padding-bottom: 74px;
+    padding-right:  3px;
+    padding-left:  3px;
+    margin-top: 4px;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+
+  .slider-button-season {
+    background: rgba(0, 0, 0, 0.31);
+    padding-top: 121px;
+    padding-bottom: 121px;
+    padding-right:  3px;
+    padding-left:  3px;
+    margin-top: 4px;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+
+  .friend {
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    .friendImage {
+      padding-left: 20px;
+      padding-bottom: 0px;
+    }
+
+    .friendContent{
+      padding-left: 10px;
+      padding-bottom: 0px;
+      padding-top: 0px;
+    }
+
+    .friendName {
+      margin-bottom: 0px;
+      font-size: 16px;
+    }
+
+    .friendLink {
+      font-size: 14px;
+      color: #773095;
+    }
   }
 
   .poster {
@@ -920,6 +1153,10 @@ html, body {
     font-weight: 100;
     padding-right: 20px;
     display: flex;
+
+    .rate-dropdown {
+      padding: 25px;
+    }
 
     .is-rated-star {
       background: url("/images/icon/white-star.svg") center no-repeat;
@@ -1041,6 +1278,15 @@ html, body {
     position: relative;
   }
 
+  .slider-page {
+    margin-top: -20px;
+    margin-bottom: 25px;
+  }
+
+  .title {
+    display: contents !important;
+  }
+
   .uk-card-body {
     padding: 6%;
   }
@@ -1081,14 +1327,24 @@ html, body {
     margin-top: -92px;
   }
 
+  .slider-button-appears {
+    background: rgba(0, 0, 0, 0.31);
+    padding-top: 121px;
+    padding-bottom: 121px;
+    padding-right:  3px;
+    padding-left:  3px;
+    margin-top: 4px;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+
   .poster {
     display:block;
-    background: url("/images/person-edited.png");
     background: #502274;
     background-repeat:no-repeat;
     background-size:cover;
     width: 191px;
-    height: 240px;
+    height: 275px;
     overflow:hidden;
     box-shadow: 0 0px 10px rgba(0,0,0,0.1);
     border: 4px solid white;
@@ -1126,5 +1382,177 @@ html, body {
     margin-top: 0px;
     margin-bottom: 0px;
     font-size: 14px;
+  }
+}
+
+.userlist{
+  font-family: 'Roboto' !important;
+  .uk-background-cover {
+    z-index: -1;
+    background: url("/images/It-Follows-background.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    overflow-y: visible !important;
+    height: 30vh;
+    display: block;
+    color: #ffffff !important;
+    padding-bottom: 0px !important;
+    padding-top: 4%;
+    position: relative;
+  }
+
+  .purple-bar {
+    display: flex;
+    height: 160px !important;
+    background: black;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.7));
+    color: white;
+    height: 3em;
+    margin-top: -160px;
+    .bar-content {
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 70px;
+      margin-bottom: auto;
+      padding-top: 0px !important;
+      display: inline-block;
+    }
+  }
+
+  .w-79{
+    width: 79% !important;
+  }
+
+  .poster {
+    display:block;
+    background: #502274;
+    background-repeat:no-repeat;
+    background-size:cover;
+    background-position: center center;
+    width: 225px;
+    height: 309px;
+  }
+
+  .page-link {
+    text-decoration: none;
+    color:  #773095 !important;
+  }
+
+  .title {
+    font-size: 4vh;
+    font-weight: 100;
+    margin-left: auto;
+    margin-right: auto;
+    display: inline-block;
+  }
+
+  .description {
+    text-align: justify;
+    width: 540px;
+  }
+
+  .section {
+    margin-top: 8px;
+    margin-bottom: 4px;
+  }
+
+  .section-title {
+    font-size: 2.5vh;
+    color: #773095;
+    font-weight: 100;
+  }
+
+  .uk-card-primary {
+    background: #fff;
+    box-shadow: none;
+
+    .uk-grid {
+      padding-left: 0px;
+    }
+
+    .uk-text {
+      color: #666 !important;
+    }
+
+    .uk-text-muted {
+      color: #999 !important;
+    }
+
+    .uk-card-body {
+      padding-left: 0px;
+      padding-right: 0px;
+      padding-top: 5px;
+
+      .uk-width-4-5 {
+        width: 79%;
+      }
+
+      .uk-grid {
+        padding-left: 0px;
+        padding-right: 3px;
+      }
+
+      .uk-text-muted {
+        color: #999 !important;
+      }
+
+      .more {
+        padding-left: 1px;
+        padding-right: 4px;
+        color: #666 !important;
+      }
+    }
+  }
+
+  .uk-dropdown-nav {
+    .modal-icon {
+      padding: 0px;
+      color: #666 !important;
+      border: none !important;
+    }
+  }
+
+  p {
+    margin-top: 5px;
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+
+  .action-button {
+    padding-left: 20px;
+    display: block;
+    width: 191px;
+    border: 1px solid #773095;
+    font-size: 10px !important;
+    color: #773095;
+    background: white;
+  }
+
+  .uk-icon {
+    padding-right: 2px;
+  }
+
+  .uk-dropdown {
+    padding: 3px;
+  }
+
+  .uk-button{
+    margin: 3px;
+  }
+
+  .change-button {
+    padding: 1px;
+  }
+
+  .rankValue {
+    width: 50px;
+    height: 36px;
+    border: 1px solid #cccccc;
+    text-align: right;
+  }
+
+  .save-button {
+    width: 90%;
   }
 }

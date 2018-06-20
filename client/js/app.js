@@ -1,4 +1,4 @@
-angular.module('kitso', ['ngRoute', 'appRoutes']);
+angular.module('kitso', ['ngRoute', 'appRoutes', 'ngSanitize']);
 angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
 
     $routeProvider
@@ -41,13 +41,18 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
         })
         // profile page
         .when('/profile', {
-            templateUrl: 'views/profile.html',
+            templateUrl: 'views/profile/profile.html',
             controller: 'ProfileController',
             access: { restricted: true }
         })
         .when('/user/:user_id', {
-            templateUrl: 'views/profile.html',
+            templateUrl: 'views/profile/profile.html',
             controller: 'ProfileController',
+            access: { restricted: true }
+        })
+        .when('/user/list/:userlist_id', {
+            templateUrl: 'views/userlist.html',
+            controller: 'UserListController',
             access: { restricted: true }
         })
         .when('/tvshow/:tvshow_id', {
@@ -110,7 +115,7 @@ angular.module('kitso').run(function ($rootScope, $location, $route, AuthService
                 });
                 $route.reload();
             } else if (!next.access.restricted && AuthService.isLogged()) {
-                $location.path('/profile');
+                $location.path('/home');
                 $route.reload();
             }
         });

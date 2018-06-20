@@ -17,6 +17,7 @@
   <!-- JS -->
   <script src="libs/angular/angular.js"></script>
   <script src="libs/angular-route/angular-route.min.js"></script>
+  <script src="libs/angular/angular-sanitize.min.js"></script>
 
   <!-- UIkit JS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.42/js/uikit.min.js"></script>
@@ -35,6 +36,7 @@
   <script src="js/controllers/MovieController.js"></script>
   <script src="js/controllers/MovieEditController.js"></script>
   <script src="js/controllers/UserController.js"></script>
+  <script src="js/controllers/UserListController.js"></script>
   <script src="js/controllers/PersonController.js"></script>
   <script src="js/controllers/PersonEditController.js"></script>
   <script src="js/controllers/SeasonController.js"></script>
@@ -47,8 +49,10 @@
   <script src="js/services/watched.service.js"></script>
   <script src="js/services/follow.service.js"></script>
   <script src="js/services/user.service.js"></script>
+  <script src="js/services/userlist.service.js"></script>
   <script src="js/services/person.service.js"></script>
   <script src="js/services/rated.service.js"></script>
+  <script src="js/services/feed.service.js"></script>
 
   <script src="js/lib/moment.js"></script>
 </head>
@@ -59,7 +63,7 @@
       <a href="/"class="logo"> Kitso</a>
       <div  ng-show="isLogged()" class="exploring">
         <a ng-href="/explore" ><button  class="uk-button uk-button-default explore-icon"></button></a>
-        <a ng-href="/" ><button  class="uk-button uk-button-default home-icon"></button></a>
+        <a ng-href="/home" ><button  class="uk-button uk-button-default home-icon"></button></a>
         <a ng-href="/profile" ><button  class="uk-button uk-button-default profile-icon"></button></a>
       </div>
 

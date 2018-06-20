@@ -4,6 +4,11 @@ var User = require('../models/User');
 var RequestStatus = require('../constants/requestStatus');
 var RequestMsg = require('../constants/requestMsg');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
+var RedisClient = require('../utils/lib/redisClient');
+var TMDBController = require('../external/TMDBController');
+
+const redisClient = RedisClient.createAndAuthClient();
+const https = require('https');
 
 
 // CRUD USERLIST ==================================================================================
@@ -13,7 +18,7 @@ exports.show = async function(req, res) {
     let userListId = req.params.userlist_id;
     let userList = await DataStoreUtils.getUserListById(userListId);
     let itens = userList.itens;
-    let promises = itens.map(injectMediaJsonInItemList);
+    let promises = itens.map(injectDataFromTmdb);
     Promise.all(promises).then(function(results) {
       results.sort(sortUserListByRank);
       userList.itens = results;
@@ -85,6 +90,7 @@ exports.addItem = async function(req, res) {
     let itens = userList.itens;
     let lastListIndex = itens.length;
     let newItem = new ListItem({
+      date: req.body.date,
       ranked: lastListIndex + 1,
       _media: req.body._media
     });
@@ -131,6 +137,7 @@ exports.changeItemRank = async function(req, res) {
     let userList = await DataStoreUtils.getUserListById(userListId);
     let itens = userList.itens;
     changeRank(req.body.current_rank, req.body.new_rank, itens);
+    userList.markModified('itens');
     await saveUserList(userList);
     res.status(RequestStatus.OK).json(userList);
   } catch(err) {
@@ -144,6 +151,11 @@ exports.changeItemRank = async function(req, res) {
 
 
 // AUXILIARY FUNCTIONS ============================================================================
+
+exports.addAndSave = async function(userList, userId){
+  await saveUserList(userList);
+  await addListToUserLists(userList._id, userId);
+}
 
 var saveUserList = function(userList) {
   return userList.save();
@@ -177,11 +189,26 @@ var userHasList = function(user, listId) {
   return userHasList;
 };
 
-var injectMediaJsonInItemList = async function(item) {
-  let mediaId = item._media;
-  let mediaObj = await DataStoreUtils.getMediaObjById(mediaId);
-  item._media = mediaObj;
-  return item;
+var injectDataFromTmdb = async function(item) {
+  let itemJson = JSON.parse(JSON.stringify(item));
+  let mediaId = itemJson._media;
+  let mediaObj= await DataStoreUtils.getMediaObjById(mediaId);
+  if (mediaObj.__t == "Movie") {
+    itemJson._media = await TMDBController.getMovie(mediaObj._tmdb_id);
+  } else if  (mediaObj.__t == "Episode") {
+    response = await TMDBController.getEpisodeFromTMDB(mediaObj._tmdb_tvshow_id, mediaObj.season_number, mediaObj.number);
+    itemJson._media = JSON.parse(response)
+  } else if (mediaObj.__t == "TvShow") {
+    itemJson._media = await TMDBController.getShow(mediaObj._tmdb_id);
+  } if (mediaObj.__t == "Season") {
+    tv_show = await DataStoreUtils.getMediaObjById(mediaObj._tvshow_id);
+    response = await TMDBController.getSeasonFromAPI(tv_show._tmdb_id, mediaObj.number);
+    itemJson._media = JSON.parse(response)
+  }
+  itemJson._media.__t = mediaObj.__t;
+  itemJson._media._id = mediaObj._id;
+
+  return itemJson;
 };
 
 var removeRankedItemFromList = function(itemToRemoveRank, itens) {

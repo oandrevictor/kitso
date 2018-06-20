@@ -1,7 +1,7 @@
- var kitso = angular.module('kitso');
+var kitso = angular.module('kitso');
 
-kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$routeParams', 'AuthService', 'UserService', 'FollowService', 'WatchedService', 'RatedService',
-function ($scope, $location, $timeout, $routeParams, AuthService, UserService, FollowService, WatchedService, RatedService) {
+kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$routeParams', 'AuthService', 'UserService', 'FollowService', 'WatchedService', 'RatedService', 'UserListService',
+function ($scope, $location, $timeout, $routeParams, AuthService, UserService, FollowService, WatchedService, RatedService, UserListService) {
 
   $('.full-loading').show();
   var loaded = 0;
@@ -15,6 +15,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
           loadUserRatedInfo();
           loadUserFollowInfo();
           loadUserWatchedInfo();
+          loadUserLists();
           FollowService.isFollowingUser($scope.logged_user._id, $scope.user._id).then((followed) => {
             $scope.user.followed = followed;
           }).catch((error) => {
@@ -34,6 +35,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         loadUserRatedInfo();
         loadUserFollowInfo();
         loadUserWatchedInfo();
+        loadUserLists();
       }
     });
 
@@ -45,7 +47,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
   }
 
   var checkFinishedLoading = function(){
-    if (loaded >=2) {
+    if (loaded > 2) {
       $('.full-loading').hide();
     }
   }
@@ -58,11 +60,11 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         });
         watched = watched.sort(compareDates);
         $scope.user.watched = watched;
-        loaded +=1;
+        loaded++;
         checkFinishedLoading();
 
       }).catch(function (error) {
-        loaded +=1;
+        loaded++;
         checkFinishedLoading();
         console.log(error);
       })
@@ -106,6 +108,28 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
       }).catch(function(error){
           console.log(error);
       })
+  }
+
+  var loadUserLists = function(){
+    var lists = [];
+    $scope.user._lists.forEach((listId) => {
+      UserListService.loadUserList(listId).then( function(){
+        lists.push(UserListService.getUserList());
+      }).catch(function(error){
+        console.log(error);
+      })
+    });
+    $scope.user.lists = lists;
+    UserListService.loadUserList($scope.user._watchlist).then( function(){
+      $scope.user.watchlist = UserListService.getUserList();
+      loaded++;
+      checkFinishedLoading();
+
+    }).catch(function(error){
+      loaded++;
+      checkFinishedLoading();
+      console.log(error);
+    });
   }
 
   function isMovie(rating) {
@@ -209,6 +233,19 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
     }
   }
 
+  $scope.getListBackground = function(userlist){
+    var addedMovies = [];
+    userlist.itens.forEach((item) => {
+      addedMovies.push(item._media);
+    });
+
+    if (addedMovies.length > 0) {
+      return addedMovies[0].backdrop_path;
+    } else {
+      return "/images/budapest.jpg";
+    }
+  }
+
   $scope.range = function(count){
       var ratings = [];
       for (var i = 0; i < count; i++) {
@@ -277,9 +314,21 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
   }
 
   $scope.submitForm = function () {
+    if (this.editForm.$valid) {
+      let payload = {
+        _id: $scope.user._id,
+        name: $scope.user.name,
+        username: $scope.user.username,
+        email: $scope.user.email,
+        birthday: $scope.user.birthday,
+        gender: $scope.user.gender,
+        description: $scope.user.description,
+        settings: {
+          autowatch: $scope.user.settings.autowatch
+        }
+      }
 
-    if ($scope.editForm.$valid) {
-      UserService.editUser($scope.user)
+      UserService.editUser(payload)
         // handle success
         .then(function () {
           $scope.descriptionArea = false;
@@ -317,8 +366,8 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
   };
 
   $scope.deleteAccount = function () {
-    if ($scope.deleteForm.$valid && $scope.confirmationText($scope.delete.text)) {
-      AuthService.deleteUser($scope.user._id, $scope.delete.password)
+    if (this.deleteForm.$valid && $scope.confirmationText(this.delete.text)) {
+      AuthService.deleteUser($scope.user._id, this.delete.password)
         .then(() => {
           UIkit.notification({
             message: '<span uk-icon=\'icon: check\'></span> Account deleted. Good Bye :(',
@@ -355,6 +404,10 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
     }
   };
 
+  $scope.goToList = function (listId) {
+    $location.path('user/list/' + listId);
+  }
+
   $scope.isInvalid = function (field) {
     return (field.$invalid && !field.$pristine);
   };
@@ -363,12 +416,9 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
     return text === 'I know this is a permanent action';
   }
 
-  //$scope.descriptionArea = false;
+  $scope.descriptionArea = false;
   $scope.toggleDescriptionArea = function () {
     $scope.descriptionArea = !$scope.descriptionArea;
   }
-
-
-
 
 }]);

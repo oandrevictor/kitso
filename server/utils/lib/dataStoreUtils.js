@@ -3,12 +3,14 @@ var Person = require('../../models/Person');
 var Media = require('../../models/Media');
 var Action = require('../../models/Action');
 var User = require('../../models/User');
+var Follows = require('../../models/Follows');
 var FollowsPage = require('../../models/FollowsPage');
 var Rated = require('../../models/Rated');
 var Watched = require('../../models/Watched');
 var Utils = require('./utils');
 var UserList = require('../../models/UserList');
 var ActionType = require('../../constants/actionType');
+var TMDBController = require('../../external/TMDBController');
 
 
 // CREATE =========================================================================================
@@ -52,6 +54,51 @@ exports.addPersonToMediaCast = function(personId, mediaId) {
 
 
 // GET ============================================================================================
+getMediaWithInfoFromDB = async function(media_obj){
+  if (media_obj.__t == "Movie"){
+    var media = await TMDBController.getMovie(media_obj._tmdb_id).then(function(movie){
+      movie._id = media_obj._id;
+      movie.__t = media_obj.__t;
+      return movie;
+    }).catch(function(result){
+      return result;
+    })
+    return media;
+  }
+  else if (media_obj.__t == "TvShow"){
+    media = await TMDBController.getShow(media_obj._tmdb_id).then(function(tvshow){
+      tvshow._id = media_obj._id;
+      tvshow.__t = media_obj.__t;
+      return tvshow;
+    }).catch(function(result){
+      return result;
+    })
+    return media;
+  }
+  else if (media_obj.__t == "Episode"){
+    media = await TMDBController.getEpisode(media_obj._tmdb_id).then(function(episode){
+      episode._id = media_obj._id;
+      episode.__t = media_obj.__t;
+      return episode;
+    }).catch(function(result){
+      return result;
+    })
+
+    show = await TMDBController.getShow(media_obj._tmdb_tvshow_id).then(function(tvshow){
+      tvshow._id = media_obj._tvshow_id;
+      return tvshow;
+    }).catch(function(result){
+      return result;
+    })
+    media.show = show;
+    return media;
+  }
+  else {
+    return media_obj;
+  }
+
+
+}
 
 exports.getActionByTypeAndId = async function(type, id) {
   if (type == ActionType.RATED) {
@@ -62,6 +109,50 @@ exports.getActionByTypeAndId = async function(type, id) {
     return Follows.findById(id).exec();
   } else if (type == ActionType.FOLLOWED_PAGE) {
     return FollowsPage.findById(id).exec();
+  } else {
+    let errorMsg = "There is no such action type!";
+    throw new Erro(errorMsg);
+  }
+};
+
+exports.getActionByTypeAndIdWithDetails = async function(type, id) {
+  if (type == ActionType.RATED) {
+    rating = await Rated.findById(id).exec();
+    media_obj = await Media.findById(rating._media).exec();
+    media_obj = await getMediaWithInfoFromDB(media_obj);
+
+    rating_copy = JSON.parse(JSON.stringify(rating));
+    rating_copy._media = media_obj;
+    return rating_copy;
+  } else if (type == ActionType.WATCHED) {
+    watched = await Watched.findById(id).exec();
+    media_obj = await Media.findById(watched._media).exec();
+    media_obj = await getMediaWithInfoFromDB(media_obj);
+
+    watched_copy = JSON.parse(JSON.stringify(watched));
+    watched_copy._media = media_obj;
+    return watched_copy;
+  } else if (type == ActionType.FOLLOWED_USER) {
+    follow = await Follows.findById(id).exec();
+    user_obj = await User.findById(follow._following);
+
+    follow_copy = follow;
+    follow_copy._following = user_obj;
+    return follow_copy;
+  } else if (type == ActionType.FOLLOWED_PAGE) {
+    followPage = await FollowsPage.findById(id).exec();
+    let obj;
+
+    if (followPage.is_media) {
+      obj = await Media.findById(followPage._following).exec();
+      obj = await getMediaWithInfoFromDB(obj);
+    } else {
+      obj = await Person.findById(followPage._following).exec();
+    }
+
+    followPage_copy = JSON.parse(JSON.stringify(followPage));
+    followPage_copy._following = obj;
+    return followPage_copy;
   } else {
     let errorMsg = "There is no such action type!";
     throw new Erro(errorMsg);
@@ -111,6 +202,10 @@ exports.getWatchedByMediaId = async function(mediaId) {
 
 exports.getWatchedByUserId = async function(userId) {
   return Watched.find({_user: userId}).exec();
+};
+
+exports.getWatchedByUserIdAndMediaId = async function(userId, mediaId) {
+  return Watched.find({_user: userId, _media: mediaId}).exec();
 };
 
 exports.getRated = async function(mediaId) {
@@ -215,8 +310,22 @@ exports.deleteWatched = async function(watchedId) {
   let watchedObj = await Watched.findById(watchedId);
   let actionId = watchedObj._action;
   let userId = watchedObj._user;
-  await this.deleteAction(actionId);
-  await this.deleteActionFromUserHistory(userId, actionId);
+  await Action.remove({ _id: actionId}).exec();
+  var deleteActionFromUserHistory = function(userId, actionId) {
+    User.findById(userId, function (err, user) {
+      let user_history = user._history;
+      let index = user_history.indexOf(actionId);
+      if (index > -1) {
+        user_history.splice(index, 1);
+      }
+      user.save((error) => {
+        if (error) {
+          console.log('Action removed.')
+        }
+      });
+    });
+  };
+  await deleteActionFromUserHistory(userId, actionId);
   watchedObj.remove();
   return watchedObj;
 };

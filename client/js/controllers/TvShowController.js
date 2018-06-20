@@ -1,7 +1,7 @@
 var kitso = angular.module('kitso');
 
-kitso.controller("TvShowController", ['$scope', '$location', '$timeout', '$routeParams', 'TvShowService',  'WatchedService',  'FollowService', 'RatedService', 'AuthService',
-function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedService, FollowService, RatedService, AuthService) {
+kitso.controller("TvShowController", ['$scope', '$location', '$route', '$timeout', '$routeParams', 'TvShowService',  'WatchedService',  'FollowService', 'RatedService', 'UserListService', 'AuthService',
+function($scope, $location, $route, $timeout, $routeParams, TvShowService,  WatchedService, FollowService, RatedService, UserListService, AuthService) {
   $('.full-loading').show();
 
     TvShowService.loadTvShow($routeParams.tvshow_id)
@@ -10,18 +10,30 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
             $scope.user = AuthService.getUser();
             $scope.tvshow = TvShowService.getTvShow();
             $scope.tvshow.air_date = new Date($scope.tvshow.first_air_date);
-            $('.full-loading').hide();
-            WatchedService.isWatched($scope.user._id ,$routeParams.tvshow_id).then((watched) => {
-                $scope.tvshow.watched = watched;
-                if (! watched.watched_id)
-                  $scope.tvshow.watched = false;
-            }).catch((error) => {
-              UIkit.notification({
-                  message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
-                  status: 'danger',
-                  timeout: 2500
-              });
-            });
+
+            WatchedService.tvshowProgress($scope.user._id ,$routeParams.tvshow_id)
+             .then((progress) => {
+                 if (progress.tvshow.ratio == 1) $scope.tvshow.watched = true;
+                 else $scope.tvshow.watched = false;
+             })
+             .catch((error) => {
+               UIkit.notification({
+                   message: '<span uk-icon=\'icon: check\'></span> ' + "Get progress error.",
+                   status: 'danger',
+                   timeout: 2500
+               });
+             });
+
+          var lists = [];
+          $scope.user._lists.forEach((listId) => {
+              UserListService.loadUserList(listId).then( function(){
+                  lists.push(UserListService.getUserList());
+              }).catch(function(error){
+                  console.log(error);
+              })
+          });
+          $scope.user.lists = lists;
+
             RatedService.isRated($scope.user._id ,$routeParams.tvshow_id).then((rated) => {
                 $scope.tvshow.rated = rated;
                 if (! rated.rated_id){
@@ -39,9 +51,15 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
                   })
                 }
               }).catch(function(){
-              })
-              FollowService.isFollowingPage($scope.user._id ,$routeParams.tvshow_id).then((followed) => {
-                $scope.tvshow.followed = followed;
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: check\'></span> ' + "Get rating error.",
+                    status: 'danger',
+                    timeout: 2500
+                });
+            });
+
+            FollowService.isFollowingPage($scope.user._id ,$routeParams.tvshow_id).then((followed) => {
+              $scope.tvshow.followed = followed;
             }).catch((error) => {
               UIkit.notification({
                   message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
@@ -49,6 +67,24 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
                   timeout: 2500
               });
             });
+            
+            FollowService.countFollowers($routeParams.tvshow_id).then((count) => {
+              $scope.tvshow.followers = count;
+            }).catch((error) => {
+              UIkit.notification({
+                  message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                  status: 'danger',
+                  timeout: 2500
+              });
+            });
+            FollowService.friendsWatchingTvshow($scope.user._id, $scope.getEpisodesIds())
+            .then((response) => {
+                $scope.friendsWatching = response;
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+            $('.full-loading').hide();
           }).catch(function(){
           })
         })
@@ -60,10 +96,44 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
             });
         });
 
+    $scope.markEntireTvshowAsWatched = function (tvshowId) {
+        $scope.watchAction = true;
+        WatchedService.markEntireTvshowAsWatched($scope.user._id, tvshowId)
+            .then((result) => {
+                $scope.watchAction = false;
+                $route.reload();
+                UIkit.modal('#modal-watchTvshow').hide();
+            })
+            .catch((error) => {
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                    status: 'danger',
+                    timeout: 2500
+                });
+            });
+        };
+
     $scope.markTvshowAsWatched = function (tvshowId) {
-        WatchedService.markTvshowAsWatched($scope.user._id, $scope.tvshow._seasons, tvshowId)
-            .then((watched) => {
-                console.log(watched);
+        $scope.watchAction = true;
+        WatchedService.markTvshowAsWatched($scope.user._id, tvshowId)
+            .then((result) => {
+                $scope.watchAction = false;
+                $route.reload();
+                UIkit.modal('#modal-watchTvshow').hide();
+            })
+            .catch((error) => {
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                    status: 'danger',
+                    timeout: 2500
+                });
+            });
+        };
+
+    $scope.markTvshowAsNotWatched = function () {
+        WatchedService.markTvshowAsNotWatched($scope.tvshow._seasons, $scope.user._id)
+            .then((result) => {
+                $route.reload();
             })
             .catch((error) => {
                 UIkit.notification({
@@ -102,9 +172,52 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
         });
     }
 
+  $scope.addToList = function(tvshowId, userListId){
+    UserListService.addItem(userListId, tvshowId, $scope.user._id, date = moment())
+      .then((added) => {
+        $scope.tvshowAdded = true;
+      })
+      .catch((error) => {
+        UIkit.notification({
+          message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+          status: 'danger',
+          timeout: 2500
+        });
+      });
+  }
 
-    $scope.follow = function(tvshow){
-        FollowService.followPage($scope.user._id, tvshow)
+  $scope.removeFromList = function(tvshowId, userListId) {
+    UserListService.loadUserList(userListId).then( function() {
+      UserListService.getUserList()['itens'].forEach(function(item){
+        if (item['_media']['_id'] == tvshowId) {
+          UserListService.deleteItem(userListId, $scope.user._id, item['ranked'])
+            .then((deleted) => {
+              $scope.tvshowAdded = false;
+            })
+            .catch((error) => {
+              UIkit.notification({
+                message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                status: 'danger',
+                timeout: 2500
+              });
+            });
+        }
+      });
+    });
+  }
+
+  $scope.markAsAdded = function(tvshowId, userListId) {
+    UserListService.loadUserList(userListId).then( function() {
+      UserListService.getUserList()['itens'].forEach(function(item){
+        if (item['_media']['_id'] == tvshowId) {
+          $scope.tvshowAdded = true;
+        }
+      });
+    });
+  }
+
+    $scope.follow = function(tvshow, is_private){
+        FollowService.followPage($scope.user._id, tvshow, is_private)
         .then((followed) => {
             $scope.tvshow.followed = followed;
             $scope.tvshow.followed.following_id = followed._id;
@@ -117,6 +230,15 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
                 status: 'danger',
                 timeout: 2500
             });
+        });
+        FollowService.countFollowers($scope.tvshow._id).then((count) => {
+          $scope.tvshow.followers = count;
+        }).catch((error) => {
+          UIkit.notification({
+              message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+              status: 'danger',
+              timeout: 2500
+          });
         });
     };
 
@@ -132,6 +254,15 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
                 status: 'danger',
                 timeout: 2500
             });
+        });
+        FollowService.countFollowers($scope.tvshow._id).then((count) => {
+          $scope.tvshow.followers = count;
+        }).catch((error) => {
+          UIkit.notification({
+              message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+              status: 'danger',
+              timeout: 2500
+          });
         });
     }
 
@@ -217,6 +348,26 @@ function($scope, $location, $timeout, $routeParams, TvShowService,  WatchedServi
             ratings.push(i+1)
         }
         return ratings;
+    }
+
+    $scope.getEpisodesIds = function() {
+        var seasonsIds = [];
+        var seasons = [];
+        var episodesIds = [];
+        $scope.tvshow._seasons.forEach((season) => {
+            if (!seasonsIds.includes(season._id)) {
+                seasons.push(season);
+                seasonsIds.push(season._id);
+            };
+        });
+
+        seasons.forEach((season) => {
+            let epiIds = season._episodes;
+            epiIds = Array.from(new Set(epiIds));
+            episodesIds.push(epiIds);
+        });
+
+        return episodesIds;
     }
 
 }]);
