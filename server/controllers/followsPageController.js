@@ -32,7 +32,8 @@ exports.is_following = async function(req, res) {
       if (result.length > 0) {
         res_json = {
           "is_following": true,
-          "following_id": result[0]._id
+          "following_id": result[0]._id,
+          "is_private": result[0].is_private
         }
         res.status(RequestStatus.OK).json(res_json);
       } else {
@@ -75,6 +76,10 @@ exports.create = async function(req, res) {
   var follow = new FollowsPage(req.body);
   let user_id = follow._user;
   let action = await DataStoreUtils.createAction(user_id, follow._id, ActionType.FOLLOWED_PAGE);
+  if (follow.is_private) {
+    action.hidden = true;
+    action.save();
+  }
   follow._action = action._id;
   await DataStoreUtils.addActionToUserHistory(user_id, action._id);
   // TODO: add to user._followingpages field
