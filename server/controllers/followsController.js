@@ -56,26 +56,27 @@ exports.following_me = async function(req, res) {
     res.status(RequestStatus.BAD_REQUEST).json(err);
   }
 };
-
+var getId = function(following){
+  return following._following;
+}
 exports.followed_activity = async function(req, res) {
   let user_id = req.params.user_id;
   let following_list;
   try {
     following_list = await Follows.find({_user: user_id}).exec();
+    following_list = following_list.map(getId);
+    following_list.push(user_id);
+
     all_activitys = []
-    following_list.forEach(async function(follow, index) {
-      followed = await getFollowedFromFollow(follow);
-      promises = followed._history.map(getActivity);
+    actions = await Action.find({ "_user": { "$in": following_list } }).sort({date: -1}).limit(10);
+    promises = actions.map(getActivity);
 
       Promise.all(promises).then(function(results) {
         all_activitys = all_activitys.concat(results);
-
-        if (index+1 == following_list.length) {
           res.status(RequestStatus.OK).send(all_activitys);
-        }
       })
-    });
   } catch (err) {
+    console.log(err)
     res.status(RequestStatus.BAD_REQUEST).json(err);
   }
 };
@@ -136,7 +137,7 @@ exports.getFriendsWithWatchedMedia = async function (req, res) {
   let userId = req.query.userId;
   let mediaId = req.query.mediaId;
   let following_list = await Follows.find({_user: userId}).exec();
-  
+
   var watchedPromises = [];
   following_list.forEach((following) => {
     let friendId = following._following;

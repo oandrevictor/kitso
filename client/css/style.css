@@ -4,6 +4,77 @@ html, body {
   overflow-x: hidden;
   height: 100%; }
 
+.home-content {
+  margin-bottom: auto;
+  font-weight: 300;
+  display: block;
+  background: #f8f8f8; }
+  .home-content .uk-iconnav {
+    display: inline-flex !important;
+    margin-left: 0px !important; }
+  .home-content .uk-iconnav > * {
+    padding-left: 2px !important; }
+  .home-content .episode-button {
+    padding: 0%;
+    color: #773095;
+    border: 0px;
+    display: inline-block;
+    font-size: 10px;
+    margin-bottom: 2px;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding-left: 8px;
+    padding-right: 8px; }
+    .home-content .episode-button.active {
+      background: #773095;
+      color: white; }
+  .home-content hr {
+    border-top: 1px solid #f5f5f5 !important; }
+  .home-content .feed {
+    padding-top: 40px;
+    background: white;
+    padding-bottom: 15px; }
+    .home-content .feed .uk-width-expand {
+      padding-left: 15px; }
+    .home-content .feed article {
+      padding-top: 0px;
+      padding-bottom: 0px; }
+      .home-content .feed article header {
+        margin-bottom: 0px; }
+    .home-content .feed .link-action {
+      font-size: 1rem;
+      font-weight: 400;
+      color: #773095; }
+      .home-content .feed .link-action:hover {
+        text-decoration: none;
+        font-weight: bold; }
+  .home-content .user-name {
+    margin: 0px;
+    display: inline-block;
+    font-size: 1rem; }
+  .home-content .user-action {
+    margin: 0px;
+    display: inline-block; }
+
+.home-card {
+  margin-top: 20px !important;
+  height: 140px !important; }
+  .home-card .home-card-info {
+    width: 55%; }
+    .home-card .home-card-info .uk-card-title {
+      font-size: 1.1rem; }
+    .home-card .home-card-info h3 {
+      margin-bottom: 0px; }
+    .home-card .home-card-info p {
+      margin-top: 10px; }
+    .home-card .home-card-info .uk-card-body {
+      padding-top: 0px !important;
+      padding-right: 0px !important; }
+  .home-card .overview {
+    height: 100px;
+    text-align: justify;
+    font-size: 0.87rem; }
+
 .uk-tab > * {
   margin-right: auto;
   margin-left: auto; }

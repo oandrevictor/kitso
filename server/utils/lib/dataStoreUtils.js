@@ -3,13 +3,14 @@ var Person = require('../../models/Person');
 var Media = require('../../models/Media');
 var Action = require('../../models/Action');
 var User = require('../../models/User');
-var Follows = require('../../models/Follows'); 
+var Follows = require('../../models/Follows');
 var FollowsPage = require('../../models/FollowsPage');
 var Rated = require('../../models/Rated');
 var Watched = require('../../models/Watched');
 var Utils = require('./utils');
 var UserList = require('../../models/UserList');
 var ActionType = require('../../constants/actionType');
+var TMDBController = require('../../external/TMDBController');
 
 
 // CREATE =========================================================================================
@@ -53,6 +54,51 @@ exports.addPersonToMediaCast = function(personId, mediaId) {
 
 
 // GET ============================================================================================
+getMediaWithInfoFromDB = async function(media_obj){
+  if (media_obj.__t == "Movie"){
+    var media = await TMDBController.getMovie(media_obj._tmdb_id).then(function(movie){
+      movie._id = media_obj._id;
+      movie.__t = media_obj.__t;
+      return movie;
+    }).catch(function(result){
+      return result;
+    })
+    return media;
+  }
+  else if (media_obj.__t == "TvShow"){
+    media = await TMDBController.getShow(media_obj._tmdb_id).then(function(tvshow){
+      tvshow._id = media_obj._id;
+      tvshow.__t = media_obj.__t;
+      return tvshow;
+    }).catch(function(result){
+      return result;
+    })
+    return media;
+  }
+  else if (media_obj.__t == "Episode"){
+    media = await TMDBController.getEpisode(media_obj._tmdb_id).then(function(episode){
+      episode._id = media_obj._id;
+      episode.__t = media_obj.__t;
+      return episode;
+    }).catch(function(result){
+      return result;
+    })
+
+    show = await TMDBController.getShow(media_obj._tmdb_tvshow_id).then(function(tvshow){
+      tvshow._id = media_obj._tvshow_id;
+      return tvshow;
+    }).catch(function(result){
+      return result;
+    })
+    media.show = show;
+    return media;
+  }
+  else {
+    return media_obj;
+  }
+
+
+}
 
 exports.getActionByTypeAndId = async function(type, id) {
   if (type == ActionType.RATED) {
@@ -73,6 +119,7 @@ exports.getActionByTypeAndIdWithDetails = async function(type, id) {
   if (type == ActionType.RATED) {
     rating = await Rated.findById(id).exec();
     media_obj = await Media.findById(rating._media).exec();
+    media_obj = await getMediaWithInfoFromDB(media_obj);
 
     rating_copy = JSON.parse(JSON.stringify(rating));
     rating_copy._media = media_obj;
@@ -80,6 +127,7 @@ exports.getActionByTypeAndIdWithDetails = async function(type, id) {
   } else if (type == ActionType.WATCHED) {
     watched = await Watched.findById(id).exec();
     media_obj = await Media.findById(watched._media).exec();
+    media_obj = await getMediaWithInfoFromDB(media_obj);
 
     watched_copy = JSON.parse(JSON.stringify(watched));
     watched_copy._media = media_obj;
@@ -97,10 +145,9 @@ exports.getActionByTypeAndIdWithDetails = async function(type, id) {
 
     if (followPage.is_media) {
       obj = await Media.findById(followPage._following).exec();
-      console.log(obj);
+      obj = await getMediaWithInfoFromDB(obj);
     } else {
-      obj = await Person.findById(followPage._following).exec(); 
-      console.log(obj);
+      obj = await Person.findById(followPage._following).exec();
     }
 
     followPage_copy = JSON.parse(JSON.stringify(followPage));

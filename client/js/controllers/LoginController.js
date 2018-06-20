@@ -8,7 +8,7 @@ kitso.controller('LoginController', ['$scope', '$location', '$timeout', '$routeP
             password: $scope.userForm.password.$modelValue
         };
 
-        if ($scope.userForm.$valid) {            
+        if ($scope.userForm.$valid) {
             AuthService.login(user)
                 // handle success
                 .then(function () {
@@ -19,7 +19,7 @@ kitso.controller('LoginController', ['$scope', '$location', '$timeout', '$routeP
                     });
 
                     $timeout(function() {
-                        $location.path('/profile');
+                        $location.path('/home');
                         }, 1500);
                 })
                 // handle error
@@ -31,7 +31,7 @@ kitso.controller('LoginController', ['$scope', '$location', '$timeout', '$routeP
                         status: 'danger',
                         timeout: 2500
                     });
-                });   
+                });
         };
     };
 

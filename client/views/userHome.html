@@ -1,2 +1,79 @@
-<b>Página inicial do usuário</b>
-<a ng-click="logout()">Logout</a>
+<div class="home-content">
+  <div class="uk-width-xxlarge uk-container feed">
+    <h4><span uk-icon="rss"></span> Friends Activity </h4>
+    <div ng-repeat="activity in feed" ng-hide="acitivy.hidden">
+    <article class="uk-comment uk-visible-toggle" >
+        <header class="uk-comment-header uk-position-relative">
+            <div class="uk-grid-medium uk-flex-middle" uk-grid>
+                <div class="uk-width-auto">
+                    <img class="uk-comment-avatar uk-border-circle" src="/images/mask2.png" width="40" height="40" alt="">
+                </div>
+                <div class="uk-width-expand">
+                    <div class="uk-comment-title uk-margin-remove">
+                      <h4 class="user-name">
+                        <a class="uk-link-reset" ng-href="{{getActivityUserLink(activity)}}">{{getActivityUser(activity).name}}</a></h4>
+                        <h5 class="user-action"> {{getActivityType(activity) }} </h5>
+                        <a class="link-action" ng-href="{{getActivityShowLink(activity)}}" ng-if="activity._action._media.show">{{activity._action._media.show.name}}: </a>
+                        <a class="link-action" ng-href="{{getActivitySeasonLink(activity)}}" ng-if="activity._action._media.show">{{getSeasonInfo(activity).name}} - </a>
+                        <a class="link-action" ng-href="{{getActivityObjectLink(activity)}}">{{getActivityReferedObject(activity).name}}</a>
+                        <ul class="uk-iconnav" ng-if="activity.action_type == 'rated'">
+                          <div ng-repeat="n in range('10')">
+                            <a ng-if="n <= activity._action.rating" class="rating-star" ></a>
+                            <a ng-if="n > activity._action.rating" uk-icon="icon: star; ratio: .5"></a>
+                          </div>
+                        </ul>
+                      </div>
+                    <p class="uk-comment-meta uk-margin-remove-top">
+                      <a class="uk-link-reset" href="#">{{getActivityDate(activity)}}</a>
+                    </p>
+                </div>
+            </div>
+            <div class="uk-position-top-right uk-position-small uk-hidden-hover">
+              <a class="uk-link-muted" ng-click="activity.open = !activity.open" ng-hide="activity.open" href="#"><span uk-icon="plus-circle"></span></a>
+              <a class="uk-link-muted" ng-click="activity.open = !activity.open" ng-show="activity.open" href="#"><span uk-icon="minus-circle"></span></a>
+            </div>
+
+        </header>
+        <div class="uk-comment-body" ng-show="activity.open">
+          <div class="uk-card uk-card-default uk-grid-collapse uk-margin home-card" uk-grid>
+              <div ng-href="{{getActivityObjectLink(activity)}}" class="uk-card-media-left uk-cover-container" style="background: url({{getActivityImage(activity)}}) center; background-size:cover; cursor:pointer ">
+                  <canvas width="300" height="200"></canvas>
+              </div>
+              <div class="home-card-info">
+                  <div class="uk-card-body">
+                      <h3 class="uk-card-title">{{getActivityReferedObject(activity).name}}</h3>
+                      <p class="overview uk-text-break">
+                        {{getActivityReferedObject(activity).overview.substr(0,140)}}...</p>
+                  </div>
+              </div>
+          </div>
+        </div>
+    </article>
+    <br >
+        <button  class="uk-button uk-button-default episode-button">
+          <span uk-icon="heart"></span> Like (74 likes)
+        </button>
+    <div style="display:inline-block" ng-if="activity._action._media">
+      <button class="uk-button uk-button-default episode-button">
+        <span uk-icon="icon: list;"></span> Add to List</button>
+      <div uk-dropdown="bottom-center; mode: hover" style="z-index: 999">
+        <center>
+          <div ng-repeat="list in user.lists">
+            <button ng-hide="itemIsListed(list._id, activity)" ng-click="addToList(activity, list._id)" class="uk-button uk-button-default episode-button">
+              <span uk-icon="icon: plus;"></span> {{list.title}} </button>
+            <button ng-show="itemIsListed(list._id, activity)" ng-click="removeFromList(activity, list._id)" class="uk-button uk-button-default episode-button ">
+              <span uk-icon="icon: minus;"></span> {{list.title}} (undo) </button>
+          </div>
+        </center>
+      </div>
+      <button ng-hide="activity.watched || ['TvShow','Movie'].includes(activity._action._media.__t)" ng-click="markAsWatched(activity)" class="uk-button uk-button-default episode-button">
+        <span uk-icon="icon: history;"> </span>  Mark as watched
+      </button>
+      <button ng-show="activity.watched && !['TvShow','Movie'].includes(activity._action._media.__t)" ng-click="markAsNotWatched(activity)" class="uk-button uk-button-default episode-button active">
+        <span uk-icon="icon: clock;"></span> Watched (undo)
+      </button>
+    </div>
+
+    <hr>
+  </div>
+</div>
