@@ -1,5 +1,10 @@
 <div class="home-content">
   <div class="uk-width-xxlarge uk-container feed">
+
+    <div class="uk-margin">
+            <input class="uk-input" type="text" placeholder="Input" ng-model="newslink" ng-change="loadInfo()">
+        </div>
+        <div ng-if="newsInfo"> {{newsInfo.title}}</div>
     <h4><span uk-icon="rss"></span> Friends Activity </h4>
     <div ng-repeat="activity in feed" ng-hide="acitivy.hidden">
     <article class="uk-comment uk-visible-toggle" >

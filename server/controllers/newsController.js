@@ -3,6 +3,9 @@ var News = require('../models/News');
 var Related = require('../models/Related');
 var RequestStatus = require('../constants/requestStatus');
 
+const cheerio = require('cheerio');
+const https = require('https');
+const http = require('http');
 
 exports.index = function(req, res) {
   News.find({})
@@ -23,6 +26,42 @@ exports.show = function(req, res) {
     res.status(RequestStatus.OK).json(result);
   });
 };
+
+exports.loadMetadata = function(req,res) {
+  url = req.body.url;
+  //url = url.replace(/^http:\/\//i, 'https://');
+  var pattern = /^((https|http):\/\/)/;
+  if(pattern.test(url)) {
+    http.get(url,
+      (resp) => {
+        let data = '';
+        resp.on('data', (chunk) => {
+          data += chunk;
+        });
+        resp.on('end', () => {
+          const $ = cheerio.load(data);
+          result = {}
+           result.title = $('head title').text()
+           result.desc = $('meta[name="description"]').attr('content')
+           result.ogTitle = $('meta[property="og:title"]').attr('content')
+           result.ogImage = $('meta[property="og:image"]').attr('content')
+           images = $('img');
+           result.images = []
+
+            for (var i = 0; i < images.length; i++) {
+                result.images.push($(images[i]).attr('src'));
+            }
+          res.status(200).send(result)
+        });
+      }).on("error", (err) => {
+        console.log("Error getting metadata from: " + url + " : "+ err);
+        res.status(400).send(err)
+      });
+    }
+    else{
+      res.status(200).send({data:""})
+    }
+}
 
 exports.create = async function(req, res) {
   var news_obj = new News(req.body);

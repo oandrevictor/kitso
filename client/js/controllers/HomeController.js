@@ -1,6 +1,6 @@
 var kitso = angular.module('kitso');
 
-kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthService', 'FeedService', 'UserListService', 'WatchedService', function($scope, $location, $timeout, AuthService, FeedService, UserListService, WatchedService) {
+kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthService', 'FeedService', 'UserListService', 'WatchedService', 'NewsService', function($scope, $location, $timeout, AuthService, FeedService, UserListService, WatchedService, NewsService) {
 	$('.full-loading').show();
 	$scope.logout = function() {
 		AuthService.logout()
@@ -31,6 +31,13 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 	var compareDates = function(a,b){
     return - moment(a.date).diff(moment(b.date))
   }
+	$scope.loadInfo = function(){
+		if ($scope.newslink)
+			NewsService.getPageMetadata($scope.newslink).then(function(metadata){
+				$scope.newsInfo = metadata.data})
+	}
+
+
 
 
 	var loadUserLists = function(){
