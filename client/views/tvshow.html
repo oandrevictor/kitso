@@ -146,6 +146,31 @@
                 </ul>
               </div>
             </div>
+
+            <div class="section">
+              <div class="section-title">
+                Recommendations
+              </div>
+
+              <div uk-slider>
+                <div class="uk-position-relative uk-visible-toggle uk-light">
+                  <ul class="uk-slider-items uk-child-width-1-6@s">
+                    <li ng-repeat="rec_tvshow in tvshow.recommendations.results">
+                      <div class="uk-card uk-grid-match uk-card-default uk-card-hover appears-in cast-info" >
+                        <a ng-href="tvshow/{{rec_tvshow.id}}"> <img class="cast-image" style="background-image: url(https://image.tmdb.org/t/p/w500/{{ rec_tvshow['poster_path'] }})" /></a>
+                        <p class="uk-align-center uk-text-uppercase cast-name" align="center"> {{rec_tvshow.title}}</p>
+                      </div>
+                    </li>
+                  </ul>
+                  <a class="slider-button-cast uk-position-top-left uk-hidden-hover" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
+                  <a class="slider-button-cast uk-position-top-right uk-hidden-hover" href="#" uk-slidenav-next uk-slider-item="next"></a>
+                </div>
+
+                <ul class="slider-page uk-pagination uk-flex-center" ng-show="tvshow.recommendations.results.length > 6">
+                  <li ng-repeat="n in range(tvshow.recommendations.results.length / 6)"><a href="#" uk-slider-item="{{(n-1) * 6}}" >{{n}}</a></li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
                 <!-- Watched modal -->
