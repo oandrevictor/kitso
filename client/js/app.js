@@ -122,7 +122,6 @@ angular.module('kitso').run(function ($rootScope, $location, $route, AuthService
     });
 
     $rootScope.$on('$routeChangeSuccess',function() {
-        console.log('oi')
         $("html, body").animate({ scrollTop: 0 }, 500); 
     });
 
