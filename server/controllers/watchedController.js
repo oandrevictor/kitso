@@ -58,11 +58,12 @@ exports.create = async function(req, res) {
 exports.watchEntireSeason = async function(req, res) {
   var seasonId = req.body.seasonId;
   var userId = req.body.userId;
+  var timeSpent = req.body.time_spent;
   var date = req.body.date;
   var season = await DataStoreUtils.getMediaObjById(seasonId);
   var episodesIds = getSeasonsEpisodesIds([season]);
   // watched episodes
-  watch_season_episodes(episodesIds[0], userId, date, function (result) {
+  watch_season_episodes(episodesIds[0], timeSpent, userId, date, function (result) {
     res.status(RequestStatus.OK).json(result);
   });
 }
@@ -71,13 +72,14 @@ exports.watchSeason = async function(req, res) {
   var seasonId = req.body.seasonId;
   var userId = req.body.userId;
   var date = req.body.date;
+  var timeSpent = req.body.time_spent;
   var season = await DataStoreUtils.getMediaObjById(seasonId);
   var episodesIds = getSeasonsEpisodesIds([season]);
   var watchedMediasIds = await getMediasIdsFromWatchedObjects(episodesIds, userId);
   var nonWatchedEpisodes = episodesIds[0].map((episode) => {
     if (!watchedMediasIds.includes(episode)) return episode;
   });
-  watch_season_episodes(nonWatchedEpisodes, userId, date, function (result) {
+  watch_season_episodes(nonWatchedEpisodes, timeSpent, userId, date, function (result) {
     res.status(RequestStatus.OK).json(result);
   });
 }
@@ -96,11 +98,12 @@ exports.watchEntireTvshow = async function(req, res) {
   var seasons = await Season.find({_tvshow_id: req.body.tvshowId});
   let userId = req.body.userId;
   var date = req.body.date;
+  var timeSpent = req.body.time_spent;
   let seasonsEpisodesIds = getSeasonsEpisodesIds(seasons);
   var result = [];
   seasonsEpisodesIds.forEach(async (episodesIds) => {
     episodesIds = Array.from(new Set(episodesIds));
-    watch_season_episodes(episodesIds, userId, date, function (response) {
+    watch_season_episodes(episodesIds, timeSpent, userId, date, function (response) {
       result.push(response);
     });
   });
@@ -114,6 +117,7 @@ exports.watchTvshow = async function(req, res) {
   var seasons = await Season.find({_tvshow_id: req.body.tvshowId});
   let userId = req.body.userId;
   var date = req.body.date;
+  var timeSpent = req.body.time_spent;
   let seasonsEpisodesIds = getSeasonsEpisodesIds(seasons);
   var result = [];
   seasonsEpisodesIds.forEach(async (seasonEpisodeIds) => {
@@ -122,7 +126,7 @@ exports.watchTvshow = async function(req, res) {
     let nonWatchedEpisodes = seasonEpisodeIds[0].map((episode) => {
       if (!watchedMediasIds.includes(episode)) return episode;
     });
-    watch_season_episodes(nonWatchedEpisodes, userId, date, function (response) {
+    watch_season_episodes(nonWatchedEpisodes, timeSpent, userId, date, function (response) {
       result.push(response);
     });
   });
@@ -325,7 +329,7 @@ function getSeasonsIds(seasons) {
   return seasonsIds;
 }
 
-async function watch_season_episodes(episodesIds, user_id, date, done) {
+async function watch_season_episodes(episodesIds, timeSpent, user_id, date, done) {
   var requests = 0;
   var payload = episodesIds.length;
   var response = [];
@@ -335,6 +339,7 @@ async function watch_season_episodes(episodesIds, user_id, date, done) {
       watched._media = episode;
       watched._user = user_id;
       watched.date = date;
+      watched.time_spent = timeSpent;
       let action = await DataStoreUtils.createAction(user_id, watched._id, ActionType.WATCHED);
       watched._action = action._id;
       await DataStoreUtils.addActionToUserHistory(user_id, action._id);

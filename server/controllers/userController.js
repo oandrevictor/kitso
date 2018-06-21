@@ -73,6 +73,7 @@ exports.timeSpent = async function (req, res) {
   let user_id = req.params.user_id;
   let all_watched = await Watched.find({ _user: user_id }).exec();
   let timeSpent = 0;
+
   all_watched.forEach(async function(watched, index) {
     let filter = req.body.filter;
     let watched_month = watched.date.getMonth() + 1;
@@ -87,6 +88,8 @@ exports.timeSpent = async function (req, res) {
 
     if (index == all_watched.length-1) res.status(RequestStatus.OK).json(timeSpent);
   });
+
+  if (all_watched.length == 0) res.status(RequestStatus.OK).json(timeSpent);
 }
 
 exports.create = function (req, res) {
