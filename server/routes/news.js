@@ -7,6 +7,8 @@ router.get('/', newController.index);
 
 router.post('/loadMetadata', newController.loadMetadata);
 
+router.post('/getTaggable', newController.getTaggable);
+
 router.get('/:news_id', newController.show);
 
 router.post('/', newController.create);

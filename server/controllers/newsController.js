@@ -1,7 +1,9 @@
-
 var News = require('../models/News');
 var Related = require('../models/Related');
 var RequestStatus = require('../constants/requestStatus');
+
+var Media = require('../models/Media');
+var Person = require('../models/Person');
 
 const cheerio = require('cheerio');
 const https = require('https');
@@ -27,6 +29,49 @@ exports.show = function(req, res) {
   });
 };
 
+exports.getTaggable = function(req, res) {
+  var all = []
+  var name = req.body.name;
+  console.log(name)
+  var medias = Media.find({ $and: [ {"name": { $regex: '.*' + name + '.*' }}, { __t: { $ne: 'Episode' }}]} ).limit(4)
+  .catch((err) => {
+    console.log("Error catching in Media:" + name)
+    console.log(err)
+    return []
+  })
+  .then((result) => {
+    console.log(result)
+    return(result)
+  });
+  var persons = Person.find({ "name": { $regex: '.*' + name + '.*' }} ).limit(4)
+  .catch((err) => {
+    console.log("Error catching in Media:" + name)
+    return []
+  })
+  .then((result) => {
+    console.log(result)
+    return(result)
+  });
+  all.concat(medias)
+  all.concat(persons)
+  res.status(RequestStatus.OK).json(all.slice(0,5))
+
+}
+
+var getMetadata = function(data){const $ = cheerio.load(data);
+  result = {}
+ result.title = $('head title').text()
+ result.desc = $('meta[name="description"]').attr('content')
+ result.ogTitle = $('meta[property="og:title"]').attr('content')
+ result.ogImage = $('meta[property="og:image"]').attr('content')
+ images = $('img');
+ result.images = []
+  for (var i = 0; i < images.length; i++) {
+      result.images.push($(images[i]).attr('src'));
+  }
+  return result
+}
+
 exports.loadMetadata = function(req,res) {
   url = req.body.url;
   //url = url.replace(/^http:\/\//i, 'https://');
@@ -39,18 +84,7 @@ exports.loadMetadata = function(req,res) {
           data += chunk;
         });
         resp.on('end', () => {
-          const $ = cheerio.load(data);
-          result = {}
-           result.title = $('head title').text()
-           result.desc = $('meta[name="description"]').attr('content')
-           result.ogTitle = $('meta[property="og:title"]').attr('content')
-           result.ogImage = $('meta[property="og:image"]').attr('content')
-           images = $('img');
-           result.images = []
-
-            for (var i = 0; i < images.length; i++) {
-                result.images.push($(images[i]).attr('src'));
-            }
+          result = getMetadata(data)
           res.status(200).send(result)
         });
       }).on("error", (err) => {
