@@ -1,10 +1,40 @@
 <div class="home-content">
   <div class="uk-width-xxlarge uk-container feed">
+    <div class="news-post-area">
 
-    <div class="uk-margin">
-            <input class="uk-input" type="text" placeholder="Input" ng-model="newslink" ng-change="loadInfo()">
+      <div class="buttons-area">
+        <button  class="uk-button uk-button-default dark-purple-button" ng-click="creatingNews = !creatingNews">
+          <span uk-icon="pencil"></span>
+        </button>
+      </div>
+
+      <div class="uk-margin" ng-show="creatingNews">
+        <button  class="uk-button uk-button-default dark-purple-button" ng-show="creatingNews" >
+          <span uk-icon="link"></span>
+        </button>
+        <button  class="uk-button uk-button-default dark-purple-button" ng-show="creatingNews">
+          <span uk-icon="hashtag"></span>
+        </button>
+        <input class="uk-input" type="text" placeholder="Link for the news" ng-model="newslink" ng-change="loadInfo()">
+
+        <input class="uk-input" type="text" placeholder="Who is this news about?" ng-model="nameSearch" ng-change="loadAutoComplete()">
+      </div>
+
+      <div ng-if="newsInfo" class="news-posting-preview">
+        <div class="news-posting-image" style="background: url({{newsInfo.ogImage}}) center; background-size:cover; "></div>
+        <div class="news-text-info">
+          <h5> {{newsInfo.title}}</h5>
+          <p>{{newsInfo.desc}} </p>
         </div>
-        <div ng-if="newsInfo"> {{newsInfo.title}}</div>
+      </div>
+      
+      <div class="recomendation-box">
+        <div ng-repeat="recomendation in newsRecomendation" class="recomendation-item">
+          {{recomendation.name}} <span uk-icon="close"></span>
+        </div>
+      </div>
+    </div>
+
     <h4><span uk-icon="rss"></span> Friends Activity </h4>
     <div ng-repeat="activity in feed" ng-hide="acitivy.hidden">
     <article class="uk-comment uk-visible-toggle" >

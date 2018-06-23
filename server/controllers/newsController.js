@@ -29,11 +29,33 @@ exports.show = function(req, res) {
   });
 };
 
-exports.getTaggable = function(req, res) {
+exports.getTaggable = async function(req, res) {
   var all = []
   var name = req.body.name;
   console.log(name)
-  var medias = Media.find({ $and: [ {"name": { $regex: '.*' + name + '.*' }}, { __t: { $ne: 'Episode' }}]} ).limit(4)
+  var medias = await getMedias(name)
+
+  var persons = await Person.find({ "name": { $regex: '.*' + name + '.*' }} ).limit(4)
+  .catch((err) => {
+    console.log("Error catching in Media:" + name)
+    return []
+  })
+  .then((result) => {
+    console.log(result)
+    return(result)
+  });
+  console.log(medias)
+  all = all.concat(medias)
+  console.log('concat')
+  console.log(all)
+  all = all.concat(persons)
+  console.log("here goes all")
+  console.log(all)
+  res.status(RequestStatus.OK).json(all.slice(0,5))
+}
+
+var getMedias = async function(name) {
+  var medias = await Media.find({ $and: [ {"name": { $regex: '.*' + name + '.*' }}, { __t: { $ne: 'Episode' }}]} ).limit(4)
   .catch((err) => {
     console.log("Error catching in Media:" + name)
     console.log(err)
@@ -43,21 +65,9 @@ exports.getTaggable = function(req, res) {
     console.log(result)
     return(result)
   });
-  var persons = Person.find({ "name": { $regex: '.*' + name + '.*' }} ).limit(4)
-  .catch((err) => {
-    console.log("Error catching in Media:" + name)
-    return []
-  })
-  .then((result) => {
-    console.log(result)
-    return(result)
-  });
-  all.concat(medias)
-  all.concat(persons)
-  res.status(RequestStatus.OK).json(all.slice(0,5))
+  return medias;
 
 }
-
 var getMetadata = function(data){const $ = cheerio.load(data);
   result = {}
  result.title = $('head title').text()
@@ -72,11 +82,11 @@ var getMetadata = function(data){const $ = cheerio.load(data);
   return result
 }
 
-exports.loadMetadata = function(req,res) {
+exports.loadMetadata = async function(req,res) {
   url = req.body.url;
-  //url = url.replace(/^http:\/\//i, 'https://');
-  var pattern = /^((https|http):\/\/)/;
-  if(pattern.test(url)) {
+  var http_pattern = /^((http):\/\/)/;
+  var https_pattern = /^((https):\/\/)/;
+  if(http_pattern.test(url)) {
     http.get(url,
       (resp) => {
         let data = '';
@@ -86,15 +96,32 @@ exports.loadMetadata = function(req,res) {
         resp.on('end', () => {
           result = getMetadata(data)
           res.status(200).send(result)
+          return(result)
         });
       }).on("error", (err) => {
         console.log("Error getting metadata from: " + url + " : "+ err);
         res.status(400).send(err)
       });
-    }
-    else{
-      res.status(200).send({data:""})
-    }
+  } else if (https_pattern.test(url)){
+    https.get(url,
+      (resp) => {
+        let data = '';
+        resp.on('data', (chunk) => {
+          data += chunk;
+        });
+        resp.on('end', () => {
+          result = getMetadata(data)
+          res.status(200).send(result)
+          return(result)
+        });
+      }).on("error", (err) => {
+        console.log("Error getting metadata from: " + url + " : "+ err);
+        res.status(400).send(err)
+      });
+  }
+  else{
+    res.status(200).send({data:""})
+  }
 }
 
 exports.create = async function(req, res) {

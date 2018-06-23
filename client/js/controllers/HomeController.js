@@ -32,13 +32,29 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
     return - moment(a.date).diff(moment(b.date))
   }
 	$scope.loadInfo = function(){
-		if ($scope.newslink)
+		if ($scope.newslink){
 			NewsService.getPageMetadata($scope.newslink).then(function(metadata){
 				$scope.newsInfo = metadata.data})
+		}
+		else {
+			$scope.newsInfo = null;
+		}
 	}
 
+	$scope.loadAutoComplete = function(){
+		if ($scope.nameSearch){
+			NewsService.getAutoComplete($scope.nameSearch).then(function(suggestions){
+				$scope.autoCompleteSuggestions = suggestions.data})
+		}
+		else {
+			$scope.autoCompleteSuggestions = null;
+		}
+	}
 
-
+	$scope.newsRecomendation = []
+	$scope.toggleRelated = function(related) {
+		$scope.newsRecomendation.push(related)
+	}
 
 	var loadUserLists = function(){
 	  var lists = [];
