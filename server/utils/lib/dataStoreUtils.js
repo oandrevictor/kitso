@@ -7,6 +7,7 @@ var Follows = require('../../models/Follows');
 var FollowsPage = require('../../models/FollowsPage');
 var Rated = require('../../models/Rated');
 var Watched = require('../../models/Watched');
+var Liked = require('../../models/Liked');
 var Utils = require('./utils');
 var UserList = require('../../models/UserList');
 var ActionType = require('../../constants/actionType');
@@ -153,9 +154,15 @@ exports.getActionByTypeAndIdWithDetails = async function(type, id) {
     followPage_copy = JSON.parse(JSON.stringify(followPage));
     followPage_copy._following = obj;
     return followPage_copy;
+  } else if (type == ActionType.LIKED) {
+    liked = await Liked.findById(id).exec();
+    console.log(liked);
+    activity_obj = await Action.findById(liked._activity).exec();
+    activity_nested = await this.getActionByTypeAndIdWithDetails(activity_obj.action_type, activity_obj._action);
+    return activity_nested;
   } else {
     let errorMsg = "There is no such action type!";
-    throw new Erro(errorMsg);
+    throw new Error(errorMsg);
   }
 };
 
@@ -210,6 +217,26 @@ exports.getWatchedByUserIdAndMediaId = async function(userId, mediaId) {
 
 exports.getRated = async function(mediaId) {
   return Rated.find({_media: mediaId}).exec();
+};
+
+exports.getRatedById = async function(ratedId) {
+  return Rated.findById(ratedId).exec();
+};
+
+exports.getLikedById = async function(likedId) {
+  return Liked.findById(likedId).exec();
+};
+
+exports.getLikedByUserId = async function(userId) {
+  return Liked.find({_user: userId}).exec();
+};
+
+exports.getLikedByActivity = async function(activityId) {
+  return Liked.find({_activity: activityId}).exec();
+};
+
+exports.userHasLiked = async function(userId, activityId) {
+  return Liked.find({_user: userId, _activity: activityId});
 };
 
 
@@ -286,10 +313,30 @@ exports.deleteActionFromUserHistory = function(userId, actionId) {
   });
 };
 
+exports.deleteLiked = async function(likedId) {
+  let likedObj = await Liked.findById(likedId);
+  let actionId = likedObj._action;
+  let userId = likedObj._user;
+  await this.deleteAction(actionId);
+  await this.deleteActionFromUserHistory(userId, actionId);
+  likedObj.remove();
+  return likedObj;
+};
+
 exports.deleteFollowsPage = async function(followsId) {
   let followObj = await FollowsPage.findById(followsId);
   let actionId = followObj._action;
   let userId = followObj._user;
+  let likedObjs = await Liked.find({_activity: actionId});
+  let promises;
+  if (likedObjs.length > 0) {
+    promises = likedObjs.map((likedObj) => {
+      this.deleteLiked(likedObj._id);
+    });
+  }
+  await Promise.all(promises).then((result) => {
+    console.log(result);
+  });
   await this.deleteAction(actionId);
   await this.deleteActionFromUserHistory(userId, actionId);
   followObj.remove();
@@ -300,6 +347,17 @@ exports.deleteRated = async function(ratedId) {
   let ratedObj = await Rated.findById(ratedId);
   let actionId = ratedObj._action;
   let userId = ratedObj._user;
+  let likedObjs = await Liked.find({_activity: actionId});
+  console.log(likedObjs);
+  let promises;
+  if (likedObjs.length > 0) {
+    promises = likedObjs.map((likedObj) => {
+      this.deleteLiked(likedObj._id);
+    });
+  }
+  await Promise.all(promises).then((result) => {
+    console.log(result);
+  });
   await this.deleteAction(actionId);
   await this.deleteActionFromUserHistory(userId, actionId);
   ratedObj.remove();
@@ -310,6 +368,16 @@ exports.deleteWatched = async function(watchedId) {
   let watchedObj = await Watched.findById(watchedId);
   let actionId = watchedObj._action;
   let userId = watchedObj._user;
+  let likedObjs = await Liked.find({_activity: actionId});
+  let promises;
+  if (likedObjs.length > 0) {
+    promises = likedObjs.map((likedObj) => {
+      this.deleteLiked(likedObj._id);
+    });
+  }
+  await Promise.all(promises).then((result) => {
+    console.log(result);
+  });
   await Action.remove({ _id: actionId}).exec();
   var deleteActionFromUserHistory = function(userId, actionId) {
     User.findById(userId, function (err, user) {

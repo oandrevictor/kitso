@@ -22,11 +22,11 @@ let client = RedisClient.createAndAuthClient();
 var db = require('./config/db');
 
 // set our port
-var port = process.env.PORT || 8080;
+var port = process.env.PORT || 8000;
 
 // connect to our mongoDB database
 // (uncomment after you enter in your own credentials in config/db.js)
-mongoose.connect(db.url);
+mongoose.connect(db.local_url);
 
 // Passport and sessions
 require('./config/passport')(passport);
@@ -170,6 +170,9 @@ app.use('/api/news', newsRoutes);
 
 var relatedRoutes = require('./routes/related');
 app.use('/api/related', relatedRoutes);
+
+var likedRoutes = require('./routes/liked');
+app.use('/api/liked', likedRoutes);
 
 // start app ===============================================
 // startup our app at http://localhost:8080

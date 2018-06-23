@@ -130,6 +130,7 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 	var loadFeed = function(userId){
 		FeedService.getFollowingUsersActivity(userId).then(function(result){
 			$scope.feed = result;
+			console.log($scope.feed);
 
 			$scope.feed.forEach(function(activity, index){
 				$scope.feed[index].listed = {}
