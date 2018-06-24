@@ -91,23 +91,6 @@
                 </div>
               </div>
           </div>
-          <button id="friendRatedDropButton" class="uk-button uk-button-default watch-button" ng-class="{watched: friendsRated.length > 0}" type="button">Friends Rated ({{ friendsRated.length || 0 }})</button>
-          <div class="uk-grid" id="friendRatedDrop" uk-dropdown="pos: right-center; delay-hide: 1330000; animation: uk-animation-slide-right-medium; offset: 20">
-            <div class="friend" uk-grid ng-repeat="friend in friendsRated">
-              <div class="friendImage">
-                <img class="uk-border-circle" src="../images/mask2.png" width="50" height="50" alt="Border circle">
-              </div>
-              <div class="friendContent">
-                <p class="friendName">{{ friend.name }} <span ng-show="friend._ratings" class="friendRating">{{friend._ratings[0]}} </span><span class="rating-star" ng-show="friend._ratings" uk-icon="icon: star; ratio: .5"></span> </p>
-                <a class="friendLink" ng-href="/user/{{friend._id}}">{{' @' + friend.username}}</a>
-              </div>
-            </div>
-            <div class="friend" uk-grid ng-if="friendsRated.length == 0">
-              <div class="friendContent">
-                <p class="friendName uk-text-small uk-text-muted"><span uk-icon="video-camera"></span> None of yours friends rated this.</p>
-              </div>
-            </div>
-          </div>
       </div>
     <div class="section sinopsis">
       <div class="section-title">
