@@ -165,7 +165,6 @@ exports.update = function(req, res) {
     if (req.body.images) show.images = req.body.images;
     if (req.body.seasons) show.seasons = req.body.seasons;
 
-
     show.save()
     .catch((err) => {
       res.status(RequestStatus.BAD_REQUEST).send(err);
@@ -185,7 +184,6 @@ exports.delete = async function(req, res) {
     res.status(RequestStatus.BAD_REQUEST).send(err);
   }
 };
-
 
 // AUXILIARY FUNCTIONS =============================================================================
 
@@ -239,35 +237,47 @@ getCastFromAPI = function(tv_id){
 
 matchApiCastToDb = async function(dbtvshow){
   getCastFromAPI(dbtvshow._tmdb_id).then(function(credits){
-    var credits = JSON.parse(credits)
+    var credits = JSON.parse(credits);
     var cast = credits.cast;
     var castSize = cast.length;
     var nCast = 0;
     var castIds = [];
 
-    cast.forEach(function(person, i){
+    cast.forEach(async function(person, i){
       var tmdb_id = person.id;
       var name = person.name;
       var character = person.character;
       var picture = person.profile_path;
       var description = "No description yet";
-      var db_person = new Person();
-      db_person.name = name;
-      db_person._tmdb_id = tmdb_id;
-      db_person.image_url = picture;
-      db_person.description = description;
-      db_person.save().then(async (created_db_person)=>{
-        nCast++;
-        castIds[i] = created_db_person._id;
-        await createAppearsIn(created_db_person._id, dbtvshow._id);
-        if (nCast == castSize) done();
-      }).catch((err)=>{console.log(err)});
+      var db_person;
+
+      let hasPerson = await DataStoreUtils.findPersonByTmdbId(tmdb_id);
+
+      if (hasPerson.length === 0) {
+        // person does not exists
+        db_person = new Person();
+        db_person.name = name;
+        db_person._tmdb_id = tmdb_id;
+        db_person.image_url = picture;
+        db_person.description = description;
+        db_person.save().then(async (created_db_person)=>{
+          nCast++;
+          castIds[i] = created_db_person._id;
+          await createAppearsIn(created_db_person._id, dbtvshow._id);
+          if (nCast == castSize) done();
+          console.log("Person Created:" + name)
+        }).catch((err)=>{console.log(err)});
+      }
+      else {
+        // person already exists
+        await createAppearsIn(hasPerson[0]._id, dbmovieshow._id);
+        console.log("Person Updated:" + name)
+      }
     });
 
     function done() {
       return castIds;
     }
-
   });
 };
 
