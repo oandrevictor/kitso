@@ -185,7 +185,6 @@ exports.getAppearsInObjByMedia = async function(mediaId) {
 
 exports.getAppearsInObjByKeys = async function(mediaId, personId) {
   let array = await AppearsIn.find({_media: mediaId, _person: personId}).exec();
-  console.log('gode', array);
   return array[0];  // since there's just 1 appearsIn with same mediaid and personId
 };
 
