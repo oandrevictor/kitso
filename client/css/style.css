@@ -619,9 +619,9 @@ html, body {
     .movie .friend .friendName {
       margin-top: 0px;
       margin-bottom: 0px;
-      font-size: 16px; }
+      font-size: 14px; }
     .movie .friend .friendLink {
-      font-size: 14px;
+      font-size: 12px;
       color: #773095; }
     .movie .friend .friendRating {
       color: #7c1b7a;
@@ -803,9 +803,9 @@ html, body {
       padding-top: 0px; }
     .tvshow .friend .friendName {
       margin-bottom: 0px;
-      font-size: 16px; }
+      font-size: 14px; }
     .tvshow .friend .friendLink {
-      font-size: 14px;
+      font-size: 12px;
       color: #773095; }
     .tvshow .friend .friendRating {
       color: #7c1b7a;
