@@ -81,6 +81,10 @@ exports.update = async function(req, res) {
     liked._activity = req.body._activity;
   }
 
+  if (req.body.reaction) {
+    liked.reaction = req.body.reaction;
+  }
+
   liked.save()
   .catch((err) => {
     res.status(RequestStatus.BAD_REQUEST).send(err);

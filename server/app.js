@@ -22,11 +22,11 @@ let client = RedisClient.createAndAuthClient();
 var db = require('./config/db');
 
 // set our port
-var port = process.env.PORT || 8000;
+var port = process.env.PORT || 8080;
 
 // connect to our mongoDB database
 // (uncomment after you enter in your own credentials in config/db.js)
-mongoose.connect(db.local_url);
+mongoose.connect(db.url);
 
 // Passport and sessions
 require('./config/passport')(passport);
@@ -36,7 +36,7 @@ app.use(session({
     mongooseConnection: mongoose.connection,
     ttl: 30 * 60 // = 30 minutos de sessão
   }),
-  secret: process.env.SESSION_SECRET, // Colocar nas variaveis de ambiente do heroku em producao (process.env.nomeDaVariavel)
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false
 }));

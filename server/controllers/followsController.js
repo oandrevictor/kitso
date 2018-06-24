@@ -86,6 +86,13 @@ getActivity = async function(activity) {
   let user = await User.findById(action._user).exec();
   let action_obj = await DataStoreUtils.getActionByTypeAndIdWithDetails(action.action_type, action._action);
   let liked_list = await DataStoreUtils.getLikedByActivity(activity);
+  let liked_promises = liked_list.map((liked) => {
+    return DataStoreUtils.getLikedWithUserBasicInfo(liked);
+  });
+
+  await Promise.all(liked_promises).then((result) => {
+    liked_list = result;
+  });
 
   let action_copy = JSON.parse(JSON.stringify(action));
   action_copy._user = user;

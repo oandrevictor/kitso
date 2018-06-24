@@ -156,10 +156,12 @@ exports.getActionByTypeAndIdWithDetails = async function(type, id) {
     return followPage_copy;
   } else if (type == ActionType.LIKED) {
     liked = await Liked.findById(id).exec();
-    console.log(liked);
     activity_obj = await Action.findById(liked._activity).exec();
-    activity_nested = await this.getActionByTypeAndIdWithDetails(activity_obj.action_type, activity_obj._action);
-    return activity_nested;
+    let activity_obj_copy = JSON.parse(JSON.stringify(activity_obj));
+    activity_obj_copy._media = await this.getActionByTypeAndIdWithDetails(activity_obj.action_type, activity_obj._action);
+    activity_obj_copy._user = await this.getUserBasicInfo(activity_obj._user);
+
+    return activity_obj_copy;
   } else {
     let errorMsg = "There is no such action type!";
     throw new Error(errorMsg);
@@ -169,6 +171,24 @@ exports.getActionByTypeAndIdWithDetails = async function(type, id) {
 exports.getUserById = async function(id) {
   return User.findById(id).exec();
 };
+
+exports.getUserBasicInfo = async function(id) {
+  let user = await User.findById(id).exec();
+  user_copy = {_id: '', name: '', username: '', email: ''};
+  user_copy._id = user._id;
+  user_copy.name = user.name;
+  user_copy.username = user.username;
+  user_copy.email = user.email;
+  return user_copy;
+}
+
+exports.getLikedWithUserBasicInfo = async function(likedObj) {
+  let user_copy = await this.getUserBasicInfo(likedObj._user);
+
+  likedObjCopy = JSON.parse(JSON.stringify(likedObj));
+  likedObjCopy._user = user_copy;
+  return likedObjCopy;
+}
 
 exports.getUserListById = function(userListId) {
   return UserList.findById(userListId).exec();
@@ -335,7 +355,7 @@ exports.deleteFollowsPage = async function(followsId) {
     });
   }
   await Promise.all(promises).then((result) => {
-    console.log(result);
+    console.log('Liked deleted');
   });
   await this.deleteAction(actionId);
   await this.deleteActionFromUserHistory(userId, actionId);
@@ -348,7 +368,6 @@ exports.deleteRated = async function(ratedId) {
   let actionId = ratedObj._action;
   let userId = ratedObj._user;
   let likedObjs = await Liked.find({_activity: actionId});
-  console.log(likedObjs);
   let promises;
   if (likedObjs.length > 0) {
     promises = likedObjs.map((likedObj) => {
@@ -356,7 +375,7 @@ exports.deleteRated = async function(ratedId) {
     });
   }
   await Promise.all(promises).then((result) => {
-    console.log(result);
+    console.log('Liked deleted');
   });
   await this.deleteAction(actionId);
   await this.deleteActionFromUserHistory(userId, actionId);
@@ -376,7 +395,7 @@ exports.deleteWatched = async function(watchedId) {
     });
   }
   await Promise.all(promises).then((result) => {
-    console.log(result);
+    console.log('Liked deleted');
   });
   await Action.remove({ _id: actionId}).exec();
   var deleteActionFromUserHistory = function(userId, actionId) {
