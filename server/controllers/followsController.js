@@ -56,6 +56,43 @@ exports.following_me = async function(req, res) {
     res.status(RequestStatus.BAD_REQUEST).json(err);
   }
 };
+var getId = function(following){
+  return following._following;
+}
+exports.followed_activity = async function(req, res) {
+  let user_id = req.params.user_id;
+  let following_list;
+  try {
+    following_list = await Follows.find({_user: user_id}).exec();
+    following_list = following_list.map(getId);
+    following_list.push(user_id);
+
+    all_activitys = []
+    actions = await Action.find({ "_user": { "$in": following_list } }).sort({date: -1}).limit(10);
+    promises = actions.map(getActivity);
+
+      Promise.all(promises).then(function(results) {
+        all_activitys = all_activitys.concat(results);
+          res.status(RequestStatus.OK).send(all_activitys);
+      })
+  } catch (err) {
+    console.log(err)
+    res.status(RequestStatus.BAD_REQUEST).json(err);
+  }
+};
+
+getActivity = async function(activity) {
+  let action = await Action.findById(activity).exec();
+  let user = await User.findById(action._user).exec();
+  let action_obj = await DataStoreUtils.getActionByTypeAndIdWithDetails(action.action_type, action._action);
+
+  let action_copy = JSON.parse(JSON.stringify(action));
+  action_copy._user = user;
+  action_json = action_obj;
+  action_copy._action = action_json;
+
+  return action_copy;
+}
 
 exports.create = async function(req, res) {
   var follow = new Follows(req.body);
@@ -100,7 +137,7 @@ exports.getFriendsWithWatchedMedia = async function (req, res) {
   let userId = req.query.userId;
   let mediaId = req.query.mediaId;
   let following_list = await Follows.find({_user: userId}).exec();
-  
+
   var watchedPromises = [];
   following_list.forEach((following) => {
     let friendId = following._following;

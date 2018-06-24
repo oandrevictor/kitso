@@ -92,8 +92,6 @@ describe('Movie', () => {
                     res.body.should.have.property('title');
                     res.body.should.have.property('imdb_id');
                     res.body.should.have.property('id');
-                    // res.body.errors.should.have.property('pages');
-                    // res.body.errors.pages.should.have.property('kind').eql('required');
                     done();
                 });
         });

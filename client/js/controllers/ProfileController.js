@@ -1,4 +1,4 @@
- var kitso = angular.module('kitso');
+var kitso = angular.module('kitso');
 
 kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$routeParams', 'AuthService', 'UserService', 'FollowService', 'WatchedService', 'RatedService', 'UserListService',
 function ($scope, $location, $timeout, $routeParams, AuthService, UserService, FollowService, WatchedService, RatedService, UserListService) {
@@ -314,9 +314,21 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
   }
 
   $scope.submitForm = function () {
+    if (this.editForm.$valid) {
+      let payload = {
+        _id: $scope.user._id,
+        name: $scope.user.name,
+        username: $scope.user.username,
+        email: $scope.user.email,
+        birthday: $scope.user.birthday,
+        gender: $scope.user.gender,
+        description: $scope.user.description,
+        settings: {
+          autowatch: $scope.user.settings.autowatch
+        }
+      }
 
-    if ($scope.editForm.$valid) {
-      UserService.editUser($scope.user)
+      UserService.editUser(payload)
         // handle success
         .then(function () {
           $scope.descriptionArea = false;
@@ -354,8 +366,8 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
   };
 
   $scope.deleteAccount = function () {
-    if ($scope.deleteForm.$valid && $scope.confirmationText($scope.delete.text)) {
-      AuthService.deleteUser($scope.user._id, $scope.delete.password)
+    if (this.deleteForm.$valid && $scope.confirmationText(this.delete.text)) {
+      AuthService.deleteUser($scope.user._id, this.delete.password)
         .then(() => {
           UIkit.notification({
             message: '<span uk-icon=\'icon: check\'></span> Account deleted. Good Bye :(',
@@ -404,7 +416,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
     return text === 'I know this is a permanent action';
   }
 
-  //$scope.descriptionArea = false;
+  $scope.descriptionArea = false;
   $scope.toggleDescriptionArea = function () {
     $scope.descriptionArea = !$scope.descriptionArea;
   }

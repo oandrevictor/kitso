@@ -8,6 +8,7 @@ var RequestMsg = require('../constants/requestMsg');
 const https = require('https');
 var RedisClient = require('../utils/lib/redisClient');
 var TMDBController = require('../external/TMDBController');
+var mongoose       = require('mongoose');
 const redisClient = RedisClient.createAndAuthClient();
 
 exports.index = function(req, res) {
@@ -61,43 +62,53 @@ exports.index = function(req, res) {
 };
 
 exports.show = function(req, res) {
-  Movie.findById(req.params.movie_id)
-  .catch((err) => {
+  var movie;
+  if (mongoose.Types.ObjectId.isValid(req.params.movie_id)) {
+    movie = Movie.findById(req.params.movie_id);
+  } else {
+    movie = Movie.findOne({_tmdb_id: req.params.movie_id});
+  }
+
+  movie.catch((err) => {
     res.status(400).send(err);
   })
   .then((result) => {
-    var tmdb_id = result._tmdb_id;
-    var query = 'movie/' + tmdb_id
-    redisClient.exists(query, function(err, reply) {
-      if (reply === 1) {
-        redisClient.get(query, async function(err,data) {
-          if(err)
-          console.log(err)
-          else{
-            console.log('got query from redis: movie/' + tmdb_id);
-            var parsed_result = JSON.parse(JSON.parse(data));
-            var actors = result._actors;
-            let actorsPromises = actors.map(injectPersonJson);
-            parsed_result.poster_path = "https://image.tmdb.org/t/p/w500" + parsed_result.poster_path;
-            parsed_result._id = result._id;
-            parsed_result.__t = result.__t;
-            await Promise.all(actorsPromises).then(function(nested_actors) {
-              parsed_result._actors = nested_actors;
-              parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original" + parsed_result.backdrop_path;
-              res.setHeader('Content-Type', 'application/json');
-              res.status(200).send(parsed_result);
-            });
-          }
-        });
-      } else {
-        TMDBController.getMovieFromTMDB(tmdb_id).then(async function(data) {
-          var data = JSON.parse(data)
-          data._id = result._id;
-          data.__t = result.__t;
-          res.status(RequestStatus.OK).send(data);
-        })
-      }
-    });
+    if (result) {
+      var tmdb_id = result._tmdb_id;
+      var query = 'movie/' + tmdb_id
+      redisClient.exists(query, function(err, reply) {
+        if (reply === 1) {
+          redisClient.get(query, async function(err,data) {
+            if(err)
+            console.log(err)
+            else{
+              console.log('got query from redis: movie/' + tmdb_id);
+              var parsed_result = JSON.parse(JSON.parse(data));
+              var actors = result._actors;
+              let actorsPromises = actors.map(injectPersonJson);
+              parsed_result.poster_path = "https://image.tmdb.org/t/p/w500" + parsed_result.poster_path;
+              parsed_result._id = result._id;
+              parsed_result.__t = result.__t;
+              await Promise.all(actorsPromises).then(function(nested_actors) {
+                parsed_result._actors = nested_actors;
+                parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original" + parsed_result.backdrop_path;
+                res.setHeader('Content-Type', 'application/json');
+                res.status(200).send(parsed_result);
+              });
+            }
+          });
+        } else {
+          TMDBController.getMovieFromTMDB(tmdb_id).then(async function(data) {
+            var data = JSON.parse(data)
+            data._id = result._id;
+            data.__t = result.__t;
+            res.status(RequestStatus.OK).send(data);
+          })
+        }
+      });
+    } else {
+      res.status(RequestStatus.NOT_FOUND).send('Media not found.');
+    }
   });
 };
 

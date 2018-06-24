@@ -104,29 +104,38 @@ kitso.controller('PersonController',
         });
     };
 
-      $scope.unfollow = function(person){
-        var followId = person.followed.following_id;
-        FollowService.unfollowPage(followId)
-        .then((followed) => {
-            $scope.person.followed = false;
-        })
-        .catch((error) => {
-            UIkit.notification({
-                message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
-                status: 'danger',
-                timeout: 2500
-            });
-        });
-        FollowService.countFollowers($routeParams.person_id)
-          .then((count) => {
-            $scope.person.followers = count;
-          })
-          .catch((error) => {
-            UIkit.notification({
+    $scope.unfollow = function(person){
+      var followId = person.followed.following_id;
+      FollowService.unfollowPage(followId)
+      .then((followed) => {
+          $scope.person.followed = false;
+      })
+      .catch((error) => {
+          UIkit.notification({
               message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
               status: 'danger',
               timeout: 2500
-            });
-        });
+          });
+      });
+      FollowService.countFollowers($routeParams.person_id)
+        .then((count) => {
+          $scope.person.followers = count;
+        })
+        .catch((error) => {
+          UIkit.notification({
+            message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+            status: 'danger',
+            timeout: 2500
+          });
+      });
+    }
+
+    $scope.range = function(count) {
+      var ratings = [];
+      for (var i = 0; i < count; i++) {
+        ratings.push(i+1)
       }
+      return ratings;
+    }
+
     }]);
