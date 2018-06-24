@@ -139,23 +139,46 @@ exports.getFriendsWithWatchedMedia = async function (req, res) {
   let following_list = await Follows.find({_user: userId}).exec();
 
   var watchedPromises = [];
+  var ratedPromises = [];
+
   following_list.forEach((following) => {
     let friendId = following._following;
     watchedPromises.push(DataStoreUtils.getWatchedByUserIdAndMediaId(friendId, mediaId));
+    ratedPromises.push(DataStoreUtils.getRatedByUserIdAndMediaId(friendId, mediaId));
   });
+
   var watcheds;
   await Promise.all(watchedPromises).then((result) => {
     watcheds = result;
   });
 
+  var rateds;
+  await Promise.all(ratedPromises).then((result) => {
+    rateds = result;
+  });
+
   let userPromises = [];
   watcheds.forEach((watched) => {
     watched = watched[0];
-    if (watched) userPromises.push(DataStoreUtils.getUserById(watched._user));
+    if (watched) {
+      userPromises.push(DataStoreUtils.getUserById(watched._user));
+    }
   });
+
   var friends;
   await Promise.all(userPromises).then((result) => {
     friends = result;
+  });
+
+  friends.forEach((friend) => {
+    rateds.forEach((rated) => {
+      rated = rated[0];
+      if (rated) {
+        if (friend._id.toString() === rated._user.toString()) {
+          friend._ratings[0] = rated.rating;
+        }
+      }
+    });
   });
 
   res.status(RequestStatus.OK).json(friends);
@@ -170,12 +193,20 @@ exports.getFriendsWithWatchedTvshow = async function (req, res) {
   });
 
   var watchedPromises = [];
+  var ratedPromises = [];
   seasonEpisodesIds.forEach((season) => {
     watchedPromises.push(DataStoreUtils.getWatchedByUserIdAndMediaId(friendsIds, season));
+    ratedPromises.push(DataStoreUtils.getRatedByUserIdAndMediaId(friendsIds, season));
   });
+
   var seasonWatcheds;
   await Promise.all(watchedPromises).then((result) => {
     seasonWatcheds = result;
+  });
+
+  var rateds;
+  await Promise.all(ratedPromises).then((result) => {
+    rateds = result;
   });
 
   let userPromises = [];
@@ -197,6 +228,63 @@ exports.getFriendsWithWatchedTvshow = async function (req, res) {
       friends_ids.push(friend._id.toString());
     }
   });
+
+  friends.forEach((friend) => {
+    rateds.forEach((rated) => {
+      rated = rated[0];
+      if (rated) {
+        if (friend._id.toString() === rated._user.toString()) {
+          friend._ratings[0] = rated.rating;
+        }
+      }
+    });
+  });
+
+
+  res.status(RequestStatus.OK).json(friends);
+}
+
+exports.getFriendsWithRatedMedia = async function (req, res) {
+  let userId = req.query.userId;
+  let mediaId = req.query.mediaId;
+  let following_list = await Follows.find({_user: userId}).exec();
+
+  var ratedPromises = [];
+  following_list.forEach((following) => {
+    let friendId = following._following;
+    ratedPromises.push(DataStoreUtils.getRatedByUserIdAndMediaId(friendId, mediaId));
+  });
+
+  var rateds;
+  await Promise.all(ratedPromises).then((result) => {
+    rateds = result;
+  });
+
+  let userPromises = [];
+  let ratingsPromises = [];
+
+  rateds.forEach((rated) => {
+    rated = rated[0];
+    if (rated) {
+      var user = DataStoreUtils.getUserById(rated._user);
+      userPromises.push(user);
+      ratingsPromises.push(rated.rating);
+    }
+  });
+
+  var friends;
+  await Promise.all(userPromises).then((result) => {
+    friends = result;
+  });
+
+  var ratings;
+  await Promise.all(ratingsPromises).then((result) => {
+    ratings = result;
+  });
+
+  for (i = 0; i < friends.length; i++) {
+    friends[i]._ratings[0] = ratings[i];
+  }
 
   res.status(RequestStatus.OK).json(friends);
 }

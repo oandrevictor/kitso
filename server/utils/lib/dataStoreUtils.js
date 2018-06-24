@@ -212,6 +212,10 @@ exports.getRated = async function(mediaId) {
   return Rated.find({_media: mediaId}).exec();
 };
 
+exports.getRatedByUserIdAndMediaId = async function(userId, mediaId) {
+  return Rated.find({_user: userId, _media: mediaId}).exec();
+};
+
 
 // DELETE =========================================================================================
 
