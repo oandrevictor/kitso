@@ -42,21 +42,7 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
 
             FollowService.friendsWatchingTvshow($scope.user._id, $scope.getEpisodesIds())
               .then((response) => {
-                $scope.friendsWatchs = response;
-
-                FollowService.friendsRatingMedia($scope.user._id, $scope.tvshow._id).then((response) => {
-                  $scope.friendsRated = response;
-
-                  $scope.friendsWatchs.forEach(function(friendWatching){
-                    var rating = $scope.getRatingByUserId(friendWatching._id, $scope.friendsRated);
-                    friendWatching._ratings = rating;
-                  });
-
-                  $scope.friendsWatching = $scope.friendsWatchs;
-                })
-                  .catch((error) => {
-                    console.log('error', error);
-                  });
+                $scope.friendsWatching  = response;
               })
               .catch((error) => {
                 console.log('error', error);

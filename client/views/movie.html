@@ -81,7 +81,7 @@
                       <img class="uk-border-circle" src="../images/mask2.png" width="50" height="50" alt="Border circle">
                   </div>
                   <div class="friendContent">
-                    <p class="friendName">{{ friend.name }} <span ng-show="friend._rating" class="friendRating">{{friend._rating}} </span><span class="rating-star" ng-show="friend._rating" uk-icon="icon: star; ratio: .5"></span> </p>
+                    <p class="friendName">{{ friend.name }} <span ng-show="friend._ratings[0]" class="friendRating">{{friend._ratings[0]}} </span><span class="rating-star" ng-show="friend._ratings[0]" uk-icon="icon: star; ratio: .5"></span> </p>
                     <a class="friendLink" ng-href="/user/{{friend._id}}">{{' @' + friend.username}}</a>
                   </div>
               </div>

@@ -79,21 +79,7 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
             });
             FollowService.friendsWatchingTvshow($scope.user._id, $scope.getEpisodesIds())
             .then((response) => {
-                $scope.friendsWatchs = response;
-
-                FollowService.friendsRatingMedia($scope.user._id, $scope.tvshow._id).then((response) => {
-                  $scope.friendsRated = response;
-
-                  $scope.friendsWatchs.forEach(function(friendWatching){
-                    var rating = $scope.getRatingByUserId(friendWatching._id, $scope.friendsRated);
-                    friendWatching._ratings = rating;
-                  });
-
-                  $scope.friendsWatching = $scope.friendsWatchs;
-                })
-                .catch((error) => {
-                  console.log('error', error);
-                });
+              $scope.friendsWatching  = response;
             })
             .catch((error) => {
                 console.log('error', error);
@@ -385,15 +371,4 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
 
         return episodesIds;
     }
-
-  $scope.getRatingByUserId = function (userId, friendsRated) {
-    var rating;
-    friendsRated.forEach(function(friendRating){
-      if(userId === friendRating._id) {
-        rating = friendRating._ratings[0];
-      }
-    });
-
-    return rating;
-  }
 }]);
