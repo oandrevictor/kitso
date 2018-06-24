@@ -63,9 +63,34 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
                   timeout: 2500
               });
             });
-            FollowService.friendsWatchingMedia($scope.user._id, $scope.movie._id)
-            .then((response) => {
-                $scope.friendsWatching = response;
+
+            FollowService.friendsWatchingMedia($scope.user._id, $scope.movie._id).then((response) => {
+              $scope.friendsWatchs = response;
+
+              $scope.friendsWatchs.forEach((friend) => {
+                RatedService.isRated(friend._id ,$scope.movie._id).then((rated) => {
+                  if (rated.is_rated) {
+                    RatedService.getRated(rated.rated_id).then((rated) => {
+                      friend._rating = rated.rating;
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                    });
+                  }
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+              });
+
+              $scope.friendsWatching = $scope.friendsWatchs;
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+
+            FollowService.friendsRatingMedia($scope.user._id, $scope.movie._id).then((response) => {
+              $scope.friendsRated = response;
             })
             .catch((error) => {
                 console.log('error', error);

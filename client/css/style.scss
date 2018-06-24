@@ -846,7 +846,7 @@ html, body {
     padding-bottom: 10px;
 
     .friendImage {
-      padding-left: 20px;
+      padding-left: 5px;
       padding-bottom: 0px;
     }
 
@@ -857,6 +857,7 @@ html, body {
     }
 
     .friendName {
+      margin-top: 0px;
       margin-bottom: 0px;
       font-size: 16px;
     }
@@ -864,6 +865,12 @@ html, body {
     .friendLink {
       font-size: 14px;
       color: #773095;
+    }
+
+    .friendRating {
+      color: #7c1b7a;
+      font-size: 12px;
+      padding-left: 5px;
     }
   }
 
@@ -1100,7 +1107,7 @@ html, body {
     padding-bottom: 10px;
 
     .friendImage {
-      padding-left: 20px;
+      padding-left: 5px;
       padding-bottom: 0px;
     }
 
@@ -1118,6 +1125,12 @@ html, body {
     .friendLink {
       font-size: 14px;
       color: #773095;
+    }
+
+    .friendRating {
+      color: #7c1b7a;
+      font-size: 12px;
+      padding-left: 5px;
     }
   }
 
