@@ -12,6 +12,10 @@ var RelatedSchema = new Schema({
     ref: 'News',
     required: true
   },
+  is_media: {
+    type: Boolean,
+    required: true
+  },
   _media: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Media',
