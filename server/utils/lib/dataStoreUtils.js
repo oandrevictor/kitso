@@ -55,7 +55,7 @@ exports.addPersonToMediaCast = function(personId, mediaId) {
 
 
 // GET ============================================================================================
-getMediaWithInfoFromDB = async function(media_obj){
+exports.getMediaWithInfoFromDB = async function(media_obj){
   if (media_obj.__t == "Movie"){
     var media = await TMDBController.getMovie(media_obj._tmdb_id).then(function(movie){
       movie._id = media_obj._id;
@@ -257,6 +257,10 @@ exports.getLikedByActivity = async function(activityId) {
 
 exports.userHasLiked = async function(userId, activityId) {
   return Liked.find({_user: userId, _activity: activityId});
+};
+
+exports.getRatedByUserIdAndMediaId = async function(userId, mediaId) {
+  return Rated.find({_user: userId, _media: mediaId}).exec();
 };
 
 
