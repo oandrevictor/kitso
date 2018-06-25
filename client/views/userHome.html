@@ -55,8 +55,8 @@
                         <h5 class="user-action"> {{getActivityType(activity) }} </h5>
                         <a class="link-action" ng-href="{{getActivityShowLink(activity)}}" ng-if="activity._action._media.show">{{activity._action._media.show.name}}: </a>
                         <a class="link-action" ng-href="{{getActivitySeasonLink(activity)}}" ng-if="activity._action._media.show">{{getSeasonInfo(activity).name}} - </a>
-                        <a class="link-action" ng-hide="activity.action_type == 'news'" ng-href="{{getActivityObjectLink(activity)}}">{{getActivityReferedObject(activity).name}}</a>
-                        <a class="link-action" ng-if="activity.action_type == 'news'" ng-repeat='related in activity._action._related' >{{getNewsObject(related).name}}</a>
+                        <a class="link-action" ng-hide="activity.action_type == 'news'" ng-href="{{getActivityObjectLink(activity._action)}}">{{getActivityReferedObject(activity).name}}</a>
+                        <a class="link-action" ng-if="activity.action_type == 'news'" ng-href="{{getActivityObjectLink(related)}}" ng-repeat='related in activity._action._related' >{{getNewsObject(related).name}}</a>
 
                         <ul class="uk-iconnav" ng-if="activity.action_type == 'rated'">
                           <div ng-repeat="n in range('10')">
@@ -78,7 +78,7 @@
         </header>
         <div class="uk-comment-body" ng-show="activity.open">
           <div class="uk-card uk-card-default uk-grid-collapse uk-margin home-card" uk-grid>
-              <div ng-href="{{getActivityObjectLink(activity)}}" class="uk-card-media-left uk-cover-container" style="background: url({{getActivityImage(activity)}}) center; background-size:cover; cursor:pointer ">
+              <div ng-href="{{getActivityObjectLink(activity._action)}}" class="uk-card-media-left uk-cover-container" style="background: url({{getActivityImage(activity)}}) center; background-size:cover; cursor:pointer ">
                   <canvas width="300" height="200"></canvas>
               </div>
               <div class="home-card-info">

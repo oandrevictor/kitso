@@ -74,7 +74,7 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 			return related._media
 		}
 		else {
-			return JSON.parse(related._person)
+			return related._person
 		}
 	}
 
@@ -295,9 +295,9 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 		return 'tvshow/' + activity._action._media.show._id
 	}
 
-	$scope.getActivityObjectLink = function(activity){
-		if (activity._action._media){
-			media = activity._action._media;
+	$scope.getActivityObjectLink = function(action){
+		if (action._media){
+			media = action._media;
 			if (media.__t == "Episode")
 				return 'tvshow/' + media.show._id + '/season/' + media.season_number
 			if (media.__t == "TvShow")
@@ -305,16 +305,21 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 			if (media.__t == "Movie")
 				return 'movie/' + media._id
 		}
-		if (activity._action._following){
-			following = activity._action._following;
+		if (action._following){
+			following = action._following;
 			if (following.__t){
 				if (following.__t == "TvShow")
 					return 'tvshow/' + following._id
 				if (following.__t == "Movie")
 					return 'movie/' + following._id
+				else
+					return 'user/' + following._id
 			}
 			else
 				return 'person/' + following._id
+		}
+		if (action._person){
+			return 'person/' + action._person._id
 		}
 	}
 

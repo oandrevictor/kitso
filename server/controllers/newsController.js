@@ -223,6 +223,8 @@ exports.inject_related = async function(news) {
     } else {
       let person_obj = await Person.findById(complete_related._person).exec();
       let person_from_TMDB = await TMDBController.getPersonFromTMDB(person_obj._tmdb_id);
+      person_from_TMDB = JSON.parse(person_from_TMDB)
+      person_from_TMDB._id = person_obj._id
       complete_related._person = person_from_TMDB;
     }
 
