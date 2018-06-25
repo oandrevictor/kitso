@@ -1,5 +1,7 @@
 var News = require('../models/News');
 var Related = require('../models/Related');
+var Action = require('../models/Action');
+var ActionType = require('../constants/actionType');
 var Person = require('../models/Person');
 var Media = require('../models/Media');
 var RequestStatus = require('../constants/requestStatus');
@@ -145,7 +147,7 @@ exports.create = async function(req, res) {
     var news = await create_news(news_obj);
 
     let news_id = news._id;
-    let user_id = req.body._user;
+    let user_id = req.body._posted_by;
     let medias = req.body.medias_ids;
     let people = req.body.people_ids;
 
@@ -164,6 +166,10 @@ exports.create = async function(req, res) {
     }
 
     news._related = relateds;
+
+    let action = await DataStoreUtils.createAction(user_id, news._id, ActionType.NEWS);
+    news._action = action._id;
+    await DataStoreUtils.addActionToUserHistory(user_id, action._id);
     await news.save();
     res.status(RequestStatus.OK).send(news);
   } catch(err) {
@@ -194,13 +200,10 @@ exports.update = function(req, res) {
 };
 
 exports.delete = async function(req, res) {
+  let newsId = req.params.news_id;
   try {
-    var news = await find_news_obj(req.params.news_id);
-    var relateds_ids = news._related;
-    await delete_relateds(relateds_ids);
-    await delete_news(req.params.news_id);
-  } catch(err) {
-    console.log(err);
+    let deletedNews = await DataStoreUtils.deleteNews(newsId);
+  } catch (err) {
     res.status(RequestStatus.BAD_REQUEST).send(err);
   }
   res.status(RequestStatus.OK).send('News deleted.');
