@@ -223,3 +223,26 @@ exports.getEpisodeFromTMDB = function(tmdb_id, season, episode){
     });
   })
 };
+
+exports.getPersonFromTMDB = function(tmdb_id){
+  return new Promise(function(resolve, reject) {
+    var query = 'person/' + tmdb_id
+    console.log("Could not get from redis, requesting info from The Movie DB")
+    https.get("https://api.themoviedb.org/3/person/"+ tmdb_id + "?api_key=db00a671b1c278cd4fa362827dd02620",
+    (resp) => {
+      let data = '';
+      resp.on('data', (chunk) => {
+        data += chunk;
+      });
+      resp.on('end', () => {
+        console.log("saving result to redis: "+ query)
+        redisClient.set(query, JSON.stringify(data));
+        resolve(data)
+      });
+
+    }).on("error", (err) => {
+      console.log("Error: " + err.message);
+      reject();
+    });
+  })
+};

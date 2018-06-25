@@ -667,18 +667,23 @@ html, body {
     padding-top: 10px;
     padding-bottom: 10px; }
     .movie .friend .friendImage {
-      padding-left: 20px;
+      padding-left: 5px;
       padding-bottom: 0px; }
     .movie .friend .friendContent {
       padding-left: 10px;
       padding-bottom: 0px;
       padding-top: 0px; }
     .movie .friend .friendName {
+      margin-top: 0px;
       margin-bottom: 0px;
-      font-size: 16px; }
+      font-size: 14px; }
     .movie .friend .friendLink {
-      font-size: 14px;
+      font-size: 12px;
       color: #773095; }
+    .movie .friend .friendRating {
+      color: #7c1b7a;
+      font-size: 12px;
+      padding-left: 5px; }
   .movie .title {
     font-size: 4vh;
     font-weight: 100;
@@ -847,7 +852,7 @@ html, body {
     padding-top: 10px;
     padding-bottom: 10px; }
     .tvshow .friend .friendImage {
-      padding-left: 20px;
+      padding-left: 5px;
       padding-bottom: 0px; }
     .tvshow .friend .friendContent {
       padding-left: 10px;
@@ -855,10 +860,14 @@ html, body {
       padding-top: 0px; }
     .tvshow .friend .friendName {
       margin-bottom: 0px;
-      font-size: 16px; }
+      font-size: 14px; }
     .tvshow .friend .friendLink {
-      font-size: 14px;
+      font-size: 12px;
       color: #773095; }
+    .tvshow .friend .friendRating {
+      color: #7c1b7a;
+      font-size: 12px;
+      padding-left: 5px; }
   .tvshow .poster {
     display: block;
     background: #502274;

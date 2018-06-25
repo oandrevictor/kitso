@@ -18,7 +18,8 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
         followUser: followUser,
         countFollowers: countFollowers,
         friendsWatchingMedia: friendsWatchingMedia,
-        friendsWatchingTvshow: friendsWatchingTvshow
+        friendsWatchingTvshow: friendsWatchingTvshow,
+        friendsRatingMedia: friendsRatingMedia
     });
 
     function getFollowing(userId, url){
@@ -275,7 +276,23 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
 
         return deferred.promise;
     }
+  function friendsRatingMedia(userId, mediaId) {
+    var deferred = $q.defer();
 
+    $http.get('/api/follows/is_rating_media?userId=' + userId + '&mediaId=' + mediaId)
+      .then((response) => {
+        if (response.status === 200) {
+          deferred.resolve(response.data);
+        } else {
+          deferred.reject();
+        }
+      })
+      .catch((error) => {
+        deferred.reject(error.data);
+      });
+
+    return deferred.promise;
+  }
 
     function friendsWatchingTvshow(userId, seasonEpisodesIds) {
         var deferred = $q.defer();
