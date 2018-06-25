@@ -79,11 +79,12 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
             });
             FollowService.friendsWatchingTvshow($scope.user._id, $scope.getEpisodesIds())
             .then((response) => {
-                $scope.friendsWatching = response;
+              $scope.friendsWatching  = response;
             })
             .catch((error) => {
                 console.log('error', error);
             });
+
             $('.full-loading').hide();
           }).catch(function(){
           })
@@ -370,5 +371,4 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
 
         return episodesIds;
     }
-
 }]);
