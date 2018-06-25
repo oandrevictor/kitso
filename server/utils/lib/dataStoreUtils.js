@@ -7,6 +7,8 @@ var Follows = require('../../models/Follows');
 var FollowsPage = require('../../models/FollowsPage');
 var Rated = require('../../models/Rated');
 var Watched = require('../../models/Watched');
+var News = require('../../models/News');
+var Related = require('../../models/Related');
 var Utils = require('./utils');
 var UserList = require('../../models/UserList');
 var ActionType = require('../../constants/actionType');
@@ -333,6 +335,24 @@ exports.deleteWatched = async function(watchedId) {
   watchedObj.remove();
   return watchedObj;
 };
+
+exports.deleteNews = async function(newsId) {
+  let newsObj = await News.findById(newsId);
+  let actionId = newsObj._action;
+  let userId = newsObj._posted_by;
+  let relatedsIds = newsObj._related;
+  await this.deleteAction(actionId);
+  await this.deleteActionFromUserHistory(userId, actionId);
+  await this.deleteRelateds(relatedsIds);
+  newsObj.remove();
+  return newsObj;
+};
+
+exports.deleteRelateds = function(relatedsIds) {
+  relatedsIds.forEach(async function (related_id) {
+    await Related.remove({ _id: related_id}).exec();
+  })
+}
 
 
 // OTHER AUXILIARIES FUNCTIONS =====================================================================
