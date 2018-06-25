@@ -73,7 +73,8 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 		var news = {}
 		news.link = $scope.temp_news.link;
 		news._user = $scope.user._id;
-		news.medias_ids = $scope.temp_news.relateds;
+		news.medias_ids = $scope.temp_news.relateds.filter(related => (related.__t));
+		news.people_ids = $scope.temp_news.relateds.filter(related => !(related.__t));
 		NewsService.postNews(news).then(function(news){
 			if (news.status == 200){
 				$scope.temp_news = {}
@@ -257,6 +258,9 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 		if(activity.action_type == 'followed-page') {
 			return 'followed';
 		}
+		else if (activity.action_type == 'news') {
+			return 'posted a news about'
+		}
 		else {
 			return activity.action_type;
 		}
@@ -306,7 +310,10 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 	}
 
 	$scope.getActivityImage = function(activity){
-		if(["watched","rated"].includes(activity.action_type)){
+		if (activity.action_type == 'news'){
+			return ''
+		}
+		else if(["watched","rated"].includes(activity.action_type)){
 			if(activity._action._media){
 				if (!activity._action._media.backdrop_path){
 					return "https://image.tmdb.org/t/p/original/" + activity._action._media.still_path;
