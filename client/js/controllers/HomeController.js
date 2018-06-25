@@ -2,6 +2,7 @@ var kitso = angular.module('kitso');
 
 kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthService', 'FeedService', 'UserListService', 'WatchedService', 'NewsService', function($scope, $location, $timeout, AuthService, FeedService, UserListService, WatchedService, NewsService) {
 	$('.full-loading').show();
+	$scope.temp_news = {}
 	$scope.logout = function() {
 		AuthService.logout()
                 // handle success
@@ -32,8 +33,8 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
     return - moment(a.date).diff(moment(b.date))
   }
 	$scope.loadInfo = function(){
-		if ($scope.newslink){
-			NewsService.getPageMetadata($scope.newslink).then(function(metadata){
+		if ($scope.temp_news.link){
+			NewsService.getPageMetadata($scope.temp_news.link).then(function(metadata){
 				$scope.newsInfo = metadata.data})
 		}
 		else {
@@ -44,6 +45,7 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 	$scope.loadAutoComplete = function(){
 		if ($scope.nameSearch){
 			NewsService.getAutoComplete($scope.nameSearch).then(function(suggestions){
+				console.log(suggestions.data)
 				$scope.autoCompleteSuggestions = suggestions.data})
 		}
 		else {
@@ -51,9 +53,35 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 		}
 	}
 
-	$scope.newsRecomendation = []
+	$scope.temp_news.relateds = []
 	$scope.toggleRelated = function(related) {
-		$scope.newsRecomendation.push(related)
+		if (!$scope.temp_news.relateds.includes(related)){
+			$scope.temp_news.relateds.push(related)
+		}
+		else{
+			var index = $scope.temp_news.relateds.indexOf(related)
+			$scope.temp_news.relateds.splice(index, 1)
+		}
+	}
+
+	$scope.validLink = function(){
+		var pattern = /^((http|https):\/\/)/;
+		return pattern.test($scope.temp_news.link)
+	}
+
+	$scope.postNews = function(){
+		var news = {}
+		news.link = $scope.temp_news.link;
+		news._user = $scope.user._id;
+		news.medias_ids = $scope.temp_news.relateds;
+		NewsService.postNews(news).then(function(news){
+			if (news.status == 200){
+				$scope.temp_news = {}
+				$scope.creatingNews = false
+				$scope.nameSearch = null
+			}
+			console.log(news)
+		})
 	}
 
 	var loadUserLists = function(){

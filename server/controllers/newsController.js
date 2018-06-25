@@ -150,13 +150,17 @@ exports.create = async function(req, res) {
     let people = req.body.people_ids;
 
     let relateds = [];
-    for (var i = 0; i < medias.length; i++) {
-      let media_related = await create_related(user_id, news_id, true, medias[i]);
-      relateds.push(media_related);
+    if (medias) {
+      for (var i = 0; i < medias.length; i++) {
+        let media_related = await create_related(user_id, news_id, true, medias[i]);
+        relateds.push(media_related);
+      }
     }
-    for (var i = 0; i < people.length; i++) {
-      let people_related = await create_related(user_id, news_id, false, people[i]);
-      relateds.push(people_related);
+    if (people) {
+      for (var i = 0; i < people.length; i++) {
+        let people_related = await create_related(user_id, news_id, false, people[i]);
+        relateds.push(people_related);
+      }
     }
 
     news._related = relateds;
