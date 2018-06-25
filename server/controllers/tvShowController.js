@@ -189,11 +189,20 @@ exports.delete = async function(req, res) {
 
 matchApiSeasonsToDb = function(tvshow, dbtvshow){
   var tvshow = JSON.parse(tvshow);
-  tvshow.seasons.forEach(function(season){
+  tvshow.seasons.forEach(async function(season){
     //before create fetch from db
     var tmdb_id = season.id;
     var name = season.name;
-    var db_season = new Season();
+    var db_season;
+
+    let hasSeason = await DataStoreUtils.findSeasonByTmdbId(tmdb_id);
+    console.log('aaaaaaaaaaaaaaaaaa', hasSeason);
+    if (hasSeason.length === 0) {
+      db_season = new Season();
+    } else {
+      db_season = hasSeason[0];
+    }
+
     db_season.name = name;
     db_season._tmdb_id = tmdb_id;
     db_season.imdb_id = "";
@@ -285,11 +294,21 @@ matchApiEpisodesToDb = function(tvshow, seasonapi, dbseason){
 
   TMDBController.getSeasonFromAPI(tvshow.id, seasonapi.season_number).then((season)=>{
     var season = JSON.parse(season);
-    season.episodes.forEach(function(episode){
+    season.episodes.forEach(async function(episode){
       //before create fetch from db
       var tmdb_id = episode.id;
       var name = episode.name;
-      var db_episode = new Episode();
+      var db_episode;
+
+      let hasEpisode = await DataStoreUtils.findEpisodeByTmdbId(tmdb_id);
+
+      if (hasEpisode.length === 0) {
+        db_episode = new Episode();
+      } else {
+        db_episode = hasEpisode[0];
+      }
+
+
       db_episode._tvshow_id = dbseason._tvshow_id;
       db_episode._season_id = dbseason._id;
       db_episode._tmdb_tvshow_id = tvshow.id;
