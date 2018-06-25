@@ -17,6 +17,11 @@ var NewsSchema = new Schema({
   _related: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Related'
+  },
+  _action: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Action',
+    required: false
   }
 });
 

@@ -1,6 +1,9 @@
 var News = require('../models/News');
 var Related = require('../models/Related');
+var Action = require('../models/Action');
+var ActionType = require('../constants/actionType');
 var RequestStatus = require('../constants/requestStatus');
+var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 
 var Media = require('../models/Media');
 var Person = require('../models/Person');
@@ -132,10 +135,15 @@ exports.create = async function(req, res) {
     let news_id = news._id;
     let media_id = req.body._media_id;
     let person_id = req.body._person_id;
-    let related = await create_related(news_id, media_id, person_id);
-
+    let user_id = req.body._posted_by;
+    let related = await create_related(user_id, news_id, media_id, person_id);
     news._related.push(related._id);
-    await news.save();
+
+    let action = await DataStoreUtils.createAction(user_id, news._id, ActionType.NEWS);
+    news._action = action._id;
+    await DataStoreUtils.addActionToUserHistory(user_id, action._id);
+
+    news.save();
     res.status(RequestStatus.OK).send(news);
   } catch(err) {
     console.log(err);
@@ -181,8 +189,9 @@ var create_news = function(news_obj) {
   return news_obj.save();
 }
 
-var create_related = function(news_id, media_id, person_id) {
+var create_related = function(user_id, news_id, media_id, person_id) {
   let related_structure = {
+    _user: user_id,
     _news: news_id,
     _media: media_id,
     _person: person_id
