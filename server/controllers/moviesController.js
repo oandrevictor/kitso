@@ -18,7 +18,6 @@ exports.index = function(req, res) {
   })
   .then((movie_result) => {
     var final_result = [];
-    console.log("len:" + movie_result.length);
     if (movie_result.len == 0)
     res.status(200).send(final_result);
     movie_result.forEach((movie, index)=>{

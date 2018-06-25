@@ -196,7 +196,6 @@ matchApiSeasonsToDb = function(tvshow, dbtvshow){
     var db_season;
 
     let hasSeason = await DataStoreUtils.findSeasonByTmdbId(tmdb_id);
-    console.log('aaaaaaaaaaaaaaaaaa', hasSeason);
     if (hasSeason.length === 0) {
       db_season = new Season();
     } else {
@@ -307,7 +306,6 @@ matchApiEpisodesToDb = function(tvshow, seasonapi, dbseason){
       } else {
         db_episode = hasEpisode[0];
       }
-
 
       db_episode._tvshow_id = dbseason._tvshow_id;
       db_episode._season_id = dbseason._id;
