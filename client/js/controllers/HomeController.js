@@ -69,6 +69,15 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 		return pattern.test($scope.temp_news.link)
 	}
 
+	$scope.getNewsObject = function(related){
+		if (related.is_media){
+			return related._media
+		}
+		else {
+			return JSON.parse(related._person)
+		}
+	}
+
 	$scope.postNews = function(){
 		var news = {}
 		news.link = $scope.temp_news.link;
