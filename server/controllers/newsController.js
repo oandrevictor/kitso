@@ -24,7 +24,7 @@ exports.index = function(req, res) {
     let promise;
 
     try {
-      promise = await news.map(inject_related);
+      promise = await news.map(exports.inject_related);
     } catch (err) {
       res.status(RequestStatus.BAD_REQUEST).send(err);
     }
@@ -41,7 +41,7 @@ exports.show = function(req, res) {
     res.status(RequestStatus.BAD_REQUEST).send(err);
   })
   .then(async function(news) {
-    let complete_new = await inject_related(news);
+    let complete_new = await exports.inject_related(news);
     res.status(RequestStatus.OK).json(complete_new);
   });
 };
@@ -209,7 +209,7 @@ exports.delete = async function(req, res) {
   res.status(RequestStatus.OK).send('News deleted.');
 };
 
-var inject_related = async function(news) {
+exports.inject_related = async function(news) {
   let complete_news = JSON.parse(JSON.stringify(news));
   let relateds = complete_news._related;
   let related_objs = [];

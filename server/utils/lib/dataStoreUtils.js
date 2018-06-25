@@ -13,6 +13,7 @@ var Utils = require('./utils');
 var UserList = require('../../models/UserList');
 var ActionType = require('../../constants/actionType');
 var TMDBController = require('../../external/TMDBController');
+var NewsController = require('../../controllers/newsController');
 
 
 // CREATE =========================================================================================
@@ -155,7 +156,12 @@ exports.getActionByTypeAndIdWithDetails = async function(type, id) {
     followPage_copy = JSON.parse(JSON.stringify(followPage));
     followPage_copy._following = obj;
     return followPage_copy;
+  } else if(type == ActionType.NEWS){
+    var news = await News.findById(id).exec();
+    var completeNews = await NewsController.inject_related(news);
+    return completeNews;
   } else {
+    console.log(type)
     let errorMsg = "There is no such action type!";
     console.log(errorMsg);
   }
