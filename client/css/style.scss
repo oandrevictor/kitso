@@ -6,11 +6,93 @@ html, body {
   height: 100%;
 }
 
+.uk-input:focus, .uk-select:focus, .uk-textarea:focus {
+  border-color: #773095 !important;
+}
+
+.dark-purple-button {
+  padding: 0%;
+  background: #773095 !important;
+  color: white !important;
+  border: 0px !important;
+  display: inline-block;
+  font-size: 10px !important;
+  margin-bottom: 2px !important;
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+
+  &.active {
+    background: #773095;
+    color: white;
+  }
+}
+
 .home-content {
     margin-bottom: auto;
     font-weight: 300;
     display: block;
     background: #f8f8f8;
+
+    .news-post-area {
+      .buttons-area {
+        float: right;
+      }
+
+      .news-posting-preview {
+        display: inline-block;
+        .news-posting-image {
+          width: 300px;
+          height: 140px;
+          display: inline-block;
+        }
+        .news-text-info {
+          width: 50%;
+          display: inline-block;
+          padding-left: 30px;
+          vertical-align: top;
+        }
+      }
+    }
+
+    .suggestions-box {
+      border: #e5e5e5 solid 1px;
+      margin-top: -21px;
+      padding-top: 10px;
+      font-size: 14px;
+      color: #9f9f9f;
+      display: none;
+
+      &.show {
+        display: block;
+      }
+
+      .suggestion-item {
+        border-bottom: #ebebeb solid 1px;
+        padding-bottom: 4px;
+        padding-top: 4px;
+        padding-left: 10px;
+        cursor: pointer;
+
+        &:hover {
+          background: #773095;
+          color: white;
+        }
+      }
+
+    }
+
+    .recomendation-box {
+      .recomendation-item {
+        border: purple solid 1px;
+        padding: 2px;
+        padding-left: 6px;
+        display: inline-block;
+        color: #773095;
+        font-size: 10px;
+      }
+    }
 
     .uk-iconnav {
       display: inline-flex !important;

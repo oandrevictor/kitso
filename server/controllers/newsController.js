@@ -1,4 +1,3 @@
-
 var News = require('../models/News');
 var Related = require('../models/Related');
 var Person = require('../models/Person');
@@ -7,6 +6,12 @@ var RequestStatus = require('../constants/requestStatus');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 var TMDBController = require('../external/TMDBController');
 
+var Media = require('../models/Media');
+var Person = require('../models/Person');
+
+const cheerio = require('cheerio');
+const https = require('https');
+const http = require('http');
 
 exports.index = function(req, res) {
   News.find({})
@@ -38,6 +43,101 @@ exports.show = function(req, res) {
     res.status(RequestStatus.OK).json(complete_new);
   });
 };
+
+exports.getTaggable = async function(req, res) {
+  var all = []
+  var name = req.body.name;
+  console.log(name)
+  var medias = await getMedias(name)
+
+  var persons = await Person.find({ "name": { $regex: '.*' + name + '.*' }} ).limit(4)
+  .catch((err) => {
+    console.log("Error catching in Media:" + name)
+    return []
+  })
+  .then((result) => {
+    console.log(result)
+    return(result)
+  });
+  console.log(medias)
+  all = all.concat(medias)
+  console.log('concat')
+  console.log(all)
+  all = all.concat(persons)
+  console.log("here goes all")
+  console.log(all)
+  res.status(RequestStatus.OK).json(all.slice(0,5))
+}
+
+var getMedias = async function(name) {
+  var medias = await Media.find({ $and: [ {"name": { $regex: '.*' + name + '.*' }}, { __t: { $ne: 'Episode' }}]} ).limit(4)
+  .catch((err) => {
+    console.log("Error catching in Media:" + name)
+    console.log(err)
+    return []
+  })
+  .then((result) => {
+    console.log(result)
+    return(result)
+  });
+  return medias;
+
+}
+var getMetadata = function(data){const $ = cheerio.load(data);
+  result = {}
+ result.title = $('head title').text()
+ result.desc = $('meta[name="description"]').attr('content')
+ result.ogTitle = $('meta[property="og:title"]').attr('content')
+ result.ogImage = $('meta[property="og:image"]').attr('content')
+ images = $('img');
+ result.images = []
+  for (var i = 0; i < images.length; i++) {
+      result.images.push($(images[i]).attr('src'));
+  }
+  return result
+}
+
+exports.loadMetadata = async function(req,res) {
+  url = req.body.url;
+  var http_pattern = /^((http):\/\/)/;
+  var https_pattern = /^((https):\/\/)/;
+  if(http_pattern.test(url)) {
+    http.get(url,
+      (resp) => {
+        let data = '';
+        resp.on('data', (chunk) => {
+          data += chunk;
+        });
+        resp.on('end', () => {
+          result = getMetadata(data)
+          res.status(200).send(result)
+          return(result)
+        });
+      }).on("error", (err) => {
+        console.log("Error getting metadata from: " + url + " : "+ err);
+        res.status(400).send(err)
+      });
+  } else if (https_pattern.test(url)){
+    https.get(url,
+      (resp) => {
+        let data = '';
+        resp.on('data', (chunk) => {
+          data += chunk;
+        });
+        resp.on('end', () => {
+          result = getMetadata(data)
+          res.status(200).send(result)
+          return(result)
+        });
+      }).on("error", (err) => {
+        console.log("Error getting metadata from: " + url + " : "+ err);
+        res.status(400).send(err)
+      });
+  }
+  else{
+    res.status(200).send({data:""})
+  }
+}
 
 exports.create = async function(req, res) {
   var news_obj = new News(req.body);

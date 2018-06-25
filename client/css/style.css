@@ -4,11 +4,68 @@ html, body {
   overflow-x: hidden;
   height: 100%; }
 
+.uk-input:focus, .uk-select:focus, .uk-textarea:focus {
+  border-color: #773095 !important; }
+
+.dark-purple-button {
+  padding: 0%;
+  background: #773095 !important;
+  color: white !important;
+  border: 0px !important;
+  display: inline-block;
+  font-size: 10px !important;
+  margin-bottom: 2px !important;
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+  padding-left: 8px !important;
+  padding-right: 8px !important; }
+  .dark-purple-button.active {
+    background: #773095;
+    color: white; }
+
 .home-content {
   margin-bottom: auto;
   font-weight: 300;
   display: block;
   background: #f8f8f8; }
+  .home-content .news-post-area .buttons-area {
+    float: right; }
+  .home-content .news-post-area .news-posting-preview {
+    display: inline-block; }
+    .home-content .news-post-area .news-posting-preview .news-posting-image {
+      width: 300px;
+      height: 140px;
+      display: inline-block; }
+    .home-content .news-post-area .news-posting-preview .news-text-info {
+      width: 50%;
+      display: inline-block;
+      padding-left: 30px;
+      vertical-align: top; }
+  .home-content .suggestions-box {
+    border: #e5e5e5 solid 1px;
+    margin-top: -21px;
+    padding-top: 10px;
+    font-size: 14px;
+    color: #9f9f9f;
+    display: none; }
+    .home-content .suggestions-box.show {
+      display: block; }
+    .home-content .suggestions-box .suggestion-item {
+      border-bottom: #ebebeb solid 1px;
+      padding-bottom: 4px;
+      padding-top: 4px;
+      padding-left: 10px;
+      cursor: pointer; }
+      .home-content .suggestions-box .suggestion-item:hover {
+        background: #773095;
+        color: white; }
+  .home-content .recomendation-box .recomendation-item {
+    border: purple solid 1px;
+    padding: 2px;
+    padding-left: 6px;
+    display: inline-block;
+    color: #773095;
+    font-size: 10px; }
   .home-content .uk-iconnav {
     display: inline-flex !important;
     margin-left: 0px !important; }

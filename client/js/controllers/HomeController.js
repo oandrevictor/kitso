@@ -1,6 +1,6 @@
 var kitso = angular.module('kitso');
 
-kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthService', 'FeedService', 'UserListService', 'WatchedService', function($scope, $location, $timeout, AuthService, FeedService, UserListService, WatchedService) {
+kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthService', 'FeedService', 'UserListService', 'WatchedService', 'NewsService', function($scope, $location, $timeout, AuthService, FeedService, UserListService, WatchedService, NewsService) {
 	$('.full-loading').show();
 	$scope.logout = function() {
 		AuthService.logout()
@@ -31,7 +31,30 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 	var compareDates = function(a,b){
     return - moment(a.date).diff(moment(b.date))
   }
+	$scope.loadInfo = function(){
+		if ($scope.newslink){
+			NewsService.getPageMetadata($scope.newslink).then(function(metadata){
+				$scope.newsInfo = metadata.data})
+		}
+		else {
+			$scope.newsInfo = null;
+		}
+	}
 
+	$scope.loadAutoComplete = function(){
+		if ($scope.nameSearch){
+			NewsService.getAutoComplete($scope.nameSearch).then(function(suggestions){
+				$scope.autoCompleteSuggestions = suggestions.data})
+		}
+		else {
+			$scope.autoCompleteSuggestions = null;
+		}
+	}
+
+	$scope.newsRecomendation = []
+	$scope.toggleRelated = function(related) {
+		$scope.newsRecomendation.push(related)
+	}
 
 	var loadUserLists = function(){
 	  var lists = [];
