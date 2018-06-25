@@ -157,7 +157,7 @@ exports.getActionByTypeAndIdWithDetails = async function(type, id) {
     return followPage_copy;
   } else {
     let errorMsg = "There is no such action type!";
-    throw new Erro(errorMsg);
+    console.log(errorMsg);
   }
 };
 

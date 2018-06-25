@@ -147,7 +147,7 @@ exports.create = async function(req, res) {
     var news = await create_news(news_obj);
 
     let news_id = news._id;
-    let user_id = req.body._posted_by;
+    let user_id = req.body._user;
     let medias = req.body.medias_ids;
     let people = req.body.people_ids;
 
@@ -164,7 +164,7 @@ exports.create = async function(req, res) {
         relateds.push(people_related);
       }
     }
-
+    news._user = user_id;
     news._related = relateds;
 
     let action = await DataStoreUtils.createAction(user_id, news._id, ActionType.NEWS);
