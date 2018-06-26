@@ -325,7 +325,10 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 
 	$scope.getActivityImage = function(activity){
 		if (activity.action_type == 'news'){
-			return ''
+			if activity._action.metadata.ogImage
+				return activity._action.metadata.ogImage
+			else
+				return activity._action.metadata.images[0]
 		}
 		else if(["watched","rated"].includes(activity.action_type)){
 			if(activity._action._media){
