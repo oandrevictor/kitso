@@ -49,7 +49,6 @@ exports.show = function(req, res) {
 exports.getTaggable = async function(req, res) {
   var all = []
   var name = req.body.name;
-  console.log(name)
   var medias = await getMedias(name)
 
   var persons = await Person.find({ "name": { $regex: '.*' + name + '.*' }} ).limit(4)
@@ -58,16 +57,10 @@ exports.getTaggable = async function(req, res) {
     return []
   })
   .then((result) => {
-    console.log(result)
     return(result)
   });
-  console.log(medias)
   all = all.concat(medias)
-  console.log('concat')
-  console.log(all)
   all = all.concat(persons)
-  console.log("here goes all")
-  console.log(all)
   res.status(RequestStatus.OK).json(all.slice(0,5))
 }
 
@@ -79,7 +72,6 @@ var getMedias = async function(name) {
     return []
   })
   .then((result) => {
-    console.log(result)
     return(result)
   });
   return medias;
@@ -222,7 +214,6 @@ exports.inject_related = async function(news) {
   let complete_news = JSON.parse(JSON.stringify(news));
 
   let metadata = await exports.getMeta(complete_news.link);
-  console.log(metadata)
   let relateds = complete_news._related;
   let related_objs = [];
   for (var i = 0; i < relateds.length; i++) {
