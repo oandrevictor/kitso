@@ -78,6 +78,30 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 		}
 	}
 
+	$scope.getNewsRelatedName = function(related){
+		if (related.is_media){
+			if (related._media.name) {
+				return related._media.name
+			} else {
+				return related._media.title
+			}
+		}
+		else {
+			return related._person.name
+		}
+	}
+
+	$scope.formatRelated = function(relatedList, related){
+		var len = relatedList.length;
+		var index = relatedList.indexOf(related);
+
+		if (index === len - 2) {
+			return " and "
+		} else if (index !== len - 1) {
+			return ", "
+		}
+	}
+
 	$scope.postNews = function(){
 		var news = {}
 		news.link = $scope.temp_news.link;

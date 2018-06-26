@@ -114,6 +114,11 @@ html, body {
       .home-content .feed .link-action:hover {
         text-decoration: none;
         font-weight: bold; }
+      .home-content .feed .link-action .isDisabled {
+        color: #333;
+        text-decoration: none;
+        pointer-events: none !important;
+        font-weight: 400 !important; }
   .home-content .user-name {
     margin: 0px;
     display: inline-block;
