@@ -321,11 +321,14 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 		if (action._person){
 			return 'person/' + action._person._id
 		}
+		if (action.metadata){
+			return action.link;
+		}
 	}
 
 	$scope.getActivityImage = function(activity){
 		if (activity.action_type == 'news'){
-			if activity._action.metadata.ogImage
+			if( activity._action.metadata.ogImage)
 				return activity._action.metadata.ogImage
 			else
 				return activity._action.metadata.images[0]
@@ -370,6 +373,15 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 				activity._action._following.name = activity._action._following.title;
 	    return activity._action._following;
 	  	break;
+		case 'news':
+			var metadata = activity._action.metadata;
+			if (metadata.ogTitle)
+				metadata.name = metadata.ogTitle;
+			else {
+				metadata.name = metadata.title;
+			}
+			metadata.overview = metadata.desc;
+			return metadata;
     default:
     	return 'a'
 		}

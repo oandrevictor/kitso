@@ -99,52 +99,55 @@ var getMetadata = function(data){const $ = cheerio.load(data);
   return result
 }
 
-var getHTML = async function(url) {
-  var http_pattern = /^((http):\/\/)/;
-  var https_pattern = /^((https):\/\/)/;
-  if(http_pattern.test(url)) {
-    html = await http.get(url,
-      (resp) => {
-        let data = '';
-        resp.on('data', (chunk) => {
-          data += chunk;
+exports.getMeta = function(url){
+  return new Promise(function(resolve, reject) {
+  try {
+    var http_pattern = /^((http):\/\/)/;
+    var https_pattern = /^((https):\/\/)/;
+    if(http_pattern.test(url)) {
+      http.get(url,
+        (resp) => {
+          let data = '';
+          resp.on('data', (chunk) => {
+            data += chunk;
+          });
+          resp.on('end', () => {
+            result = getMetadata(data);
+            resolve(result)
+          });
+        }).on("error", (err) => {
+          console.log("Error getting metadata from: " + url + " : "+ err);
+          reject(err)
         });
-        resp.on('end', () => {
-          return(data);
+    } else if (https_pattern.test(url)){
+      https.get(url,
+        (resp) => {
+          let data = '';
+          resp.on('data', (chunk) => {
+            data += chunk;
+          });
+          resp.on('end', () => {
+            result = getMetadata(data);
+            resolve(result)
+          });
+        }).on("error", (err) => {
+          console.log("Error getting metadata from: " + url + " : "+ err);
+          reject(err)
         });
-      }).on("error", (err) => {
-        console.log("Error getting metadata from: " + url + " : "+ err);
-      });
-      return html;
-  } else if (https_pattern.test(url)){
-    html = await https.get(url,
-      (resp) => {
-        let data = '';
-        resp.on('data', (chunk) => {
-          data += chunk;
-        });
-        resp.on('end', () => {
-          return(data)
-        });
-      }).on("error", (err) => {
-        console.log("Error getting metadata from: " + url + " : "+ err);
-      });
-      return html
+    }
+    else{
+      resolve({data:""})
+    }
+  } catch (err) {
+    reject(err)
   }
-  else{
-    return({data:""})
-  }
+})
 }
 
 exports.loadMetadata = async function(req,res) {
-  url = req.body.url;
-  try {
-    pageHTML = await getHTML(url);
-    result = getMetadata(pageHTML);
-    res.status(200).send(result)
-  } catch (err) {
-    res.status(400).send(err)
-  }
+  var url = req.body.url;
+  var metadata = await exports.getMeta(url);
+  res.status(200).send(metadata)
 }
 
 exports.create = async function(req, res) {
@@ -217,6 +220,9 @@ exports.delete = async function(req, res) {
 
 exports.inject_related = async function(news) {
   let complete_news = JSON.parse(JSON.stringify(news));
+
+  let metadata = await exports.getMeta(complete_news.link);
+  console.log(metadata)
   let relateds = complete_news._related;
   let related_objs = [];
   for (var i = 0; i < relateds.length; i++) {
@@ -237,6 +243,7 @@ exports.inject_related = async function(news) {
     related_objs.push(complete_related);
   }
   complete_news._related = related_objs;
+  complete_news.metadata = metadata;
 
   return complete_news;
 }
