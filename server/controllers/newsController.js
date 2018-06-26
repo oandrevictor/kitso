@@ -103,7 +103,7 @@ var getHTML = async function(url) {
   var http_pattern = /^((http):\/\/)/;
   var https_pattern = /^((https):\/\/)/;
   if(http_pattern.test(url)) {
-    http.get(url,
+    html = await http.get(url,
       (resp) => {
         let data = '';
         resp.on('data', (chunk) => {
@@ -115,8 +115,9 @@ var getHTML = async function(url) {
       }).on("error", (err) => {
         console.log("Error getting metadata from: " + url + " : "+ err);
       });
+      return html;
   } else if (https_pattern.test(url)){
-    https.get(url,
+    html = await https.get(url,
       (resp) => {
         let data = '';
         resp.on('data', (chunk) => {
@@ -128,6 +129,7 @@ var getHTML = async function(url) {
       }).on("error", (err) => {
         console.log("Error getting metadata from: " + url + " : "+ err);
       });
+      return html
   }
   else{
     return({data:""})
