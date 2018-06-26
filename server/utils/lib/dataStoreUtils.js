@@ -13,6 +13,7 @@ var Utils = require('./utils');
 var UserList = require('../../models/UserList');
 var ActionType = require('../../constants/actionType');
 var TMDBController = require('../../external/TMDBController');
+var NewsController = require('../../controllers/newsController');
 
 
 // CREATE =========================================================================================
@@ -121,7 +122,7 @@ exports.getActionByTypeAndIdWithDetails = async function(type, id) {
   if (type == ActionType.RATED) {
     rating = await Rated.findById(id).exec();
     media_obj = await Media.findById(rating._media).exec();
-    media_obj = await getMediaWithInfoFromDB(media_obj);
+    media_obj = await exports.getMediaWithInfoFromDB(media_obj);
 
     rating_copy = JSON.parse(JSON.stringify(rating));
     rating_copy._media = media_obj;
@@ -129,7 +130,7 @@ exports.getActionByTypeAndIdWithDetails = async function(type, id) {
   } else if (type == ActionType.WATCHED) {
     watched = await Watched.findById(id).exec();
     media_obj = await Media.findById(watched._media).exec();
-    media_obj = await getMediaWithInfoFromDB(media_obj);
+    media_obj = await exports.getMediaWithInfoFromDB(media_obj);
 
     watched_copy = JSON.parse(JSON.stringify(watched));
     watched_copy._media = media_obj;
@@ -147,7 +148,7 @@ exports.getActionByTypeAndIdWithDetails = async function(type, id) {
 
     if (followPage.is_media) {
       obj = await Media.findById(followPage._following).exec();
-      obj = await getMediaWithInfoFromDB(obj);
+      obj = await exports.getMediaWithInfoFromDB(obj);
     } else {
       obj = await Person.findById(followPage._following).exec();
     }
@@ -155,9 +156,14 @@ exports.getActionByTypeAndIdWithDetails = async function(type, id) {
     followPage_copy = JSON.parse(JSON.stringify(followPage));
     followPage_copy._following = obj;
     return followPage_copy;
+  } else if(type == ActionType.NEWS){
+    var news = await News.findById(id).exec();
+    var completeNews = await NewsController.inject_related(news);
+    return completeNews;
   } else {
+    console.log(type)
     let errorMsg = "There is no such action type!";
-    throw new Erro(errorMsg);
+    console.log(errorMsg);
   }
 };
 

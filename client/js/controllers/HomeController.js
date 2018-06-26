@@ -2,6 +2,7 @@ var kitso = angular.module('kitso');
 
 kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthService', 'FeedService', 'UserListService', 'WatchedService', 'NewsService', function($scope, $location, $timeout, AuthService, FeedService, UserListService, WatchedService, NewsService) {
 	$('.full-loading').show();
+	$scope.temp_news = {}
 	$scope.logout = function() {
 		AuthService.logout()
                 // handle success
@@ -32,8 +33,8 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
     return - moment(a.date).diff(moment(b.date))
   }
 	$scope.loadInfo = function(){
-		if ($scope.newslink){
-			NewsService.getPageMetadata($scope.newslink).then(function(metadata){
+		if ($scope.temp_news.link){
+			NewsService.getPageMetadata($scope.temp_news.link).then(function(metadata){
 				$scope.newsInfo = metadata.data})
 		}
 		else {
@@ -44,6 +45,7 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 	$scope.loadAutoComplete = function(){
 		if ($scope.nameSearch){
 			NewsService.getAutoComplete($scope.nameSearch).then(function(suggestions){
+				console.log(suggestions.data)
 				$scope.autoCompleteSuggestions = suggestions.data})
 		}
 		else {
@@ -51,9 +53,45 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 		}
 	}
 
-	$scope.newsRecomendation = []
+	$scope.temp_news.relateds = []
 	$scope.toggleRelated = function(related) {
-		$scope.newsRecomendation.push(related)
+		if (!$scope.temp_news.relateds.includes(related)){
+			$scope.temp_news.relateds.push(related)
+		}
+		else{
+			var index = $scope.temp_news.relateds.indexOf(related)
+			$scope.temp_news.relateds.splice(index, 1)
+		}
+	}
+
+	$scope.validLink = function(){
+		var pattern = /^((http|https):\/\/)/;
+		return pattern.test($scope.temp_news.link)
+	}
+
+	$scope.getNewsObject = function(related){
+		if (related.is_media){
+			return related._media
+		}
+		else {
+			return related._person
+		}
+	}
+
+	$scope.postNews = function(){
+		var news = {}
+		news.link = $scope.temp_news.link;
+		news._user = $scope.user._id;
+		news.medias_ids = $scope.temp_news.relateds.filter(related => (related.__t));
+		news.people_ids = $scope.temp_news.relateds.filter(related => !(related.__t));
+		NewsService.postNews(news).then(function(news){
+			if (news.status == 200){
+				$scope.temp_news = {}
+				$scope.creatingNews = false
+				$scope.nameSearch = null
+			}
+			console.log(news)
+		})
 	}
 
 	var loadUserLists = function(){
@@ -229,6 +267,9 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 		if(activity.action_type == 'followed-page') {
 			return 'followed';
 		}
+		else if (activity.action_type == 'news') {
+			return 'posted a news about'
+		}
 		else {
 			return activity.action_type;
 		}
@@ -254,9 +295,9 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 		return 'tvshow/' + activity._action._media.show._id
 	}
 
-	$scope.getActivityObjectLink = function(activity){
-		if (activity._action._media){
-			media = activity._action._media;
+	$scope.getActivityObjectLink = function(action){
+		if (action._media){
+			media = action._media;
 			if (media.__t == "Episode")
 				return 'tvshow/' + media.show._id + '/season/' + media.season_number
 			if (media.__t == "TvShow")
@@ -264,21 +305,29 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 			if (media.__t == "Movie")
 				return 'movie/' + media._id
 		}
-		if (activity._action._following){
-			following = activity._action._following;
+		if (action._following){
+			following = action._following;
 			if (following.__t){
 				if (following.__t == "TvShow")
 					return 'tvshow/' + following._id
 				if (following.__t == "Movie")
 					return 'movie/' + following._id
+				else
+					return 'user/' + following._id
 			}
 			else
 				return 'person/' + following._id
 		}
+		if (action._person){
+			return 'person/' + action._person._id
+		}
 	}
 
 	$scope.getActivityImage = function(activity){
-		if(["watched","rated"].includes(activity.action_type)){
+		if (activity.action_type == 'news'){
+			return ''
+		}
+		else if(["watched","rated"].includes(activity.action_type)){
 			if(activity._action._media){
 				if (!activity._action._media.backdrop_path){
 					return "https://image.tmdb.org/t/p/original/" + activity._action._media.still_path;

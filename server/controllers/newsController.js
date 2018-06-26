@@ -24,7 +24,7 @@ exports.index = function(req, res) {
     let promise;
 
     try {
-      promise = await news.map(inject_related);
+      promise = await news.map(exports.inject_related);
     } catch (err) {
       res.status(RequestStatus.BAD_REQUEST).send(err);
     }
@@ -41,7 +41,7 @@ exports.show = function(req, res) {
     res.status(RequestStatus.BAD_REQUEST).send(err);
   })
   .then(async function(news) {
-    let complete_new = await inject_related(news);
+    let complete_new = await exports.inject_related(news);
     res.status(RequestStatus.OK).json(complete_new);
   });
 };
@@ -151,20 +151,24 @@ exports.create = async function(req, res) {
     var news = await create_news(news_obj);
 
     let news_id = news._id;
-    let user_id = req.body._posted_by;
+    let user_id = req.body._user;
     let medias = req.body.medias_ids;
     let people = req.body.people_ids;
 
     let relateds = [];
-    for (var i = 0; i < medias.length; i++) {
-      let media_related = await create_related(user_id, news_id, true, medias[i]);
-      relateds.push(media_related);
+    if (medias) {
+      for (var i = 0; i < medias.length; i++) {
+        let media_related = await create_related(user_id, news_id, true, medias[i]);
+        relateds.push(media_related);
+      }
     }
-    for (var i = 0; i < people.length; i++) {
-      let people_related = await create_related(user_id, news_id, false, people[i]);
-      relateds.push(people_related);
+    if (people) {
+      for (var i = 0; i < people.length; i++) {
+        let people_related = await create_related(user_id, news_id, false, people[i]);
+        relateds.push(people_related);
+      }
     }
-
+    news._user = user_id;
     news._related = relateds;
 
     let action = await DataStoreUtils.createAction(user_id, news._id, ActionType.NEWS);
@@ -209,7 +213,7 @@ exports.delete = async function(req, res) {
   res.status(RequestStatus.OK).send('News deleted.');
 };
 
-var inject_related = async function(news) {
+exports.inject_related = async function(news) {
   let complete_news = JSON.parse(JSON.stringify(news));
   let relateds = complete_news._related;
   let related_objs = [];
@@ -223,6 +227,8 @@ var inject_related = async function(news) {
     } else {
       let person_obj = await Person.findById(complete_related._person).exec();
       let person_from_TMDB = await TMDBController.getPersonFromTMDB(person_obj._tmdb_id);
+      person_from_TMDB = JSON.parse(person_from_TMDB)
+      person_from_TMDB._id = person_obj._id
       complete_related._person = person_from_TMDB;
     }
 

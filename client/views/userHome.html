@@ -1,36 +1,41 @@
 <div class="home-content">
   <div class="uk-width-xxlarge uk-container feed">
     <div class="news-post-area">
+      <a ng-click="postNews()">Postar</a>
 
       <div class="buttons-area">
         <button  class="uk-button uk-button-default dark-purple-button" ng-click="creatingNews = !creatingNews">
-          <span uk-icon="pencil"></span>
+          <span class="hover-text">Post news</span> <span uk-icon="pencil"></span>
         </button>
       </div>
 
       <div class="uk-margin" ng-show="creatingNews">
-        <button  class="uk-button uk-button-default dark-purple-button" ng-show="creatingNews" >
-          <span uk-icon="link"></span>
+        <button  class="uk-button uk-button-default dark-purple-button" ng-show="creatingNews">
+          <span  uk-icon="link"></span>
         </button>
+        <input class="uk-input" type="text" placeholder="Link for the news" ng-model="temp_news.link" ng-change="loadInfo()">
+
         <button  class="uk-button uk-button-default dark-purple-button" ng-show="creatingNews">
           <span uk-icon="hashtag"></span>
         </button>
-        <input class="uk-input" type="text" placeholder="Link for the news" ng-model="newslink" ng-change="loadInfo()">
-
-        <input class="uk-input" type="text" placeholder="Who is this news about?" ng-model="nameSearch" ng-change="loadAutoComplete()">
+        <input class="uk-input" type="text" ng-mouseenter="show_suggestions = true" placeholder="Who is this news about?" ng-model="nameSearch" ng-change="loadAutoComplete()">
+        <div class="suggestions-box" ng-class="{show:nameSearch}" ng-show="show_suggestions" ng-mouseleave="show_suggestions = false">
+          <div ng-repeat="suggestion in autoCompleteSuggestions" class="suggestion-item" ng-click="toggleRelated(suggestion)">
+            {{suggestion.name}}
+         </div>
       </div>
 
-      <div ng-if="newsInfo" class="news-posting-preview">
+      <div ng-if="newsInfo && validLink()" class="news-posting-preview">
         <div class="news-posting-image" style="background: url({{newsInfo.ogImage}}) center; background-size:cover; "></div>
         <div class="news-text-info">
           <h5> {{newsInfo.title}}</h5>
           <p>{{newsInfo.desc}} </p>
         </div>
       </div>
-      
-      <div class="recomendation-box">
-        <div ng-repeat="recomendation in newsRecomendation" class="recomendation-item">
-          {{recomendation.name}} <span uk-icon="close"></span>
+
+      <div class="related-box">
+        <div ng-repeat="related in temp_news.relateds" class="related-item" ng-click="toggleRelated(related)">
+          {{related.name}} <span uk-icon="close"></span>
         </div>
       </div>
     </div>
@@ -50,7 +55,9 @@
                         <h5 class="user-action"> {{getActivityType(activity) }} </h5>
                         <a class="link-action" ng-href="{{getActivityShowLink(activity)}}" ng-if="activity._action._media.show">{{activity._action._media.show.name}}: </a>
                         <a class="link-action" ng-href="{{getActivitySeasonLink(activity)}}" ng-if="activity._action._media.show">{{getSeasonInfo(activity).name}} - </a>
-                        <a class="link-action" ng-href="{{getActivityObjectLink(activity)}}">{{getActivityReferedObject(activity).name}}</a>
+                        <a class="link-action" ng-hide="activity.action_type == 'news'" ng-href="{{getActivityObjectLink(activity._action)}}">{{getActivityReferedObject(activity).name}}</a>
+                        <a class="link-action" ng-if="activity.action_type == 'news'" ng-href="{{getActivityObjectLink(related)}}" ng-repeat='related in activity._action._related' >{{getNewsObject(related).name}}</a>
+
                         <ul class="uk-iconnav" ng-if="activity.action_type == 'rated'">
                           <div ng-repeat="n in range('10')">
                             <a ng-if="n <= activity._action.rating" class="rating-star" ></a>
@@ -71,7 +78,7 @@
         </header>
         <div class="uk-comment-body" ng-show="activity.open">
           <div class="uk-card uk-card-default uk-grid-collapse uk-margin home-card" uk-grid>
-              <div ng-href="{{getActivityObjectLink(activity)}}" class="uk-card-media-left uk-cover-container" style="background: url({{getActivityImage(activity)}}) center; background-size:cover; cursor:pointer ">
+              <div ng-href="{{getActivityObjectLink(activity._action)}}" class="uk-card-media-left uk-cover-container" style="background: url({{getActivityImage(activity)}}) center; background-size:cover; cursor:pointer ">
                   <canvas width="300" height="200"></canvas>
               </div>
               <div class="home-card-info">

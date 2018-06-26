@@ -1,4 +1,7 @@
 var Follows = require('../models/Follows');
+var FollowsPage = require('../models/FollowsPage');
+var Related = require('../models/Related');
+var News = require('../models/News');
 var Action = require('../models/Action');
 var User = require('../models/User');
 var RequestStatus = require('../constants/requestStatus');
@@ -59,22 +62,40 @@ exports.following_me = async function(req, res) {
 var getId = function(following){
   return following._following;
 }
+var getRelatedId = function(related){
+  return related._id;
+}
+var getAction = function(news){
+  return news._action;
+}
 exports.followed_activity = async function(req, res) {
   let user_id = req.params.user_id;
   let following_list;
   try {
     following_list = await Follows.find({_user: user_id}).exec();
+    following_list2 = await FollowsPage.find({_user: user_id}).exec();
+    following_list = following_list.concat(following_list2);
     following_list = following_list.map(getId);
     following_list.push(user_id);
 
     all_activitys = []
     actions = await Action.find({ "_user": { "$in": following_list } }).sort({date: -1}).limit(10);
-    promises = actions.map(getActivity);
 
-      Promise.all(promises).then(function(results) {
-        all_activitys = all_activitys.concat(results);
-          res.status(RequestStatus.OK).send(all_activitys);
-      })
+    media_related = await Related.find({ "_media": { "$in": following_list } }).sort({date: -1}).limit(10);
+    person_related = await Related.find({ "_person": { "$in": following_list } }).sort({date: -1}).limit(10);
+    relateds = media_related.concat(person_related);
+    relateds_ids = relateds.map(getRelatedId);
+
+    news = await News.find({ "_related": { "$in": relateds_ids } }).sort({date: -1}).limit(10);
+    news_actions_ids = news.map(getAction);
+    news_actions = await Action.find({ "_id": { "$in": news_actions_ids } }).sort({date: -1}).limit(10);
+
+    actions = actions.concat(news_actions);
+    promises = actions.map(getActivity);
+    Promise.all(promises).then(function(results) {
+      all_activitys = all_activitys.concat(results);
+      res.status(RequestStatus.OK).send(all_activitys);
+    })
   } catch (err) {
     console.log(err)
     res.status(RequestStatus.BAD_REQUEST).json(err);

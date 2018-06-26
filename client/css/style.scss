@@ -27,6 +27,14 @@ html, body {
     background: #773095;
     color: white;
   }
+  .hover-text {
+    display: none;
+  }
+  &:hover {
+    .hover-text {
+      display: inline-block;
+    }
+  }
 }
 
 .home-content {
@@ -36,12 +44,16 @@ html, body {
     background: #f8f8f8;
 
     .news-post-area {
+      .uk-input{
+        width: 94%;
+      }
       .buttons-area {
         float: right;
       }
 
       .news-posting-preview {
         display: inline-block;
+        padding-top: 18px;
         .news-posting-image {
           width: 300px;
           height: 140px;
@@ -58,11 +70,12 @@ html, body {
 
     .suggestions-box {
       border: #e5e5e5 solid 1px;
-      margin-top: -21px;
+      margin-top: -10px;
       padding-top: 10px;
       font-size: 14px;
       color: #9f9f9f;
       display: none;
+      margin-left: 6%;
 
       &.show {
         display: block;
@@ -83,14 +96,15 @@ html, body {
 
     }
 
-    .recomendation-box {
-      .recomendation-item {
+    .related-box {
+      .related-item {
         border: purple solid 1px;
         padding: 2px;
         padding-left: 6px;
         display: inline-block;
         color: #773095;
         font-size: 10px;
+        cursor: pointer;
       }
     }
 
