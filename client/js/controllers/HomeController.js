@@ -45,7 +45,6 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 	$scope.loadAutoComplete = function(){
 		if ($scope.nameSearch){
 			NewsService.getAutoComplete($scope.nameSearch).then(function(suggestions){
-				console.log(suggestions.data)
 				$scope.autoCompleteSuggestions = suggestions.data})
 		}
 		else {
@@ -200,7 +199,6 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 
 				var media = $scope.getMediaFromActivity(activity);
 				if (media && media._id){
-					console.log(media)
 					WatchedService.isWatched($scope.user._id, media._id).then((watched) => {
 		        activity.watched = watched;
 		        if (!watched.watched_id)
