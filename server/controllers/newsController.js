@@ -99,8 +99,7 @@ var getMetadata = function(data){const $ = cheerio.load(data);
   return result
 }
 
-exports.loadMetadata = async function(req,res) {
-  url = req.body.url;
+var getHTML = async function(url) {
   var http_pattern = /^((http):\/\/)/;
   var https_pattern = /^((https):\/\/)/;
   if(http_pattern.test(url)) {
@@ -111,13 +110,10 @@ exports.loadMetadata = async function(req,res) {
           data += chunk;
         });
         resp.on('end', () => {
-          result = getMetadata(data)
-          res.status(200).send(result)
-          return(result)
+          return(data);
         });
       }).on("error", (err) => {
         console.log("Error getting metadata from: " + url + " : "+ err);
-        res.status(400).send(err)
       });
   } else if (https_pattern.test(url)){
     https.get(url,
@@ -127,17 +123,25 @@ exports.loadMetadata = async function(req,res) {
           data += chunk;
         });
         resp.on('end', () => {
-          result = getMetadata(data)
-          res.status(200).send(result)
-          return(result)
+          return(data)
         });
       }).on("error", (err) => {
         console.log("Error getting metadata from: " + url + " : "+ err);
-        res.status(400).send(err)
       });
   }
   else{
-    res.status(200).send({data:""})
+    return({data:""})
+  }
+}
+
+exports.loadMetadata = async function(req,res) {
+  url = req.body.url;
+  try {
+    pageHTML = await getHTML(url);
+    result = getMetadata(pageHTML);
+    res.status(200).send(result)
+  } catch (err) {
+    res.status(400).send(err)
   }
 }
 
