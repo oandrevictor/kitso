@@ -165,6 +165,13 @@ html, body {
           text-decoration: none;
           font-weight: bold;
         }
+
+        .isDisabled {
+          color: #333;
+          text-decoration: none;
+          pointer-events: none !important;
+          font-weight: 400 !important;
+        }
       }
     }
     .user-name {
