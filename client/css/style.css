@@ -44,7 +44,8 @@ html, body {
   float: right;
   width: 100%; }
 .news-post-area .right-info-button {
-  float: right; }
+  float: right;
+  margin-left: 4px !important; }
 .news-post-area .left-info-button {
   width: 72px; }
 .news-post-area .news-posting-preview {
@@ -66,7 +67,7 @@ html, body {
   font-size: 14px;
   color: #9f9f9f;
   display: none;
-  margin-left: 6%; }
+  margin-left: 76px; }
   .news-post-area .suggestions-box.show {
     display: block; }
   .news-post-area .suggestions-box .suggestion-item {
@@ -728,7 +729,7 @@ html, body {
     width: 540px; }
   .movie .rating {
     float: right;
-    margin-top: -100px;
+    margin-top: -160px;
     color: white;
     font-size: 28px;
     font-weight: 100;

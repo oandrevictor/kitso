@@ -1,9 +1,10 @@
 var kitso = angular.module('kitso');
 
 kitso.controller('MovieController',
-['$scope', '$location', '$timeout', 'MovieService', 'WatchedService', 'FollowService', 'RatedService', 'UserListService','$routeParams', 'AuthService',
-function($scope, $location, $timeout, MovieService, WatchedService, FollowService, RatedService, UserListService, $routeParams, AuthService) {
+['$scope', '$location', '$timeout', 'MovieService', 'WatchedService', 'FollowService', 'RatedService', 'UserListService','$routeParams', 'AuthService', 'NewsService',
+function($scope, $location, $timeout, MovieService, WatchedService, FollowService, RatedService, UserListService, $routeParams, AuthService, NewsService) {
   $('.full-loading').show();
+  $scope.newsbox_toggle = true;
     MovieService.loadMovie($routeParams.movie_id)
         .then(() => {
           AuthService.getStatus().then(function(){
@@ -21,6 +22,10 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
                   status: 'danger',
                   timeout: 2500
               });
+            });
+
+            NewsService.getRelatedNews($scope.movie._id).then(function(news){
+              $scope.news = news;
             });
             RatedService.isRated($scope.user._id ,$scope.movie._id).then((rated) => {
                 $scope.movie.rated = rated;

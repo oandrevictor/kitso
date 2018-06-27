@@ -6,7 +6,8 @@ kitso.service('NewsService', ['$q','$http', function ($q, $http) {
     return ({
         getPageMetadata: getPageMetadata,
         getAutoComplete: getAutoComplete,
-        postNews: postNews
+        postNews: postNews,
+        getRelatedNews: getRelatedNews
     });
 
     function getPageMetadata(url){
@@ -60,6 +61,24 @@ kitso.service('NewsService', ['$q','$http', function ($q, $http) {
               deferred.reject(error.data);
           });
       return deferred.promise;
+    }
+
+    function getRelatedNews(id) {
+        var deferred = $q.defer();
+
+        $http.get('/api/action/news/' + id)
+            .then((response) => {
+                if (response.status === 200) {
+                    news = response.data;
+                    deferred.resolve(news);
+                } else {
+                    deferred.reject(news);
+                }
+            })
+            .catch((error) => {
+                deferred.reject(error.data);
+            });
+        return deferred.promise;
     }
 
 }]);

@@ -57,6 +57,7 @@ html, body {
 
   .right-info-button{
     float: right;
+    margin-left: 4px !important;
   }
 
   .left-info-button{
@@ -85,7 +86,7 @@ html, body {
     font-size: 14px;
     color: #9f9f9f;
     display: none;
-    margin-left: 6%;
+    margin-left: 76px;
 
     &.show {
       display: block;
@@ -1014,7 +1015,7 @@ html, body {
 
   .rating {
     float: right;
-    margin-top: -100px;
+    margin-top: -160px;
     color: white;
     font-size: 28px;
     font-weight: 100;

@@ -54,6 +54,6 @@ kitso.controller('NewsPostboxController', ['$scope', 'NewsService', function($sc
 	}
 
   $scope.isValidNews = function(){
-    return $scope.temp_news.link && $scope.temp_news.relateds.length > 0 && $scope.newsInfo
+    return $scope.temp_news.link && $scope.temp_news.relateds.length > 0 && $scope.newsInfo.title && $scope.newsInfo.desc && $scope.validLink()
   }
 }])

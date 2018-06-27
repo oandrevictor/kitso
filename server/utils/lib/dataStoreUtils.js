@@ -367,3 +367,18 @@ exports.alreadyExistsAppearsInByKeys = async function(personId, mediaId) {
   let results = await AppearsIn.find({_person: personId, _media: mediaId}).exec();
   return results.length > 0;
 };
+
+
+
+exports.getActivity = async function(activity) {
+  let action = await Action.findById(activity).exec();
+  let user = await User.findById(action._user).exec();
+  let action_obj = await exports.getActionByTypeAndIdWithDetails(action.action_type, action._action);
+
+  let action_copy = JSON.parse(JSON.stringify(action));
+  action_copy._user = user;
+  action_json = action_obj;
+  action_copy._action = action_json;
+
+  return action_copy;
+}
