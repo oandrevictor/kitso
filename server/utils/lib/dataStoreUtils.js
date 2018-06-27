@@ -9,10 +9,13 @@ var Follows = require('../../models/Follows');
 var FollowsPage = require('../../models/FollowsPage');
 var Rated = require('../../models/Rated');
 var Watched = require('../../models/Watched');
+var News = require('../../models/News');
+var Related = require('../../models/Related');
 var Utils = require('./utils');
 var UserList = require('../../models/UserList');
 var ActionType = require('../../constants/actionType');
 var TMDBController = require('../../external/TMDBController');
+var NewsController = require('../../controllers/newsController');
 
 
 // CREATE =========================================================================================
@@ -121,7 +124,7 @@ exports.getActionByTypeAndIdWithDetails = async function(type, id) {
   if (type == ActionType.RATED) {
     rating = await Rated.findById(id).exec();
     media_obj = await Media.findById(rating._media).exec();
-    media_obj = await getMediaWithInfoFromDB(media_obj);
+    media_obj = await exports.getMediaWithInfoFromDB(media_obj);
 
     rating_copy = JSON.parse(JSON.stringify(rating));
     rating_copy._media = media_obj;
@@ -129,7 +132,7 @@ exports.getActionByTypeAndIdWithDetails = async function(type, id) {
   } else if (type == ActionType.WATCHED) {
     watched = await Watched.findById(id).exec();
     media_obj = await Media.findById(watched._media).exec();
-    media_obj = await getMediaWithInfoFromDB(media_obj);
+    media_obj = await exports.getMediaWithInfoFromDB(media_obj);
 
     watched_copy = JSON.parse(JSON.stringify(watched));
     watched_copy._media = media_obj;
@@ -147,7 +150,7 @@ exports.getActionByTypeAndIdWithDetails = async function(type, id) {
 
     if (followPage.is_media) {
       obj = await Media.findById(followPage._following).exec();
-      obj = await getMediaWithInfoFromDB(obj);
+      obj = await exports.getMediaWithInfoFromDB(obj);
     } else {
       obj = await Person.findById(followPage._following).exec();
     }
@@ -155,9 +158,14 @@ exports.getActionByTypeAndIdWithDetails = async function(type, id) {
     followPage_copy = JSON.parse(JSON.stringify(followPage));
     followPage_copy._following = obj;
     return followPage_copy;
+  } else if(type == ActionType.NEWS){
+    var news = await News.findById(id).exec();
+    var completeNews = await NewsController.inject_related(news);
+    return completeNews;
   } else {
+    console.log(type)
     let errorMsg = "There is no such action type!";
-    throw new Erro(errorMsg);
+    console.log(errorMsg);
   }
 };
 
@@ -336,6 +344,24 @@ exports.deleteWatched = async function(watchedId) {
   return watchedObj;
 };
 
+exports.deleteNews = async function(newsId) {
+  let newsObj = await News.findById(newsId);
+  let actionId = newsObj._action;
+  let userId = newsObj._posted_by;
+  let relatedsIds = newsObj._related;
+  await this.deleteAction(actionId);
+  await this.deleteActionFromUserHistory(userId, actionId);
+  await this.deleteRelateds(relatedsIds);
+  newsObj.remove();
+  return newsObj;
+};
+
+exports.deleteRelateds = function(relatedsIds) {
+  relatedsIds.forEach(async function (related_id) {
+    await Related.remove({ _id: related_id}).exec();
+  })
+}
+
 
 // OTHER AUXILIARIES FUNCTIONS =====================================================================
 
@@ -343,6 +369,20 @@ exports.alreadyExistsAppearsInByKeys = async function(personId, mediaId) {
   let results = await AppearsIn.find({_person: personId, _media: mediaId}).exec();
   return results.length > 0;
 };
+
+
+exports.getActivity = async function(activity) {
+  let action = await Action.findById(activity).exec();
+  let user = await User.findById(action._user).exec();
+  let action_obj = await exports.getActionByTypeAndIdWithDetails(action.action_type, action._action);
+
+  let action_copy = JSON.parse(JSON.stringify(action));
+  action_copy._user = user;
+  action_json = action_obj;
+  action_copy._action = action_json;
+
+  return action_copy;
+}
 
 exports.findPersonByTmdbId = async function(personId) {
   let results = await Person.find({_tmdb_id: personId}).exec();
@@ -358,4 +398,3 @@ exports.findEpisodeByTmdbId = async function(episodeId) {
   let results = await Episode.find({_tmdb_id: episodeId}).exec();
   return results;
 };
-

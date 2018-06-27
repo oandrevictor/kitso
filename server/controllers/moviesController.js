@@ -31,7 +31,7 @@ exports.index = function(req, res) {
             console.log(err);
             else{
               console.log('got query from redis: movie/' + tmdb_id);
-              var parsed_result = JSON.parse(JSON.parse(data));
+              var parsed_result = JSON.parse(data);
               parsed_result.poster_path = "https://image.tmdb.org/t/p/w500" + parsed_result.poster_path;
               parsed_result._id = movie._id;
               parsed_result.__t = movie.__t;
@@ -82,7 +82,7 @@ exports.show = function(req, res) {
             console.log(err);
             else{
               console.log('got query from redis: movie/' + tmdb_id);
-              var parsed_result = JSON.parse(JSON.parse(data));
+              var parsed_result = JSON.parse(data);
               var actors = result._actors;
               let actorsPromises = actors.map(injectPersonJson);
               parsed_result.poster_path = "https://image.tmdb.org/t/p/w500" + parsed_result.poster_path;

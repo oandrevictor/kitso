@@ -5,6 +5,8 @@ var actionController = require('../controllers/actionController');
 
 router.get('/', actionController.index);
 
+router.get('/news/:related_id', actionController.news);
+
 router.get('/:action_id', actionController.show);
 
 router.post('/', actionController.create);

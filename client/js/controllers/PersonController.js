@@ -1,8 +1,9 @@
 kitso = angular.module('kitso');
 
 kitso.controller('PersonController',
-  ['$scope', '$location', '$timeout', '$route', '$routeParams', 'PersonService', 'AuthService', 'FollowService',
-    function ($scope, $location, $timeout, $route, $routeParams, PersonService, AuthService, FollowService) {
+  ['$scope', '$location', '$timeout', '$route', '$routeParams', 'PersonService', 'AuthService', 'FollowService', 'NewsService',
+    function ($scope, $location, $timeout, $route, $routeParams, PersonService, AuthService, FollowService, NewsService) {
+      $scope.newsbox_toggle = true;
 
       PersonService.loadPerson($routeParams.person_id)
         .then((loadedPerson) => {
@@ -23,6 +24,11 @@ kitso.controller('PersonController',
                     timeout: 2500
                   });
               });
+
+              NewsService.getRelatedNews($scope.person._id).then(function(news){
+                $scope.news = news;
+              });
+
               FollowService.countFollowers($routeParams.person_id)
                 .then((count) => {
                   $scope.person.followers = count;
