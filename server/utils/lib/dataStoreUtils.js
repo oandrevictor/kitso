@@ -1,5 +1,7 @@
 var AppearsIn = require('../../models/AppearsIn');
 var Person = require('../../models/Person');
+var Season = require('../../models/Season');
+var Episode = require('../../models/Episode');
 var Media = require('../../models/Media');
 var Action = require('../../models/Action');
 var User = require('../../models/User');
@@ -369,7 +371,6 @@ exports.alreadyExistsAppearsInByKeys = async function(personId, mediaId) {
 };
 
 
-
 exports.getActivity = async function(activity) {
   let action = await Action.findById(activity).exec();
   let user = await User.findById(action._user).exec();
@@ -382,3 +383,18 @@ exports.getActivity = async function(activity) {
 
   return action_copy;
 }
+
+exports.findPersonByTmdbId = async function(personId) {
+  let results = await Person.find({_tmdb_id: personId}).exec();
+  return results;
+};
+
+exports.findSeasonByTmdbId = async function(seasonId) {
+  let results = await Season.find({_tmdb_id: seasonId}).exec();
+  return results;
+};
+
+exports.findEpisodeByTmdbId = async function(episodeId) {
+  let results = await Episode.find({_tmdb_id: episodeId}).exec();
+  return results;
+};
