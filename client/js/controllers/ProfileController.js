@@ -412,7 +412,6 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         _user: $scope.user._id
       }
       UserListService.createList(listInfo).then(function(userlist){
-        console.log(userlist)
         $scope.goToList(userlist._id);
       });
   }

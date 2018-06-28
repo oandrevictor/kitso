@@ -7,6 +7,7 @@ kitso.service('UserListService', ['$q','$http', function ($q, $http) {
     // return available functions for use in the controllers
     return ({
         createList: createList,
+        deleteList: deleteList,
         addItem: addItem,
         deleteItem: deleteItem,
         loadUserList: loadUserList,
@@ -30,6 +31,33 @@ kitso.service('UserListService', ['$q','$http', function ($q, $http) {
           .catch((error) => {
               deferred.reject(error.data);
           });
+
+      return deferred.promise;
+    }
+
+    function deleteList(userlistId, userId) {
+      var deferred = $q.defer();
+      var req = {
+        method: 'DELETE',
+        url: '/api/userlist/' + userlistId,
+        headers: {
+          'Content-Type': 'application/json',
+          'user_id': userId
+        }
+      }
+
+      $http(req)
+        .then((response) => {
+          if (response.status === 200) {
+            response.data.list_id = response.data._id
+            deferred.resolve(response.data);
+          } else {
+            deferred.reject();
+          }
+        })
+        .catch((error) => {
+          deferred.reject(error.data);
+        });
 
       return deferred.promise;
     }

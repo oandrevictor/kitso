@@ -132,4 +132,19 @@ function($scope, $location, $timeout, UserListService, MovieService, $routeParam
   $scope.canEdit = function(user){
     return ($scope.user._id.toString() === $scope.userlist._user.toString());
   }
+
+  $scope.deleteList = function(){
+    UserListService.deleteList($scope.userlist._id, $scope.user._id).then(function(){
+      $scope.goToProfile();
+      UIkit.notification({
+        message: '<span uk-icon=\'icon: check\'></span> List deleted!',
+        status: 'success',
+        timeout: 1500
+      });
+    })
+  }
+
+  $scope.goToProfile = function () {
+    $location.path('profile');
+  }
 }]);

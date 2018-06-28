@@ -19,7 +19,17 @@
           </div>
         </div>
         <div class="uk-width-1-4">
-          <button class="uk-button" ng-show="userlist.deletable">Delete List</button>
+          <button class="uk-button" ng-show="userlist.deletable" href="#modal-center" uk-toggle>Delete List</button>
+          <div id="modal-center" class="uk-flex-top" uk-modal>
+              <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+                  <button class="uk-modal-close-default" type="button" uk-close></button>
+                  <center>
+                      <h3>Are you sure you want to delete this list?</h3>
+                      <button class="uk-button uk-button-default watch-button uk-modal-close" ng-click="deleteList()"> Yes </button>
+                      <button class="uk-button uk-button-default watch-button uk-modal-close"> Cancel </button>
+                  </center>
+              </div>
+          </div>
         </div>
       </div>
     </div>
