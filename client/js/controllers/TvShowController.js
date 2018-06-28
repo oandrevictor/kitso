@@ -28,16 +28,22 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
           var lists = [];
           $scope.user._lists.forEach((listId) => {
               UserListService.loadUserList(listId).then( function(){
-                  lists.push(UserListService.getUserList());
+                var list = UserListService.getUserList();
+                list.itens.forEach(function(item){
+                  if (item._media._id == $scope.tvshow._id) {
+                    list.tvshowAdded = true;
+                  }
+                })
+                lists.push(list);
               }).catch(function(error){
                   console.log(error);
               })
           });
+          $scope.user.lists = lists;
 
           NewsService.getRelatedNews($scope.tvshow._id).then(function(news){
             $scope.news = news;
           });
-          $scope.user.lists = lists;
 
             RatedService.isRated($scope.user._id ,$scope.tvshow._id).then((rated) => {
                 $scope.tvshow.rated = rated;
@@ -72,7 +78,7 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
                   timeout: 2500
               });
             });
-            
+
             FollowService.countFollowers($scope.tvshow._id).then((count) => {
               $scope.tvshow.followers = count;
             }).catch((error) => {
@@ -182,7 +188,7 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
   $scope.addToList = function(tvshowId, userListId){
     UserListService.addItem(userListId, tvshowId, $scope.user._id, date = moment())
       .then((added) => {
-        $scope.tvshowAdded = true;
+        updateAdded(true, userListId);
       })
       .catch((error) => {
         UIkit.notification({
@@ -199,7 +205,7 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
         if (item['_media']['_id'] == tvshowId) {
           UserListService.deleteItem(userListId, $scope.user._id, item['ranked'])
             .then((deleted) => {
-              $scope.tvshowAdded = false;
+              updateAdded(false, userListId);
             })
             .catch((error) => {
               UIkit.notification({
@@ -211,6 +217,14 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
         }
       });
     });
+  }
+
+  var updateAdded = function(added, listId) {
+    $scope.user.lists.forEach(function(list){
+      if (list._id == listId) {
+        list.tvshowAdded = added;
+      }
+    })
   }
 
   $scope.markAsAdded = function(tvshowId, userListId) {

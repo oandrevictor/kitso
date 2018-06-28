@@ -86,7 +86,13 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
             var lists = [];
             $scope.user._lists.forEach((listId) => {
               UserListService.loadUserList(listId).then( function(){
-                lists.push(UserListService.getUserList());
+                var list = UserListService.getUserList();
+                list.itens.forEach(function(item){
+                  if (item._media._id == $scope.movie._id) {
+                    list.movieAdded = true;
+                  }
+                })
+                lists.push(list);
               }).catch(function(error){
                 console.log(error);
               })
@@ -112,7 +118,7 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
     $scope.addToList = function(movieId, userListId){
         UserListService.addItem(userListId, movieId, $scope.user._id, date = moment())
         .then((added) => {
-            $scope.movieAdded = true;
+          updateAdded(true, userListId);
         })
         .catch((error) => {
             UIkit.notification({
@@ -125,11 +131,12 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
 
     $scope.removeFromList = function(movieId, userListId) {
       UserListService.loadUserList(userListId).then( function() {
-        UserListService.getUserList()['itens'].forEach(function(item){
+        var list = UserListService.getUserList();
+        list['itens'].forEach(function(item){
           if (item['_media']['_id'] == movieId) {
-                   UserListService.deleteItem(userListId, $scope.user._id, item['ranked'])
+            UserListService.deleteItem(userListId, $scope.user._id, item['ranked'])
               .then((deleted) => {
-                $scope.movieAdded = false;
+                updateAdded(false, userListId);
               })
               .catch((error) => {
                 UIkit.notification({
@@ -141,6 +148,14 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
           }
         });
       });
+    }
+
+    var updateAdded = function(added, listId) {
+      $scope.user.lists.forEach(function(list){
+        if (list._id == listId) {
+          list.movieAdded = added;
+        }
+      })
     }
 
   $scope.markAsAdded = function(movieId, userListId) {
