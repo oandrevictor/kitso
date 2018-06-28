@@ -6,6 +6,7 @@ kitso.service('UserListService', ['$q','$http', function ($q, $http) {
 
     // return available functions for use in the controllers
     return ({
+        createList: createList,
         addItem: addItem,
         deleteItem: deleteItem,
         loadUserList: loadUserList,
@@ -13,6 +14,25 @@ kitso.service('UserListService', ['$q','$http', function ($q, $http) {
         updateUserList: updateUserList,
         updateRank: updateRank
     });
+
+    function createList(listInfo) {
+      var deferred = $q.defer();
+
+      $http.post('/api/userlist/', listInfo)
+          .then((response) => {
+              if (response.status === 200) {
+                response.data.list_id = response.data._id
+                  deferred.resolve(response.data);
+              } else {
+                  deferred.reject();
+              }
+          })
+          .catch((error) => {
+              deferred.reject(error.data);
+          });
+
+      return deferred.promise;
+    }
 
     function addItem(userlistId, mediaId, userId, date) {
       var deferred = $q.defer();

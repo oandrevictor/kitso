@@ -404,6 +404,19 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
     }
   };
 
+  $scope.createList = function () {
+      let listInfo = {
+        title: "New List",
+        description: "Describe this list",
+        deletable: true,
+        _user: $scope.user._id
+      }
+      UserListService.createList(listInfo).then(function(userlist){
+        console.log(userlist)
+        $scope.goToList(userlist._id);
+      });
+  }
+
   $scope.goToList = function (listId) {
     $location.path('user/list/' + listId);
   }
