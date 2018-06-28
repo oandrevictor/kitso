@@ -1541,6 +1541,22 @@ html, body {
     position: relative;
   }
 
+  .uk-button-save-list {
+    margin-top: 30px !important;
+  }
+
+  .uk-button-save-changes {
+    background-color: #502274 !important;
+    color: #ffffff !important;
+    font-weight: bold;
+    margin-top: 30px !important;
+  }
+
+  .invalid-label {
+    margin-bottom: 0px;
+    margin-left: 0px;
+  }
+
   .purple-bar {
     display: flex;
     height: 160px !important;

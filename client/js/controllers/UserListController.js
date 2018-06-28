@@ -133,6 +133,10 @@ function($scope, $location, $timeout, UserListService, MovieService, $routeParam
     return ($scope.user._id.toString() === $scope.userlist._user.toString());
   }
 
+  $scope.editionMode = function () {
+    $location.path('user/list/edit/' + $scope.userlist._id);
+  }
+
   $scope.deleteList = function(){
     UserListService.deleteList($scope.userlist._id, $scope.user._id).then(function(){
       $scope.goToProfile();

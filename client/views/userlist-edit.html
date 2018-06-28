@@ -1,0 +1,66 @@
+<div class="userlist">
+  <!--Cover Content-->
+  <div class="uk-background-cover" align="center" style="background-image: url({{ background }})">
+    <div class="uk-width-xxlarge">
+    </div>
+  </div>
+
+  <div class="purple-bar">
+    <div class="bar-content uk-width-xxlarge">
+      <div class="uk-grid">
+        <div class="uk-width-3-4">
+          <div class="title">
+            <b>Edit List - {{title}} </b>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="uk-width-xlarge content">
+    <form name="editForm" novalidate>
+
+      <div class="uk-margin">
+        <label class="uk-form-label" ng-class="{ 'uk-text-danger' : isInvalid(editForm.title) }" for="title">List title</label>
+        <div class="uk-form-controls">
+          <input class="uk-input" type="text" id="title" name="title" placeholder="List title" ng-class="{ 'uk-form-danger' : isInvalid(editForm.title) }"
+            ng-model="userlist.title" required>
+        </div>
+        <label class="uk-text-small uk-text-danger uk-align-right" for="title" ng-show="isInvalid(editForm.title)">* List title can't be blank</label>
+      </div>
+
+      <div class="uk-margin">
+        <label class="uk-form-label" ng-class="{ 'uk-text-danger' : isInvalid(editForm.description) }" for="description">Description</label>
+        <div class="uk-form-controls">
+          <input class="uk-input" type="text" id="description" name="description" placeholder="Description" ng-class="{ 'uk-form-danger' : isInvalid(editForm.description) }"
+            ng-model="userlist.description" required>
+        </div>
+        <label class="uk-text-small uk-text-danger uk-align-right invalid-label" for="description" ng-show="isInvalid(editForm.description)">* Description can't be blank</label>
+      </div>
+
+      <div class="uk-margin">
+        <center>
+          <button class="uk-button uk-button-small uk-align-center uk-button-save-list" ng-class="{ 'uk-button-save-changes': editForm.$valid }" ng-disabled="editForm.$invalid" ng-click="saveUserList()"> Save list</button>
+        </center>
+      </div>
+
+
+    </form>
+
+    <hr class="uk-divider-icon">
+
+    <center>
+      <button class="uk-button uk-button-danger uk-button-small" href="#modal-center" uk-toggle>Delete List</button>
+      <div id="modal-center" class="uk-flex-top" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+          <button class="uk-modal-close-default" type="button" uk-close></button>
+            <center>
+              <h3>Are you sure you want to delete this list?</h3>
+                <button class="uk-button uk-button-default watch-button uk-modal-close" ng-click="deleteList()"> Yes </button>
+                <button class="uk-button uk-button-default watch-button uk-modal-close"> Cancel </button>
+            </center>
+        </div>
+      </div>
+    </center>
+  </div>
+</div>

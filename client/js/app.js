@@ -55,6 +55,11 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
             controller: 'UserListController',
             access: { restricted: true }
         })
+        .when('/user/list/edit/:userlist_id', {
+            templateUrl: 'views/userlist-edit.html',
+            controller: 'UserListEditController',
+            access: { restricted: true }
+        })
         .when('/tvshow/:tvshow_id', {
             templateUrl: 'views/tvshow.html',
             controller: 'TvShowController',
@@ -122,7 +127,7 @@ angular.module('kitso').run(function ($rootScope, $location, $route, AuthService
     });
 
     $rootScope.$on('$routeChangeSuccess',function() {
-        $("html, body").animate({ scrollTop: 0 }, 500); 
+        $("html, body").animate({ scrollTop: 0 }, 500);
     });
 
 });
