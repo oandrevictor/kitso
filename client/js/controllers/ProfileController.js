@@ -233,6 +233,19 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
     }
   }
 
+  $scope.getListPoster = function(userlist){
+    var addedMovies = [];
+    userlist.itens.forEach((item) => {
+      addedMovies.push(item._media);
+    });
+
+    if (addedMovies.length > 0) {
+      return 'https://image.tmdb.org/t/p/w500/' + addedMovies[0].poster_path;
+    } else {
+      return "/images/budapest.jpg";
+    }
+  }
+
   $scope.getListBackground = function(userlist){
     var addedMovies = [];
     userlist.itens.forEach((item) => {
