@@ -91,7 +91,7 @@ exports.followed_activity = async function(req, res) {
     news_actions = await Action.find({ "_id": { "$in": news_actions_ids } }).sort({date: -1}).limit(10);
 
     actions = actions.concat(news_actions);
-    promises = actions.map(DataStoreUtils.getActivity);
+    promises = actions.map(getActivity);
     Promise.all(promises).then(function(results) {
       all_activitys = all_activitys.concat(results);
       res.status(RequestStatus.OK).send(all_activitys);
