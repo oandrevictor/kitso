@@ -107,23 +107,27 @@ exports.getShow = function(tmdb_id){
 exports.getMovie = function(tmdb_id) {
   return new Promise(function(resolve, reject) {
     Movie.find({_tmdb_id: tmdb_id}).catch((err)=> console.log(err)). then(async (result)=>{
-      result = result[0]
+      result = result[0];
       var query = RequestGenerals.MOVIE_ENDPOINT + tmdb_id;
       redisClient.exists(query, function(err, reply) {
         if (reply === 1) {
-          console.log("GET MOVIE | got query from redis: " + query)
+          console.log("GET MOVIE | got query from redis: " + query);
           redisClient.get(query, async function(err,data) {
             if (err)
-            console.log(err);
+              console.log(err);
             else {
               var parsed_result = JSON.parse(data);
+              if (typeof parsed_result === 'string' || parsed_result instanceof String)
+                    parsed_result = JSON.parse(parsed_result);
+              parsed_result.backdrop_path = TMDBConstants.TMDB_BACK_IMAGE_PATH + parsed_result.backdrop_path;
+              parsed_result.poster_path = TMDBConstants.TMDB_POSTER_IMAGE_PATH + parsed_result.poster_path;
               parsed_result._id = result._id;
               parsed_result.__t = result.__t;
               resolve(parsed_result);
             }
           });
         } else {
-          console.log("GET MOVIE | Could not get from redis: " + query)
+          console.log("GET MOVIE | Could not get from redis: " + query);
           exports.getMovieFromTMDB(tmdb_id).then(async function(data) {
             var data = JSON.parse(data);
             data._id = result._id;
