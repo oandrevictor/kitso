@@ -33,6 +33,21 @@ kitso.controller('UserListEditController', ['$scope', '$location', '$timeout', '
       });
   }
 
+  $scope.deleteList = function(){
+    UserListService.deleteList($scope.userlist._id, $scope.user._id).then(function(){
+      $scope.goToProfile();
+      UIkit.notification({
+        message: '<span uk-icon=\'icon: check\'></span> List deleted!',
+        status: 'success',
+        timeout: 1500
+      });
+    })
+  }
+
+  $scope.goToProfile = function () {
+    $location.path('profile');
+  }
+
   var loadUserListBackground = function () {
     var addedMovies = [];
     $scope.userlist.itens.forEach((item) => {
