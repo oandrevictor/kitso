@@ -2,7 +2,7 @@
   <div class="uk-width-xxlarge uk-container feed">
     <div news-postbox></div>
     <h4><span uk-icon="rss"></span> Friends Activity </h4>
-    <div ng-repeat="activity in feed" ng-hide="acitivy.hidden">
+    <div ng-repeat="activity in feed" ng-hide="activity.hidden || activity.action_type == 'liked'">
     <article class="uk-comment uk-visible-toggle" >
         <header class="uk-comment-header uk-position-relative">
             <div class="uk-grid-medium uk-flex-middle" uk-grid>
@@ -53,8 +53,9 @@
         </div>
     </article>
     <br >
-        <button  class="uk-button uk-button-default episode-button">
-          <span uk-icon="heart"></span> Like (74 likes)
+        <button  class="uk-button uk-button-default episode-button" ng-click="toggleLike(activity)">
+          <span class="hearted" ng-show="activity.liked_by_me"></span>
+          <span uk-icon="heart" ng-hide="activity.liked_by_me"></span> {{getLikes(activity)}} likes
         </button>
     <div style="display:inline-block" ng-if="activity._action._media">
       <button class="uk-button uk-button-default episode-button">
@@ -79,4 +80,5 @@
 
     <hr>
   </div>
+  <div class="bubble-loading"></div>
 </div>

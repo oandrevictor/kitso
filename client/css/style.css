@@ -188,6 +188,11 @@ html, body {
 .bold {
   font-weight: 400 !important; }
 
+.hearted {
+  background: url("/images/icon/hearted.svg") left no-repeat;
+  background-size: 25px;
+  padding: 15px; }
+
 .full-loading {
   background: url("/images/icon/loading.svg") no-repeat center center, linear-gradient(155deg, #9730a0 0%, #7c1b7a 51%, #502274 75%);
   height: 100%;
@@ -195,6 +200,14 @@ html, body {
   position: absolute;
   display: none;
   z-index: 999; }
+
+.bubble-loading {
+  background: url("/images/icon/loading_bubbles.svg") no-repeat center center;
+  height: 20px;
+  background-size: 60px;
+  width: 100%;
+  padding-bottom: 60px;
+  display: none; }
 
 .home {
   font-family: 'Roboto', sans-serif;
