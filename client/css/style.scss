@@ -9,7 +9,16 @@ html, body {
 .uk-input:focus, .uk-select:focus, .uk-textarea:focus {
   border-color: #773095 !important;
 }
-
+.uk-tab>.uk-active>a {
+  font-weight: 400;
+  border-color: #db2399 !important;
+}
+.uk-tab {
+  margin-top: -2px;
+}
+.news-box-wrapper{
+  display: inline-block;
+}
 .dark-purple-button {
   padding: 0%;
   background: #773095 !important;
@@ -27,141 +36,184 @@ html, body {
     background: #773095;
     color: white;
   }
+  .hover-text {
+    display: none;
+  }
+  &:hover {
+    .hover-text {
+      display: inline-block;
+    }
+  }
+}
+.news-post-area {
+  .uk-input{
+    width: 85%;
+    font-size: 12px;
+  }
+  .buttons-area {
+    float: right;
+    width: 100%;
+  }
+
+  .right-info-button{
+    float: right;
+    margin-left: 4px !important;
+  }
+
+  .left-info-button{
+    width: 72px;
+  }
+  .news-posting-preview {
+    display: inline-block;
+    padding-top: 18px;
+    .news-posting-image {
+      width: 300px;
+      height: 140px;
+      display: inline-block;
+    }
+    .news-text-info {
+      width: 50%;
+      display: inline-block;
+      padding-left: 30px;
+      vertical-align: top;
+    }
+  }
+
+  .suggestions-box {
+    border: #e5e5e5 solid 1px;
+    margin-top: -10px;
+    padding-top: 10px;
+    font-size: 14px;
+    color: #9f9f9f;
+    display: none;
+    margin-left: 76px;
+
+    &.show {
+      display: block;
+    }
+
+    .suggestion-item {
+      border-bottom: #ebebeb solid 1px;
+      padding-bottom: 4px;
+      padding-top: 4px;
+      padding-left: 10px;
+      cursor: pointer;
+
+      &:hover {
+        background: #773095;
+        color: white;
+      }
+    }
+  }
+
+  .related-box {
+    .related-item {
+      border: purple solid 1px;
+      padding: 2px;
+      padding-left: 6px;
+      display: inline-block;
+      color: #773095;
+      font-size: 10px;
+      cursor: pointer;
+    }
+  }
+
+  .uk-iconnav {
+    display: inline-flex !important;
+    margin-left: 0px !important;
+  }
+
+  .uk-iconnav>*{
+    padding-left: 2px !important;
+  }
 }
 
+.feed {
+  padding-top: 40px;
+  background: white;
+  padding-bottom: 15px;
+
+  a:hover{
+    text-decoration: none;
+  }
+
+  .episode-button {
+    padding: 0%;
+    color: #773095;
+    border: 0px;
+    display: inline-block;
+    font-size: 10px;
+    margin-bottom: 2px;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding-left: 8px;
+    padding-right: 8px;
+
+    &.active {
+      background: #773095;
+      color: white;
+    }
+  }
+
+  hr {
+    border-top: 1px solid #f5f5f5 !important;
+  }
+
+  .uk-width-expand {
+    padding-left: 15px;
+  }
+
+  article {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    header {
+      margin-bottom: 0px;
+    }
+  }
+
+  .link-action {
+    font-size: 1rem;
+    font-weight: 400;
+    color: #773095;
+
+    &:hover {
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .isDisabled {
+      color: #333;
+      text-decoration: none;
+      pointer-events: none !important;
+      font-weight: 400 !important;
+    }
+  }
+
+  .user-name {
+    margin: 0px;
+    display: inline-block;
+    font-size: 1rem;
+  }
+  .user-action {
+    margin: 0px;
+    display: inline-block;
+  }
+}
 .home-content {
     margin-bottom: auto;
     font-weight: 300;
     display: block;
     background: #f8f8f8;
 
-    .news-post-area {
-      .buttons-area {
-        float: right;
-      }
-
-      .news-posting-preview {
-        display: inline-block;
-        .news-posting-image {
-          width: 300px;
-          height: 140px;
-          display: inline-block;
-        }
-        .news-text-info {
-          width: 50%;
-          display: inline-block;
-          padding-left: 30px;
-          vertical-align: top;
-        }
-      }
+    .uk-input{
+      width: 88% !important;
+      font-size: 12px;
     }
-
-    .suggestions-box {
-      border: #e5e5e5 solid 1px;
-      margin-top: -21px;
-      padding-top: 10px;
-      font-size: 14px;
-      color: #9f9f9f;
-      display: none;
-
-      &.show {
-        display: block;
-      }
-
-      .suggestion-item {
-        border-bottom: #ebebeb solid 1px;
-        padding-bottom: 4px;
-        padding-top: 4px;
-        padding-left: 10px;
-        cursor: pointer;
-
-        &:hover {
-          background: #773095;
-          color: white;
-        }
-      }
+    .news-box-wrapper{
+      display: block !important;
 
     }
 
-    .recomendation-box {
-      .recomendation-item {
-        border: purple solid 1px;
-        padding: 2px;
-        padding-left: 6px;
-        display: inline-block;
-        color: #773095;
-        font-size: 10px;
-      }
-    }
-
-    .uk-iconnav {
-      display: inline-flex !important;
-      margin-left: 0px !important;
-    }
-
-    .uk-iconnav>*{
-      padding-left: 2px !important;
-    }
-
-    .episode-button {
-      padding: 0%;
-      color: #773095;
-      border: 0px;
-      display: inline-block;
-      font-size: 10px;
-      margin-bottom: 2px;
-      margin-left: 10px;
-      margin-right: 10px;
-      padding-left: 8px;
-      padding-right: 8px;
-
-      &.active {
-        background: #773095;
-        color: white;
-      }
-    }
-
-    hr {
-      border-top: 1px solid #f5f5f5 !important;
-    }
-
-    .feed {
-      padding-top: 40px;
-      background: white;
-      padding-bottom: 15px;
-
-      .uk-width-expand {
-        padding-left: 15px;
-      }
-
-      article {
-        padding-top: 0px;
-        padding-bottom: 0px;
-        header {
-          margin-bottom: 0px;
-        }
-      }
-
-      .link-action {
-        font-size: 1rem;
-        font-weight: 400;
-        color: #773095;
-
-        &:hover {
-          text-decoration: none;
-          font-weight: bold;
-        }
-      }
-    }
-    .user-name {
-      margin: 0px;
-      display: inline-block;
-      font-size: 1rem;
-    }
-    .user-action {
-      margin: 0px;
-      display: inline-block;
-    }
 }
 
 .home-card {
@@ -574,11 +626,6 @@ html, body {
       }
     }
 
-    .uk-tab>.uk-active>a {
-      font-weight: 400;
-      border-color: #db2399 !important;
-    }
-
     .uk-width-1-2{
       p{
         margin-bottom: 0px;
@@ -792,10 +839,7 @@ html, body {
       }
     }
 
-    .uk-tab>.uk-active>a {
-      font-weight: 400;
-      border-color: #db2399 !important;
-    }
+
 
     .uk-width-1-2{
       p{
@@ -971,7 +1015,7 @@ html, body {
 
   .rating {
     float: right;
-    margin-top: -100px;
+    margin-top: -160px;
     color: white;
     font-size: 28px;
     font-weight: 100;

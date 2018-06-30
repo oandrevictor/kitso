@@ -1,40 +1,6 @@
 <div class="home-content">
   <div class="uk-width-xxlarge uk-container feed">
-    <div class="news-post-area">
-
-      <div class="buttons-area">
-        <button  class="uk-button uk-button-default dark-purple-button" ng-click="creatingNews = !creatingNews">
-          <span uk-icon="pencil"></span>
-        </button>
-      </div>
-
-      <div class="uk-margin" ng-show="creatingNews">
-        <button  class="uk-button uk-button-default dark-purple-button" ng-show="creatingNews" >
-          <span uk-icon="link"></span>
-        </button>
-        <button  class="uk-button uk-button-default dark-purple-button" ng-show="creatingNews">
-          <span uk-icon="hashtag"></span>
-        </button>
-        <input class="uk-input" type="text" placeholder="Link for the news" ng-model="newslink" ng-change="loadInfo()">
-
-        <input class="uk-input" type="text" placeholder="Who is this news about?" ng-model="nameSearch" ng-change="loadAutoComplete()">
-      </div>
-
-      <div ng-if="newsInfo" class="news-posting-preview">
-        <div class="news-posting-image" style="background: url({{newsInfo.ogImage}}) center; background-size:cover; "></div>
-        <div class="news-text-info">
-          <h5> {{newsInfo.title}}</h5>
-          <p>{{newsInfo.desc}} </p>
-        </div>
-      </div>
-      
-      <div class="recomendation-box">
-        <div ng-repeat="recomendation in newsRecomendation" class="recomendation-item">
-          {{recomendation.name}} <span uk-icon="close"></span>
-        </div>
-      </div>
-    </div>
-
+    <div news-postbox></div>
     <h4><span uk-icon="rss"></span> Friends Activity </h4>
     <div ng-repeat="activity in feed" ng-hide="acitivy.hidden">
     <article class="uk-comment uk-visible-toggle" >
@@ -50,7 +16,9 @@
                         <h5 class="user-action"> {{getActivityType(activity) }} </h5>
                         <a class="link-action" ng-href="{{getActivityShowLink(activity)}}" ng-if="activity._action._media.show">{{activity._action._media.show.name}}: </a>
                         <a class="link-action" ng-href="{{getActivitySeasonLink(activity)}}" ng-if="activity._action._media.show">{{getSeasonInfo(activity).name}} - </a>
-                        <a class="link-action" ng-href="{{getActivityObjectLink(activity)}}">{{getActivityReferedObject(activity).name}}</a>
+                        <a class="link-action" ng-hide="activity.action_type == 'news'" ng-href="{{getActivityObjectLink(activity._action)}}">{{getActivityReferedObject(activity).name}}</a>
+                        <a class="link-action" ng-if="activity.action_type == 'news'" ng-href="{{getActivityObjectLink(related)}}" ng-repeat='related in activity._action._related' >{{getNewsRelatedName(related)}} <span class="isDisabled">{{formatRelated(activity._action._related, related)}}</span> </a>
+
                         <ul class="uk-iconnav" ng-if="activity.action_type == 'rated'">
                           <div ng-repeat="n in range('10')">
                             <a ng-if="n <= activity._action.rating" class="rating-star" ></a>
@@ -71,12 +39,12 @@
         </header>
         <div class="uk-comment-body" ng-show="activity.open">
           <div class="uk-card uk-card-default uk-grid-collapse uk-margin home-card" uk-grid>
-              <div ng-href="{{getActivityObjectLink(activity)}}" class="uk-card-media-left uk-cover-container" style="background: url({{getActivityImage(activity)}}) center; background-size:cover; cursor:pointer ">
+              <a ng-href="{{getActivityObjectLink(activity._action)}}" class="uk-card-media-left uk-cover-container" style="background: url({{getActivityImage(activity)}}) center; background-size:cover; cursor:pointer ">
                   <canvas width="300" height="200"></canvas>
-              </div>
+              </a>
               <div class="home-card-info">
                   <div class="uk-card-body">
-                      <h3 class="uk-card-title">{{getActivityReferedObject(activity).name}}</h3>
+                      <a ng-href="{{getActivityObjectLink(activity._action)}}"> <h3 class="uk-card-title">{{getActivityReferedObject(activity).name}}</h3></a>
                       <p class="overview uk-text-break">
                         {{getActivityReferedObject(activity).overview.substr(0,140)}}...</p>
                   </div>

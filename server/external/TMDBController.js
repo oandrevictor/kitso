@@ -84,7 +84,7 @@ exports.getShow = function(tmdb_id){
             if (err)
             console.log(err);
             else {
-              var parsed_result = JSON.parse(JSON.parse(data));
+              var parsed_result = JSON.parse(data);
               parsed_result.backdrop_path = TMDBConstants.TMDB_BACK_IMAGE_PATH + parsed_result.backdrop_path;
               resolve(parsed_result);
             }
@@ -115,7 +115,7 @@ exports.getMovie = function(tmdb_id) {
             if (err)
             console.log(err);
             else {
-              var parsed_result = JSON.parse(JSON.parse(data));
+              var parsed_result = JSON.parse(data);
               parsed_result.backdrop_path = TMDBConstants.TMDB_BACK_IMAGE_PATH + parsed_result.backdrop_path;
               resolve(parsed_result);
             }

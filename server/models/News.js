@@ -23,6 +23,11 @@ var NewsSchema = new Schema({
       }
     ],
     default: []
+  },
+  _action: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Action',
+    required: false
   }
 });
 
