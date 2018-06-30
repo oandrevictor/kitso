@@ -91,7 +91,7 @@ exports.followed_activity = async function(req, res) {
     news_actions = await Action.find({ "_id": { "$in": news_actions_ids } }).sort({date: -1}).limit(10);
 
     actions = actions.concat(news_actions);
-    promises = actions.map(getActivity);
+    promises = actions.map(DataStoreUtils.getActivity);
     Promise.all(promises).then(function(results) {
       all_activitys = all_activitys.concat(results);
       res.status(RequestStatus.OK).send(all_activitys);
@@ -101,28 +101,6 @@ exports.followed_activity = async function(req, res) {
     res.status(RequestStatus.BAD_REQUEST).json(err);
   }
 };
-
-getActivity = async function(activity) {
-  let action = await Action.findById(activity).exec();
-  let user = await User.findById(action._user).exec();
-  let action_obj = await DataStoreUtils.getActionByTypeAndIdWithDetails(action.action_type, action._action);
-  let liked_list = await DataStoreUtils.getLikedByActivity(activity);
-  let liked_promises = liked_list.map((liked) => {
-    return DataStoreUtils.getLikedWithUserBasicInfo(liked);
-  });
-
-  await Promise.all(liked_promises).then((result) => {
-    liked_list = result;
-  });
-
-  let action_copy = JSON.parse(JSON.stringify(action));
-  action_copy._user = user;
-  action_json = action_obj;
-  action_copy._action = action_json;
-  action_copy.liked = liked_list;
-  
-  return action_copy;
-}
 
 exports.create = async function(req, res) {
   var follow = new Follows(req.body);
