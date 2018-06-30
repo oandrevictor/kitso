@@ -339,8 +339,6 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
     }
 
     $scope.rate = function (tvshowId, rating) {
-      console.log(tvshowId);
-      console.log($scope.season);
       if ($scope.season.rated && $scope.season.rating !== 0) {
         if (rating !== $scope.season.rating) {
           $scope.updateRated($scope.season.rated.rated_id, rating);
