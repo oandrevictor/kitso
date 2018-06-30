@@ -174,7 +174,7 @@ exports.getActionByTypeAndIdWithDetails = async function(type, id) {
   } else {
     console.log(type)
     let errorMsg = "There is no such action type!";
-    throw new Error(errorMsg);
+    console.log(errorMsg);
   }
 };
 
