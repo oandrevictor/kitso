@@ -9,6 +9,7 @@ kitso.service('RatedService', ['$q','$http', function ($q, $http) {
     return ({
       getAllRated: getAllRated,
       getRated: getRated,
+      getVoteAverage: getVoteAverage,
       markAsRated: markAsRated,
       markAsNotRated: markAsNotRated,
       isRated: isRated,
@@ -41,6 +42,23 @@ kitso.service('RatedService', ['$q','$http', function ($q, $http) {
     function getRated(ratedId){
       var deferred = $q.defer();
       $http.get('/api/rated/' + ratedId)
+          .then((response) => {
+            if (response.status === 200) {
+                  deferred.resolve(response.data);
+              } else {
+                  deferred.reject(response.data);
+              }
+          })
+          .catch((error) => {
+              deferred.reject(error.data);
+          });
+
+      return deferred.promise;
+    }
+
+    function getVoteAverage(mediaId){
+      var deferred = $q.defer();
+      $http.get('/api/rated/media_rate_average?media_id=' + mediaId)
           .then((response) => {
             if (response.status === 200) {
                   deferred.resolve(response.data);
