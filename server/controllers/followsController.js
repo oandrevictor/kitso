@@ -79,7 +79,7 @@ exports.followed_activity = async function(req, res) {
     following_list.push(user_id);
 
     all_activitys = []
-    actions = await Action.find({ "_user": { "$in": following_list } }).sort({date: -1}).limit(10);
+    actions = await Action.find({ "_user": { "$in": following_list }, "action_type": { $ne: "liked" } }).sort({date: -1}).limit(10);
 
     media_related = await Related.find({ "_media": { "$in": following_list } }).sort({date: -1}).limit(10);
     person_related = await Related.find({ "_person": { "$in": following_list } }).sort({date: -1}).limit(10);

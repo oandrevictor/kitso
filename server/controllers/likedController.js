@@ -27,7 +27,7 @@ exports.is_liked = async function(req, res) {
     if (user_did_liked.length > 0) {
       res_json = {
         "is_liked": true,
-        "liked_id": user_did_liked[0]._id
+        "_id": user_did_liked[0]._id
       }
       res.status(RequestStatus.OK).json(res_json);
     } else {

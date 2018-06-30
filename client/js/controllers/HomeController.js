@@ -389,15 +389,17 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 	}
 
 	var like = function(activity){
-		LikedService.like($scope.user._id, activity._id).then(function(succes){
+		LikedService.like($scope.user._id, activity._id).then(function(success){
 			activity.liked.push($scope.user._id);
 			activity.liked_by_me = true;
+			activity.liked_info = success.data;
 		})
 	}
 	var undoLike = function(activity){
-		LikedService.undoLike($scope.user._id, activity._id).then(function(succes){
+		console.log(activity.liked_info)
+		LikedService.undoLike(activity.liked_info).then(function(success){
 			var remove_index = activity.liked.indexOf($scope.user._id);
-			activity.liked.slice(remove_index, 1)
+			activity.liked.splice(remove_index, 1)
 			activity.liked_by_me = false;
 		})
 	}
@@ -405,6 +407,8 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 	var isLiked = async function(activity){
 		var liked = await LikedService.isLiked($scope.user._id, activity._id);
 		activity.liked_by_me = liked.is_liked;
+		if (liked.is_liked)
+			activity.liked_info = liked;
 		return liked;
 	}
 
