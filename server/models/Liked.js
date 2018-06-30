@@ -9,23 +9,30 @@ var LikedSchema = new Schema({
   },
   hidden: {
     type: Boolean,
-    required: true,
     default: false
   },
-  _media: {
+  _activity: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Media',
+    ref: 'Action',
     required: true
+  },
+  reaction: {
+    type: String,
+    enum: ["like"],
+    default: "like"
   },
   date: {
     type: Date,
-    required: true,
     default: Date.now
   },
   _history: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'History',
     required: false
+  },
+  _action: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Action'
   }
 });
 

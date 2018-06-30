@@ -38,10 +38,8 @@ exports.index = function(req, res) {
               if (typeof parsed_result === 'string' || parsed_result instanceof String)
                 parsed_result = JSON.parse(parsed_result)
               var promises = await tvshow._seasons.map(inject_seasons);
-              parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
               parsed_result._id = tvshow._id;
               parsed_result.__t = tvshow.__t;
-              parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
               final_result.push(parsed_result);
               if (final_result.length == tv_result.length) {
                 res.setHeader('Content-Type', 'application/json');
@@ -56,6 +54,8 @@ exports.index = function(req, res) {
             var promises = await tvshow._seasons.map(inject_seasons);
             data._id = tv_result._id;
             data.__t = tv_result.__t;
+            data.poster_path = "https://image.tmdb.org/t/p/w500/" + data.poster_path;
+            data.backdrop_path = "https://image.tmdb.org/t/p/original/" + data.backdrop_path;
             final_result.push(data)
             if (final_result.length == tv_result.length) {
               res.setHeader('Content-Type', 'application/json');
@@ -96,12 +96,10 @@ exports.show = function(req, res) {
 
               Promise.all(promises).then(async function(results) {
                 parsed_result._seasons = results;
-                parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
                 parsed_result._id = result._id;
                 parsed_result.__t = result.__t;
                 await Promise.all(actorsPromises).then(function(nested_actors) {
                   parsed_result._actors = nested_actors;
-                  parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
                   res.setHeader('Content-Type', 'application/json');
                   res.status(RequestStatus.OK).send(parsed_result);
                 });
@@ -118,6 +116,8 @@ exports.show = function(req, res) {
               data._seasons = results;
               data._id = result._id;
               data.__t = result.__t;
+              data.poster_path = "https://image.tmdb.org/t/p/w500/" + data.poster_path;
+              data.backdrop_path = "https://image.tmdb.org/t/p/original/" + data.backdrop_path;
               res.status(RequestStatus.OK).send(data);
             })
           })
