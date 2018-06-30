@@ -23,7 +23,6 @@ exports.index = async function(req, res) {
     movie_result.forEach(async function(movie, index){
       var tmdb_id = movie._tmdb_id;
       var movie_complete = await TMDBController.getMovie(tmdb_id);
-      console.log(movie_complete)
       final_result.push(movie_complete);
       if (final_result.length == movie_result.length) {
         res.setHeader('Content-Type', 'application/json');

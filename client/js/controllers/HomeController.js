@@ -164,8 +164,6 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 	var loadFeed = function(userId){
 		FeedService.getFollowingUsersActivity(userId).then(function(result){
 			$scope.feed = result;
-			console.log($scope.feed);
-
 			$scope.feed.forEach(function(activity, index){
 				$scope.feed[index].listed = {}
 				if(['watched', 'rated', 'news'].includes(activity.action_type)){
@@ -396,7 +394,6 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 		})
 	}
 	var undoLike = function(activity){
-		console.log(activity.liked_info)
 		LikedService.undoLike(activity.liked_info).then(function(success){
 			var remove_index = activity.liked.indexOf($scope.user._id);
 			activity.liked.splice(remove_index, 1)
