@@ -3,32 +3,11 @@ var kitso = angular.module('kitso');
 kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthService', 'FeedService', 'UserListService', 'WatchedService', 'NewsService', function($scope, $location, $timeout, AuthService, FeedService, UserListService, WatchedService, NewsService) {
 	$('.full-loading').show();
 	$scope.temp_news = {}
-	$scope.logout = function() {
-		AuthService.logout()
-                // handle success
-                .then(function () {
-                    UIkit.notification({
-                        message: '<span uk-icon=\'icon: check\'></span> Logged out! Redirecting...',
-                        status: 'success',
-                        timeout: 1500
-                    });
+	loading_feed = 0;
+	current_page = 0;
+	stop_loading = false;
+	$scope.feed = [];
 
-                    $timeout(function() {
-                        $location.path('/');
-                        }, 1500);
-                })
-                // handle error
-                .catch(function (error) {
-                	console.log(error);
-                    var dangerMessage = "Something went wrong...";
-
-                    UIkit.notification({
-                        message: '<span uk-icon=\'icon: check\'></span> ' + dangerMessage,
-                        status: 'danger',
-                        timeout: 2500
-                    });
-                });
-	};
 	var compareDates = function(a,b){
     return - moment(a.date).diff(moment(b.date))
   }
@@ -91,7 +70,7 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 
 	AuthService.getStatus().then(function(){
     $scope.user = AuthService.getUser();
-		loadFeed($scope.user._id);
+		loadFeed($scope.user._id,0);
 		loadUserLists();
 
   }).catch(function(){});
@@ -161,12 +140,16 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 		return false;
 	}
 
-	var loadFeed = function(userId){
-		FeedService.getFollowingUsersActivity(userId).then(function(result){
-			$scope.feed = result;
+	var loadFeed = function(userId, page){
+		$('.bubble-loading').show();
+		loading_feed = true;
+		FeedService.getFollowingUsersActivity(userId, page).then(function(result){
+			var newFeedPage = result;
+			if (newFeedPage.length == 0)
+				stop_loading = true
 
-			$scope.feed.forEach(function(activity, index){
-				$scope.feed[index].listed = {}
+			newFeedPage.forEach(function(activity, index){
+				newFeedPage[index].listed = {}
 				if(['watched', 'rated', 'news'].includes(activity.action_type)){
 					activity.open = true;
 				}
@@ -188,12 +171,24 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 				}
 			}
 		)
-		$scope.feed = $scope.feed.sort(compareDates)
+		if (page && page >=1 ){
+			$scope.$applyAsync(function(){
+				$scope.feed = $scope.feed.concat(newFeedPage).sort(compareDates);
+			});
+		}
+		else {
+			$scope.feed = newFeedPage.sort(compareDates);
+		}
+		loading_feed = false;
 		$('.full-loading').hide();
+		$('.bubble-loading').hide();
+
 		})
 		.catch(
 			function(result){
-				console.log(result)
+				loading_feed = false;
+				$('.bubble-loading').hide();
+
 			}
 		)
 	}
@@ -246,6 +241,21 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 			return activity.action_type;
 		}
 	}
+
+	getMorePosts = function(page){
+
+	}
+
+	$( "body" ).scroll(function() {
+		if($("body").scrollTop() + $("body").height() >= $(document).height() - 100) {
+        if (!loading_feed && !stop_loading){
+					current_page = current_page + 1;
+					loadFeed($scope.user._id, current_page);
+					console.log($scope.feed)
+				}
+
+    }
+	});
 
 	$scope.getSeasonInfo = function(activity){
 		episode = activity._action._media;

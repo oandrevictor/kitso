@@ -268,6 +268,16 @@ html, body {
   display: none;
   z-index: 999;
 }
+
+.bubble-loading {
+  background: url('/images/icon/loading_bubbles.svg') no-repeat center center;
+  height: 20px;
+  background-size: 60px;
+  width: 100%;
+  padding-bottom: 60px;
+  display: none;
+}
+
 .home {
   font-family: 'Roboto', sans-serif;
   background: black;

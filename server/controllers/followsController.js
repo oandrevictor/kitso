@@ -71,6 +71,11 @@ var getAction = function(news){
 exports.followed_activity = async function(req, res) {
   let user_id = req.params.user_id;
   let following_list;
+  let page;
+  if (req.query.page)
+    page = parseInt(req.query.page);
+  else
+    page = 0;
   try {
     following_list = await Follows.find({_user: user_id}).exec();
     following_list2 = await FollowsPage.find({_user: user_id}).exec();
@@ -79,16 +84,16 @@ exports.followed_activity = async function(req, res) {
     following_list.push(user_id);
 
     all_activitys = []
-    actions = await Action.find({ "_user": { "$in": following_list } }).sort({date: -1}).limit(10);
+    actions = await Action.find({ "_user": { "$in": following_list } }).sort({date: -1}).skip(page * 10).limit(10);
 
-    media_related = await Related.find({ "_media": { "$in": following_list } }).sort({date: -1}).limit(10);
-    person_related = await Related.find({ "_person": { "$in": following_list } }).sort({date: -1}).limit(10);
+    media_related = await Related.find({ "_media": { "$in": following_list } }).sort({date: -1});
+    person_related = await Related.find({ "_person": { "$in": following_list } }).sort({date: -1});
     relateds = media_related.concat(person_related);
     relateds_ids = relateds.map(getRelatedId);
 
-    news = await News.find({ "_related": { "$in": relateds_ids } }).sort({date: -1}).limit(10);
+    news = await News.find({ "_related": { "$in": relateds_ids } }).sort({date: -1}).skip(page).limit(10);
     news_actions_ids = news.map(getAction);
-    news_actions = await Action.find({ "_id": { "$in": news_actions_ids } }).sort({date: -1}).limit(10);
+    news_actions = await Action.find({ "_id": { "$in": news_actions_ids } }).sort({date: -1}).skip(page).limit(10);
 
     actions = actions.concat(news_actions);
     promises = actions.map(DataStoreUtils.getActivity);
