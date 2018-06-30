@@ -9,6 +9,7 @@ var Follows = require('../../models/Follows');
 var FollowsPage = require('../../models/FollowsPage');
 var Rated = require('../../models/Rated');
 var Watched = require('../../models/Watched');
+var Liked = require('../../models/Liked');
 var News = require('../../models/News');
 var Related = require('../../models/Related');
 var Utils = require('./utils');
@@ -138,7 +139,7 @@ exports.getActionByTypeAndIdWithDetails = async function(type, id) {
   if (type == ActionType.RATED) {
     rating = await Rated.findById(id).exec();
     media_obj = await Media.findById(rating._media).exec();
-    media_obj = await exports.getMediaWithInfoFromDB(media_obj);
+    media_obj = await this.getMediaWithInfoFromDB(media_obj);
 
     rating_copy = JSON.parse(JSON.stringify(rating));
     rating_copy._media = media_obj;
@@ -146,7 +147,7 @@ exports.getActionByTypeAndIdWithDetails = async function(type, id) {
   } else if (type == ActionType.WATCHED) {
     watched = await Watched.findById(id).exec();
     media_obj = await Media.findById(watched._media).exec();
-    media_obj = await exports.getMediaWithInfoFromDB(media_obj);
+    media_obj = await this.getMediaWithInfoFromDB(media_obj);
 
     watched_copy = JSON.parse(JSON.stringify(watched));
     watched_copy._media = media_obj;
@@ -164,7 +165,7 @@ exports.getActionByTypeAndIdWithDetails = async function(type, id) {
 
     if (followPage.is_media) {
       obj = await Media.findById(followPage._following).exec();
-      obj = await exports.getMediaWithInfoFromDB(obj);
+      obj = await this.getMediaWithInfoFromDB(obj);
     } else {
       obj = await Person.findById(followPage._following).exec();
     }
@@ -172,6 +173,14 @@ exports.getActionByTypeAndIdWithDetails = async function(type, id) {
     followPage_copy = JSON.parse(JSON.stringify(followPage));
     followPage_copy._following = obj;
     return followPage_copy;
+  } else if (type == ActionType.LIKED) {
+    liked = await Liked.findById(id).exec();
+    activity_obj = await Action.findById(liked._activity).exec();
+    let activity_obj_copy = JSON.parse(JSON.stringify(activity_obj));
+    activity_obj_copy._media = await this.getActionByTypeAndIdWithDetails(activity_obj.action_type, activity_obj._action);
+    activity_obj_copy._user = await this.getUserBasicInfo(activity_obj._user);
+
+    return activity_obj_copy;
   } else if(type == ActionType.NEWS){
     var news = await News.findById(id).exec();
     var completeNews = await NewsController.inject_related(news);
@@ -186,6 +195,24 @@ exports.getActionByTypeAndIdWithDetails = async function(type, id) {
 exports.getUserById = async function(id) {
   return User.findById(id).exec();
 };
+
+exports.getUserBasicInfo = async function(id) {
+  let user = await User.findById(id).exec();
+  user_copy = {_id: '', name: '', username: '', email: ''};
+  user_copy._id = user._id;
+  user_copy.name = user.name;
+  user_copy.username = user.username;
+  user_copy.email = user.email;
+  return user_copy;
+}
+
+exports.getLikedWithUserBasicInfo = async function(likedObj) {
+  let user_copy = await this.getUserBasicInfo(likedObj._user);
+
+  likedObjCopy = JSON.parse(JSON.stringify(likedObj));
+  likedObjCopy._user = user_copy;
+  return likedObjCopy;
+}
 
 exports.getUserListById = function(userListId) {
   return UserList.findById(userListId).exec();
@@ -234,6 +261,26 @@ exports.getWatchedByUserIdAndMediaId = async function(userId, mediaId) {
 
 exports.getRated = async function(mediaId) {
   return Rated.find({_media: mediaId}).exec();
+};
+
+exports.getRatedById = async function(ratedId) {
+  return Rated.findById(ratedId).exec();
+};
+
+exports.getLikedById = async function(likedId) {
+  return Liked.findById(likedId).exec();
+};
+
+exports.getLikedByUserId = async function(userId) {
+  return Liked.find({_user: userId}).exec();
+};
+
+exports.getLikedByActivity = async function(activityId) {
+  return Liked.find({_activity: activityId}).exec();
+};
+
+exports.userHasLiked = async function(userId, activityId) {
+  return Liked.find({_user: userId, _activity: activityId});
 };
 
 exports.getRatedByUserIdAndMediaId = async function(userId, mediaId) {
@@ -314,10 +361,30 @@ exports.deleteActionFromUserHistory = function(userId, actionId) {
   });
 };
 
+exports.deleteLiked = async function(likedId) {
+  let likedObj = await Liked.findById(likedId);
+  let actionId = likedObj._action;
+  let userId = likedObj._user;
+  await this.deleteAction(actionId);
+  await this.deleteActionFromUserHistory(userId, actionId);
+  likedObj.remove();
+  return likedObj;
+};
+
 exports.deleteFollowsPage = async function(followsId) {
   let followObj = await FollowsPage.findById(followsId);
   let actionId = followObj._action;
   let userId = followObj._user;
+  let likedObjs = await Liked.find({_activity: actionId});
+  let promises;
+  if (likedObjs.length > 0) {
+    promises = likedObjs.map((likedObj) => {
+      this.deleteLiked(likedObj._id);
+    });
+  }
+  await Promise.all(promises).then((result) => {
+    console.log('Liked deleted');
+  });
   await this.deleteAction(actionId);
   await this.deleteActionFromUserHistory(userId, actionId);
   followObj.remove();
@@ -328,6 +395,16 @@ exports.deleteRated = async function(ratedId) {
   let ratedObj = await Rated.findById(ratedId);
   let actionId = ratedObj._action;
   let userId = ratedObj._user;
+  let likedObjs = await Liked.find({_activity: actionId});
+  let promises;
+  if (likedObjs.length > 0) {
+    promises = likedObjs.map((likedObj) => {
+      this.deleteLiked(likedObj._id);
+    });
+  }
+  await Promise.all(promises).then((result) => {
+    console.log('Liked deleted');
+  });
   await this.deleteAction(actionId);
   await this.deleteActionFromUserHistory(userId, actionId);
   ratedObj.remove();
@@ -338,6 +415,16 @@ exports.deleteWatched = async function(watchedId) {
   let watchedObj = await Watched.findById(watchedId);
   let actionId = watchedObj._action;
   let userId = watchedObj._user;
+  let likedObjs = await Liked.find({_activity: actionId});
+  let promises;
+  if (likedObjs.length > 0) {
+    promises = likedObjs.map((likedObj) => {
+      this.deleteLiked(likedObj._id);
+    });
+  }
+  await Promise.all(promises).then((result) => {
+    console.log('Liked deleted');
+  });
   await Action.remove({ _id: actionId}).exec();
   var deleteActionFromUserHistory = function(userId, actionId) {
     User.findById(userId, function (err, user) {
@@ -388,12 +475,21 @@ exports.getActivity = async function(activity) {
   let action = await Action.findById(activity).exec();
   let user = await User.findById(action._user).exec();
   let action_obj = await exports.getActionByTypeAndIdWithDetails(action.action_type, action._action);
+  let liked_list = await exports.getLikedByActivity(activity);
+  let liked_promises = liked_list.map((liked) => {
+    return exports.getLikedWithUserBasicInfo(liked);
+  });
+
+  await Promise.all(liked_promises).then((result) => {
+    liked_list = result;
+  });
 
   let action_copy = JSON.parse(JSON.stringify(action));
   action_copy._user = user;
   action_json = action_obj;
   action_copy._action = action_json;
-
+  action_copy.liked = liked_list;
+  
   return action_copy;
 }
 

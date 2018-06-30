@@ -260,6 +260,12 @@ html, body {
 }
 .kitso-content{
 }
+.hearted {
+  background: url("/images/icon/hearted.svg") left no-repeat;
+  background-size: 25px;
+  padding: 15px;
+
+}
 .full-loading {
   background: url('/images/icon/loading.svg') no-repeat center center, linear-gradient(155deg, #9730a0 0%, #7c1b7a 51%, #502274 75%);;
   height: 100%;
