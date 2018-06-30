@@ -107,6 +107,7 @@ exports.getShow = function(tmdb_id){
 exports.getMovie = function(tmdb_id) {
   return new Promise(function(resolve, reject) {
     Movie.find({_tmdb_id: tmdb_id}).catch((err)=> console.log(err)). then(async (result)=>{
+      result = result[0]
       var query = RequestGenerals.MOVIE_ENDPOINT + tmdb_id;
       redisClient.exists(query, function(err, reply) {
         if (reply === 1) {
@@ -116,7 +117,8 @@ exports.getMovie = function(tmdb_id) {
             console.log(err);
             else {
               var parsed_result = JSON.parse(data);
-              parsed_result.backdrop_path = TMDBConstants.TMDB_BACK_IMAGE_PATH + parsed_result.backdrop_path;
+              parsed_result._id = result._id;
+              parsed_result.__t = result.__t;
               resolve(parsed_result);
             }
           });
@@ -126,6 +128,8 @@ exports.getMovie = function(tmdb_id) {
             var data = JSON.parse(data);
             data._id = result._id;
             data.__t = result.__t;
+            data.backdrop_path = TMDBConstants.TMDB_BACK_IMAGE_PATH + data.backdrop_path;
+            data.poster_path = TMDBConstants.TMDB_BACK_IMAGE_PATH + data.poster_path;
             console.log("GET MOVIE | Saving to redis:" + query)
             redisClient.set(query, JSON.stringify(data));
             resolve(data);
@@ -193,6 +197,7 @@ exports.getMovieFromTMDB = function(tmdb_id){
         resp.on('end', () => {
           console.log("Saving result to redis: "+ query);
           redisClient.set(query, JSON.stringify(data));
+          data.backdrop_path = TMDBConstants.TMDB_BACK_IMAGE_PATH + data.backdrop_path;
           resolve(data)
         });
       }).on("error", (err) => {
