@@ -61,7 +61,6 @@ exports.show = function(req, res) {
                 parsed_result = JSON.parse(parsed_result)
               var actors = result._actors;
               let actorsPromises = actors.map(injectPersonJson);
-              parsed_result.poster_path = "https://image.tmdb.org/t/p/w500" + parsed_result.poster_path;
               parsed_result._id = result._id;
               parsed_result.__t = result.__t;
               await Promise.all(actorsPromises).then(function(nested_actors) {

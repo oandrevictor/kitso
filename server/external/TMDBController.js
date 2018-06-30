@@ -167,7 +167,6 @@ exports.getEpisode = function(tmdb_id){
             data.__t = result.__t;
             console.log("GET EPISODE | Saving to redis:" + query)
             redisClient.multi().set(query, JSON.stringify(data)).exec(function(err, results) {
-              console.log(results)
                 if(err){
                   console.log(err)
                 }
