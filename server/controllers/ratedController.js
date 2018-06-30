@@ -103,6 +103,19 @@ exports.delete = async function(req, res) {
   }
 };
 
+exports.getMediaRateAvarege = async function(req, res) {
+  let media_id = req.query.media_id;
+  try {
+    let vote_average = await DataStoreUtils.getMediaVoteAverage(media_id);
+    res_json = {
+      "vote_average": vote_average
+    }
+    res.status(RequestStatus.OK).json(res_json);
+  } catch (err) {
+    res.status(RequestStatus.BAD_REQUEST).json(err);
+  }
+};
+
 // TODO: move to DataStoreUtils
 var findRatedObj = async function(rated_id) {
   return Rated.findById(rated_id).exec();

@@ -32,6 +32,8 @@ exports.index = function(req, res) {
             else{
               console.log('got query from redis: movie/' + tmdb_id);
               var parsed_result = JSON.parse(data);
+              if (typeof parsed_result === 'string' || parsed_result instanceof String)
+                parsed_result = JSON.parse(parsed_result);
               parsed_result.poster_path = "https://image.tmdb.org/t/p/w500" + parsed_result.poster_path;
               parsed_result._id = movie._id;
               parsed_result.__t = movie.__t;
@@ -83,6 +85,9 @@ exports.show = function(req, res) {
             else{
               console.log('got query from redis: movie/' + tmdb_id);
               var parsed_result = JSON.parse(data);
+              console.log(tmdb_id, typeof parsed_result)
+              if (typeof parsed_result === 'string' || parsed_result instanceof String)
+                parsed_result = JSON.parse(parsed_result)
               var actors = result._actors;
               let actorsPromises = actors.map(injectPersonJson);
               parsed_result.poster_path = "https://image.tmdb.org/t/p/w500" + parsed_result.poster_path;
@@ -98,7 +103,10 @@ exports.show = function(req, res) {
           });
         } else {
           TMDBController.getMovieFromTMDB(tmdb_id).then(async function(data) {
+            console.log("ENTROU AQUI")
             var data = JSON.parse(data);
+            if (typeof data === 'string' || data instanceof String)
+              data = JSON.parse(data)
             data._id = result._id;
             data.__t = result.__t;
             res.status(RequestStatus.OK).send(data);

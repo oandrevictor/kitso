@@ -136,6 +136,12 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
         });
       });
 
+      RatedService.getVoteAverage($scope.season._id).then((rated) => {
+        $scope.season.vote_average = rated.vote_average;
+      }).catch((error) => {
+        console.log(error);
+      });
+
       RatedService.isRated($scope.user._id, episode._id).then((rated) => {
         var episodeId = episode._id;
         episode.rated = rated;
@@ -331,19 +337,20 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
         }
       }
     }
+
     $scope.rate = function (tvshowId, rating) {
-      if ($scope.tvshow.rated) {
-        if (rating !== $scope.tvshow.rating) {
-          $scope.updateRated($scope.tvshow.rated.rated_id, rating);
-          $scope.updateRating($scope.tvshow, rating);
+      if ($scope.season.rated && $scope.season.rating !== 0) {
+        if (rating !== $scope.season.rating) {
+          $scope.updateRated($scope.season.rated.rated_id, rating);
+          $scope.updateRating($scope.season, rating);
           UIkit.notification({
             message: '<span uk-icon=\'icon: check\'></span> Rating edited!',
             status: 'success',
             timeout: 1500
           });
         } else {
-          $scope.markAsNotRated($scope.tvshow.rated.rated_id);
-          $scope.updateRating($scope.tvshow, 0);
+          $scope.markAsNotRated($scope.season.rated.rated_id);
+          $scope.updateRating($scope.season, 0);
           UIkit.notification({
             message: '<span uk-icon=\'icon: check\'></span> Rating removed.',
             status: 'warning',
@@ -352,7 +359,7 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
         }
       } else {
         $scope.markAsRated(tvshowId, rating);
-        $scope.updateRating($scope.tvShow, rating);
+        $scope.updateRating($scope.season, rating);
         UIkit.notification({
           message: '<span uk-icon=\'icon: check\'></span> Rated!',
           status: 'success',
@@ -376,10 +383,10 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
       }
 
   $scope.markAsRated = function (tvshowId, rating) {
-      $scope.tvshow.rating = rating;
+      $scope.season.rating = rating;
       RatedService.markAsRated($scope.user._id, tvshowId, date = moment(), rating)
         .then((rated) => {
-          $scope.tvshow.rated = rated;
+          $scope.season.rated = rated;
         })
         .catch((error) => {
           UIkit.notification({
@@ -393,7 +400,7 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
     $scope.markAsNotRated = function (ratedId) {
       RatedService.markAsNotRated(ratedId)
         .then(() => {
-          $scope.tvshow.rated = false;
+          $scope.season.rated = false;
         })
         .catch((error) => {
           UIkit.notification({
@@ -410,11 +417,14 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
         "rating": rating,
         "_id": ratedId
       };
-      RatedService.updateRated(ratedObj);
+      RatedService.updateRated(ratedObj).then((response) => {
+        $scope.updateVoteAverage();
+      });
     }
 
     $scope.updateRating = function (episode, rating) {
       episode.rating = rating;
+      $scope.updateVoteAverage();
     }
 
     $scope.range = function (count) {
@@ -454,5 +464,13 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
       });
 
       return rating;
+    }
+
+    $scope.updateVoteAverage = function() {
+      RatedService.getVoteAverage($scope.season._id).then((rated) => {
+        $scope.season.vote_average = rated.vote_average;
+      }).catch((error) => {
+        console.log(error);
+      });
     }
     }]);
