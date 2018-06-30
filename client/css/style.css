@@ -1115,7 +1115,9 @@ html, body {
     font-size: 14px; }
 
 .userlist {
-  font-family: 'Roboto' !important; }
+  font-family: 'Roboto' !important;
+  height: 100%;
+  overflow-y: -webkit-paged-y; }
   .userlist .uk-background-cover {
     z-index: -1;
     background: url("/images/It-Follows-background.jpg");

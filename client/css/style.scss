@@ -1560,6 +1560,8 @@ html, body {
 
 .userlist{
   font-family: 'Roboto' !important;
+  height: 100%;
+  overflow-y: -webkit-paged-y;
   .uk-background-cover {
     z-index: -1;
     background: url("/images/It-Follows-background.jpg");

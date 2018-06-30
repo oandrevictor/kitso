@@ -84,7 +84,7 @@ function($scope, $location, $timeout, UserListService, MovieService, $routeParam
       } else {
         img_path = first_media.poster_path;
       }
-      $scope.background = 'https://image.tmdb.org/t/p/w500/' + img_path;
+      $scope.background = 'https://image.tmdb.org/t/p/original/' + img_path;
     } else {
       $scope.background = '/images/coco.jpg';
     }
