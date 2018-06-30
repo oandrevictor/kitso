@@ -1,5 +1,7 @@
 var AppearsIn = require('../../models/AppearsIn');
 var Person = require('../../models/Person');
+var Season = require('../../models/Season');
+var Episode = require('../../models/Episode');
 var Media = require('../../models/Media');
 var Action = require('../../models/Action');
 var User = require('../../models/User');
@@ -8,10 +10,13 @@ var FollowsPage = require('../../models/FollowsPage');
 var Rated = require('../../models/Rated');
 var Watched = require('../../models/Watched');
 var Liked = require('../../models/Liked');
+var News = require('../../models/News');
+var Related = require('../../models/Related');
 var Utils = require('./utils');
 var UserList = require('../../models/UserList');
 var ActionType = require('../../constants/actionType');
 var TMDBController = require('../../external/TMDBController');
+var NewsController = require('../../controllers/newsController');
 
 
 // CREATE =========================================================================================
@@ -162,7 +167,12 @@ exports.getActionByTypeAndIdWithDetails = async function(type, id) {
     activity_obj_copy._user = await this.getUserBasicInfo(activity_obj._user);
 
     return activity_obj_copy;
+  } else if(type == ActionType.NEWS){
+    var news = await News.findById(id).exec();
+    var completeNews = await NewsController.inject_related(news);
+    return completeNews;
   } else {
+    console.log(type)
     let errorMsg = "There is no such action type!";
     throw new Error(errorMsg);
   }
@@ -421,10 +431,57 @@ exports.deleteWatched = async function(watchedId) {
   return watchedObj;
 };
 
+exports.deleteNews = async function(newsId) {
+  let newsObj = await News.findById(newsId);
+  let actionId = newsObj._action;
+  let userId = newsObj._posted_by;
+  let relatedsIds = newsObj._related;
+  await this.deleteAction(actionId);
+  await this.deleteActionFromUserHistory(userId, actionId);
+  await this.deleteRelateds(relatedsIds);
+  newsObj.remove();
+  return newsObj;
+};
+
+exports.deleteRelateds = function(relatedsIds) {
+  relatedsIds.forEach(async function (related_id) {
+    await Related.remove({ _id: related_id}).exec();
+  })
+}
+
 
 // OTHER AUXILIARIES FUNCTIONS =====================================================================
 
 exports.alreadyExistsAppearsInByKeys = async function(personId, mediaId) {
   let results = await AppearsIn.find({_person: personId, _media: mediaId}).exec();
   return results.length > 0;
+};
+
+
+exports.getActivity = async function(activity) {
+  let action = await Action.findById(activity).exec();
+  let user = await User.findById(action._user).exec();
+  let action_obj = await exports.getActionByTypeAndIdWithDetails(action.action_type, action._action);
+
+  let action_copy = JSON.parse(JSON.stringify(action));
+  action_copy._user = user;
+  action_json = action_obj;
+  action_copy._action = action_json;
+
+  return action_copy;
+}
+
+exports.findPersonByTmdbId = async function(personId) {
+  let results = await Person.find({_tmdb_id: personId}).exec();
+  return results;
+};
+
+exports.findSeasonByTmdbId = async function(seasonId) {
+  let results = await Season.find({_tmdb_id: seasonId}).exec();
+  return results;
+};
+
+exports.findEpisodeByTmdbId = async function(episodeId) {
+  let results = await Episode.find({_tmdb_id: episodeId}).exec();
+  return results;
 };

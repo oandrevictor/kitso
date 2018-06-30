@@ -18,7 +18,6 @@ exports.index = function(req, res) {
   })
   .then((movie_result) => {
     var final_result = [];
-    console.log("len:" + movie_result.length)
     if (movie_result.len == 0)
     res.status(200).send(final_result);
     movie_result.forEach((movie, index)=>{
@@ -29,10 +28,10 @@ exports.index = function(req, res) {
         if (reply === 1) {
           redisClient.get(query, async function(err,data) {
             if(err)
-            console.log(err)
+            console.log(err);
             else{
               console.log('got query from redis: movie/' + tmdb_id);
-              var parsed_result = JSON.parse(JSON.parse(data));
+              var parsed_result = JSON.parse(data);
               parsed_result.poster_path = "https://image.tmdb.org/t/p/w500" + parsed_result.poster_path;
               parsed_result._id = movie._id;
               parsed_result.__t = movie.__t;
@@ -46,10 +45,10 @@ exports.index = function(req, res) {
           });
         } else {
           TMDBController.getMovieFromTMDB(tmdb_id).then(async function(data) {
-            console.log("Got from TMDB: " + tmdb_id )
+            console.log("Got from TMDB: " + tmdb_id );
             data._id = movie_result._id;
             data.__t = movie_result.__t;
-            final_result.push(data)
+            final_result.push(data);
             if (final_result.length == movie_result.length) {
               res.setHeader('Content-Type', 'application/json');
               res.status(200).send(final_result);
@@ -75,15 +74,15 @@ exports.show = function(req, res) {
   .then((result) => {
     if (result) {
       var tmdb_id = result._tmdb_id;
-      var query = 'movie/' + tmdb_id
+      var query = 'movie/' + tmdb_id;
       redisClient.exists(query, function(err, reply) {
         if (reply === 1) {
           redisClient.get(query, async function(err,data) {
             if(err)
-            console.log(err)
+            console.log(err);
             else{
               console.log('got query from redis: movie/' + tmdb_id);
-              var parsed_result = JSON.parse(JSON.parse(data));
+              var parsed_result = JSON.parse(data);
               var actors = result._actors;
               let actorsPromises = actors.map(injectPersonJson);
               parsed_result.poster_path = "https://image.tmdb.org/t/p/w500" + parsed_result.poster_path;
@@ -99,7 +98,7 @@ exports.show = function(req, res) {
           });
         } else {
           TMDBController.getMovieFromTMDB(tmdb_id).then(async function(data) {
-            var data = JSON.parse(data)
+            var data = JSON.parse(data);
             data._id = result._id;
             data.__t = result.__t;
             res.status(RequestStatus.OK).send(data);
@@ -120,7 +119,7 @@ exports.create = function(req, res) {
     res.status(400).send(err);
   })
   .then((createdMovie) => {
-    console.log("Created movie: " + createdMovie.name)
+    console.log("Created movie: " + createdMovie.name);
     TMDBController.getMovieFromTMDB(createdMovie._tmdb_id).then( async (result)=> {
       result._id = createdMovie._id;
       result._seasons = createdMovie._seasons;
@@ -185,39 +184,50 @@ getMovieCastFromAPI = function(movie_id){
       reject();
     });
   })
-}
+};
 
 matchApiMovieCastToDb = async function(dbmovieshow){
-  getMovieCastFromAPI(dbmovieshow._tmdb_id).then(function(credits){
-    var credits = JSON.parse(credits)
+  getMovieCastFromAPI(dbmovieshow._tmdb_id).then(function(credits) {
+    var credits = JSON.parse(credits);
     var cast = credits.cast;
     var castSize = cast.length;
     var nCast = 0;
     var castIds = [];
 
-    cast.forEach(function(person, i){
+    cast.forEach(async function(person, i) {
       var tmdb_id = person.id;
       var name = person.name;
       var character = person.character;
       var picture = person.profile_path;
       var description = "No description yet";
-      var db_person = new Person();
-      db_person.name = name;
-      db_person._tmdb_id = tmdb_id;
-      db_person.image_url = picture;
-      db_person.description = description;
-      db_person.save().then(async (created_db_person)=>{
-        nCast++;
-        castIds[i] = created_db_person._id;
-        await createAppearsIn(created_db_person._id, dbmovieshow._id);
-        if (nCast == castSize) done();
-        console.log("Person Created:" + name)
-      }).catch((err)=>{console.log(err)});
+      var db_person;
+
+      let hasPerson = await DataStoreUtils.findPersonByTmdbId(tmdb_id);
+
+      if (hasPerson.length === 0) {
+        // person does not exists
+        db_person = new Person();
+        db_person.name = name;
+        db_person._tmdb_id = tmdb_id;
+        db_person.image_url = picture;
+        db_person.description = description;
+        db_person.save().then(async (created_db_person)=>{
+          nCast++;
+          castIds[i] = created_db_person._id;
+          await createAppearsIn(created_db_person._id, dbmovieshow._id);
+          if (nCast == castSize) done();
+          console.log("Person Created:" + name)
+        }).catch((err)=>{console.log(err)});
+      }
+      else {
+        // person already exists
+        await createAppearsIn(hasPerson[0]._id, dbmovieshow._id);
+        console.log("Person Updated:" + name)
+      }
     });
 
     function done() {
       return castIds;
     }
-
   });
-}
+};

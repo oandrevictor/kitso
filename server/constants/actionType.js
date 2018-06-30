@@ -3,6 +3,7 @@ const RATED_TYPE = "rated";
 const FOLLOWED_USER_TYPE = "followed";
 const FOLLOWED_PAGE_TYPE = "followed-page";
 const LIKED = "liked";
+const NEWS_TYPE = "news";
 
 class ActionType {
 
@@ -24,6 +25,10 @@ class ActionType {
 
   static get LIKED() {
     return LIKED;
+  }
+
+  static get NEWS() {
+    return NEWS_TYPE;
   }
 }
 

@@ -196,8 +196,8 @@ var injectDataFromTmdb = async function(item) {
   if (mediaObj.__t == "Movie") {
     itemJson._media = await TMDBController.getMovie(mediaObj._tmdb_id);
   } else if  (mediaObj.__t == "Episode") {
-    response = await TMDBController.getEpisodeFromTMDB(mediaObj._tmdb_tvshow_id, mediaObj.season_number, mediaObj.number);
-    itemJson._media = JSON.parse(response)
+    response = await TMDBController.getEpisode(mediaObj._tmdb_id);
+    itemJson._media = response
   } else if (mediaObj.__t == "TvShow") {
     itemJson._media = await TMDBController.getShow(mediaObj._tmdb_id);
   } if (mediaObj.__t == "Season") {

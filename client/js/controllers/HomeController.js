@@ -1,7 +1,8 @@
 var kitso = angular.module('kitso');
 
-kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthService', 'FeedService', 'UserListService', 'WatchedService', function($scope, $location, $timeout, AuthService, FeedService, UserListService, WatchedService) {
+kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthService', 'FeedService', 'UserListService', 'WatchedService', 'NewsService', function($scope, $location, $timeout, AuthService, FeedService, UserListService, WatchedService, NewsService) {
 	$('.full-loading').show();
+	$scope.temp_news = {}
 	$scope.logout = function() {
 		AuthService.logout()
                 // handle success
@@ -32,6 +33,39 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
     return - moment(a.date).diff(moment(b.date))
   }
 
+
+	$scope.getNewsObject = function(related){
+		if (related.is_media){
+			return related._media
+		}
+		else {
+			return related._person
+		}
+	}
+
+	$scope.getNewsRelatedName = function(related){
+		if (related.is_media){
+			if (related._media.name) {
+				return related._media.name
+			} else {
+				return related._media.title
+			}
+		}
+		else {
+			return related._person.name
+		}
+	}
+
+	$scope.formatRelated = function(relatedList, related){
+		var len = relatedList.length;
+		var index = relatedList.indexOf(related);
+
+		if (index === len - 2) {
+			return " and "
+		} else if (index !== len - 1) {
+			return ", "
+		}
+	}
 
 	var loadUserLists = function(){
 	  var lists = [];
@@ -134,13 +168,12 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 
 			$scope.feed.forEach(function(activity, index){
 				$scope.feed[index].listed = {}
-				if(['watched', 'rated'].includes(activity.action_type)){
+				if(['watched', 'rated', 'news'].includes(activity.action_type)){
 					activity.open = true;
 				}
 
 				var media = $scope.getMediaFromActivity(activity);
 				if (media && media._id){
-					console.log(media)
 					WatchedService.isWatched($scope.user._id, media._id).then((watched) => {
 		        activity.watched = watched;
 		        if (!watched.watched_id)
@@ -207,6 +240,9 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 		if(activity.action_type == 'followed-page') {
 			return 'followed';
 		}
+		else if (activity.action_type == 'news') {
+			return 'posted a news about'
+		}
 		else {
 			return activity.action_type;
 		}
@@ -232,9 +268,9 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 		return 'tvshow/' + activity._action._media.show._id
 	}
 
-	$scope.getActivityObjectLink = function(activity){
-		if (activity._action._media){
-			media = activity._action._media;
+	$scope.getActivityObjectLink = function(action){
+		if (action._media){
+			media = action._media;
 			if (media.__t == "Episode")
 				return 'tvshow/' + media.show._id + '/season/' + media.season_number
 			if (media.__t == "TvShow")
@@ -242,21 +278,35 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 			if (media.__t == "Movie")
 				return 'movie/' + media._id
 		}
-		if (activity._action._following){
-			following = activity._action._following;
+		if (action._following){
+			following = action._following;
 			if (following.__t){
 				if (following.__t == "TvShow")
 					return 'tvshow/' + following._id
 				if (following.__t == "Movie")
 					return 'movie/' + following._id
+				else
+					return 'user/' + following._id
 			}
 			else
 				return 'person/' + following._id
 		}
+		if (action._person){
+			return 'person/' + action._person._id
+		}
+		if (action.metadata){
+			return action.link;
+		}
 	}
 
 	$scope.getActivityImage = function(activity){
-		if(["watched","rated"].includes(activity.action_type)){
+		if (activity.action_type == 'news'){
+			if( activity._action.metadata.ogImage)
+				return activity._action.metadata.ogImage
+			else
+				return activity._action.metadata.images[0]
+		}
+		else if(["watched","rated"].includes(activity.action_type)){
 			if(activity._action._media){
 				if (!activity._action._media.backdrop_path){
 					return "https://image.tmdb.org/t/p/original/" + activity._action._media.still_path;
@@ -296,6 +346,15 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 				activity._action._following.name = activity._action._following.title;
 	    return activity._action._following;
 	  	break;
+		case 'news':
+			var metadata = activity._action.metadata;
+			if (metadata.ogTitle)
+				metadata.name = metadata.ogTitle;
+			else {
+				metadata.name = metadata.title;
+			}
+			metadata.overview = metadata.desc;
+			return metadata;
     default:
     	return 'a'
 		}

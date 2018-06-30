@@ -18,7 +18,7 @@ var ActionSchema = new Schema({
   },
   action_type: {
     type: String,
-    enum: [ActionType.RATED, ActionType.WATCHED, ActionType.FOLLOWED_USER, ActionType.FOLLOWED_PAGE, ActionType.LIKED],
+    enum: [ActionType.RATED, ActionType.WATCHED, ActionType.FOLLOWED_USER, ActionType.FOLLOWED_PAGE, ActionType.LIKED, ActionType.NEWS],
     required: true
   },
   hidden: {

@@ -95,7 +95,7 @@ exports.index = function(req, res) {
             }
           });
         } else {
-          getPersonFromTMDB(tmdb_id).then(async function(data) {
+          TMDBController.getPersonFromTMDB(tmdb_id).then(async function(data) {
             data = JSON.parse(data);
             data._id = result._id;
             data.helper = result.helper;

@@ -1,4 +1,6 @@
 var Action = require('../models/Action');
+var Related = require('../models/Related');
+var News = require('../models/News');
 var RequestStatus = require('../constants/requestStatus');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 
@@ -18,6 +20,40 @@ exports.index = async function(req, res) {
     res.status(RequestStatus.OK).json(results);
   })
 };
+
+var getRelatedId = function(related){
+  return related._id;
+}
+var getAction = function(news){
+  return news._action;
+}
+exports.news = async function(req, res) {
+  let related_id = [req.params.related_id];
+  let following_list;
+  try {
+    all_activitys = []
+    media_related = await Related.find({ "_media": { "$in": related_id } }).sort({date: -1}).limit(10);
+    person_related = await Related.find({ "_person": { "$in": related_id } }).sort({date: -1}).limit(10);
+    relateds = media_related.concat(person_related);
+    relateds_ids = relateds.map(getRelatedId);
+
+    news = await News.find({ "_related": { "$in": relateds_ids } }).sort({date: -1}).limit(10);
+    news_actions_ids = news.map(getAction);
+    console.log(news_actions_ids)
+    news_actions = await Action.find({ "_id": { "$in": news_actions_ids } }).sort({date: -1}).limit(10);
+
+    actions = news_actions;
+    promises = actions.map(DataStoreUtils.getActivity);
+    Promise.all(promises).then(function(results) {
+      all_activitys = all_activitys.concat(results);
+      res.status(RequestStatus.OK).send(all_activitys);
+    })
+  } catch (err) {
+    console.log(err)
+    res.status(RequestStatus.BAD_REQUEST).json(err);
+  }
+};
+
 
 exports.show = async function(req, res) {
   Action.findById(req.params.action_id)
