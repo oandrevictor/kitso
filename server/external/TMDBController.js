@@ -24,7 +24,7 @@ exports.getShowFromTMDB = function(tmdb_id) {
         });
         resp.on('end', () => {
           console.log("Saving result to redis: "+ query);
-          redisClient.set(query, JSON.stringify(data));
+          data.backdrop_path = TMDBConstants.TMDB_BACK_IMAGE_PATH + data.backdrop_path;
           resolve(data)
         });
       }).on("error", (err) => {
@@ -61,7 +61,6 @@ exports.getSeasonFromAPI = function(tv_id, season_number){
             });
             resp.on('end', () => {
               console.log("Saving season result to redis: "+  query);
-              redisClient.set(query, JSON.stringify(data));
               resolve(data)
             });
           }).on("error", (err) => {
@@ -95,6 +94,7 @@ exports.getShow = function(tmdb_id){
             var data = JSON.parse(data);
             data._id = result._id;
             data.__t = result.__t;
+            data.backdrop_path = TMDBConstants.TMDB_BACK_IMAGE_PATH + data.backdrop_path;
             redisClient.set(query, JSON.stringify(data));
             resolve(data);
           })

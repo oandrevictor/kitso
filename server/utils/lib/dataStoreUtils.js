@@ -474,10 +474,10 @@ exports.alreadyExistsAppearsInByKeys = async function(personId, mediaId) {
 exports.getActivity = async function(activity) {
   let action = await Action.findById(activity).exec();
   let user = await User.findById(action._user).exec();
-  let action_obj = await this.getActionByTypeAndIdWithDetails(action.action_type, action._action);
-  let liked_list = await this.getLikedByActivity(activity);
+  let action_obj = await exports.getActionByTypeAndIdWithDetails(action.action_type, action._action);
+  let liked_list = await exports.getLikedByActivity(activity);
   let liked_promises = liked_list.map((liked) => {
-    return this.getLikedWithUserBasicInfo(liked);
+    return exports.getLikedWithUserBasicInfo(liked);
   });
 
   await Promise.all(liked_promises).then((result) => {

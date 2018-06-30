@@ -1,6 +1,6 @@
 var kitso = angular.module('kitso');
 
-kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthService', 'FeedService', 'UserListService', 'WatchedService', 'NewsService', function($scope, $location, $timeout, AuthService, FeedService, UserListService, WatchedService, NewsService) {
+kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthService', 'FeedService', 'UserListService', 'WatchedService', 'NewsService', 'LikedService', function($scope, $location, $timeout, AuthService, FeedService, UserListService, WatchedService, NewsService, LikedService) {
 	$('.full-loading').show();
 	$scope.temp_news = {}
 	$scope.logout = function() {
@@ -171,6 +171,7 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 				if(['watched', 'rated', 'news'].includes(activity.action_type)){
 					activity.open = true;
 				}
+				isLiked(activity);
 
 				var media = $scope.getMediaFromActivity(activity);
 				if (media && media._id){
@@ -385,6 +386,39 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 
 	$scope.getActivityUser = function(activity){
 		return activity._user;
+	}
+
+	var like = function(activity){
+		LikedService.like($scope.user._id, activity._id).then(function(succes){
+			activity.liked.push($scope.user._id);
+			activity.liked_by_me = true;
+		})
+	}
+	var undoLike = function(activity){
+		LikedService.undoLike($scope.user._id, activity._id).then(function(succes){
+			var remove_index = activity.liked.indexOf($scope.user._id);
+			activity.liked.slice(remove_index, 1)
+			activity.liked_by_me = false;
+		})
+	}
+
+	var isLiked = async function(activity){
+		var liked = await LikedService.isLiked($scope.user._id, activity._id);
+		activity.liked_by_me = liked.is_liked;
+		return liked;
+	}
+
+	$scope.toggleLike = function(activity){
+		if (activity.liked_by_me){
+			undoLike(activity)
+		}
+		else{
+			like(activity)
+		}
+	}
+
+	$scope.getLikes = function(activity){
+		return activity.liked.length;
 	}
 
 

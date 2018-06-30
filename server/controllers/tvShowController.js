@@ -97,6 +97,7 @@ exports.show = function(req, res) {
               Promise.all(promises).then(async function(results) {
                 parsed_result._seasons = results;
                 parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
+                parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
                 parsed_result._id = result._id;
                 parsed_result.__t = result.__t;
                 await Promise.all(actorsPromises).then(function(nested_actors) {
@@ -118,6 +119,8 @@ exports.show = function(req, res) {
               data._seasons = results;
               data._id = result._id;
               data.__t = result.__t;
+              data.poster_path = "https://image.tmdb.org/t/p/w500/" + data.poster_path;
+              data.backdrop_path = "https://image.tmdb.org/t/p/original/" + data.backdrop_path;
               res.status(RequestStatus.OK).send(data);
             })
           })
