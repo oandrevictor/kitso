@@ -50,6 +50,13 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
                   timeout: 2500
               });
             });
+
+            RatedService.getVoteAverage($scope.movie._id).then((response) => {
+              $scope.movie.vote_average = response.vote_average;
+            }).catch((error) => {
+              console.log(error);
+            });
+
             FollowService.isFollowingPage($scope.user._id ,$scope.movie._id).then((followed) => {
               $scope.movie.followed = followed;
             }).catch((error) => {
@@ -252,7 +259,7 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
   }
 
   $scope.rate = function(movieId, rating){
-    if ($scope.movie.rated) {
+    if ($scope.movie.rated && $scope.movie.rating !== 0) {
         if (rating !== $scope.movie.rating) {
           $scope.updateRated($scope.movie.rated.rated_id, rating);
           $scope.updateRating(rating);
@@ -270,7 +277,6 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
             timeout: 1500
           });
         }
-
     } else {
         $scope.markAsRated(movieId, rating);
         $scope.updateRating(rating);
@@ -319,11 +325,14 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
           "rating" : rating,
           "_id" : ratedId
       };
-      RatedService.updateRated(ratedObj);
+      RatedService.updateRated(ratedObj).then((response) => {
+        $scope.updateVoteAverage();
+      });
     }
 
     $scope.updateRating = function(rating){
       $scope.movie.rating = rating;
+      $scope.updateVoteAverage();
     }
 
     $scope.range = function(count){
@@ -332,5 +341,13 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
             ratings.push(i+1)
         }
         return ratings;
+    }
+
+    $scope.updateVoteAverage = function() {
+      RatedService.getVoteAverage($scope.movie._id).then((rated) => {
+        $scope.movie.vote_average = rated.vote_average;
+      }).catch((error) => {
+        console.log(error);
+      });
     }
 }]);

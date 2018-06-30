@@ -35,6 +35,8 @@ exports.index = function(req, res) {
               console.log('got query from redis: tvshow/' + tmdb_id);
               answered +=1;
               var parsed_result = JSON.parse(data);
+              if (typeof parsed_result === 'string' || parsed_result instanceof String)
+                parsed_result = JSON.parse(parsed_result)
               var promises = await tvshow._seasons.map(inject_seasons);
               parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
               parsed_result._id = tvshow._id;
