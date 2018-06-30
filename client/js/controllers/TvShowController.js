@@ -63,6 +63,12 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
                 });
             });
 
+            RatedService.getVoteAverage($scope.tvshow._id).then((response) => {
+              $scope.tvshow.vote_average = response.vote_average;
+            }).catch((error) => {
+              console.log(error);
+            });
+
             FollowService.isFollowingPage($scope.user._id ,$scope.tvshow._id).then((followed) => {
               $scope.tvshow.followed = followed;
             }).catch((error) => {
@@ -278,7 +284,7 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
     }
 
     $scope.rate = function(tvshowId, rating){
-      if ($scope.tvshow.rated) {
+      if ($scope.tvshow.rated && $scope.tvshow.rating !== 0) {
           if (rating !== $scope.tvshow.rating) {
             $scope.updateRated($scope.tvshow.rated.rated_id, rating);
             $scope.updateRating(rating);
@@ -342,11 +348,14 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
           "rating" : rating,
           "_id" : ratedId
       };
-      RatedService.updateRated(ratedObj);
+      RatedService.updateRated(ratedObj).then((response) => {
+        $scope.updateVoteAverage();
+      });
     }
 
     $scope.updateRating = function(rating){
       $scope.tvshow.rating = rating;
+      $scope.updateVoteAverage();
     }
 
     $scope.range = function(count){
@@ -375,5 +384,13 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
         });
 
         return episodesIds;
+    }
+
+    $scope.updateVoteAverage = function() {
+      RatedService.getVoteAverage($scope.tvshow._id).then((rated) => {
+        $scope.tvshow.vote_average = rated.vote_average;
+      }).catch((error) => {
+        console.log(error);
+      });
     }
 }]);
