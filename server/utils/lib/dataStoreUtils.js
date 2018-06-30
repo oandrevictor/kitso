@@ -101,9 +101,23 @@ exports.getMediaWithInfoFromDB = async function(media_obj){
   else {
     return media_obj;
   }
+};
 
+exports.getMediaVoteAverage = async function(mediaId) {
+  let sumRatings = 0;
+  let vote_average = 0;
+  let results = await Rated.find({_media: mediaId}).exec();
 
-}
+  results.forEach((rated) => {
+    sumRatings = sumRatings + rated.rating;
+  });
+
+  if (results.length > 0) {
+    vote_average = sumRatings / results.length;
+  }
+
+  return vote_average.toFixed(1);
+};
 
 exports.getActionByTypeAndId = async function(type, id) {
   if (type == ActionType.RATED) {
@@ -370,7 +384,6 @@ exports.alreadyExistsAppearsInByKeys = async function(personId, mediaId) {
   return results.length > 0;
 };
 
-
 exports.getActivity = async function(activity) {
   let action = await Action.findById(activity).exec();
   let user = await User.findById(action._user).exec();
@@ -398,3 +411,4 @@ exports.findEpisodeByTmdbId = async function(episodeId) {
   let results = await Episode.find({_tmdb_id: episodeId}).exec();
   return results;
 };
+
