@@ -91,9 +91,9 @@ exports.followed_activity = async function(req, res) {
     relateds = media_related.concat(person_related);
     relateds_ids = relateds.map(getRelatedId);
 
-    news = await News.find({ "_related": { "$in": relateds_ids } }).sort({date: -1}).skip(page).limit(10);
+    news = await News.find({ "_related": { "$in": relateds_ids } }).sort({date: -1}).skip(page * 10).limit(10);
     news_actions_ids = news.map(getAction);
-    news_actions = await Action.find({ "_id": { "$in": news_actions_ids } }).sort({date: -1}).skip(page).limit(10);
+    news_actions = await Action.find({ "_id": { "$in": news_actions_ids } }).sort({date: -1}).skip(page * 10).limit(10);
 
     actions = actions.concat(news_actions);
     promises = actions.map(DataStoreUtils.getActivity);
