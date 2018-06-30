@@ -667,7 +667,7 @@ html, body {
   .profile .section {
     margin-top: 8px;
     margin-bottom: 4px; }
-    .profile .section .cast-info .cast-image {
+    .profile .section .list-info .list-image {
       display: block;
       background: #502274;
       background-repeat: no-repeat;
@@ -677,9 +677,9 @@ html, body {
       overflow: hidden;
       box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
       border: 4px solid white; }
-    .profile .section .cast-info .cast-name {
+    .profile .section .list-info .list-name {
       margin-top: 10px; }
-    .profile .section .slider-button-cast {
+    .profile .section .slider-button-list {
       background: rgba(0, 0, 0, 0.31);
       padding-top: 77px;
       padding-bottom: 74px;

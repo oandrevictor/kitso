@@ -47,14 +47,14 @@
       <div class="uk-position-relative uk-visible-toggle uk-light">
         <ul class="uk-slider-items uk-child-width-1-5@s">
           <li ng-repeat="list in user.lists">
-            <div class="uk-card uk-grid-match uk-card-default uk-card-hover appears-in cast-info" >
-              <a ng-href="person/{{person._id}}"> <img class="cast-image" style="background-image: url({{ getListPoster(list) }})" /></a>
-              <p class="uk-align-center uk-text-uppercase cast-name" align="center"> {{list.title}}</p>
+            <div class="uk-card uk-grid-match uk-card-default uk-card-hover list-info" >
+              <a ng-href="user/list/{{list._id}}"> <img class="list-image" style="background-image: url({{ getListPoster(list) }})" /></a>
+              <p class="uk-align-center uk-text-uppercase list-name" align="center"> {{list.title}}</p>
             </div>
           </li>
         </ul>
-        <a class="slider-button-cast uk-position-top-left uk-hidden-hover" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
-        <a class="slider-button-cast uk-position-top-right uk-hidden-hover" href="#" uk-slidenav-next uk-slider-item="next"></a>
+        <a class="slider-button-list uk-position-top-left uk-hidden-hover" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
+        <a class="slider-button-list uk-position-top-right uk-hidden-hover" href="#" uk-slidenav-next uk-slider-item="next"></a>
       </div>
 
       <ul class="slider-page uk-pagination uk-flex-center" ng-show="user.lists.length > 5">
