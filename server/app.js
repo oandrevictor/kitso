@@ -27,9 +27,7 @@ var port = process.env.PORT || 8080;
 // connect to our mongoDB database
 // (uncomment after you enter in your own credentials in config/db.js)
 mongoose.connect(db.url);
-client.flushdb( function (err, succeeded) {
-    console.log(succeeded); // will be true if successfull
-});
+
 // Passport and sessions
 require('./config/passport')(passport);
 

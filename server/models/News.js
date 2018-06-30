@@ -12,11 +12,22 @@ var NewsSchema = new Schema({
   },
   date: {
     type: Date,
-    required: true
+    required: true,
+    default: Date.now
   },
   _related: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Related'
+      }
+    ],
+    default: []
+  },
+  _action: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Related'
+    ref: 'Action',
+    required: false
   }
 });
 

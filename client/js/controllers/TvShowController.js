@@ -1,8 +1,9 @@
 var kitso = angular.module('kitso');
 
-kitso.controller("TvShowController", ['$scope', '$location', '$route', '$timeout', '$routeParams', 'TvShowService',  'WatchedService',  'FollowService', 'RatedService', 'UserListService', 'AuthService',
-function($scope, $location, $route, $timeout, $routeParams, TvShowService,  WatchedService, FollowService, RatedService, UserListService, AuthService) {
+kitso.controller("TvShowController", ['$scope', '$location', '$route', '$timeout', '$routeParams', 'TvShowService',  'WatchedService',  'FollowService', 'RatedService', 'UserListService', 'AuthService', 'NewsService',
+function($scope, $location, $route, $timeout, $routeParams, TvShowService,  WatchedService, FollowService, RatedService, UserListService, AuthService, NewsService) {
   $('.full-loading').show();
+  $scope.newsbox_toggle = true;
 
     TvShowService.loadTvShow($routeParams.tvshow_id)
         .then(() => {
@@ -11,7 +12,7 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
             $scope.tvshow = TvShowService.getTvShow();
             $scope.tvshow.air_date = new Date($scope.tvshow.first_air_date);
 
-            WatchedService.tvshowProgress($scope.user._id ,$routeParams.tvshow_id)
+            WatchedService.tvshowProgress($scope.user._id ,$scope.tvshow._id)
              .then((progress) => {
                  if (progress.tvshow.ratio == 1) $scope.tvshow.watched = true;
                  else $scope.tvshow.watched = false;
@@ -32,9 +33,13 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
                   console.log(error);
               })
           });
+
+          NewsService.getRelatedNews($scope.tvshow._id).then(function(news){
+            $scope.news = news;
+          });
           $scope.user.lists = lists;
 
-            RatedService.isRated($scope.user._id ,$routeParams.tvshow_id).then((rated) => {
+            RatedService.isRated($scope.user._id ,$scope.tvshow._id).then((rated) => {
                 $scope.tvshow.rated = rated;
                 if (! rated.rated_id){
                   $scope.tvshow.rated = false;
@@ -58,7 +63,7 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
                 });
             });
 
-            FollowService.isFollowingPage($scope.user._id ,$routeParams.tvshow_id).then((followed) => {
+            FollowService.isFollowingPage($scope.user._id ,$scope.tvshow._id).then((followed) => {
               $scope.tvshow.followed = followed;
             }).catch((error) => {
               UIkit.notification({
@@ -68,7 +73,7 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
               });
             });
             
-            FollowService.countFollowers($routeParams.tvshow_id).then((count) => {
+            FollowService.countFollowers($scope.tvshow._id).then((count) => {
               $scope.tvshow.followers = count;
             }).catch((error) => {
               UIkit.notification({
@@ -79,21 +84,23 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
             });
             FollowService.friendsWatchingTvshow($scope.user._id, $scope.getEpisodesIds())
             .then((response) => {
-                $scope.friendsWatching = response;
+              $scope.friendsWatching  = response;
             })
             .catch((error) => {
                 console.log('error', error);
             });
+
             $('.full-loading').hide();
           }).catch(function(){
           })
         })
         .catch((error) => {
             UIkit.notification({
-                message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                message: '<span uk-icon=\'icon: check\'></span> ' + error,
                 status: 'danger',
                 timeout: 2500
             });
+            $location.path('/explore');
         });
 
     $scope.markEntireTvshowAsWatched = function (tvshowId) {
@@ -267,7 +274,7 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
     }
 
     $scope.editionMode = function () {
-        $location.path('tvshow/edit/' + $routeParams.tvshow_id);
+        $location.path('tvshow/edit/' + $scope.tvshow._id);
     }
 
     $scope.rate = function(tvshowId, rating){
@@ -369,5 +376,4 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
 
         return episodesIds;
     }
-
 }]);

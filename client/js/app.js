@@ -120,4 +120,9 @@ angular.module('kitso').run(function ($rootScope, $location, $route, AuthService
             }
         });
     });
+
+    $rootScope.$on('$routeChangeSuccess',function() {
+        $("html, body").animate({ scrollTop: 0 }, 500); 
+    });
+
 });
