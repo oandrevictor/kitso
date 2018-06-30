@@ -36,7 +36,7 @@ app.use(session({
     mongooseConnection: mongoose.connection,
     ttl: 30 * 60 // = 30 minutos de sessão
   }),
-  secret: process.env.SESSION_SECRET, // Colocar nas variaveis de ambiente do heroku em producao (process.env.nomeDaVariavel)
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false
 }));
@@ -174,6 +174,9 @@ app.use('/api/news', newsRoutes);
 
 var relatedRoutes = require('./routes/related');
 app.use('/api/related', relatedRoutes);
+
+var likedRoutes = require('./routes/liked');
+app.use('/api/liked', likedRoutes);
 
 // start app ===============================================
 // startup our app at http://localhost:8080

@@ -11,7 +11,7 @@ var TMDBController = require('../external/TMDBController');
 var mongoose       = require('mongoose');
 const redisClient = RedisClient.createAndAuthClient();
 
-exports.index = function(req, res) {
+exports.index = async function(req, res) {
   Movie.find({})
   .catch((err) => {
     res.status(400).send(err);
@@ -20,42 +20,14 @@ exports.index = function(req, res) {
     var final_result = [];
     if (movie_result.len == 0)
     res.status(200).send(final_result);
-    movie_result.forEach((movie, index)=>{
+    movie_result.forEach(async function(movie, index){
       var tmdb_id = movie._tmdb_id;
-      console.log("current indexing:" + tmdb_id);
-      var query = 'movie/' + tmdb_id;
-      redisClient.exists(query, function(err, reply) {
-        if (reply === 1) {
-          redisClient.get(query, async function(err,data) {
-            if(err)
-            console.log(err);
-            else{
-              console.log('got query from redis: movie/' + tmdb_id);
-              var parsed_result = JSON.parse(data);
-              parsed_result.poster_path = "https://image.tmdb.org/t/p/w500" + parsed_result.poster_path;
-              parsed_result._id = movie._id;
-              parsed_result.__t = movie.__t;
-              parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original" + parsed_result.backdrop_path;
-              final_result.push(parsed_result);
-              if (final_result.length == movie_result.length) {
-                res.setHeader('Content-Type', 'application/json');
-                res.status(200).send(final_result);
-              }
-            }
-          });
-        } else {
-          TMDBController.getMovieFromTMDB(tmdb_id).then(async function(data) {
-            console.log("Got from TMDB: " + tmdb_id );
-            data._id = movie_result._id;
-            data.__t = movie_result.__t;
-            final_result.push(data);
-            if (final_result.length == movie_result.length) {
-              res.setHeader('Content-Type', 'application/json');
-              res.status(200).send(final_result);
-            }
-          })
-        }
-      });
+      var movie_complete = await TMDBController.getMovie(tmdb_id);
+      final_result.push(movie_complete);
+      if (final_result.length == movie_result.length) {
+        res.setHeader('Content-Type', 'application/json');
+        res.status(200).send(final_result);
+      }
     })
   });
 };
@@ -83,9 +55,11 @@ exports.show = function(req, res) {
             else{
               console.log('got query from redis: movie/' + tmdb_id);
               var parsed_result = JSON.parse(data);
+              console.log(tmdb_id, typeof parsed_result)
+              if (typeof parsed_result === 'string' || parsed_result instanceof String)
+                parsed_result = JSON.parse(parsed_result)
               var actors = result._actors;
               let actorsPromises = actors.map(injectPersonJson);
-              parsed_result.poster_path = "https://image.tmdb.org/t/p/w500" + parsed_result.poster_path;
               parsed_result._id = result._id;
               parsed_result.__t = result.__t;
               await Promise.all(actorsPromises).then(function(nested_actors) {
@@ -98,7 +72,10 @@ exports.show = function(req, res) {
           });
         } else {
           TMDBController.getMovieFromTMDB(tmdb_id).then(async function(data) {
+            console.log("ENTROU AQUI")
             var data = JSON.parse(data);
+            if (typeof data === 'string' || data instanceof String)
+              data = JSON.parse(data)
             data._id = result._id;
             data.__t = result.__t;
             res.status(RequestStatus.OK).send(data);

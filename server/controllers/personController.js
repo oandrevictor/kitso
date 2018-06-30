@@ -34,6 +34,8 @@ exports.index = function(req, res) {
             else{
               console.log('got query from redis: ' + query);
               var parsed_result = JSON.parse(data);
+              if (typeof parsed_result === 'string' || parsed_result instanceof String)
+                parsed_result = JSON.parse(parsed_result)
               parsed_result._id = person._id;
               final_result.push(parsed_result);
 
