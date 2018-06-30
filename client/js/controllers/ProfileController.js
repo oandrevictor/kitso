@@ -240,9 +240,16 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
     });
 
     if (addedMovies.length > 0) {
-      return 'https://image.tmdb.org/t/p/w500/' + addedMovies[0].poster_path;
+      var first = addedMovies[0];
+      console.log(first)
+      if (first.poster_path) {
+        return 'https://image.tmdb.org/t/p/w500/' + first.poster_path;
+      }
+      if (first.still_path) {
+        return 'https://image.tmdb.org/t/p/w227_and_h127_bestv2/' + first.still_path;
+      }
     } else {
-      return "/images/budapest.jpg";
+      return "/images/default.jpeg";
     }
   }
 
