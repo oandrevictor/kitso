@@ -98,7 +98,12 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
       })
 
     FollowService.getPagesFollowing($scope.user._id).then( function(following_pages){
-        $scope.user.following_pages = following_pages
+        $scope.user.following_pages = following_pages;
+        $scope.user.following_pages.forEach(function (page) {
+          FollowService.isFollowingPage($scope.user._id, page._id).then( function(follow){
+            page.is_private = follow.is_private;
+          });
+        });
       }).catch(function(error){
           console.log(error);
       })
