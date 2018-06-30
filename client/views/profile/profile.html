@@ -1,7 +1,7 @@
 <div class="profile">
   <!--Cover Content-->
   <div class="uk-background-cover" align="center" style="background-image: url({{profileBackground}})">
-    <img class="profile-image" src="/images/mask2.png" width="140" height="140">
+    <img class="profile-image" data-ng-src="data:image/png;base64,{{user.image}}" width="140" height="140">
     <p class="uk-text-large profile-name">{{ user.name }}</p>
     <div ng-if="!canEdit()" ng-hide="user.followed.following_id" class="follow-button" ng-click="follow(user)">
       <span uk-icon="icon: rss; ratio: 0.5"></span> Follow</div>

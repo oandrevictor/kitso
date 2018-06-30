@@ -323,6 +323,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         birthday: $scope.user.birthday,
         gender: $scope.user.gender,
         description: $scope.user.description,
+        image: $scope.user.newimage,
         settings: {
           autowatch: $scope.user.settings.autowatch
         }
