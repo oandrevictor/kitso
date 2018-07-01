@@ -1,7 +1,6 @@
 var kitso = angular.module('kitso');
 
 kitso.controller('MainController', ['$scope', '$location', '$timeout', 'AuthService', 'FeedService', 'UserListService', 'WatchedService', 'NewsService', function($scope, $location, $timeout, AuthService, FeedService, UserListService, WatchedService, NewsService) {
-	$('.full-loading').show();
 	$scope.temp_news = {}
 	$scope.logout = function() {
 		AuthService.logout()
