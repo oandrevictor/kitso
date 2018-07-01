@@ -165,10 +165,15 @@ kitso.service('UserListService', ['$q','$http', function ($q, $http) {
       return deferred.promise;
     }
 
-  function followUserList(userlist) {
+  function followUserList(userlist, enable_notifications) {
     var deferred = $q.defer();
 
-    $http.put('/api/userlist/' + userlist._id + '/follow', userlist)
+    let data = {
+      "userlist": userlist,
+       "notifications_enabled": enable_notifications
+    }
+
+    $http.put('/api/userlist/' + userlist._id + '/follow', data)
       .then(function (response) {
         if (response.status === 200) {
           deferred.resolve(response);

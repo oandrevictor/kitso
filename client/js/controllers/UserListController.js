@@ -136,8 +136,8 @@ function($scope, $location, $timeout, UserListService, MovieService, $routeParam
     } return ranked;
   }
 
-  $scope.followList = function (userlist) {
-    UserListService.followUserList(userlist)
+  $scope.followList = function (userlist, notifications_enabled) {
+    UserListService.followUserList(userlist, notifications_enabled)
       .then((response) => {
         UIkit.notification({
           message: '<span uk-icon=\'icon: check\'></span> List Followed!',

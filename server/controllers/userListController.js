@@ -167,8 +167,9 @@ exports.changeItemRank = async function(req, res) {
 exports.followUserList = async function(req, res) {
   try {
     let userListId = req.params.userlist_id;
+    let notifications_enabled = req.body.notifications_enabled;
 
-    await addListToFollowingUserLists(userListId, req.user._id);
+    await addListToFollowingUserLists(userListId, req.user._id, notifications_enabled);
 
     res.status(RequestStatus.OK).json();
   } catch(err) {
@@ -224,9 +225,15 @@ var addListToUserLists = async function(userListId, userId) {
   return user.save();
 };
 
-var addListToFollowingUserLists = async function(userListId, userId) {
+var addListToFollowingUserLists = async function(userListId, userId, notifications_enabled) {
   let user = await DataStoreUtils.getUserById(userId);
-  user._following_lists.push(userListId);
+
+  res_json = {
+    "userListId": userListId,
+    "notifications_enabled": notifications_enabled
+  };
+
+  user._following_lists.push(res_json);
   return user.save();
 };
 
@@ -244,11 +251,14 @@ var removeListFromUserLists = function(userListId, userId) {
 var removeListFromFollowingUserLists = function(userListId, userId) {
   User.findById(userId, function (err, user) {
     let userLists = user._following_lists;
-    let index = userLists.indexOf(userListId);
-    if (index > -1) {
-      userLists.splice(index, 1);
+
+    for(let i=0; i <  user._following_lists.length; i++) {
+      if (userListId.toString() === user._following_lists[i].userListId.toString()) {
+        userLists.splice(i, 1);
+
+        return user.save();
+      }
     }
-    return user.save();
   });
 };
 
@@ -256,7 +266,7 @@ var userHasFollowed = async function(userListId, userId) {
   let user = await DataStoreUtils.getUserById(userId);
 
   for(let i=0; i <  user._following_lists.length; i++) {
-    if (userListId.toString() === user._following_lists[i].toString()) {
+    if (userListId.toString() === user._following_lists[i].userListId.toString()) {
       return true;
     }
   }

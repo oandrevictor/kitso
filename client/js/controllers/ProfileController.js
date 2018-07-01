@@ -112,6 +112,7 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$rout
 
     var loadUserLists = function(){
       var lists = [];
+      var lists_followed = [];
 
       // Load additional lists
       $scope.user._lists.forEach((listId) => {
@@ -125,17 +126,18 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$rout
         })
       });
       // Load following lists
-      $scope.user._following_lists.forEach((listId) => {
-        UserListService.loadUserList(listId).then( function(){
-          let list = UserListService.getUserList();
-          if (!$scope.isEmpty(list)) {
-            lists.push(list);
+      $scope.user._following_lists.forEach((listObj) => {
+        UserListService.loadUserList(listObj.userListId).then( function(){
+          let following_lists = UserListService.getUserList();
+          if (!$scope.isEmpty(following_lists)) {
+            lists_followed.push(following_lists);
           }
         }).catch(function(error){
           console.log(error);
         })
       });
       $scope.user.lists = lists;
+      $scope.user.following_lists = lists_followed;
 
       // Load Watchlist
       UserListService.loadUserList($scope.user._watchlist).then( function(){
