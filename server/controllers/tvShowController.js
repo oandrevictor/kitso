@@ -30,13 +30,14 @@ exports.index = function(req, res) {
 
           redisClient.get(query, async function(err,data) {
             if(err)
-            console.log(err);
-            else{
+              console.log(err);
+            else {
               answered +=1;
               var parsed_result = JSON.parse(data);
               if (typeof parsed_result === 'string' || parsed_result instanceof String)
-                parsed_result = JSON.parse(parsed_result)
-              var promises = await tvshow._seasons.map(inject_seasons);
+                parsed_result = JSON.parse(parsed_result);
+              parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
+              parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
               parsed_result._id = tvshow._id;
               parsed_result.__t = tvshow.__t;
               final_result.push(parsed_result);
