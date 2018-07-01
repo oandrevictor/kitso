@@ -84,12 +84,14 @@ exports.getShow = function(tmdb_id){
             console.log(err);
             else {
               var parsed_result = JSON.parse(data);
-              parsed_result.backdrop_path = TMDBConstants.TMDB_BACK_IMAGE_PATH + parsed_result.backdrop_path;
+              parsed_result.poster_path = TMDBConstants.TMDB_POSTER_IMAGE_PATH + parsed_result.poster_path;
+              parsed_result._id = result._id;
+              parsed_result.__t = result.__t;
               resolve(parsed_result);
             }
           });
         } else {
-          console.log("GET SHOW | could not get from redis: " + query)
+          console.log("GET SHOW | could not get from redis: " + query);
           exports.getShowFromTMDB(tmdb_id).then(async function(data) {
             var data = JSON.parse(data);
             data._id = result._id;
@@ -102,7 +104,7 @@ exports.getShow = function(tmdb_id){
       })
     })
   })
-}
+};
 
 exports.getMovie = function(tmdb_id) {
   return new Promise(function(resolve, reject) {
@@ -183,7 +185,7 @@ exports.getEpisode = function(tmdb_id){
     })
   })
 
-}
+};
 
 exports.getMovieFromTMDB = function(tmdb_id){
   return new Promise(function(resolve, reject) {
