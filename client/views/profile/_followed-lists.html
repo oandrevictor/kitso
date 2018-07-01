@@ -1,0 +1,16 @@
+<li>
+  <div class="uk-child-width-1-3@m" uk-grid>
+    <div class="uk-card uk-card-primary" ng-repeat="list in user.lists" ng-show="list._user !== user._id">
+      <div class="uk-card-media-top">
+        <a class="page-link" ng-click="goToList(list._id)">
+          <img ng-src="{{getListPoster(list)}}" style="z-index:-1" alt="">
+        </a>
+      </div>
+      <div class="uk-card-body">
+        <p class="uk-text" align="center">
+          <a class="page-link" ng-click="goToList(list._id)">{{list.title}}</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</li>
