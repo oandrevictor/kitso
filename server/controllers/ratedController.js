@@ -147,7 +147,7 @@ var injectMediaJsonInRated = async function(rated_obj) {
     });
     return value;
   } else if (media_obj.__t == 'Movie' && media_obj._tmdb_id) {
-    var value = await TMDBController.getMovieFromTMDB(media_obj._tmdb_id).then((movie) => {
+    var value = await TMDBController.getMovie(media_obj._tmdb_id).then((movie) => {
       var watched_with_full_media = rated_obj;
       watched_with_full_media._media = media_obj;
       watched_with_full_media._media.helper = movie;
