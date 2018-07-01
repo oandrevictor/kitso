@@ -457,7 +457,7 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$rout
     }
 
     $scope.goToList = function (listId) {
-      $location.path('user/list/' + listId);
+      $location.path('/list/' + listId);
     }
 
     $scope.isInvalid = function (field) {
