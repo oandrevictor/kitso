@@ -113,6 +113,10 @@ exports.update = function (req, res) {
       if (req.body._watchlist) user._watchlist = req.body._watchlist;
       if (req.body._lists) user._lists = req.body._lists;
       if (req.body._ratings) user._ratings = req.body._ratings;
+      if (req.body.image) {
+        var image = new Buffer(req.body.image.split(",")[1],"base64");
+        user.image = image;
+      }
       if (req.body.settings.autowatch != undefined) user.settings.autowatch = req.body.settings.autowatch;
 
       user.save(function (err) {

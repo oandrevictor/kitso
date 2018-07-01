@@ -26,6 +26,7 @@ exports.show = function(req, res) {
             if(err)
               console.log(err);
             else {
+              console.log('Got query from redis:' + query);
               var parsed_result = JSON.parse(JSON.parse(data));
               let promises = parsed_result.episodes.map(injectEpisodeId(season._id));
 
@@ -75,13 +76,15 @@ exports.show = function(req, res) {
   // TODO: move to TMDBController
   getSeasonFromTMDB = function(tmdb_id, season){
     return new Promise(function(resolve, reject) {
-      query = "tvShow/"+ tmdb_id + "/season/" + season
+      let query = "tvShow/"+ tmdb_id + "/season/" + season;
+      console.log("Could not get from redis, requesting info from The Movie DB");
       https.get("https://api.themoviedb.org/3/tv/"+ tmdb_id + "/season/" + season + "?api_key=db00a671b1c278cd4fa362827dd02620", (resp) => {
         let data = '';
         resp.on('data', (chunk) => {
           data += chunk;
         });
         resp.on('end', () => {
+          console.log("Saving result tso redis: " + query);
           redisClient.set(query, JSON.stringify(data));
           resolve(data)
         });

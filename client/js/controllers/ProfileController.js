@@ -5,6 +5,8 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
 
   $('.full-loading').show();
   var loaded = 0;
+  var validtabs = ['overview','history','following','followers','settings']
+  $scope.activetab = 'overview';
   AuthService.getStatus()
     .then(() => {
       $scope.user = AuthService.getUser();
@@ -50,6 +52,19 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
     if (loaded > 2) {
       $('.full-loading').hide();
     }
+  }
+
+  var loadTab = function(){
+    var query = $location.search()
+    validtabs.forEach(function(tab){
+      if (query[tab])
+        $scope.activetab = tab;
+    })
+  }
+  loadTab();
+
+  $scope.isCurrentTab = function(tab){
+    return tab === $scope.activetab;
   }
 
   var loadUserWatchedInfo = function(){
@@ -323,6 +338,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         birthday: $scope.user.birthday,
         gender: $scope.user.gender,
         description: $scope.user.description,
+        image: $scope.user.newimage,
         settings: {
           autowatch: $scope.user.settings.autowatch
         }
@@ -335,8 +351,11 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
           UIkit.notification({
             message: '<span uk-icon=\'icon: check\'></span> User successfully edited.',
             status: 'success',
-            timeout: 1500
+            timeout: 150000,
+            pos: 'bottom-right'
           });
+          if ($scope.user.newimage)
+           $scope.user.image = $scope.user.newimage.split(',')[1]
         })
         // handle error
         .catch(function (error) {
@@ -419,6 +438,15 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
   $scope.descriptionArea = false;
   $scope.toggleDescriptionArea = function () {
     $scope.descriptionArea = !$scope.descriptionArea;
+  }
+
+  $scope.getUserImage = function(){
+    if ($scope.user && $scope.user.image){
+      return "data:image/png;base64," + $scope.user.image;
+    }
+    else {
+      return 'images/mask2.png'
+    }
   }
 
 }]);
