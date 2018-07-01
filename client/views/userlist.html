@@ -19,7 +19,7 @@
           </div>
         </div>
         <div class="uk-width-1-4">
-          <button class="uk-button uk-button-save-changes" ng-show="userlist.deletable" ng-click="editionMode()">
+          <button class="uk-button uk-button-save-changes" ng-show="userlist.deletable" ng-if="canEdit()" ng-click="editionMode()">
             <span uk-icon="icon: pencil;"></span> Edit List</button>
         </div>
       </div>
