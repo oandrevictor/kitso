@@ -177,6 +177,19 @@ exports.followUserList = async function(req, res) {
   }
 };
 
+exports.unfollowUserList = async function(req, res) {
+  try {
+    let userListId = req.params.userlist_id;
+
+    await removeListFromFollowingUserLists(userListId, req.user._id);
+
+    res.status(RequestStatus.OK);
+  } catch(err) {
+    console.log(err);
+    res.status(RequestStatus.BAD_REQUEST).send(err);
+  }
+};
+
 exports.addAndSave = async function(userList, userId){
   await saveUserList(userList);
   await addListToUserLists(userList._id, userId);
@@ -201,6 +214,17 @@ var addListToFollowingUserLists = async function(userListId, userId) {
 var removeListFromUserLists = function(userListId, userId) {
   User.findById(userId, function (err, user) {
     let userLists = user._lists;
+    let index = userLists.indexOf(userListId);
+    if (index > -1) {
+      userLists.splice(index, 1);
+    }
+    return user.save();
+  });
+};
+
+var removeListFromFollowingUserLists = function(userListId, userId) {
+  User.findById(userId, function (err, user) {
+    let userLists = user._following_lists;
     let index = userLists.indexOf(userListId);
     if (index > -1) {
       userLists.splice(index, 1);

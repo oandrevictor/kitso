@@ -13,6 +13,7 @@ kitso.service('UserListService', ['$q','$http', function ($q, $http) {
         loadUserList: loadUserList,
         getUserList: getUserList,
         followUserList: followUserList,
+        unfollowUserList: unfollowUserList,
         updateUserList: updateUserList,
         updateRank: updateRank
     });
@@ -167,6 +168,25 @@ kitso.service('UserListService', ['$q','$http', function ($q, $http) {
     var deferred = $q.defer();
 
     $http.put('/api/userlist/' + userlist._id + '/follow', userlist)
+      .then(function (response) {
+        if (response.status === 200) {
+          console.log(response.data);
+          deferred.resolve(userlist);
+        } else {
+          deferred.reject();
+        }
+      })
+      .catch(function (error) {
+        deferred.reject(error.data);
+      });
+
+    return deferred.promise;
+  }
+
+  function unfollowUserList(userlist) {
+    var deferred = $q.defer();
+
+    $http.delete('/api/userlist/' + userlist._id + '/unfollow')
       .then(function (response) {
         if (response.status === 200) {
           console.log(response.data);

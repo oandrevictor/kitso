@@ -144,8 +144,25 @@ function($scope, $location, $timeout, UserListService, MovieService, $routeParam
     ;
   }
 
-  $scope.canEdit = function(user){
-    return ($scope.user._id.toString() === $scope.userlist._user.toString());
+  $scope.unfollowList = function (userlist) {
+    UserListService.unfollowUserList(userlist)
+      .then((response) => {
+        console.log('lala', response);
+      })
+      .catch((error) => {
+        UIkit.notification({
+          message: '<span uk-icon=\'icon: check\'></span> ' + error,
+          status: 'danger',
+          timeout: 2500
+        });
+      });
+    ;
+  }
+
+  $scope.canEdit = function(user, userlist){
+    if (user !== undefined && userlist !== undefined) {
+      return (user._id.toString() === userlist._user.toString());
+    }
   }
 
   $scope.editionMode = function () {

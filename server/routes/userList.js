@@ -11,6 +11,8 @@ router.put('/:userlist_id', userListController.update);
 
 router.delete('/:userlist_id', userListController.delete);
 
+router.delete('/:userlist_id/unfollow', userListController.unfollowUserList);
+
 router.post('/:userlist_id/item', userListController.addItem);
 
 router.put('/:userlist_id/follow', userListController.followUserList);
