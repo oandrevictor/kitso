@@ -70,7 +70,6 @@ exports.create = function(req, res) {
     res.status(400).send(err);
   })
   .then((createdMovie) => {
-    console.log("Created movie: " + createdMovie.name);
     TMDBController.getMovieFromTMDB(createdMovie._tmdb_id).then( async (result)=> {
       result._id = createdMovie._id;
       result._seasons = createdMovie._seasons;
@@ -167,13 +166,11 @@ matchApiMovieCastToDb = async function(dbmovieshow){
           castIds[i] = created_db_person._id;
           await createAppearsIn(created_db_person._id, dbmovieshow._id);
           if (nCast == castSize) done();
-          console.log("Person Created:" + name)
         }).catch((err)=>{console.log(err)});
       }
       else {
         // person already exists
         await createAppearsIn(hasPerson[0]._id, dbmovieshow._id);
-        console.log("Person Updated:" + name)
       }
     });
 

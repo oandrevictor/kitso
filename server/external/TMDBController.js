@@ -213,7 +213,6 @@ exports.getMovieFromTMDB = function(tmdb_id){
 exports.getEpisodeFromTMDB = function(tmdb_id, season, episode){
   return new Promise(function(resolve, reject) {
     var query = "tvShow/"+ tmdb_id + "/season/" + season + "/episode/" + episode;
-    // console.log("Could not get from redis, requesting info from The Movie DB");
     https.get("https://api.themoviedb.org/3/tv/"+ tmdb_id + "/season/" + season + "/episode/" + episode + "?api_key=db00a671b1c278cd4fa362827dd02620", (resp) => {
       let data = '';
       resp.on('data', (chunk) => {

@@ -4,7 +4,6 @@ var RequestStatus = require('../constants/requestStatus');
 var ActionType = require('../constants/actionType');
 var TMDBController = require('../external/TMDBController');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
-var RedisClient = require('../utils/lib/redisClient');
 
 exports.index = async function(req, res) {
   let user_id = req.params.user_id;
