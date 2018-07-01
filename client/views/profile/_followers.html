@@ -1,6 +1,6 @@
 <li>
-  <div class="uk-margin">
-    <p class="uk-text-large">Followers</p>
+  <div ng-if="user.followers.length == 0">
+    <br>No one has followed you yet.
   </div>
   <ul class="uk-list uk-list-divider">
     <li ng-repeat="follower in user.followers">

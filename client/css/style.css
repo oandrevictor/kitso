@@ -572,7 +572,7 @@ html, body {
     background: #502274;
     background-repeat: no-repeat;
     background-size: cover;
-    width: 300px;
+    width: 360px;
     height: 150px;
     cursor: pointer; }
   .profile .favorite-movie-title {
@@ -613,7 +613,8 @@ html, body {
   .profile .profile-container {
     margin-top: -50px;
     margin-bottom: auto;
-    font-weight: 300; }
+    font-weight: 300;
+    width: 900px; }
     .profile .profile-container .uk-checkbox:checked {
       background-color: #502279 !important;
       border-color: transparent; }
@@ -634,8 +635,7 @@ html, body {
     .profile .profile-container .uk-switcher .uk-divider-icon {
       margin-top: 0px; }
     .profile .profile-container .uk-width-1-2 p {
-      margin-bottom: 0px;
-      width: 300px; }
+      margin-bottom: 0px; }
     .profile .profile-container .uk-list-divider > li:nth-child(n+2) {
       border-top: 1px solid #f7f7f7; }
     .profile .profile-container .uk-card-primary {
@@ -682,6 +682,8 @@ html, body {
     height: 12px;
     width: 12px;
     padding: 0px; }
+  .profile .sub-text {
+    float: right; }
 
 .movie {
   font-family: 'Roboto' !important; }

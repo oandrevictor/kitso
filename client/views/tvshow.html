@@ -200,8 +200,8 @@
       <h2 class="uk-modal-title">Mark tvshow as watched</h2>
       <p>Mark <span class="uk-text-bold uk-text-danger">all</span> episodes as watched or <strong>only</strong> the unwatched episodes?</p>
       <p class="uk-text-right">
-          <button class="uk-button uk-button-danger uk-modal-close" type="button" ng-click="markEntireTvshowAsWatched(tvshow._id)" ng-disabled="watchAction">All episodes</button>
-          <button class="uk-button uk-button uk-modal-close" type="button" ng-click="markTvshowAsWatched(tvshow._id)" ng-disabled="watchAction || tvshow.watched"><span class="uk-text-danger">Unwatched episodes</span></button>
+          <button class="uk-button uk-button-danger uk-modal-close" type="button" ng-click="markEntireTvshowAsWatched(tvshow._id, tvshow.episode_run_time[0])" ng-disabled="watchAction">All episodes</button>
+          <button class="uk-button uk-button uk-modal-close" type="button" ng-click="markTvshowAsWatched(tvshow._id, tvshow.episode_run_time[0])" ng-disabled="watchAction || tvshow.watched"><span class="uk-text-danger">Unwatched episodes</span></button>
       </p>
   </div>
 </div>

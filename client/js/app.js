@@ -1,4 +1,4 @@
-angular.module('kitso', ['ngRoute', 'appRoutes', 'ngSanitize']);
+angular.module('kitso', ['ngRoute', 'appRoutes', 'ngSanitize', "chart.js"]);
 angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
 
     $routeProvider
@@ -122,7 +122,7 @@ angular.module('kitso').run(function ($rootScope, $location, $route, AuthService
     });
 
     $rootScope.$on('$routeChangeSuccess',function() {
-        $("html, body").animate({ scrollTop: 0 }, 500); 
+        $("html, body").animate({ scrollTop: 0 }, 500);
     });
 
 });

@@ -17,6 +17,8 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
           loadUserRatedInfo();
           loadUserFollowInfo();
           loadUserWatchedInfo();
+          loadUserWatchedHours();
+          loadUserWatchedGenres();
           loadUserLists();
           FollowService.isFollowingUser($scope.logged_user._id, $scope.user._id).then((followed) => {
             $scope.user.followed = followed;
@@ -37,6 +39,8 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         loadUserRatedInfo();
         loadUserFollowInfo();
         loadUserWatchedInfo();
+        loadUserWatchedHours();
+        loadUserWatchedGenres();
         loadUserLists();
       }
     });
@@ -54,6 +58,93 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
     }
   }
 
+  Date.prototype.getMonthWeek = function() {
+    var firstDay = new Date(this.getFullYear(), this.getMonth(), 1).getDay();
+    return Math.ceil((this.getDate() + firstDay)/7);
+  }
+
+  var loadUserWatchedHours = function(){
+    let date = new Date();
+    getTimeSpentMonth(date.getMonth() + 1, date.getFullYear());
+    getTimeSpentWeek(date.getMonth() + 1, date.getMonthWeek(), date.getFullYear());
+
+    $scope.labelsWatchedHours = ["Hours percentage"];
+    $scope.colors = ['#773095', '#EDEDED'];
+    $scope.datasetOverride = [{
+        fill: true,
+        backgroundColor: [
+          "#773095"
+        ]
+      }]
+    $scope.options = {
+      responsive: true,
+      scales: {
+        xAxes: [{ display: false, ticks: {min: 0, max:100}}],
+        yAxes: [{ display: false, stacked: true}]
+      },
+      tooltips: {
+        enabled: true,
+        mode: 'single',
+        callbacks: {
+          label: function (tooltipItems, data) {
+            return  (tooltipItems.xLabel).toFixed(2) + " %";
+          }
+        }
+      }
+    }
+  }
+
+  var getTimeSpentMonth = function(month, year){
+    let data = {
+      filter: "by_month",
+      month: month,
+      year: year
+    }
+
+    UserService.getTimespent($scope.user._id, data)
+      .then(function (result) {
+        let hours = (result/60).toFixed(2);
+
+        $scope.dataMonth = [[(100*result)/7300],[100]];
+        if (hours == 1)
+          $scope.timeSpentThisMonth = "Time spent this month: " + hours + " hour"
+        else
+          $scope.timeSpentThisMonth = "Time spent this month: " + hours + " hours"
+      })
+      .catch(function (error) {
+        console.log(error)
+      });
+  }
+
+  var getTimeSpentWeek = function(month, week, year){
+    let data = {
+      filter: "by_week",
+      month: month,
+      week: week,
+      year: year
+    }
+
+    UserService.getTimespent($scope.user._id, data)
+      .then(function (result) {
+        let hours = (result/60).toFixed(2);
+
+        $scope.dataWeek = [[(100*result)/240],[100]];
+        if (hours == 1)
+          $scope.timeSpentThisWeek = "Time spent this week: " + hours + " hour"
+        else
+          $scope.timeSpentThisWeek = "Time spent this week: " + hours + " hours"
+      })
+      .catch(function (error) {
+        console.log(error)
+      });
+  }
+
+  var loadUserWatchedGenres = function() {
+    $scope.labels = ["Comedy", "Horror"];
+    $scope.data = [40, 60];
+    $scope.optionsGenres = { legend: { display: true, position: 'bottom'}};
+  }
+
   var loadTab = function(){
     var query = $location.search()
     validtabs.forEach(function(tab){
@@ -61,6 +152,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         $scope.activetab = tab;
     })
   }
+
   loadTab();
 
   $scope.isCurrentTab = function(tab){

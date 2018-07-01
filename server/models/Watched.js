@@ -24,6 +24,10 @@ var WatchedSchema = new Schema({
     type: Date,
     required: true
   },
+  time_spent: {
+    type: Number,
+    required: true
+  },
   _action: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Action',
