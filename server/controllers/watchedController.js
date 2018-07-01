@@ -4,7 +4,6 @@ var RequestStatus = require('../constants/requestStatus');
 var ActionType = require('../constants/actionType');
 var TMDBController = require('../external/TMDBController');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
-var RedisClient = require('../utils/lib/redisClient');
 
 exports.index = async function(req, res) {
   let user_id = req.params.user_id;
@@ -249,7 +248,7 @@ var injectMediaJsonInWatched = async function(watchedObj) {
     });
     return value;
   } else if (mediaObj.__t == 'Movie' && mediaObj._tmdb_id) {
-    var value = await TMDBController.getMovieFromTMDB(mediaObj._tmdb_id).then((movie) => {
+    var value = await TMDBController.getMovie(mediaObj._tmdb_id).then((movie) => {
       var watched_with_full_media = watchedObj;
       watched_with_full_media._media = mediaObj;
       watched_with_full_media._media.helper = movie;
