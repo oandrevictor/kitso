@@ -7,12 +7,33 @@ kitso.service('UserService', ['$q', '$http', function ($q, $http) {
         sendPasswordRecoverEmail: sendPasswordRecoverEmail,
         updateUserPassword: updateUserPassword,
         editUser: editUser,
-        getUser: getUser
+        getUser: getUser,
+        getTimespent: getTimespent
     });
 
     function getUser(userId){
       var deferred = $q.defer();
       $http.get('/api/user/' + userId)
+          .then((response) => {
+            if (response.status === 200) {
+              var user = response.data;
+              user.birthday = new Date(user.birthday);
+                  deferred.resolve(user);
+              } else {
+                  deferred.reject();
+              }
+          })
+          .catch((error) => {
+              deferred.reject(error.data);
+          });
+        return deferred.promise;
+    }
+
+
+
+    function getTimespent(userId, data){
+      var deferred = $q.defer();
+      $http.post('/api/user/' + userId + '/timespent', data)
           .then((response) => {
             if (response.status === 200) {
               var user = response.data;

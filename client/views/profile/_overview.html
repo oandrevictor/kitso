@@ -32,12 +32,17 @@
         <br> Try rating a movie</p>
     </div>
     <div class="uk-width-1-2">
-      <p>Watched Genres</p>
-      <img src="/images/watched.jpg" width="300" height="400">
+      Watched Hours
+      <canvas class="chart chart-horizontal-bar" height="70" chart-type="bar" chart-data="dataMonth" chart-labels="labelsWatchedHours"
+      chart-options="options" chart-colors="colors" chart-dataset-override="datasetOverride"></canvas>
+      <div class="sub-text">{{timeSpentThisMonth}}</div>
+      <canvas class="chart chart-horizontal-bar" height="70" chart-type="bar" chart-data="dataWeek" chart-labels="labelsWatchedHours"
+      chart-options="options" chart-colors="colors" chart-dataset-override="datasetOverride"></canvas>
+      <div class="sub-text">{{timeSpentThisWeek}}</div>
     </div>
   </div>
   <div class="section">
-    <div class="section-title">
+    <div class="section-title" style="padding-bottom: 10px">
       {{user.name}}'s Lists
     </div>
     <div class="uk-grid">
@@ -48,6 +53,11 @@
             <p align="center" ng-click="goToList(list._id)">{{list.title}}</p>
           </div>
         </div>
+      </div>
+      <div class="uk-width-1-2">
+        <p>Watched Genres</p>
+        <br>
+        <canvas id="doughnut" class="chart chart-doughnut round-chart" chart-data="data" chart-colors="colors" chart-options="optionsGenres" chart-labels="labels"></canvas>
       </div>
     </div>
   </div>
