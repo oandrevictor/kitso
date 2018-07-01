@@ -602,6 +602,18 @@ html, body {
     margin-top: -50px;
     margin-bottom: auto;
     font-weight: 300; }
+    .profile .profile-container .new-list-button {
+      text-align: right; }
+      .profile .profile-container .new-list-button .uk-button-create-list {
+        margin-top: 30px !important; }
+      .profile .profile-container .new-list-button .uk-button-save-changes {
+        background-color: #502274 !important;
+        color: #ffffff !important;
+        font-weight: bold;
+        margin-top: 30px !important; }
+      .profile .profile-container .new-list-button .invalid-label {
+        margin-bottom: 0px;
+        margin-left: 0px; }
     .profile .profile-container .uk-checkbox:checked {
       background-color: #502279 !important;
       border-color: transparent; }

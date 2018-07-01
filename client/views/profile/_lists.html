@@ -1,0 +1,47 @@
+<li>
+  <div class="new-list-button">
+    <button class="uk-button uk-button-save-changes" ng-if="canEdit()" href="#modal-center" uk-toggle>
+      <span uk-icon="icon: plus;"></span> New List</button>
+
+    <div id="modal-center" class="uk-flex-top" uk-modal>
+      <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+        <button class="uk-modal-close-default" type="button" uk-close></button>
+          <center>
+            <form name="createForm" novalidate>
+
+              <div class="uk-margin">
+                <label class="uk-form-label" ng-class="{ 'uk-text-danger' : isInvalid(createForm.title) }" for="title">List title</label>
+                <div class="uk-form-controls">
+                  <input class="uk-input" type="text" id="title" name="title" placeholder="List title" ng-class="{ 'uk-form-danger' : isInvalid(createForm.title) }" required>
+                </div>
+                <label class="uk-text-small uk-text-danger uk-align-right invalid-label" for="title" ng-show="isInvalid(createForm.title)">* List title can't be blank</label>
+              </div>
+
+              <div class="uk-margin">
+                <center>
+                  <button class="uk-button uk-button-small uk-button-create-list" ng-class="{ 'uk-button-save-changes': createForm.$valid }" ng-disabled="createForm.$invalid" ng-click="createList(createForm.title.$modelValue)"> Create list</button>
+                </center>
+              </div>
+
+            </form>
+
+          </center>
+      </div>
+    </div>
+  </div>
+
+  <div class="uk-child-width-1-3@m" uk-grid>
+    <div class="uk-card uk-card-primary" ng-repeat="list in user.lists">
+      <div class="uk-card-media-top">
+        <a class="page-link" ng-click="goToList(list._id)">
+          <img ng-src="{{getListPoster(list)}}" style="z-index:-1" alt="">
+        </a>
+      </div>
+      <div class="uk-card-body">
+        <p class="uk-text" align="center">
+          <a class="page-link" ng-click="goToMedia(watched._media)">{{list.title}}</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</li>

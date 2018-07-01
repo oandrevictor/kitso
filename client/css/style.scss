@@ -812,6 +812,26 @@ html, body {
     margin-bottom: auto;
     font-weight: 300;
 
+    .new-list-button {
+      text-align: right;
+
+      .uk-button-create-list {
+        margin-top: 30px !important;
+      }
+
+      .uk-button-save-changes {
+        background-color: #502274 !important;
+        color: #ffffff !important;
+        font-weight: bold;
+        margin-top: 30px !important;
+      }
+
+      .invalid-label {
+        margin-bottom: 0px;
+        margin-left: 0px;
+      }
+    }
+
     .uk-checkbox:checked {
       background-color: #502279 !important;
       border-color: transparent;

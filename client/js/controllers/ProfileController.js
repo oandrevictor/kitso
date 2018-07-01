@@ -430,9 +430,9 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$rout
       }
     };
 
-    $scope.createList = function () {
+    $scope.createList = function (title) {
       let listInfo = {
-        title: "New List",
+        title: title,
         description: "Describe this list",
         deletable: true,
         _user: $scope.user._id
