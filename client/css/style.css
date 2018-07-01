@@ -1129,6 +1129,9 @@ html, body {
     padding-bottom: 0px !important;
     padding-top: 4%;
     position: relative; }
+  .userlist .uk-checkbox:checked {
+    background-color: #502279 !important;
+    border-color: transparent; }
   .userlist .uk-button-save-list {
     margin-top: 30px !important; }
   .userlist .uk-button-save-changes {

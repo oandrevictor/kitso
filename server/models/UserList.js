@@ -30,6 +30,11 @@ var UserListSchema = new Schema({
     required: true,
     default: true
   },
+  is_private: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
   _user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
