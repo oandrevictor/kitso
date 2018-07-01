@@ -23,6 +23,14 @@
       <label class="uk-text-small uk-text-danger uk-align-right uk-text-right" for="username" ng-show="((isInvalid(editForm.username)) && !(editForm.username.$$classCache['ng-valid-minlength'] && editForm.username.$$classCache['ng-valid-maxlength']))">* Username must be 4 to 12 characters</label>
     </div>
 
+
+    <div class="uk-margin">
+      <label class="uk-form-label" for="image">Imagem</label>
+      <div class="uk-form-controls">
+        <input type="file" ng-model="user.newimage" accept="image/*" app-filereader />
+      </div>
+    </div>
+
     <!--Email Field-->
     <div class="uk-margin">
       <label class="uk-form-label" for="email" ng-class="{ 'uk-text-danger' : isInvalid(editForm.email) }">Email</label>
