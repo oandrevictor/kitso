@@ -105,9 +105,9 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
 
         $scope.dataMonth = [[(100*result)/7300],[100]];
         if (hours == 1)
-          $scope.timeSpentThisMonth = "You watched " + hours + " hour this month"
+          $scope.timeSpentThisMonth = "Time spent this month: " + hours + " hour"
         else
-          $scope.timeSpentThisMonth = "You watched " + hours + " hours this month"
+          $scope.timeSpentThisMonth = "Time spent this month: " + hours + " hours"
       })
       .catch(function (error) {
         console.log(error)
@@ -128,9 +128,9 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
 
         $scope.dataWeek = [[(100*result)/240],[100]];
         if (hours == 1)
-          $scope.timeSpentThisWeek = "You watched " + hours + " hour this week"
+          $scope.timeSpentThisWeek = "Time spent this week: " + hours + " hour"
         else
-          $scope.timeSpentThisWeek = "You watched " + hours + " hours this week"
+          $scope.timeSpentThisWeek = "Time spent this week: " + hours + " hours"
       })
       .catch(function (error) {
         console.log(error)

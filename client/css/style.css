@@ -477,7 +477,7 @@ html, body {
     margin-top: 0px; }
   .explore .explore-container .uk-width-1-2 p {
     margin-bottom: 0px;
-    width: 300px}
+    width: 300px; }
   .explore .explore-container .uk-list-divider > li:nth-child(n+2) {
     border-top: 1px solid #f7f7f7; }
   .explore .explore-container .uk-card-primary {
@@ -607,10 +607,10 @@ html, body {
     margin-bottom: 0px;
     padding-top: 4px; }
   .profile .profile-container {
-    width: 900px !important;
     margin-top: -50px;
     margin-bottom: auto;
-    font-weight: 300; }
+    font-weight: 300;
+    width: 900px; }
     .profile .profile-container .uk-checkbox:checked {
       background-color: #502279 !important;
       border-color: transparent; }
@@ -631,8 +631,7 @@ html, body {
     .profile .profile-container .uk-switcher .uk-divider-icon {
       margin-top: 0px; }
     .profile .profile-container .uk-width-1-2 p {
-      margin-bottom: 0px;
-      width: 360px; }
+      margin-bottom: 0px; }
     .profile .profile-container .uk-list-divider > li:nth-child(n+2) {
       border-top: 1px solid #f7f7f7; }
     .profile .profile-container .uk-card-primary {
@@ -678,8 +677,8 @@ html, body {
     height: 12px;
     width: 12px;
     padding: 0px; }
-  .profile .sub-text  {
-    float: right;}
+  .profile .sub-text {
+    float: right; }
 
 .movie {
   font-family: 'Roboto' !important; }

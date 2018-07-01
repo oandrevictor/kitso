@@ -734,6 +734,7 @@ html, body {
       padding: 10px;
     }
   }
+
   .uk-iconnav>* {
     padding-left: 3px !important;
   }
@@ -764,7 +765,7 @@ html, body {
     background: #502274;
     background-repeat:no-repeat;
     background-size:cover;
-    width: 300px;
+    width: 360px;
     height: 150px;
     cursor: pointer;
   }
@@ -820,6 +821,7 @@ html, body {
     margin-top: -50px;
     margin-bottom: auto;
     font-weight: 300;
+    width: 900px;
 
     .uk-checkbox:checked {
       background-color: #502279 !important;
@@ -860,7 +862,6 @@ html, body {
     .uk-width-1-2{
       p{
         margin-bottom: 0px;
-        width: 300px
       }
     }
 
@@ -938,6 +939,10 @@ html, body {
       width: 12px;
       padding: 0px;
     }
+  }
+
+  .sub-text  {
+    float: right;
   }
 }
 

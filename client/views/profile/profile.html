@@ -29,9 +29,9 @@
         <li>
           <a>Followers</a>
         </li>
-        <li>
+        <!--<li>
           <a>Statistics</a>
-        </li>
+        </li>-->
         <li ng-if="canEdit()">
           <a>Settings</a>
         </li>
@@ -52,8 +52,8 @@
         <!--Followers-->
         <ng-include src="'views/profile/_followers.html'"></ng-include>
 
-        <!--Statistics-->
-        <ng-include src="'views/profile/_statistics.html'"></ng-include>
+        <!--Statistics
+        <ng-include src="'views/profile/_statistics.html'"></ng-include>-->
 
         <!--Settings-->
         <ng-include ng-if="canEdit()" src="'views/profile/_settings.html'"></ng-include>
