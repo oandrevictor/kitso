@@ -164,6 +164,51 @@ exports.changeItemRank = async function(req, res) {
 
 // AUXILIARY FUNCTIONS ============================================================================
 
+exports.followUserList = async function(req, res) {
+  try {
+    let userListId = req.params.userlist_id;
+
+    await addListToFollowingUserLists(userListId, req.user._id);
+
+    res.status(RequestStatus.OK).json();
+  } catch(err) {
+    console.log(err);
+    res.status(RequestStatus.BAD_REQUEST).send(err);
+  }
+};
+
+exports.unfollowUserList = async function(req, res) {
+  try {
+    let userListId = req.params.userlist_id;
+
+    await removeListFromFollowingUserLists(userListId, req.user._id);
+
+    res.status(RequestStatus.OK).json();
+  } catch(err) {
+    console.log(err);
+    res.status(RequestStatus.BAD_REQUEST).send(err);
+  }
+};
+
+exports.is_followed = async function(req, res) {
+  let userListId = req.query.userlist_id;
+
+  let user_id = req.user._id;
+
+  try {
+    let user_followed = await userHasFollowed(userListId, user_id);
+
+    res_json = {
+      "followed": user_followed
+    };
+
+    res.status(RequestStatus.OK).json(res_json);
+  } catch (err) {
+    console.log(err);
+    res.status(RequestStatus.BAD_REQUEST).json(err);
+  }
+};
+
 exports.addAndSave = async function(userList, userId){
   await saveUserList(userList);
   await addListToUserLists(userList._id, userId);
@@ -179,6 +224,12 @@ var addListToUserLists = async function(userListId, userId) {
   return user.save();
 };
 
+var addListToFollowingUserLists = async function(userListId, userId) {
+  let user = await DataStoreUtils.getUserById(userId);
+  user._following_lists.push(userListId);
+  return user.save();
+};
+
 var removeListFromUserLists = function(userListId, userId) {
   User.findById(userId, function (err, user) {
     let userLists = user._lists;
@@ -188,6 +239,29 @@ var removeListFromUserLists = function(userListId, userId) {
     }
     return user.save();
   });
+};
+
+var removeListFromFollowingUserLists = function(userListId, userId) {
+  User.findById(userId, function (err, user) {
+    let userLists = user._following_lists;
+    let index = userLists.indexOf(userListId);
+    if (index > -1) {
+      userLists.splice(index, 1);
+    }
+    return user.save();
+  });
+};
+
+var userHasFollowed = async function(userListId, userId) {
+  let user = await DataStoreUtils.getUserById(userId);
+
+  for(let i=0; i <  user._following_lists.length; i++) {
+    if (userListId.toString() === user._following_lists[i].toString()) {
+      return true;
+    }
+  }
+
+  return false;
 };
 
 var userHasList = function(user, listId) {

@@ -1165,6 +1165,11 @@ html, body {
     color: #ffffff !important;
     font-weight: bold;
     margin-top: 30px !important; }
+  .userlist .uk-button-follow {
+    background-color: #ffffff !important;
+    color: #502274 !important;
+    font-weight: bold;
+    margin-top: 30px !important; }
   .userlist .invalid-label {
     margin-bottom: 0px;
     margin-left: 0px; }

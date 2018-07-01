@@ -18,6 +18,13 @@ function($scope, $location, $timeout, UserListService, MovieService, $routeParam
   var loadUserList = function () {
     UserListService.loadUserList($routeParams.userlist_id).then(() => {
       $scope.userlist = UserListService.getUserList();
+
+      UserListService.isFollowed($scope.userlist._id).then((response) => {
+        $scope.userlist.isfollowed = response.followed;
+      }).catch((error) => {
+        console.log(error);
+      });
+
       loadUserListBackground();
     }).catch((error) => {
       UIkit.notification({
@@ -129,8 +136,52 @@ function($scope, $location, $timeout, UserListService, MovieService, $routeParam
     } return ranked;
   }
 
-  $scope.canEdit = function(user){
-    return ($scope.user._id.toString() === $scope.userlist._user.toString());
+  $scope.followList = function (userlist) {
+    UserListService.followUserList(userlist)
+      .then((response) => {
+        UIkit.notification({
+          message: '<span uk-icon=\'icon: check\'></span> List Followed!',
+          status: 'success',
+          timeout: 1500
+        });
+
+        $scope.userlist.isfollowed = true;
+      })
+      .catch((error) => {
+        UIkit.notification({
+          message: '<span uk-icon=\'icon: check\'></span> ' + error,
+          status: 'danger',
+          timeout: 2500
+        });
+      });
+    ;
+  }
+
+  $scope.unfollowList = function (userlist) {
+    UserListService.unfollowUserList(userlist)
+      .then((response) => {
+        UIkit.notification({
+          message: '<span uk-icon=\'icon: check\'></span> List Unfollowed!',
+          status: 'success',
+          timeout: 1500
+        });
+
+        $scope.userlist.isfollowed = false;
+      })
+      .catch((error) => {
+        UIkit.notification({
+          message: '<span uk-icon=\'icon: check\'></span> ' + error,
+          status: 'danger',
+          timeout: 2500
+        });
+      });
+    ;
+  }
+
+  $scope.canEdit = function(user, userlist){
+    if (user !== undefined && userlist !== undefined) {
+      return (user._id.toString() === userlist._user.toString());
+    }
   }
 
   $scope.editionMode = function () {
