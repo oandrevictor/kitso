@@ -19,7 +19,8 @@ var ListItemSchema = new Schema({
 var UserListSchema = new Schema({
   title: {
     type: String,
-    required: true
+    required: true,
+    maxlength: 40
   },
   description: {
     type: String,
@@ -29,6 +30,11 @@ var UserListSchema = new Schema({
     type: Boolean,
     required: true,
     default: true
+  },
+  is_private: {
+    type: Boolean,
+    required: true,
+    default: false
   },
   _user: {
     type: mongoose.Schema.Types.ObjectId,

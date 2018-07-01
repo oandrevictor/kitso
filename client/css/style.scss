@@ -260,6 +260,12 @@ html, body {
 }
 .kitso-content{
 }
+.hearted {
+  background: url("/images/icon/hearted.svg") left no-repeat;
+  background-size: 25px;
+  padding: 15px;
+
+}
 .full-loading {
   background: url('/images/icon/loading.svg') no-repeat center center, linear-gradient(155deg, #9730a0 0%, #7c1b7a 51%, #502274 75%);;
   height: 100%;
@@ -417,6 +423,30 @@ html, body {
         font-weight: 500;
       }
     }
+  }
+}
+
+.uk-modal-body {
+  .uk-form-label {
+    margin-bottom: 0px;
+  }
+
+  .uk-button-create-list {
+    //margin-top: 30px !important;
+    margin-left: 30px;
+    margin-right: 3px;
+  }
+
+  .uk-button-changes {
+    background-color: #502274 !important;
+    color: #ffffff !important;
+    font-weight: bold;
+    //margin-top: 30px !important;
+  }
+
+  .invalid-label {
+    margin-bottom: 0px;
+    margin-left: 0px;
   }
 }
 
@@ -806,6 +836,12 @@ html, body {
     margin-bottom: auto;
     font-weight: 300;
 
+    .new-list-button {
+      text-align: right;
+      margin-bottom: 30px;
+      }
+    }
+
     .uk-checkbox:checked {
       background-color: #502279 !important;
       border-color: transparent;
@@ -957,7 +993,7 @@ html, body {
       margin-right: 5px;
     }
   }
-}
+
 
 .movie {
   font-family: 'Roboto' !important;
@@ -1577,6 +1613,11 @@ html, body {
     position: relative;
   }
 
+  .uk-checkbox:checked {
+    background-color: #502279 !important;
+    border-color: transparent;
+  }
+
   .uk-button-save-list {
     margin-top: 30px !important;
   }
@@ -1584,6 +1625,13 @@ html, body {
   .uk-button-save-changes {
     background-color: #502274 !important;
     color: #ffffff !important;
+    font-weight: bold;
+    margin-top: 30px !important;
+  }
+
+  .uk-button-follow {
+    background-color: #ffffff !important;
+    color: #502274 !important;
     font-weight: bold;
     margin-top: 30px !important;
   }
