@@ -42,7 +42,7 @@
             <img class="uk-border-circle" src="../images/mask2.png" width="50" height="50" alt="Border circle">
           </div>
           <div class="friendContent">
-            <p class="friendName">{{ friend.name }}</p>
+            <p class="friendName"> {{friend.name | limitTo: 11}}{{friend.name.length > 11 ? '&hellip;' : ''}} <span ng-show="friend._ratings[0]" class="friendRating">{{friend._ratings[0]}} </span><span class="rating-star" ng-show="friend._ratings[0]" uk-icon="icon: star; ratio: .5"></span> </p>
             <a class="friendLink" ng-href="/user/{{friend._id}}">{{' @' + friend.username}}</a>
           </div>
         </div>
@@ -55,7 +55,7 @@
     </div>
 
         <div class="uk-width-3-4">
-          <div class="rating">
+          <div class="rating" ng-style="(season.name.length > 22) && {'margin-top':'-120px'}">
             <div>
               <div class="is-rated-star" ng-show="season.rated"></div>
               <a ng-hide="season.rated" uk-icon="icon: star; ratio: 2"></a>
@@ -70,7 +70,7 @@
                 </ul>
               </center>
             </div>
-            <div class="rating-value"> 8.3</div>
+            <div class="rating-value">{{ season.vote_average }}</div>
           </div>
           <p>Created by <b ng-repeat="person in tvshow.created_by">{{ person.name }}; </b> <br />
             Genres: <b ng-repeat="genre in tvshow.genres">{{ genre.name }} </b> /  Runtime: <b>{{tvshow.episode_run_time[0]}} minutes </b></p>

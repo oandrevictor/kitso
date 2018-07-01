@@ -34,6 +34,8 @@ exports.index = function(req, res) {
             else{
               console.log('got query from redis: ' + query);
               var parsed_result = JSON.parse(data);
+              if (typeof parsed_result === 'string' || parsed_result instanceof String)
+                parsed_result = JSON.parse(parsed_result)
               parsed_result._id = person._id;
               final_result.push(parsed_result);
 
@@ -43,7 +45,7 @@ exports.index = function(req, res) {
         } else {
           total_waiting += 500;
           setTimeout(function() {
-            getPersonFromTMDB(tmdb_id).then(async function(data) {
+            TMDBController.getPersonFromTMDB(tmdb_id).then(async function(data) {
               data = JSON.parse(data);
               data.profile_path = "https://image.tmdb.org/t/p/w500/" + data.profile_path;
               data._id = person._id;
@@ -95,7 +97,7 @@ exports.index = function(req, res) {
             }
           });
         } else {
-          getPersonFromTMDB(tmdb_id).then(async function(data) {
+          TMDBController.getPersonFromTMDB(tmdb_id).then(async function(data) {
             data = JSON.parse(data);
             data._id = result._id;
             data.helper = result.helper;
@@ -209,27 +211,4 @@ exports.index = function(req, res) {
   var getMediaObjFromAppearsInObj = async function(appearsInObj) {
     let mediaId = appearsInObj._media;
     return await DataStoreUtils.getMediaObjById(mediaId);
-  };
-
-  var getPersonFromTMDB = function(tmdb_id){
-    return new Promise(function(resolve, reject) {
-      var query = 'person/' + tmdb_id
-      console.log("Could not get from redis, requesting info from The Movie DB")
-      https.get("https://api.themoviedb.org/3/person/"+ tmdb_id + "?api_key=db00a671b1c278cd4fa362827dd02620",
-      (resp) => {
-        let data = '';
-        resp.on('data', (chunk) => {
-          data += chunk;
-        });
-        resp.on('end', () => {
-          console.log("saving result to redis: "+ query)
-          redisClient.set(query, JSON.stringify(data));
-          resolve(data)
-        });
-
-      }).on("error", (err) => {
-        console.log("Error: " + err.message);
-        reject();
-      });
-    })
   };

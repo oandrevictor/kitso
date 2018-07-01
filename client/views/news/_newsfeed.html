@@ -1,0 +1,43 @@
+<div news-postbox></div>
+  <div class="feed">
+  <h4><span uk-icon="rss"></span> Shared News </h4>
+  <div ng-repeat="activity in news" ng-hide="acitivy.hidden" >
+    <article class="uk-comment uk-visible-toggle" >
+        <header class="uk-comment-header uk-position-relative">
+            <div class="uk-grid-medium uk-flex-middle" uk-grid>
+                <div class="uk-width-auto">
+                    <img class="uk-comment-avatar uk-border-circle" src="/images/mask2.png" width="40" height="40" alt="">
+                </div>
+                <div class="uk-width-expand">
+                    <div class="uk-comment-title uk-margin-remove">
+                      <h4 class="user-name">
+                        <a class="uk-link-reset" ng-href="{{getActivityUserLink(activity)}}">{{getActivityUser(activity).name}}</a></h4>
+                      </div>
+                    <p class="uk-comment-meta uk-margin-remove-top">
+                      <a class="uk-link-reset" href="#">{{getActivityDate(activity)}}</a>
+                    </p>
+                </div>
+            </div>
+        </header>
+        <div class="uk-comment-body">
+          <div class="uk-card uk-card-default uk-grid-collapse uk-margin home-card" uk-grid>
+              <a ng-href="{{getActivityObjectLink(activity._action)}}" class="uk-card-media-left uk-cover-container" style="background: url({{getActivityImage(activity)}}) center; background-size:cover; cursor:pointer ">
+                  <canvas width="300" height="200"></canvas>
+              </a>
+              <div class="home-card-info">
+                  <div class="uk-card-body">
+                      <a ng-href="{{getActivityObjectLink(activity._action)}}"> <h3 class="uk-card-title">{{getActivityReferedObject(activity).name}}</h3></a>
+                      <p class="overview uk-text-break">
+                        {{getActivityReferedObject(activity).overview.substr(0,140)}}...</p>
+                  </div>
+              </div>
+          </div>
+        </div>
+    </article>
+    <br >
+    <button  class="uk-button uk-button-default episode-button">
+      <span uk-icon="heart"></span> Like (74 likes)
+    </button>
+    <hr>
+  </div>
+</div>

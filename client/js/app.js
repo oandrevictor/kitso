@@ -115,9 +115,14 @@ angular.module('kitso').run(function ($rootScope, $location, $route, AuthService
                 });
                 $route.reload();
             } else if (!next.access.restricted && AuthService.isLogged()) {
-                $location.path('/profile');
+                $location.path('/home');
                 $route.reload();
             }
         });
     });
+
+    $rootScope.$on('$routeChangeSuccess',function() {
+        $("html, body").animate({ scrollTop: 0 }, 500); 
+    });
+
 });

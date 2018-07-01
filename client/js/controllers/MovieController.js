@@ -1,9 +1,10 @@
 var kitso = angular.module('kitso');
 
 kitso.controller('MovieController',
-['$scope', '$location', '$timeout', 'MovieService', 'WatchedService', 'FollowService', 'RatedService', 'UserListService','$routeParams', 'AuthService',
-function($scope, $location, $timeout, MovieService, WatchedService, FollowService, RatedService, UserListService, $routeParams, AuthService) {
+['$scope', '$location', '$timeout', 'MovieService', 'WatchedService', 'FollowService', 'RatedService', 'UserListService','$routeParams', 'AuthService', 'NewsService',
+function($scope, $location, $timeout, MovieService, WatchedService, FollowService, RatedService, UserListService, $routeParams, AuthService, NewsService) {
   $('.full-loading').show();
+  $scope.newsbox_toggle = true;
     MovieService.loadMovie($routeParams.movie_id)
         .then(() => {
           AuthService.getStatus().then(function(){
@@ -11,7 +12,7 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
             $scope.movie = MovieService.getMovie();
             $scope.release_date_formated = moment($scope.movie.release_date).format('YYYY');
 
-            WatchedService.isWatched($scope.user._id ,$routeParams.movie_id).then((watched) => {
+            WatchedService.isWatched($scope.user._id , $scope.movie._id).then((watched) => {
                 $scope.movie.watched = watched;
                 if (! watched.watched_id)
                   $scope.movie.watched = false;
@@ -22,7 +23,11 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
                   timeout: 2500
               });
             });
-            RatedService.isRated($scope.user._id ,$routeParams.movie_id).then((rated) => {
+
+            NewsService.getRelatedNews($scope.movie._id).then(function(news){
+              $scope.news = news;
+            });
+            RatedService.isRated($scope.user._id ,$scope.movie._id).then((rated) => {
                 $scope.movie.rated = rated;
                 if (! rated.rated_id){
                   $scope.movie.rated = false;
@@ -45,7 +50,14 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
                   timeout: 2500
               });
             });
-            FollowService.isFollowingPage($scope.user._id ,$routeParams.movie_id).then((followed) => {
+
+            RatedService.getVoteAverage($scope.movie._id).then((response) => {
+              $scope.movie.vote_average = response.vote_average;
+            }).catch((error) => {
+              console.log(error);
+            });
+
+            FollowService.isFollowingPage($scope.user._id ,$scope.movie._id).then((followed) => {
               $scope.movie.followed = followed;
             }).catch((error) => {
               UIkit.notification({
@@ -54,7 +66,7 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
                   timeout: 2500
               });
             });
-            FollowService.countFollowers($routeParams.movie_id).then((count) => {
+            FollowService.countFollowers($scope.movie._id).then((count) => {
               $scope.movie.followers = count;
             }).catch((error) => {
               UIkit.notification({
@@ -63,9 +75,16 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
                   timeout: 2500
               });
             });
-            FollowService.friendsWatchingMedia($scope.user._id, $scope.movie._id)
-            .then((response) => {
-                $scope.friendsWatching = response;
+
+            FollowService.friendsWatchingMedia($scope.user._id, $scope.movie._id).then((response) => {
+              $scope.friendsWatching = response;
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+
+            FollowService.friendsRatingMedia($scope.user._id, $scope.movie._id).then((response) => {
+              $scope.friendsRated = response;
             })
             .catch((error) => {
                 console.log('error', error);
@@ -88,10 +107,11 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
         })
         .catch((error) => {
             UIkit.notification({
-                message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                message: '<span uk-icon=\'icon: check\'></span> ' + error,
                 status: 'danger',
                 timeout: 2500
             });
+            $location.path('/explore');
         });
 
 
@@ -220,11 +240,11 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
     }
 
   $scope.editionMode = function () {
-    $location.path('movie/edit/' + $routeParams.movie_id);
+    $location.path('movie/edit/' + $scope.movie._id.movie_id);
   }
 
   $scope.rate = function(movieId, rating){
-    if ($scope.movie.rated) {
+    if ($scope.movie.rated && $scope.movie.rating !== 0) {
         if (rating !== $scope.movie.rating) {
           $scope.updateRated($scope.movie.rated.rated_id, rating);
           $scope.updateRating(rating);
@@ -242,7 +262,6 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
             timeout: 1500
           });
         }
-
     } else {
         $scope.markAsRated(movieId, rating);
         $scope.updateRating(rating);
@@ -251,6 +270,9 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
             status: 'success',
             timeout: 1500
         });
+        if($scope.user.settings.autowatch & !$scope.movie.watched){
+          $scope.markAsWatched(movieId);
+        }
     }
   }
 
@@ -288,11 +310,14 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
           "rating" : rating,
           "_id" : ratedId
       };
-      RatedService.updateRated(ratedObj);
+      RatedService.updateRated(ratedObj).then((response) => {
+        $scope.updateVoteAverage();
+      });
     }
 
     $scope.updateRating = function(rating){
       $scope.movie.rating = rating;
+      $scope.updateVoteAverage();
     }
 
     $scope.range = function(count){
@@ -301,5 +326,13 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
             ratings.push(i+1)
         }
         return ratings;
+    }
+
+    $scope.updateVoteAverage = function() {
+      RatedService.getVoteAverage($scope.movie._id).then((rated) => {
+        $scope.movie.vote_average = rated.vote_average;
+      }).catch((error) => {
+        console.log(error);
+      });
     }
 }]);

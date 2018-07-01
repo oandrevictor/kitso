@@ -25,6 +25,11 @@
 
   <!-- ANGULAR CUSTOM -->
   <script src="js/app.js"></script>
+
+  <!-- Directives -->
+  <script src="js/directives/newsPostbox.directive.js"> </script>
+
+  <!-- Controllers -->
   <script src="js/controllers/MainController.js"></script>
   <script src="js/controllers/SignupController.js"></script>
   <script src="js/controllers/LoginController.js"></script>
@@ -40,6 +45,7 @@
   <script src="js/controllers/PersonController.js"></script>
   <script src="js/controllers/PersonEditController.js"></script>
   <script src="js/controllers/SeasonController.js"></script>
+  <script src="js/controllers/NewsPostboxController.js"></script>
 
   <!-- Services -->
   <script src="js/services/auth.service.js"></script>
@@ -52,17 +58,20 @@
   <script src="js/services/userlist.service.js"></script>
   <script src="js/services/person.service.js"></script>
   <script src="js/services/rated.service.js"></script>
+  <script src="js/services/feed.service.js"></script>
+  <script src="js/services/news.service.js"></script>
+  <script src="js/services/liked.service.js"></script>
 
   <script src="js/lib/moment.js"></script>
 </head>
 <div class="full-loading"></div>
-<body ng-app="kitso" ng-controller="HomeController">
+<body ng-app="kitso" ng-controller="MainController">
   <div class="kitso-wrapper">
     <div class="toolbar">
       <a href="/"class="logo"> Kitso</a>
       <div  ng-show="isLogged()" class="exploring">
         <a ng-href="/explore" ><button  class="uk-button uk-button-default explore-icon"></button></a>
-        <a ng-href="/" ><button  class="uk-button uk-button-default home-icon"></button></a>
+        <a ng-href="/home" ><button  class="uk-button uk-button-default home-icon"></button></a>
         <a ng-href="/profile" ><button  class="uk-button uk-button-default profile-icon"></button></a>
       </div>
 
