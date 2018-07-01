@@ -1581,6 +1581,11 @@ html, body {
     position: relative;
   }
 
+  .uk-checkbox:checked {
+    background-color: #502279 !important;
+    border-color: transparent;
+  }
+
   .uk-button-save-list {
     margin-top: 30px !important;
   }

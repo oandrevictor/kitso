@@ -24,7 +24,7 @@
         <label class="uk-form-label" ng-class="{ 'uk-text-danger' : isInvalid(editForm.title) }" for="title">List title</label>
         <div class="uk-form-controls">
           <input class="uk-input" type="text" id="title" name="title" placeholder="List title" ng-class="{ 'uk-form-danger' : isInvalid(editForm.title) }"
-            ng-model="userlist.title" required>
+                 ng-model="userlist.title" required>
         </div>
         <label class="uk-text-small uk-text-danger uk-align-right" for="title" ng-show="isInvalid(editForm.title)">* List title can't be blank</label>
       </div>
@@ -33,9 +33,14 @@
         <label class="uk-form-label" ng-class="{ 'uk-text-danger' : isInvalid(editForm.description) }" for="description">Description</label>
         <div class="uk-form-controls">
           <input class="uk-input" type="text" id="description" name="description" placeholder="Description" ng-class="{ 'uk-form-danger' : isInvalid(editForm.description) }"
-            ng-model="userlist.description" required>
+                 ng-model="userlist.description" required>
         </div>
         <label class="uk-text-small uk-text-danger uk-align-right invalid-label" for="description" ng-show="isInvalid(editForm.description)">* Description can't be blank</label>
+      </div>
+
+      <!--Private Field-->
+      <div class="uk-margin uk-form-controls">
+        <label><input class="uk-checkbox" type="checkbox" id="private-list" ng-model="userlist.is_private" ng-checked="userlist.is_private"> Private list</label>
       </div>
 
       <div class="uk-margin">
@@ -43,7 +48,6 @@
           <button class="uk-button uk-button-small uk-align-center uk-button-save-list" ng-class="{ 'uk-button-save-changes': editForm.$valid }" ng-disabled="editForm.$invalid" ng-click="saveUserList()"> Save list</button>
         </center>
       </div>
-
 
     </form>
 

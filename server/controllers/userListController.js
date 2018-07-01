@@ -22,7 +22,16 @@ exports.show = async function(req, res) {
     Promise.all(promises).then(function(results) {
       results.sort(sortUserListByRank);
       userList.itens = results;
-      res.status(RequestStatus.OK).json(userList);
+      if (req.user._id.toString() == userList._user) {
+        res.status(RequestStatus.OK).json(userList);
+      } else {
+        if (!userList.is_private) {
+          res.status(RequestStatus.OK).json(userList);
+        } else {
+          res.status(RequestStatus.OK).json({});
+        }
+      }
+
     })
   } catch (err) {
     console.log(err);
@@ -52,6 +61,9 @@ exports.update = async function(req, res) {
     }
     if (req.body.title) {
       userList.title = req.body.title;
+    }
+    if (req.body.is_private != null) {
+      userList.is_private = req.body.is_private;
     }
     await saveUserList(userList);
     res.status(RequestStatus.OK).json(userList);
