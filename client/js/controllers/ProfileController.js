@@ -113,11 +113,21 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$rout
     var loadUserLists = function(){
       var lists = [];
 
+      // Load additional lists
       $scope.user._lists.forEach((listId) => {
         UserListService.loadUserList(listId).then( function(){
           let list = UserListService.getUserList();
-
-          console.log(list);
+          if (!$scope.isEmpty(list)) {
+            lists.push(list);
+          }
+        }).catch(function(error){
+          console.log(error);
+        })
+      });
+      // Load following lists
+      $scope.user._following_lists.forEach((listId) => {
+        UserListService.loadUserList(listId).then( function(){
+          let list = UserListService.getUserList();
           if (!$scope.isEmpty(list)) {
             lists.push(list);
           }
@@ -126,6 +136,8 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$rout
         })
       });
       $scope.user.lists = lists;
+
+      // Load Watchlist
       UserListService.loadUserList($scope.user._watchlist).then( function(){
         $scope.user.watchlist = UserListService.getUserList();
         loaded++;

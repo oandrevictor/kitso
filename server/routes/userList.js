@@ -3,7 +3,11 @@ var router = express.Router();
 
 var userListController = require('../controllers/userListController');
 
+//follows?userlist_id=userlist_id
+router.get('/follows', userListController.is_followed);
+
 router.get('/:userlist_id', userListController.show);
+
 
 router.post('/', userListController.create);
 

@@ -14,6 +14,7 @@ kitso.service('UserListService', ['$q','$http', function ($q, $http) {
         getUserList: getUserList,
         followUserList: followUserList,
         unfollowUserList: unfollowUserList,
+        isFollowed: isFollowed,
         updateUserList: updateUserList,
         updateRank: updateRank
     });
@@ -170,8 +171,7 @@ kitso.service('UserListService', ['$q','$http', function ($q, $http) {
     $http.put('/api/userlist/' + userlist._id + '/follow', userlist)
       .then(function (response) {
         if (response.status === 200) {
-          console.log(response.data);
-          deferred.resolve(userlist);
+          deferred.resolve(response);
         } else {
           deferred.reject();
         }
@@ -189,13 +189,29 @@ kitso.service('UserListService', ['$q','$http', function ($q, $http) {
     $http.delete('/api/userlist/' + userlist._id + '/unfollow')
       .then(function (response) {
         if (response.status === 200) {
-          console.log(response.data);
-          deferred.resolve(userlist);
+          deferred.resolve(response);
         } else {
           deferred.reject();
         }
       })
       .catch(function (error) {
+        deferred.reject(error.data);
+      });
+
+    return deferred.promise;
+  }
+
+  function isFollowed(userListId) {
+    var deferred = $q.defer();
+    $http.get('/api/userlist/follows?userlist_id='+ userListId)
+      .then((response) => {
+        if (response.status === 200) {
+          deferred.resolve(response.data);
+        } else {
+          deferred.reject();
+        }
+      })
+      .catch((error) => {
         deferred.reject(error.data);
       });
 
