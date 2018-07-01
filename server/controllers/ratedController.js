@@ -133,7 +133,7 @@ var injectMediaJsonInRated = async function(rated_obj) {
     var value = await TMDBController.getSeasonFromAPI(media_obj._tmdb_tvshow_id, media_obj.season_number).then((season)=>{
       var rated_with_full_media = rated_obj;
       rated_with_full_media._media = media_obj
-      rated_with_full_media._media.helper = season;
+      rated_with_full_media._media.helper = JSON.stringify(season);
       return rated_with_full_media;
     });
     return value;
@@ -150,7 +150,7 @@ var injectMediaJsonInRated = async function(rated_obj) {
     var value = await TMDBController.getMovie(media_obj._tmdb_id).then((movie) => {
       var watched_with_full_media = rated_obj;
       watched_with_full_media._media = media_obj;
-      watched_with_full_media._media.helper = movie;
+      watched_with_full_media._media.helper = JSON.stringify(movie);
       return watched_with_full_media;
     });
     return value;

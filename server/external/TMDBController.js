@@ -84,7 +84,6 @@ exports.getShow = function(tmdb_id){
             console.log(err);
             else {
               var parsed_result = JSON.parse(data);
-              parsed_result.poster_path = TMDBConstants.TMDB_POSTER_IMAGE_PATH + parsed_result.poster_path;
               parsed_result._id = result._id;
               parsed_result.__t = result.__t;
               resolve(parsed_result);
@@ -96,6 +95,7 @@ exports.getShow = function(tmdb_id){
             var data = JSON.parse(data);
             data._id = result._id;
             data.__t = result.__t;
+            data.poster_path = TMDBConstants.TMDB_POSTER_IMAGE_PATH + data.poster_path;
             data.backdrop_path = TMDBConstants.TMDB_BACK_IMAGE_PATH + data.backdrop_path;
             redisClient.set(query, JSON.stringify(data));
             resolve(data);
@@ -121,8 +121,6 @@ exports.getMovie = function(tmdb_id) {
               var parsed_result = JSON.parse(data);
               if (typeof parsed_result === 'string' || parsed_result instanceof String)
                     parsed_result = JSON.parse(parsed_result);
-              parsed_result.backdrop_path = TMDBConstants.TMDB_BACK_IMAGE_PATH + parsed_result.backdrop_path;
-              parsed_result.poster_path = TMDBConstants.TMDB_POSTER_IMAGE_PATH + parsed_result.poster_path;
               parsed_result._id = result._id;
               parsed_result.__t = result.__t;
               resolve(parsed_result);
