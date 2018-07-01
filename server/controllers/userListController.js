@@ -10,7 +10,6 @@ var TMDBController = require('../external/TMDBController');
 const redisClient = RedisClient.createAndAuthClient();
 const https = require('https');
 
-
 // CRUD USERLIST ==================================================================================
 
 exports.show = async function(req, res) {
@@ -75,10 +74,19 @@ exports.update = async function(req, res) {
 
 exports.delete = async function(req, res) {
   try {
-    let userId = req.headers.user_id;
+    let userId = req.user._id;
     let userListId = req.params.userlist_id;
     await checkIfUserIsAuthorizedToManipulateList(userId, userListId);
     let deletedList = await removeListFromUserLists(userListId, userId);
+
+    await UserList.findById(userListId, function (err, userList) {
+      let users = userList._followers;
+
+      users.forEach((user) => {
+        removeListFromFollowingUserLists(userListId, user);
+      });
+    });
+
     await DataStoreUtils.deleteListFromDb(userListId);
     res.status(RequestStatus.OK).json(deletedList);
   } catch (err) {
@@ -90,12 +98,11 @@ exports.delete = async function(req, res) {
   }
 };
 
-
 // LIST ITENS FUNCTIONS ===========================================================================
 
 exports.addItem = async function(req, res) {
   try {
-    let userId = req.headers.user_id;
+    let userId = req.user._id;
     let userListId = req.params.userlist_id;
     await checkIfUserIsAuthorizedToManipulateList(userId, userListId);
     let userList = await DataStoreUtils.getUserListById(userListId);
@@ -120,7 +127,7 @@ exports.addItem = async function(req, res) {
 
 exports.removeItem = async function(req, res) {
   try {
-    let userId = req.headers.user_id;
+    let userId = req.user._id;
     let userListId = req.params.userlist_id;
     await checkIfUserIsAuthorizedToManipulateList(userId, userListId);
     let userList = await DataStoreUtils.getUserListById(userListId);
@@ -143,7 +150,7 @@ exports.removeItem = async function(req, res) {
 
 exports.changeItemRank = async function(req, res) {
   try {
-    let userId = req.headers.user_id;
+    let userId = req.user._id;
     let userListId = req.params.userlist_id;
     await checkIfUserIsAuthorizedToManipulateList(userId, userListId);
     let userList = await DataStoreUtils.getUserListById(userListId);
@@ -162,7 +169,7 @@ exports.changeItemRank = async function(req, res) {
 };
 
 
-// AUXILIARY FUNCTIONS ============================================================================
+// FOLLOW/UNFOLLOW USERLIST FUNCTIONS ============================================================================
 
 exports.followUserList = async function(req, res) {
   try {
@@ -170,6 +177,7 @@ exports.followUserList = async function(req, res) {
     let notifications_enabled = req.body.notifications_enabled;
 
     await addListToFollowingUserLists(userListId, req.user._id, notifications_enabled);
+    await addFollowerToUserList(userListId, req.user._id);
 
     res.status(RequestStatus.OK).json();
   } catch(err) {
@@ -183,6 +191,7 @@ exports.unfollowUserList = async function(req, res) {
     let userListId = req.params.userlist_id;
 
     await removeListFromFollowingUserLists(userListId, req.user._id);
+    await removeFollowerFromUserList(userListId, req.user._id);
 
     res.status(RequestStatus.OK).json();
   } catch(err) {
@@ -193,22 +202,23 @@ exports.unfollowUserList = async function(req, res) {
 
 exports.is_followed = async function(req, res) {
   let userListId = req.query.userlist_id;
-
   let user_id = req.user._id;
 
   try {
     let user_followed = await userHasFollowed(userListId, user_id);
 
-    res_json = {
+    data = {
       "followed": user_followed
     };
 
-    res.status(RequestStatus.OK).json(res_json);
+    res.status(RequestStatus.OK).json(data);
   } catch (err) {
     console.log(err);
     res.status(RequestStatus.BAD_REQUEST).json(err);
   }
 };
+
+// AUXILIARY FUNCTIONS ============================================================================
 
 exports.addAndSave = async function(userList, userId){
   await saveUserList(userList);
@@ -228,19 +238,27 @@ var addListToUserLists = async function(userListId, userId) {
 var addListToFollowingUserLists = async function(userListId, userId, notifications_enabled) {
   let user = await DataStoreUtils.getUserById(userId);
 
-  res_json = {
+  data = {
     "userListId": userListId,
     "notifications_enabled": notifications_enabled
   };
 
-  user._following_lists.push(res_json);
+  user._following_lists.push(data);
   return user.save();
+};
+
+var addFollowerToUserList = async function(userListId, userId) {
+  let userList = await DataStoreUtils.getUserListById(userListId);
+
+  userList._followers.push(userId);
+  return userList.save();
 };
 
 var removeListFromUserLists = function(userListId, userId) {
   User.findById(userId, function (err, user) {
     let userLists = user._lists;
     let index = userLists.indexOf(userListId);
+
     if (index > -1) {
       userLists.splice(index, 1);
     }
@@ -259,6 +277,17 @@ var removeListFromFollowingUserLists = function(userListId, userId) {
         return user.save();
       }
     }
+  });
+};
+
+var removeFollowerFromUserList = async function(userListId, userId) {
+  UserList.findById(userListId, function (err, userList) {
+    let users = userList._followers;
+    let index = users.indexOf(userId);
+    if (index > -1) {
+      users.splice(index, 1);
+    }
+    return userList.save();
   });
 };
 

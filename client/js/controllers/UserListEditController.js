@@ -22,7 +22,7 @@ kitso.controller('UserListEditController', ['$scope', '$location', '$timeout', '
   $scope.saveUserList = function () {
     UserListService.updateUserList($scope.userlist)
       .then(() => {
-        $location.path('user/list/' + $routeParams.userlist_id);
+        $location.path('/list/' + $routeParams.userlist_id);
       })
       .catch((error) => {
         UIkit.notification({

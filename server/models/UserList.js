@@ -45,7 +45,16 @@ var UserListSchema = new Schema({
     type: [Schema.Types.Mixed],
     required: true,
     default: []
-  }
+  },
+  _followers: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+      }
+    ],
+    default: []
+  },
 });
 
 var UserList = mongoose.model('UserList', UserListSchema);

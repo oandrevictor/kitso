@@ -47,7 +47,7 @@
         <ul class="uk-slider-items uk-child-width-1-5@s">
           <li ng-repeat="list in user.lists">
             <div class="uk-card uk-grid-match uk-card-default uk-card-hover list-info" >
-              <a ng-href="user/list/{{list._id}}"> <img class="list-image" style="background-image: url({{ getListPoster(list) }})" /></a>
+              <a ng-href="/list/{{list._id}}"> <img class="list-image" style="background-image: url({{ getListPoster(list) }})" /></a>
               <p class="uk-align-center uk-text-uppercase list-name" align="center"> {{list.title}}</p>
             </div>
           </li>
