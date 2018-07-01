@@ -15,19 +15,17 @@ exports.show = function(req, res) {
     if(!result) {
       res.status(RequestStatus.NOT_FOUND).send("Season not found!");
     } else {
-      tmdb_id = result._tmdb_id;
-      season_num = req.params.season_num;
-      query = "tvShow/"+ tmdb_id + "/season/" + season_num;
-      season = await getSeason(result._id, season_num);
+      let tmdb_id = result._tmdb_id;
+      let season_num = req.params.season_num;
+      let query = "tvShow/"+ tmdb_id + "/season/" + season_num;
+      let season = await getSeason(result._id, season_num);
 
       redisClient.exists(query,function(err, reply) {
-        if (reply == 1) {
-          console.log('exists');
+        if (reply === 1) {
           redisClient.get(query, async function(err,data) {
             if(err)
-            console.log(err)
-            else{
-              console.log('got query from redis:' + query);
+              console.log(err);
+            else {
               var parsed_result = JSON.parse(JSON.parse(data));
               let promises = parsed_result.episodes.map(injectEpisodeId(season._id));
 
@@ -78,14 +76,12 @@ exports.show = function(req, res) {
   getSeasonFromTMDB = function(tmdb_id, season){
     return new Promise(function(resolve, reject) {
       query = "tvShow/"+ tmdb_id + "/season/" + season
-      console.log("Could not get from redis, requesting info from The Movie DB")
       https.get("https://api.themoviedb.org/3/tv/"+ tmdb_id + "/season/" + season + "?api_key=db00a671b1c278cd4fa362827dd02620", (resp) => {
         let data = '';
         resp.on('data', (chunk) => {
           data += chunk;
         });
         resp.on('end', () => {
-          console.log("saving result tso redis: " + query)
           redisClient.set(query, JSON.stringify(data));
           resolve(data)
         });

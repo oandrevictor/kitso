@@ -30,14 +30,14 @@ exports.index = function(req, res) {
 
           redisClient.get(query, async function(err,data) {
             if(err)
-            console.log(err);
-            else{
-              console.log('got query from redis: tvshow/' + tmdb_id);
+              console.log(err);
+            else {
               answered +=1;
               var parsed_result = JSON.parse(data);
               if (typeof parsed_result === 'string' || parsed_result instanceof String)
-                parsed_result = JSON.parse(parsed_result)
-              var promises = await tvshow._seasons.map(inject_seasons);
+                parsed_result = JSON.parse(parsed_result);
+              parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
+              parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original/" + parsed_result.backdrop_path;
               parsed_result._id = tvshow._id;
               parsed_result.__t = tvshow.__t;
               final_result.push(parsed_result);
@@ -50,7 +50,6 @@ exports.index = function(req, res) {
         } else {
           TMDBController.getShowFromTMDB(tmdb_id).then(async function(data) {
             answered += 1;
-            console.log("Got from TMDB: " + tmdb_id )
             var promises = await tvshow._seasons.map(inject_seasons);
             data._id = tv_result._id;
             data.__t = tv_result.__t;
@@ -98,6 +97,7 @@ exports.show = function(req, res) {
                 parsed_result._seasons = results;
                 parsed_result._id = result._id;
                 parsed_result.__t = result.__t;
+                parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
                 await Promise.all(actorsPromises).then(function(nested_actors) {
                   parsed_result._actors = nested_actors;
                   res.setHeader('Content-Type', 'application/json');
@@ -130,7 +130,6 @@ exports.show = function(req, res) {
 };
 
 exports.create = function(req, res) {
-  console.log(req.body);
   var show = new Show(req.body);
 
   show.save()
@@ -138,7 +137,6 @@ exports.create = function(req, res) {
     res.status(RequestStatus.BAD_REQUEST).send(err);
   })
   .then((createdShow) => {
-    console.log(createdShow);
     TMDBController.getShowFromTMDB(createdShow._tmdb_id).then( async (result)=> {
       result._id = createdShow._id;
       result._seasons = createdShow._seasons;
@@ -226,8 +224,6 @@ matchApiSeasonsToDb = function(tvshow, dbtvshow){
 // TODO: move to TMDBController
 getCastFromAPI = function(tv_id){
   return new Promise(function(resolve, reject) {
-    console.log(tv_id)
-    console.log()
     https.get("https://api.themoviedb.org/3/tv/"+ tv_id + "/credits"+"?api_key=db00a671b1c278cd4fa362827dd02620",
     (resp) => {
       let data = '';
@@ -275,13 +271,11 @@ matchApiCastToDb = async function(dbtvshow){
           castIds[i] = created_db_person._id;
           await createAppearsIn(created_db_person._id, dbtvshow._id);
           if (nCast == castSize) done();
-          console.log("Person Created:" + name)
         }).catch((err)=>{console.log(err)});
       }
       else {
         // person already exists
         await createAppearsIn(hasPerson[0]._id, dbmovieshow._id);
-        console.log("Person Updated:" + name)
       }
     });
 
@@ -317,7 +311,6 @@ matchApiEpisodesToDb = function(tvshow, seasonapi, dbseason){
       db_episode._tmdb_id = tmdb_id;
       db_episode.number = episode.episode_number;
       db_episode.save().then((created) =>{
-        console.log('Created Ep: '+ created.name)
         dbseason._episodes.push(created._id);
         dbseason.save().then((saved_season)=>{
         }).catch((err)=>{
