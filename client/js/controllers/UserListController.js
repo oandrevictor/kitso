@@ -129,6 +129,21 @@ function($scope, $location, $timeout, UserListService, MovieService, $routeParam
     } return ranked;
   }
 
+  $scope.followList = function (userlist) {
+    UserListService.followUserList(userlist)
+      .then((response) => {
+        console.log('lala', response);
+      })
+      .catch((error) => {
+        UIkit.notification({
+          message: '<span uk-icon=\'icon: check\'></span> ' + error,
+          status: 'danger',
+          timeout: 2500
+        });
+      });
+    ;
+  }
+
   $scope.canEdit = function(user){
     return ($scope.user._id.toString() === $scope.userlist._user.toString());
   }

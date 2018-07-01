@@ -21,6 +21,8 @@
         <div class="uk-width-1-4">
           <button class="uk-button uk-button-save-changes" ng-show="userlist.deletable" ng-if="canEdit()" ng-click="editionMode()">
             <span uk-icon="icon: pencil;"></span> Edit List</button>
+
+          <button class="uk-button uk-button-save-changes" ng-if="!canEdit()" ng-click="followList(userlist)"> Follow</button>
         </div>
       </div>
     </div>

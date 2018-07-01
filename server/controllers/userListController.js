@@ -164,6 +164,19 @@ exports.changeItemRank = async function(req, res) {
 
 // AUXILIARY FUNCTIONS ============================================================================
 
+exports.followUserList = async function(req, res) {
+  try {
+    let userListId = req.params.userlist_id;
+
+    await addListToFollowingUserLists(userListId, req.user._id);
+
+    res.status(RequestStatus.OK);
+  } catch(err) {
+    console.log(err);
+    res.status(RequestStatus.BAD_REQUEST).send(err);
+  }
+};
+
 exports.addAndSave = async function(userList, userId){
   await saveUserList(userList);
   await addListToUserLists(userList._id, userId);
@@ -176,6 +189,12 @@ var saveUserList = function(userList) {
 var addListToUserLists = async function(userListId, userId) {
   let user = await DataStoreUtils.getUserById(userId);
   user._lists.push(userListId);
+  return user.save();
+};
+
+var addListToFollowingUserLists = async function(userListId, userId) {
+  let user = await DataStoreUtils.getUserById(userId);
+  user._following_lists.push(userListId);
   return user.save();
 };
 
