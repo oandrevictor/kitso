@@ -1,7 +1,7 @@
 <div class="profile">
   <!--Cover Content-->
   <div class="uk-background-cover" align="center" style="background-image: url({{profileBackground}})">
-    <img class="profile-image" data-ng-src="data:image/png;base64,{{user.image}}" width="140" height="140" data-err-src="images/masks2.png">
+    <img class="profile-image" data-ng-src="{{getUserImage()}}" height="140px" >
     <p class="uk-text-large profile-name">{{ user.name }}</p>
     <div ng-if="!canEdit()" ng-hide="user.followed.following_id" class="follow-button" ng-click="follow(user)">
       <span uk-icon="icon: rss; ratio: 0.5"></span> Follow</div>
@@ -26,10 +26,10 @@
         <li>
           <a>Following</a>
         </li>
-        <li>
+        <li >
           <a>Followers</a>
         </li>
-        <li ng-if="canEdit()">
+        <li ng-show="canEdit()" class="ng-class: {'uk-active': isCurrentTab('settings')}">
           <a>Settings</a>
         </li>
       </ul>
@@ -50,7 +50,7 @@
         <ng-include src="'views/profile/_followers.html'"></ng-include>
 
         <!--Settings-->
-        <ng-include ng-if="canEdit()" src="'views/profile/_settings.html'"></ng-include>
+        <ng-include ng-if="canEdit()" src="'views/profile/_settings.html'" class="ng-class: {'uk-active': isCurrentTab('settings')}"></ng-include>
       </ul>
     </div>
   </div>

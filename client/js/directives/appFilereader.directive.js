@@ -21,7 +21,6 @@ kitso.directive('appFilereader', function($q) {
                         });
 
                     function readFile(file) {
-                      console.log("a")
                         var deferred = $q.defer();
 
                         var reader = new FileReader();
