@@ -19,7 +19,8 @@ var ListItemSchema = new Schema({
 var UserListSchema = new Schema({
   title: {
     type: String,
-    required: true
+    required: true,
+    maxlength: 40
   },
   description: {
     type: String,

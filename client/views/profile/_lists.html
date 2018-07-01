@@ -8,18 +8,20 @@
         <button class="uk-modal-close-default" type="button" uk-close></button>
           <center>
             <form name="createForm" novalidate>
-
+              <h3>New List</h3>
               <div class="uk-margin">
-                <label class="uk-form-label" ng-class="{ 'uk-text-danger' : isInvalid(createForm.title) }" for="title">List title</label>
+                <label class="uk-form-label uk-align-left" ng-class="{ 'uk-text-danger' : isInvalid(createForm.title) }" for="title">List title</label>
+                <label class="uk-text-small uk-text-danger uk-align-right invalid-label" for="title" ng-show="((isInvalid(createForm.title)) && (createForm.title.$$classCache['ng-valid-maxlength']))">* List title can't be blank</label>
+                <label class="uk-text-small uk-text-danger uk-align-right invalid-label" for="title" ng-show="((isInvalid(createForm.title)) && !(createForm.title.$$classCache['ng-valid-maxlength']))">* List title must have 40 or less characters</label>
                 <div class="uk-form-controls">
-                  <input class="uk-input" type="text" id="title" name="title" placeholder="List title" ng-class="{ 'uk-form-danger' : isInvalid(createForm.title) }" required>
+                  <input class="uk-input" type="text" id="title" name="title" placeholder="List title" ng-class="{ 'uk-form-danger' : isInvalid(createForm.title) }" ng-model="userlist.title" ng-maxlength="40" required>
                 </div>
-                <label class="uk-text-small uk-text-danger uk-align-right invalid-label" for="title" ng-show="isInvalid(createForm.title)">* List title can't be blank</label>
+
               </div>
 
               <div class="uk-margin">
                 <center>
-                  <button class="uk-button uk-button-small uk-button-create-list" ng-class="{ 'uk-button-save-changes': createForm.$valid }" ng-disabled="createForm.$invalid" ng-click="createList(createForm.title.$modelValue)"> Create list</button>
+                  <button class="uk-button uk-button-small uk-button-create-list uk-modal-close" ng-class="{ 'uk-button-changes': createForm.$valid }" ng-disabled="createForm.$invalid" ng-click="createList(createForm.title.$modelValue)"> Create list</button>
                 </center>
               </div>
 
@@ -39,7 +41,7 @@
       </div>
       <div class="uk-card-body">
         <p class="uk-text" align="center">
-          <a class="page-link" ng-click="goToMedia(watched._media)">{{list.title}}</a>
+          <a class="page-link" ng-click="goToList(list._id)">{{list.title}}</a>
         </p>
       </div>
     </div>

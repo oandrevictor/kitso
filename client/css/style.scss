@@ -426,6 +426,30 @@ html, body {
   }
 }
 
+.uk-modal-body {
+  .uk-form-label {
+    margin-bottom: 0px;
+  }
+
+  .uk-button-create-list {
+    //margin-top: 30px !important;
+    margin-left: 30px;
+    margin-right: 3px;
+  }
+
+  .uk-button-changes {
+    background-color: #502274 !important;
+    color: #ffffff !important;
+    font-weight: bold;
+    //margin-top: 30px !important;
+  }
+
+  .invalid-label {
+    margin-bottom: 0px;
+    margin-left: 0px;
+  }
+}
+
 .footer {
   margin-top: -6vh;
   clear: both;
@@ -814,21 +838,7 @@ html, body {
 
     .new-list-button {
       text-align: right;
-
-      .uk-button-create-list {
-        margin-top: 30px !important;
-      }
-
-      .uk-button-save-changes {
-        background-color: #502274 !important;
-        color: #ffffff !important;
-        font-weight: bold;
-        margin-top: 30px !important;
-      }
-
-      .invalid-label {
-        margin-bottom: 0px;
-        margin-left: 0px;
+      margin-bottom: 30px;
       }
     }
 
@@ -983,7 +993,7 @@ html, body {
       margin-right: 5px;
     }
   }
-}
+
 
 .movie {
   font-family: 'Roboto' !important;
