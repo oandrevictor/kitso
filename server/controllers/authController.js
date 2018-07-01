@@ -32,7 +32,8 @@ exports.status = function(req, res) {
   var user = req.user;
   if (user) {
     user = _.omit(user.toJSON(), 'password');
-    user.image = Buffer.from(user.image.data).toString('base64');
+    if (user.image && user.image.data)
+      user.image = Buffer.from(user.image.data).toString('base64');
     res.status(RequestStatus.OK).send({user: user, status: true});
   } else {
     res.status(RequestStatus.OK).send({status: false});

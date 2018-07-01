@@ -30,7 +30,6 @@ exports.show = function (req, res) {
       res.status(RequestStatus.BAD_REQUEST).send(err);
     })
     .then((result) => {
-      result.image = result.image.data.toString("base64");
       res.status(RequestStatus.OK).json(result);
     });
   }
