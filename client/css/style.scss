@@ -19,6 +19,11 @@ html, body {
 .news-box-wrapper{
   display: inline-block;
 }
+
+.uk-notification-message-success {
+    color: #f8f8f8 !important;
+    background: #773095 !important;
+  }
 .dark-purple-button {
   padding: 0%;
   background: #773095 !important;
@@ -899,6 +904,7 @@ html, body {
   .profile-image {
     border-style: solid;
     display: block;
+    height: 140px;
   }
 
   .profile-name {
