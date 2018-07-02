@@ -1,8 +1,5 @@
 <li>
   <a href="#" id="settings" data-uk-switcher-item="next"></a>
-  <div class="uk-margin">
-    <p class=" uk-text-large">Settings</p>
-  </div>
   <form name="editForm" ng-submit="submitForm()" novalidate>
 
     <!--Name Field-->
@@ -24,6 +21,14 @@
       </div>
       <label class="uk-text-small uk-text-danger uk-align-right" for="username" ng-show="((isInvalid(editForm.username)) && (editForm.username.$$classCache['ng-valid-minlength'] && editForm.username.$$classCache['ng-valid-maxlength']))">* Username can't be blank</label>
       <label class="uk-text-small uk-text-danger uk-align-right uk-text-right" for="username" ng-show="((isInvalid(editForm.username)) && !(editForm.username.$$classCache['ng-valid-minlength'] && editForm.username.$$classCache['ng-valid-maxlength']))">* Username must be 4 to 12 characters</label>
+    </div>
+
+
+    <div class="uk-margin">
+      <label class="uk-form-label" for="image">Imagem</label>
+      <div class="uk-form-controls">
+        <input type="file" ng-model="user.newimage" accept="image/*" app-filereader />
+      </div>
     </div>
 
     <!--Email Field-->

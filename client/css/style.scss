@@ -19,6 +19,11 @@ html, body {
 .news-box-wrapper{
   display: inline-block;
 }
+
+.uk-notification-message-success {
+    color: #f8f8f8 !important;
+    background: #773095 !important;
+  }
 .dark-purple-button {
   padding: 0%;
   background: #773095 !important;
@@ -274,6 +279,16 @@ html, body {
   display: none;
   z-index: 999;
 }
+
+.bubble-loading {
+  background: url('/images/icon/loading_bubbles.svg') no-repeat center center;
+  height: 20px;
+  background-size: 60px;
+  width: 100%;
+  padding-bottom: 60px;
+  display: none;
+}
+
 .home {
   font-family: 'Roboto', sans-serif;
   background: black;
@@ -779,7 +794,7 @@ html, body {
     background: #502274;
     background-repeat:no-repeat;
     background-size:cover;
-    width: 300px;
+    width: 360px;
     height: 150px;
     cursor: pointer;
   }
@@ -835,6 +850,7 @@ html, body {
     margin-top: -50px;
     margin-bottom: auto;
     font-weight: 300;
+    width: 900px;
 
     .new-list-button {
       text-align: right;
@@ -881,7 +897,6 @@ html, body {
     .uk-width-1-2{
       p{
         margin-bottom: 0px;
-        width: 300px
       }
     }
 
@@ -914,11 +929,11 @@ html, body {
     .following-link {
       color: #db2399 !important
     }
-  }
 
   .profile-image {
     border-style: solid;
     display: block;
+    height: 140px;
   }
 
   .profile-name {
@@ -961,6 +976,10 @@ html, body {
     }
   }
 
+  .sub-text  {
+    float: right;
+  }
+
   .section {
     margin-top: 8px;
     margin-bottom: 4px;
@@ -993,7 +1012,7 @@ html, body {
       margin-right: 5px;
     }
   }
-
+}
 
 .movie {
   font-family: 'Roboto' !important;
@@ -1085,7 +1104,7 @@ html, body {
 
   .rating {
     float: right;
-    margin-top: -160px;
+    margin-top: -100px;
     color: white;
     font-size: 28px;
     font-weight: 100;

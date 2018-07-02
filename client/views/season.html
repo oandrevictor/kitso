@@ -55,7 +55,7 @@
     </div>
 
         <div class="uk-width-3-4">
-          <div class="rating">
+          <div class="rating" ng-style="(season.name.length > 22) && {'margin-top':'-120px'}">
             <div>
               <div class="is-rated-star" ng-show="season.rated"></div>
               <a ng-hide="season.rated" uk-icon="icon: star; ratio: 2"></a>

@@ -1,4 +1,4 @@
-angular.module('kitso', ['ngRoute', 'appRoutes', 'ngSanitize']);
+angular.module('kitso', ['ngRoute', 'appRoutes', 'ngSanitize', "chart.js"]);
 angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
 
     $routeProvider
