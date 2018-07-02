@@ -75,6 +75,7 @@ exports.getSeasonFromAPI = function(tv_id, season_number){
 exports.getShow = function(tmdb_id){
   return new Promise(function(resolve, reject) {
     Show.find({_tmdb_id: tmdb_id}).catch((err)=> console.log(err)). then(async (result)=>{
+      result = result[0];
       var query = RequestGenerals.TVSHOW_ENDPOINT + tmdb_id;
       redisClient.exists(query, function(err, reply) {
         if (reply === 1) {
