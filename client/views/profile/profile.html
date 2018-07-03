@@ -14,7 +14,7 @@
   <div class="uk-width-xxlarge uk-container profile-container">
     <div class="uk-card uk-card-small uk-card-default uk-card-body uk-container-center">
       <ul class="uk-tab" data-uk-tab="{connect:'#tab-id'}">
-        <li>
+        <li  class="ng-class: {'uk-active': isCurrentTab('overview')}">
           <a>Overview</a>
         </li>
         <li>
@@ -38,7 +38,7 @@
       </ul>
       <ul id="tab-id" class="uk-switcher uk-margin">
         <!--Overview-->
-        <ng-include src="'views/profile/_overview.html'"></ng-include>
+        <ng-include src="'views/profile/_overview.html'" class="ng-class: {'uk-active': isCurrentTab('overview')}"></ng-include>
 
         <!--Lists-->
         <ng-include src="'views/profile/_lists.html'"></ng-include>

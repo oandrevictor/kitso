@@ -198,7 +198,6 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
   $scope.markAsWatched = function (activity) {
 		var media = $scope.getMediaFromActivity(activity);
     var mediaId = media._id;
-		console.log(media)
     WatchedService.markAsWatched($scope.user._id, mediaId, media)
       .then((watched) => {
         activity.watched = watched;
@@ -254,7 +253,6 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
         if (!loading_feed && !stop_loading){
 					current_page = current_page + 1;
 					loadFeed($scope.user._id, current_page);
-					console.log($scope.feed)
 				}
 
     }

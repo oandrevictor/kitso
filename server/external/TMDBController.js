@@ -4,6 +4,7 @@ var RedisClient = require('../utils/lib/redisClient');
 var Show = require('../models/TvShow');
 var Movie = require('../models/Movie');
 var Episode = require('../models/Episode');
+var Season = require('../models/Season');
 
 
 const https = require('https');
@@ -46,13 +47,16 @@ exports.getSeasonFromAPI = function(tv_id, season_number){
           if (err)
           console.log(err);
           else {
-            var parsed_result = JSON.parse(JSON.parse(data));
+            var parsed_result = JSON.parse(data);
+            if (typeof parsed_result === 'string' || parsed_result instanceof String)
+                  parsed_result = JSON.parse(parsed_result);
             parsed_result.backdrop_path = TMDBConstants.TMDB_BACK_IMAGE_PATH + parsed_result.backdrop_path;
             resolve(JSON.stringify(parsed_result));
           }
         });
       }
       else{
+        console.log("GET SEASON| Could not get from redis.")
         https.get(tmdbQuery,
           (resp) => {
             let data = '';
@@ -60,11 +64,16 @@ exports.getSeasonFromAPI = function(tv_id, season_number){
               data += chunk;
             });
             resp.on('end', () => {
-              console.log("Saving season result to redis: "+  query);
+              var received_data = JSON.parse(data)
+              if (!(received_data.status_code && received_data.status_code == 25)){
+                console.log("GET SEASON| Saving on redis: " + query)
+                redisClient.set(query, JSON.stringify(data));
+              }
               resolve(data)
             });
           }).on("error", (err) => {
             console.log("Error: " + err.message);
+
             reject();
           });
         }
@@ -98,7 +107,9 @@ exports.getShow = function(tmdb_id){
             data.__t = result.__t;
             data.poster_path = TMDBConstants.TMDB_POSTER_IMAGE_PATH + data.poster_path;
             data.backdrop_path = TMDBConstants.TMDB_BACK_IMAGE_PATH + data.backdrop_path;
-            redisClient.set(query, JSON.stringify(data));
+            if (!(data.status_code && data.status_code == 25)){
+              redisClient.set(query, JSON.stringify(data));
+            }
             resolve(data);
           })
         }
@@ -136,7 +147,9 @@ exports.getMovie = function(tmdb_id) {
             data.backdrop_path = TMDBConstants.TMDB_BACK_IMAGE_PATH + data.backdrop_path;
             data.poster_path = TMDBConstants.TMDB_BACK_IMAGE_PATH + data.poster_path;
             console.log("GET MOVIE | Saving to redis:" + query)
-            redisClient.set(query, JSON.stringify(data));
+            if (!(data.status_code && data.status_code == 25)){
+              redisClient.set(query, JSON.stringify(data));
+            }
             resolve(data);
           })
         }
@@ -171,12 +184,14 @@ exports.getEpisode = function(tmdb_id){
             data._id = result._id;
             data.__t = result.__t;
             console.log("GET EPISODE | Saving to redis:" + query)
-            redisClient.multi().set(query, JSON.stringify(data)).exec(function(err, results) {
-                if(err){
-                  console.log(err)
-                }
+            if (!(data.status_code && data.status_code == 25)){
+              redisClient.multi().set(query, JSON.stringify(data)).exec(function(err, results) {
+                  if(err){
+                    console.log(err)
+                  }
 
-            });;
+              })
+            };
             resolve(data);
           })
         }
@@ -200,7 +215,6 @@ exports.getMovieFromTMDB = function(tmdb_id){
         });
         resp.on('end', () => {
           console.log("Saving result to redis: "+ query);
-          redisClient.set(query, JSON.stringify(data));
           data.backdrop_path = TMDBConstants.TMDB_BACK_IMAGE_PATH + data.backdrop_path;
           resolve(data)
         });
@@ -222,7 +236,6 @@ exports.getEpisodeFromTMDB = function(tmdb_id, season, episode){
       });
       resp.on('end', () => {
         console.log("saving result to redis: " + query)
-        redisClient.set(query, JSON.stringify(data));
         resolve(data)
       });
 

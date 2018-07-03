@@ -26,6 +26,9 @@ kitso.service('RatedService', ['$q','$http', function ($q, $http) {
                 if(rated._media.helper){
                   rated._media.helper = JSON.parse(rated._media.helper)
                 }
+                if(typeof rated._media.helper === 'string' || rated._media.helper instanceof String){
+                  rated._media.helper = JSON.parse(rated._media.helper)
+                }
               })
                   deferred.resolve(result);
               } else {

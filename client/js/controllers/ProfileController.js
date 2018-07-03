@@ -182,6 +182,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         .then((ratings) => {
           loaded +=1;
           ratings.forEach((rated) => {
+            console.log(rated)
             rated.date = new Date(rated.date);
           });
 
