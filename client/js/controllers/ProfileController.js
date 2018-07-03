@@ -267,7 +267,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
       var ratedMovies = $scope.user.ratings.filter(isMovie);
 
       if (ratedMovies.length > 0) {
-        $scope.profileBackground = "https://image.tmdb.org/t/p/original/" + ratedMovies[0]._media.helper.backdrop_path;
+        $scope.profileBackground =  ratedMovies[0]._media.helper.backdrop_path;
       } else {
         $scope.profileBackground = "/images/strange.jpg";
       }
@@ -344,7 +344,12 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         return media.images.poster;
       }
       if(media.helper && media.helper.poster_path){
-        return 'https://image.tmdb.org/t/p/w500/' + media.helper.poster_path;
+        if(media.helper.poster_path[0] === "/"){
+          return 'https://image.tmdb.org/t/p/original' + media.helper.poster_path;
+        }
+        else{
+          return  media.helper.poster_path;
+        }
       }
     }
 
@@ -356,7 +361,12 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         return media.images.cover;
       }
       if(media.helper && media.helper.backdrop_path){
-        return 'https://image.tmdb.org/t/p/original/' + media.helper.backdrop_path;
+        if(media.helper.backdrop_path[0] === "/"){
+          return 'https://image.tmdb.org/t/p/original' + media.helper.backdrop_path;
+        }
+        else{
+          return  media.helper.backdrop_path;
+        }
       }
     }
 
@@ -368,7 +378,6 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
 
       if (addedMovies.length > 0) {
         var first = addedMovies[0];
-        console.log(first)
         if (first.poster_path) {
           return first.poster_path;
         }
