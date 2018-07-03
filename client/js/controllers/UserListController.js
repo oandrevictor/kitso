@@ -185,7 +185,7 @@ function($scope, $location, $timeout, UserListService, MovieService, $routeParam
   }
 
   $scope.editionMode = function () {
-    $location.path('user/list/edit/' + $scope.userlist._id);
+    $location.path('/list/edit/' + $scope.userlist._id);
   }
 
   $scope.goToProfile = function () {

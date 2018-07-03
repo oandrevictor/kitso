@@ -75,43 +75,11 @@ exports.getSeasonFromAPI = function(tv_id, season_number){
 exports.getShow = function(tmdb_id){
   return new Promise(function(resolve, reject) {
     Show.find({_tmdb_id: tmdb_id}).catch((err)=> console.log(err)). then(async (result)=>{
+      result = result[0];
       var query = RequestGenerals.TVSHOW_ENDPOINT + tmdb_id;
       redisClient.exists(query, function(err, reply) {
         if (reply === 1) {
           console.log("GET SHOW | got query from redis: " + query)
-          redisClient.get(query, async function(err,data) {
-            if (err)
-            console.log(err);
-            else {
-              var parsed_result = JSON.parse(data);
-              parsed_result.backdrop_path = TMDBConstants.TMDB_BACK_IMAGE_PATH + parsed_result.backdrop_path;
-              resolve(parsed_result);
-            }
-          });
-        } else {
-          console.log("GET SHOW | could not get from redis: " + query)
-          exports.getShowFromTMDB(tmdb_id).then(async function(data) {
-            var data = JSON.parse(data);
-            data._id = result._id;
-            data.__t = result.__t;
-            data.backdrop_path = TMDBConstants.TMDB_BACK_IMAGE_PATH + data.backdrop_path;
-            redisClient.set(query, JSON.stringify(data));
-            resolve(data);
-          })
-        }
-      })
-    })
-  })
-}
-
-exports.getMovie = function(tmdb_id) {
-  return new Promise(function(resolve, reject) {
-    Movie.find({_tmdb_id: tmdb_id}).catch((err)=> console.log(err)). then(async (result)=>{
-      result = result[0]
-      var query = RequestGenerals.MOVIE_ENDPOINT + tmdb_id;
-      redisClient.exists(query, function(err, reply) {
-        if (reply === 1) {
-          console.log("GET MOVIE | got query from redis: " + query)
           redisClient.get(query, async function(err,data) {
             if (err)
             console.log(err);
@@ -123,7 +91,44 @@ exports.getMovie = function(tmdb_id) {
             }
           });
         } else {
-          console.log("GET MOVIE | Could not get from redis: " + query)
+          console.log("GET SHOW | could not get from redis: " + query);
+          exports.getShowFromTMDB(tmdb_id).then(async function(data) {
+            var data = JSON.parse(data);
+            data._id = result._id;
+            data.__t = result.__t;
+            data.poster_path = TMDBConstants.TMDB_POSTER_IMAGE_PATH + data.poster_path;
+            data.backdrop_path = TMDBConstants.TMDB_BACK_IMAGE_PATH + data.backdrop_path;
+            redisClient.set(query, JSON.stringify(data));
+            resolve(data);
+          })
+        }
+      })
+    })
+  })
+};
+
+exports.getMovie = function(tmdb_id) {
+  return new Promise(function(resolve, reject) {
+    Movie.find({_tmdb_id: tmdb_id}).catch((err)=> console.log(err)). then(async (result)=>{
+      result = result[0];
+      var query = RequestGenerals.MOVIE_ENDPOINT + tmdb_id;
+      redisClient.exists(query, function(err, reply) {
+        if (reply === 1) {
+          console.log("GET MOVIE | got query from redis: " + query);
+          redisClient.get(query, async function(err,data) {
+            if (err)
+              console.log(err);
+            else {
+              var parsed_result = JSON.parse(data);
+              if (typeof parsed_result === 'string' || parsed_result instanceof String)
+                    parsed_result = JSON.parse(parsed_result);
+              parsed_result._id = result._id;
+              parsed_result.__t = result.__t;
+              resolve(parsed_result);
+            }
+          });
+        } else {
+          console.log("GET MOVIE | Could not get from redis: " + query);
           exports.getMovieFromTMDB(tmdb_id).then(async function(data) {
             var data = JSON.parse(data);
             data._id = result._id;
@@ -179,7 +184,7 @@ exports.getEpisode = function(tmdb_id){
     })
   })
 
-}
+};
 
 exports.getMovieFromTMDB = function(tmdb_id){
   return new Promise(function(resolve, reject) {
@@ -208,8 +213,8 @@ exports.getMovieFromTMDB = function(tmdb_id){
 
 exports.getEpisodeFromTMDB = function(tmdb_id, season, episode){
   return new Promise(function(resolve, reject) {
-    var query = "tvshow/"+ tmdb_id + "/" + season + "/" + episode
-    console.log("Could not get from redis, requesting info from The Movie DB")
+    console.log("Could not get from redis, requesting info from The Movie DB");
+    var query = "tvShow/"+ tmdb_id + "/season/" + season + "/episode/" + episode;
     https.get("https://api.themoviedb.org/3/tv/"+ tmdb_id + "/season/" + season + "/episode/" + episode + "?api_key=db00a671b1c278cd4fa362827dd02620", (resp) => {
       let data = '';
       resp.on('data', (chunk) => {

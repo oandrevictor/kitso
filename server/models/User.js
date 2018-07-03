@@ -60,7 +60,8 @@ var UserSchema = new Schema({
       default: [],
       required: true
     },
-    _following: {
+
+  _following: {
       type: [
         {
           type: mongoose.Schema.Types.ObjectId,
@@ -69,7 +70,7 @@ var UserSchema = new Schema({
       ],
       default: []
     },
-    _following_pages: {
+  _following_pages: {
       type: [
         {
           type: mongoose.Schema.Types.ObjectId,
@@ -78,7 +79,7 @@ var UserSchema = new Schema({
       ],
       default: []
     },
-    _followers: {
+  _followers: {
       type: [
         {
           type: mongoose.Schema.Types.ObjectId,
@@ -87,53 +88,54 @@ var UserSchema = new Schema({
       ],
       default: []
     },
-    vip: {
-      type: Boolean,
-      default: false
-    },
-    _watchlist: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'UserList'
-    },
-    _lists: {
-      type: [
-        {
+  vip: {
+    type: Boolean,
+    default: false
+  },
+  _watchlist: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'UserList'
+  },
+  _lists: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'UserList'
+      }
+    ],
+    default: []
+  },
+  _following_lists: {
+    type: [
+      {
+        userListId: {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'UserList'
-        }
-      ],
-      default: []
-    },
-    _following_lists: {
-      type: [
-        {
-          userListId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'UserList'
-          },
-          notifications_enabled: {
-            type: Boolean
-          }
         },
-      ],
-
-      default: []
-    },
-    _ratings: {
-      type: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'Rating'
+        notifications_enabled: {
+          type: Boolean
         }
-      ],
-      default: []
-    },
-    settings: {
-      autowatch: {
-        type: Boolean,
-        default: false
+      },
+    ],
+
+    default: []
+  },
+  _ratings: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Rating'
       }
+    ],
+    default: []
+  },
+  image: Buffer,
+  settings: {
+    autowatch: {
+      type: Boolean,
+      default: false
     }
+  }
   });
 
   UserSchema.methods.generateHash = function(password) {

@@ -75,7 +75,7 @@
             <ul class="uk-slider-items uk-child-width-1-4@s">
               <li ng-repeat="media in mediasPersonAppears">
                 <div class="uk-card uk-grid-match uk-card-default uk-card-hover" ng-click="goToMedia(media)">
-                  <img class="poster" style="background-image: url(https://image.tmdb.org/t/p/w500/{{ media.helper.poster_path }})" />
+                  <img class="poster" style="background-image: url({{ media.helper.poster_path }})" />
                   <p class="uk-align-center uk-text-uppercase" style="margin-top: 10px; margin-bottom: 25px" align="center"> {{media.name}}</p>
                 </div>
               </li>

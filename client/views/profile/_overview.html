@@ -32,13 +32,23 @@
         <br> Try rating a movie</p>
     </div>
     <div class="uk-width-1-2">
+      Watched Hours
+      <canvas class="chart chart-horizontal-bar" height="70" chart-type="bar" chart-data="dataMonth" chart-labels="labelsWatchedHours"
+      chart-options="options" chart-colors="colors" chart-dataset-override="datasetOverride"></canvas>
+      <div class="sub-text">{{timeSpentThisMonth}}</div>
+      <canvas class="chart chart-horizontal-bar" height="70" chart-type="bar" chart-data="dataWeek" chart-labels="labelsWatchedHours"
+      chart-options="options" chart-colors="colors" chart-dataset-override="datasetOverride"></canvas>
+      <div class="sub-text">{{timeSpentThisWeek}}</div>
+    </div>
+    <div class="uk-width-1-2">
       <p>Watched Genres</p>
-      <img src="/images/watched.jpg" width="300" height="400">
+      <br>
+      <canvas id="doughnut" class="chart chart-doughnut round-chart" chart-data="data" chart-colors="colors" chart-options="optionsGenres" chart-labels="labels"></canvas>
     </div>
   </div>
   <hr class="uk-divider-icon">
   <div class="section">
-    <div class="section-title uk-text-large">
+    <div class="section-title" style="padding-bottom: 10px">
       {{user.name}}'s Lists
     </div>
 
@@ -47,7 +57,7 @@
         <ul class="uk-slider-items uk-child-width-1-5@s">
           <li ng-repeat="list in user.lists">
             <div class="uk-card uk-grid-match uk-card-default uk-card-hover list-info" >
-              <a ng-href="user/list/{{list._id}}"> <img class="list-image" style="background-image: url({{ getListPoster(list) }})" /></a>
+              <a ng-href="/list/{{list._id}}"> <img class="list-image" style="background-image: url({{ getListPoster(list) }})" /></a>
               <p class="uk-align-center uk-text-uppercase list-name" align="center"> {{list.title}}</p>
             </div>
           </li>

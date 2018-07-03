@@ -421,10 +421,9 @@ exports.deleteWatched = async function(watchedId) {
     promises = likedObjs.map((likedObj) => {
       this.deleteLiked(likedObj._id);
     });
+    await Promise.all(promises).then((result) => {
+    });
   }
-  await Promise.all(promises).then((result) => {
-    console.log('Liked deleted');
-  });
   await Action.remove({ _id: actionId}).exec();
   var deleteActionFromUserHistory = function(userId, actionId) {
     User.findById(userId, function (err, user) {

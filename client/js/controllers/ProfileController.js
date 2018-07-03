@@ -1,26 +1,30 @@
 var kitso = angular.module('kitso');
 
 kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$routeParams', 'AuthService', 'UserService', 'FollowService', 'WatchedService', 'RatedService', 'UserListService',
-  function ($scope, $location, $timeout, $routeParams, AuthService, UserService, FollowService, WatchedService, RatedService, UserListService) {
+function ($scope, $location, $timeout, $routeParams, AuthService, UserService, FollowService, WatchedService, RatedService, UserListService) {
 
-    $('.full-loading').show();
-    var loaded = 0;
-    AuthService.getStatus()
-      .then(() => {
-        $scope.user = AuthService.getUser();
-        if ($routeParams.user_id){
-          $scope.logged_user = $scope.user;
-          UserService.getUser($routeParams.user_id).then((user)=> {
-            $scope.user = user;
-            loadUserRatedInfo();
-            loadUserFollowInfo();
-            loadUserWatchedInfo();
-            loadUserLists();
-            FollowService.isFollowingUser($scope.logged_user._id, $scope.user._id).then((followed) => {
-              $scope.user.followed = followed;
-            }).catch((error) => {
-              console.log(error)
-              UIkit.notification({
+  $('.full-loading').show();
+  var loaded = 0;
+  var validtabs = ['overview','history','following','followers','settings']
+  $scope.activetab = 'overview';
+  AuthService.getStatus()
+    .then(() => {
+      $scope.user = AuthService.getUser();
+      if ($routeParams.user_id){
+        $scope.logged_user = $scope.user;
+        UserService.getUser($routeParams.user_id).then((user)=> {
+          $scope.user = user;
+          loadUserRatedInfo();
+          loadUserFollowInfo();
+          loadUserWatchedInfo();
+          loadUserWatchedHours();
+          loadUserWatchedGenres();
+          loadUserLists();
+          FollowService.isFollowingUser($scope.logged_user._id, $scope.user._id).then((followed) => {
+            $scope.user.followed = followed;
+          }).catch((error) => {
+            console.log(error)
+            UIkit.notification({
                 message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
                 status: 'danger',
                 timeout: 2500
@@ -35,6 +39,8 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$rout
           loadUserRatedInfo();
           loadUserFollowInfo();
           loadUserWatchedInfo();
+          loadUserWatchedHours();
+          loadUserWatchedGenres();
           loadUserLists();
         }
       });
@@ -52,16 +58,117 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$rout
       }
     }
 
-    var loadUserWatchedInfo = function(){
-      WatchedService.getAllWatched($scope.user._id)
-        .then(function (watched) {
-          watched.forEach(function (watched) {
-            watched.date = new Date(watched.date);
-          });
-          watched = watched.sort(compareDates);
-          $scope.user.watched = watched;
-          loaded++;
-          checkFinishedLoading();
+  Date.prototype.getMonthWeek = function() {
+    var firstDay = new Date(this.getFullYear(), this.getMonth(), 1).getDay();
+    return Math.ceil((this.getDate() + firstDay)/7);
+  }
+
+  var loadUserWatchedHours = function(){
+    let date = new Date();
+    getTimeSpentMonth(date.getMonth() + 1, date.getFullYear());
+    getTimeSpentWeek(date.getMonth() + 1, date.getMonthWeek(), date.getFullYear());
+
+    $scope.labelsWatchedHours = ["Hours percentage"];
+    $scope.colors = ['#773095', '#EDEDED'];
+    $scope.datasetOverride = [{
+        fill: true,
+        backgroundColor: [
+          "#773095"
+        ]
+      }]
+    $scope.options = {
+      responsive: true,
+      scales: {
+        xAxes: [{ display: false, ticks: {min: 0, max:100}}],
+        yAxes: [{ display: false, stacked: true}]
+      },
+      tooltips: {
+        enabled: true,
+        mode: 'single',
+        callbacks: {
+          label: function (tooltipItems, data) {
+            return  (tooltipItems.xLabel).toFixed(2) + " %";
+          }
+        }
+      }
+    }
+  }
+
+  var getTimeSpentMonth = function(month, year){
+    let data = {
+      filter: "by_month",
+      month: month,
+      year: year
+    }
+
+    UserService.getTimespent($scope.user._id, data)
+      .then(function (result) {
+        let hours = (result/60).toFixed(2);
+
+        $scope.dataMonth = [[(100*result)/7300],[100]];
+        if (hours == 1)
+          $scope.timeSpentThisMonth = "Time spent this month: " + hours + " hour"
+        else
+          $scope.timeSpentThisMonth = "Time spent this month: " + hours + " hours"
+      })
+      .catch(function (error) {
+        console.log(error)
+      });
+  }
+
+  var getTimeSpentWeek = function(month, week, year){
+    let data = {
+      filter: "by_week",
+      month: month,
+      week: week,
+      year: year
+    }
+
+    UserService.getTimespent($scope.user._id, data)
+      .then(function (result) {
+        let hours = (result/60).toFixed(2);
+
+        $scope.dataWeek = [[(100*result)/240],[100]];
+        if (hours == 1)
+          $scope.timeSpentThisWeek = "Time spent this week: " + hours + " hour"
+        else
+          $scope.timeSpentThisWeek = "Time spent this week: " + hours + " hours"
+      })
+      .catch(function (error) {
+        console.log(error)
+      });
+  }
+
+  var loadUserWatchedGenres = function() {
+    $scope.labels = ["Comedy", "Horror"];
+    $scope.data = [40, 60];
+    $scope.optionsGenres = { legend: { display: true, position: 'bottom'}};
+  }
+
+  var loadTab = function(){
+    var query = $location.search()
+    validtabs.forEach(function(tab){
+      if (query[tab])
+        $scope.activetab = tab;
+    })
+  }
+
+  loadTab();
+
+  $scope.isCurrentTab = function(tab){
+    return tab === $scope.activetab;
+  }
+
+  var loadUserWatchedInfo = function(){
+    WatchedService.getAllWatched($scope.user._id)
+      .then(function (watched) {
+        watched.forEach(function (watched) {
+          watched.date = new Date(watched.date);
+        });
+        watched = watched.sort(compareDates);
+        $scope.user.watched = watched;
+        loaded++;
+        checkFinishedLoading();
 
         }).catch(function (error) {
         loaded++;
@@ -263,7 +370,7 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$rout
         var first = addedMovies[0];
         console.log(first)
         if (first.poster_path) {
-          return 'https://image.tmdb.org/t/p/w500/' + first.poster_path;
+          return first.poster_path;
         }
         if (first.still_path) {
           return 'https://image.tmdb.org/t/p/w227_and_h127_bestv2/' + first.still_path;
@@ -351,57 +458,61 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$rout
         console.log(error);
       });
 
-    }
+  }
 
-    $scope.submitForm = function () {
-      if (this.editForm.$valid) {
-        let payload = {
-          _id: $scope.user._id,
-          name: $scope.user.name,
-          username: $scope.user.username,
-          email: $scope.user.email,
-          birthday: $scope.user.birthday,
-          gender: $scope.user.gender,
-          description: $scope.user.description,
-          settings: {
-            autowatch: $scope.user.settings.autowatch
-          }
+  $scope.submitForm = function () {
+    if (this.editForm.$valid) {
+      let payload = {
+        _id: $scope.user._id,
+        name: $scope.user.name,
+        username: $scope.user.username,
+        email: $scope.user.email,
+        birthday: $scope.user.birthday,
+        gender: $scope.user.gender,
+        description: $scope.user.description,
+        image: $scope.user.newimage,
+        settings: {
+          autowatch: $scope.user.settings.autowatch
         }
+      }
 
         UserService.editUser(payload)
         // handle success
-          .then(function () {
-            $scope.descriptionArea = false;
-            UIkit.notification({
-              message: '<span uk-icon=\'icon: check\'></span> User successfully edited.',
-              status: 'success',
-              timeout: 1500
-            });
-          })
-          // handle error
-          .catch(function (error) {
-            var dangerMessage = 'Something went wrong...';
+        .then(function () {
+          $scope.descriptionArea = false;
+          UIkit.notification({
+            message: '<span uk-icon=\'icon: check\'></span> User successfully edited.',
+            status: 'success',
+            timeout: 150000,
+            pos: 'bottom-right'
+          });
+          if ($scope.user.newimage)
+           $scope.user.image = $scope.user.newimage.split(',')[1]
+        })
+        // handle error
+        .catch(function (error) {
+          var dangerMessage = 'Something went wrong...';
 
-            if (error.hasOwnProperty('code') && error.code === 11000) {
-              if (error.errmsg.includes('username_1')) {
-                dangerMessage = 'Username already in use';
-              } else if (error.errmsg.includes('email_1')) {
-                dangerMessage = 'Email already in use';
-              }
+          if (error.hasOwnProperty('code') && error.code === 11000) {
+            if (error.errmsg.includes('username_1')) {
+              dangerMessage = 'Username already in use';
+            } else if (error.errmsg.includes('email_1')) {
+              dangerMessage = 'Email already in use';
+            }
 
               UIkit.notification({
                 message: '<span uk-icon=\'icon: check\'></span> ' + dangerMessage,
                 status: 'danger',
                 timeout: 2500
               });
-            } else {
+          } else {
               UIkit.notification({
                 message: '<span uk-icon=\'icon: check\'></span> ' + dangerMessage,
                 status: 'danger',
                 timeout: 2500
               });
             }
-          });
+        });
       }
     };
 
@@ -457,7 +568,7 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$rout
     }
 
     $scope.goToList = function (listId) {
-      $location.path('user/list/' + listId);
+      $location.path('/list/' + listId);
     }
 
     $scope.isInvalid = function (field) {
@@ -477,4 +588,13 @@ kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$rout
       $scope.descriptionArea = !$scope.descriptionArea;
     }
 
-  }]);
+  $scope.getUserImage = function(){
+    if ($scope.user && $scope.user.image){
+      return "data:image/png;base64," + $scope.user.image;
+    }
+    else {
+      return 'images/mask2.png'
+    }
+  }
+
+}]);

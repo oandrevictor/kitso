@@ -115,9 +115,9 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
             $location.path('/explore');
         });
 
-    $scope.markEntireTvshowAsWatched = function (tvshowId) {
+    $scope.markEntireTvshowAsWatched = function (tvshowId, runtime) {
         $scope.watchAction = true;
-        WatchedService.markEntireTvshowAsWatched($scope.user._id, tvshowId)
+        WatchedService.markEntireTvshowAsWatched($scope.user._id, tvshowId, runtime)
             .then((result) => {
                 $scope.watchAction = false;
                 $route.reload();
@@ -132,9 +132,9 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
             });
         };
 
-    $scope.markTvshowAsWatched = function (tvshowId) {
+    $scope.markTvshowAsWatched = function (tvshowId, runtime) {
         $scope.watchAction = true;
-        WatchedService.markTvshowAsWatched($scope.user._id, tvshowId)
+        WatchedService.markTvshowAsWatched($scope.user._id, tvshowId, runtime)
             .then((result) => {
                 $scope.watchAction = false;
                 $route.reload();
@@ -163,8 +163,8 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
             });
         };
 
-    $scope.markAsWatched = function(tvshowId){
-        WatchedService.markAsWatched($scope.user._id, tvshowId)
+    $scope.markAsWatched = function(tvshowId, runtime){
+        WatchedService.markAsWatched($scope.user._id, tvshowId, runtime)
         .then((watched) => {
             $scope.tvshow.watched = watched;
         })

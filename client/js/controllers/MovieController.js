@@ -175,8 +175,8 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
     });
   }
 
-    $scope.markAsWatched = function(movieId){
-        WatchedService.markAsWatched($scope.user._id, movieId)
+    $scope.markAsWatched = function(movieId, runtime){
+        WatchedService.markAsWatched($scope.user._id, movieId, runtime)
         .then((watched) => {
             $scope.movie.watched = watched;
         })

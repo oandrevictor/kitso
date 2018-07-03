@@ -194,7 +194,7 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
     $scope.markEntireSeasonAsWatched = function () {
       $scope.watchAction = true;
 
-      WatchedService.markEntireSeasonAsWatched($scope.user._id, $scope.season._id)
+      WatchedService.markEntireSeasonAsWatched($scope.user._id, $scope.season._id, $scope.tvshow.episode_run_time[0])
         .then((result) => {
           $scope.watchAction = false;
           $route.reload();
@@ -212,7 +212,7 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
     $scope.markSeasonAsWatched = function () {
       $scope.watchAction = true;
 
-      WatchedService.markSeasonAsWatched($scope.user._id, $scope.season._id)
+      WatchedService.markSeasonAsWatched($scope.user._id, $scope.season._id, $scope.tvshow.episode_run_time[0])
         .then((result) => {
           $scope.watchAction = false;
           $route.reload();
@@ -251,7 +251,7 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
 
     $scope.markAsWatched = function (episode) {
       var episodeId = episode._id;
-      WatchedService.markAsWatched($scope.user._id, episodeId)
+      WatchedService.markAsWatched($scope.user._id, episodeId, $scope.tvshow.episode_run_time[0])
         .then((watched) => {
           episode.watched = watched;
           $scope.updateProgress($scope.season.progress, 1);

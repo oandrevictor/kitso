@@ -18,11 +18,13 @@ exports.index = async function(req, res) {
   })
   .then((movie_result) => {
     var final_result = [];
-    if (movie_result.len == 0)
+    if (movie_result.length == 0)
     res.status(200).send(final_result);
     movie_result.forEach(async function(movie, index){
       var tmdb_id = movie._tmdb_id;
       var movie_complete = await TMDBController.getMovie(tmdb_id);
+      if (typeof movie_complete === 'string' || movie_complete instanceof String)
+        movie_complete = JSON.parse(movie_complete)
       final_result.push(movie_complete);
       if (final_result.length == movie_result.length) {
         res.setHeader('Content-Type', 'application/json');
@@ -43,45 +45,17 @@ exports.show = function(req, res) {
   movie.catch((err) => {
     res.status(400).send(err);
   })
-  .then((result) => {
+  .then(async function(result) {
     if (result) {
       var tmdb_id = result._tmdb_id;
-      var query = 'movie/' + tmdb_id;
-      redisClient.exists(query, function(err, reply) {
-        if (reply === 1) {
-          redisClient.get(query, async function(err,data) {
-            if(err)
-            console.log(err);
-            else{
-              console.log('got query from redis: movie/' + tmdb_id);
-              var parsed_result = JSON.parse(data);
-              console.log(tmdb_id, typeof parsed_result)
-              if (typeof parsed_result === 'string' || parsed_result instanceof String)
-                parsed_result = JSON.parse(parsed_result)
-              var actors = result._actors;
-              let actorsPromises = actors.map(injectPersonJson);
-              parsed_result._id = result._id;
-              parsed_result.__t = result.__t;
-              await Promise.all(actorsPromises).then(function(nested_actors) {
-                parsed_result._actors = nested_actors;
-                parsed_result.backdrop_path = "https://image.tmdb.org/t/p/original" + parsed_result.backdrop_path;
-                res.setHeader('Content-Type', 'application/json');
-                res.status(200).send(parsed_result);
-              });
-            }
-          });
-        } else {
-          TMDBController.getMovieFromTMDB(tmdb_id).then(async function(data) {
-            console.log("ENTROU AQUI")
-            var data = JSON.parse(data);
-            if (typeof data === 'string' || data instanceof String)
-              data = JSON.parse(data)
-            data._id = result._id;
-            data.__t = result.__t;
-            res.status(RequestStatus.OK).send(data);
-          })
-        }
+      let movie_complete = await TMDBController.getMovie(tmdb_id);
+      var actors = result._actors;
+      let actorsPromises = actors.map(injectPersonJson);
+      await Promise.all(actorsPromises).then(function(nested_actors) {
+        movie_complete._actors = nested_actors;
       });
+      res.setHeader('Content-Type', 'application/json');
+      res.status(RequestStatus.OK).send(movie_complete);
     } else {
       res.status(RequestStatus.NOT_FOUND).send('Media not found.');
     }
@@ -192,14 +166,15 @@ matchApiMovieCastToDb = async function(dbmovieshow){
           nCast++;
           castIds[i] = created_db_person._id;
           await createAppearsIn(created_db_person._id, dbmovieshow._id);
-          if (nCast == castSize) done();
-          console.log("Person Created:" + name)
+          if (nCast === castSize)
+            done();
+          console.log("Person Created:" + name);
         }).catch((err)=>{console.log(err)});
       }
       else {
         // person already exists
         await createAppearsIn(hasPerson[0]._id, dbmovieshow._id);
-        console.log("Person Updated:" + name)
+        console.log("Person Updated:" + name);
       }
     });
 
@@ -207,4 +182,9 @@ matchApiMovieCastToDb = async function(dbmovieshow){
       return castIds;
     }
   });
+};
+
+injectPersonJson = async function(personId) {
+    let personObj = await DataStoreUtils.getPersonObjById(personId);
+    return personObj;
 };
