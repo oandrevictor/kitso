@@ -101,7 +101,11 @@ app.get('/user/:id', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
 
-app.get('/user/list/:userlist_id', function (req, res) {
+app.get('/list/:userlist_id', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
+app.get('/list/edit/:userlist_id', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
 

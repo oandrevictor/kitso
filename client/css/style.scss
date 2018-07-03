@@ -441,6 +441,30 @@ html, body {
   }
 }
 
+.uk-modal-body {
+  .uk-form-label {
+    margin-bottom: 0px;
+  }
+
+  .uk-button-create-list {
+    //margin-top: 30px !important;
+    margin-left: 30px;
+    margin-right: 3px;
+  }
+
+  .uk-button-changes {
+    background-color: #502274 !important;
+    color: #ffffff !important;
+    font-weight: bold;
+    //margin-top: 30px !important;
+  }
+
+  .invalid-label {
+    margin-bottom: 0px;
+    margin-left: 0px;
+  }
+}
+
 .footer {
   margin-top: -6vh;
   clear: both;
@@ -828,6 +852,12 @@ html, body {
     font-weight: 300;
     width: 900px;
 
+    .new-list-button {
+      text-align: right;
+      margin-bottom: 30px;
+      }
+    }
+
     .uk-checkbox:checked {
       background-color: #502279 !important;
       border-color: transparent;
@@ -899,7 +929,6 @@ html, body {
     .following-link {
       color: #db2399 !important
     }
-  }
 
   .profile-image {
     border-style: solid;
@@ -949,6 +978,39 @@ html, body {
 
   .sub-text  {
     float: right;
+  }
+
+  .section {
+    margin-top: 8px;
+    margin-bottom: 4px;
+
+    .list-info {
+      .list-image {
+        display:block;
+        background: #502274;
+        background-repeat:no-repeat;
+        background-size:cover;
+        width: 191px;
+        height: 183px;
+        overflow:hidden;
+        box-shadow: 0 0px 10px rgba(0,0,0,0.1);
+        border: 4px solid white;
+      }
+      .list-name {
+        margin-top: 10px;
+      }
+    }
+
+    .slider-button-list {
+      background: rgba(0, 0, 0, 0.31);
+      padding-top: 77px;
+      padding-bottom: 74px;
+      padding-right:  3px;
+      padding-left:  3px;
+      margin-top: 4px;
+      margin-left: 5px;
+      margin-right: 5px;
+    }
   }
 }
 
@@ -1042,7 +1104,7 @@ html, body {
 
   .rating {
     float: right;
-    margin-top: -160px;
+    margin-top: -100px;
     color: white;
     font-size: 28px;
     font-weight: 100;
@@ -1553,6 +1615,8 @@ html, body {
 
 .userlist{
   font-family: 'Roboto' !important;
+  height: 100%;
+  overflow-y: -webkit-paged-y;
   .uk-background-cover {
     z-index: -1;
     background: url("/images/It-Follows-background.jpg");
@@ -1566,6 +1630,34 @@ html, body {
     padding-bottom: 0px !important;
     padding-top: 4%;
     position: relative;
+  }
+
+  .uk-checkbox:checked {
+    background-color: #502279 !important;
+    border-color: transparent;
+  }
+
+  .uk-button-save-list {
+    margin-top: 30px !important;
+  }
+
+  .uk-button-save-changes {
+    background-color: #502274 !important;
+    color: #ffffff !important;
+    font-weight: bold;
+    margin-top: 30px !important;
+  }
+
+  .uk-button-follow {
+    background-color: #ffffff !important;
+    color: #502274 !important;
+    font-weight: bold;
+    margin-top: 30px !important;
+  }
+
+  .invalid-label {
+    margin-bottom: 0px;
+    margin-left: 0px;
   }
 
   .purple-bar {

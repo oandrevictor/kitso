@@ -1,0 +1,17 @@
+<li>
+  <ul class="uk-tab" data-uk-tab="{connect:'#tab-id'}">
+    <li>
+      <a>My Lists</a>
+    </li>
+    <li>
+      <a>Followed Lists</a>
+    </li>
+  </ul>
+  <ul id="tab-id" class="uk-switcher uk-margin">
+    <!--My Lists-->
+    <ng-include src="'views/profile/_my-lists.html'"></ng-include>
+
+    <!--Followed Lists-->
+    <ng-include src="'views/profile/_followed-lists.html'"></ng-include>
+  </ul>
+</li>

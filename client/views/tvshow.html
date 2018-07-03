@@ -44,9 +44,9 @@
             <span uk-icon="icon: list;"></span> UserLists</button>
           <div uk-dropdown="pos: right-center; mode: hover; delay-hide: 100; offset: 20; animation: uk-animation-slide-right-medium" style="z-index: 999">
             <div ng-repeat="list in user.lists" ng-init="markAsAdded(tvshow._id, list._id)">
-              <button ng-show="!tvshowAdded" ng-click="addToList(tvshow._id, list._id)" class="uk-button uk-button-default watch-button">
+              <button ng-show="!list.tvshowAdded" ng-click="addToList(tvshow._id, list._id)" class="uk-button uk-button-default watch-button">
                 <span uk-icon="icon: plus;"></span> {{list.title}} </button>
-              <button ng-show="tvshowAdded" ng-click="removeFromList(tvshow._id, list._id)" class="uk-button uk-button-default watch-button watched">
+              <button ng-show="list.tvshowAdded" ng-click="removeFromList(tvshow._id, list._id)" class="uk-button uk-button-default watch-button watched">
                 <span uk-icon="icon: minus;"></span> {{list.title}} (undo) </button>
             </div>
           </div>

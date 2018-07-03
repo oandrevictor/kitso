@@ -105,6 +105,21 @@ var UserSchema = new Schema({
     ],
     default: []
   },
+  _following_lists: {
+    type: [
+      {
+        userListId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'UserList'
+        },
+        notifications_enabled: {
+          type: Boolean
+        }
+      },
+    ],
+
+    default: []
+  },
   _ratings: {
     type: [
       {

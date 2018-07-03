@@ -19,7 +19,8 @@ var ListItemSchema = new Schema({
 var UserListSchema = new Schema({
   title: {
     type: String,
-    required: true
+    required: true,
+    maxlength: 40
   },
   description: {
     type: String,
@@ -30,6 +31,11 @@ var UserListSchema = new Schema({
     required: true,
     default: true
   },
+  is_private: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
   _user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -39,7 +45,16 @@ var UserListSchema = new Schema({
     type: [Schema.Types.Mixed],
     required: true,
     default: []
-  }
+  },
+  _followers: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+      }
+    ],
+    default: []
+  },
 });
 
 var UserList = mongoose.model('UserList', UserListSchema);
