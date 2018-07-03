@@ -68,7 +68,6 @@ exports.show = function(req, res) {
                 parsed_result._seasons = results;
                 parsed_result._id = result._id;
                 parsed_result.__t = result.__t;
-                parsed_result.poster_path = "https://image.tmdb.org/t/p/w500/" + parsed_result.poster_path;
                 await Promise.all(actorsPromises).then(function(nested_actors) {
                   parsed_result._actors = nested_actors;
                   res.setHeader('Content-Type', 'application/json');
