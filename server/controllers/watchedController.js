@@ -4,6 +4,7 @@ var RequestStatus = require('../constants/requestStatus');
 var ActionType = require('../constants/actionType');
 var TMDBController = require('../external/TMDBController');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
+var MediaType =  require('../constants/mediaType');
 
 exports.index = async function(req, res) {
   let user_id = req.query.user;
@@ -382,6 +383,21 @@ async function getWatchedIds(mediasIds) {
   });
 }
 
+function filterWatchedMedia(mediasList, query) {
+  let filteredMediaList = mediasList;
+  
+  if (query.month || query.year) {
+    let jsMonthOffset = 1;
+    filteredMediaList = filterWatchedMediaByTime(filteredMediaList, query.month - jsMonthOffset, query.year);
+  }
+  
+  if (query.media_type) {
+    filteredMediaList = filterWatchedMediaByMediaType(filteredMediaList, query.media_type);
+  }
+  
+  return filteredMediaList;
+}
+
 function filterWatchedMediaByTime(mediasList, month, year) {
   let filteredMediaList;
   
@@ -402,4 +418,18 @@ function filterWatchedMediaByTime(mediasList, month, year) {
   }
   
   return filteredMediaList;
+}
+
+function filterWatchedMediaByMediaType(mediasList, mediaType) {
+  return mediasList.filter( function(watchedMedia) {
+    let media = watchedMedia._media;
+    
+    if (mediaType === "movie") {
+      return media.__t === MediaType.MOVIE;
+    
+    } else if (mediaType === "tvshow") {
+      return media.__t === MediaType.EPISODE || media.__t === MediaType.SEASON || media.__t === MediaType.TVSHOW
+    }
+    
+  } );
 }
