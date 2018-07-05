@@ -24,7 +24,7 @@ kitso.service('WatchedService', ['$q', '$http', function ($q, $http) {
 
   function getAllWatched(userId) {
     var deferred = $q.defer();
-    $http.get('/api/watched/user/' + userId)
+    $http.get('/api/watched?user=' + userId)
       .then((response) => {
         if (response.status === 200) {
           var result = response.data;

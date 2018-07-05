@@ -18,7 +18,7 @@ kitso.service('RatedService', ['$q','$http', function ($q, $http) {
 
     function getAllRated(userId){
       var deferred = $q.defer();
-      $http.get('/api/rated/user/' + userId)
+      $http.get('/api/rated?user=' + userId)
           .then((response) => {
             if (response.status === 200) {
               var result = response.data;
