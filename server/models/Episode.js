@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var Media = require('./Media');
+var MediaType =  require('../constants/mediaType');
 
 var EpisodeSchema = new Schema({
   number:{type: Number,
@@ -29,8 +30,7 @@ var EpisodeSchema = new Schema({
     }
   });
 
-  var Episode = Media.discriminator('Episode',
-  EpisodeSchema);
+  var Episode = Media.discriminator(MediaType.EPISODE,  EpisodeSchema);
 
 
   module.exports = Episode;

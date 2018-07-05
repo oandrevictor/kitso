@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var Media = require('./Media');
+var MediaType =  require('../constants/mediaType');
 
 var MovieSchema = new Schema({
   isBoxOffice: {
@@ -14,8 +15,7 @@ var MovieSchema = new Schema({
   }
 });
 
-var Movie = Media.discriminator('Movie',
-MovieSchema);
+var Movie = Media.discriminator(MediaType.MOVIE, MovieSchema);
 
 
 module.exports = Movie;
