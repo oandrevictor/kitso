@@ -6,7 +6,7 @@ var TMDBController = require('../external/TMDBController');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 
 exports.index = async function(req, res) {
-  let user_id = req.params.user_id;
+  let user_id = req.query.user;
   var watched_list, promises;
   try {
     watched_list = await DataStoreUtils.getWatchedByUserId(user_id);
@@ -15,7 +15,8 @@ exports.index = async function(req, res) {
     res.status(RequestStatus.BAD_REQUEST).json(err);
   }
   Promise.all(promises).then(function(results) {
-    res.status(RequestStatus.OK).send(results);
+    let filtered_results = filterWatchedMedia(results, req.query);
+    res.status(RequestStatus.OK).send(filtered_results);
   })
 };
 
@@ -379,4 +380,26 @@ async function getWatchedIds(mediasIds) {
     queries++;
     if (queries == mediasIds.length) return ids;
   });
+}
+
+function filterWatchedMediaByTime(mediasList, month, year) {
+  let filteredMediaList;
+  
+  if (!year) {
+    return mediasList;
+    
+  } else if (month && year) {
+    filteredMediaList = mediasList.filter( function(watchedMedia) {
+      let watchDate = watchedMedia.date;
+      return watchDate.getMonth() === Number(month) && watchDate.getFullYear() === Number(year);
+    } );
+    
+  } else if (!month) {
+    filteredMediaList = mediasList.filter( function(watchedMedia) {
+      console.log(typeof watchedMedia.date.getFullYear());
+      return watchedMedia.date.getFullYear() === Number(year);
+    } );
+  }
+  
+  return filteredMediaList;
 }
