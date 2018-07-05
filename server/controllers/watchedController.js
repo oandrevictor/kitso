@@ -4,7 +4,7 @@ var RequestStatus = require('../constants/requestStatus');
 var ActionType = require('../constants/actionType');
 var TMDBController = require('../external/TMDBController');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
-var MediaType =  require('../constants/mediaType');
+var Utils = require('../utils/lib/utils');
 
 exports.index = async function(req, res) {
   let user_id = req.query.user;
@@ -16,7 +16,7 @@ exports.index = async function(req, res) {
     res.status(RequestStatus.BAD_REQUEST).json(err);
   }
   Promise.all(promises).then(function(results) {
-    let filtered_results = filterWatchedMedia(results, req.query);
+    let filtered_results = Utils.filterWatchedMedia(results, req.query);
     res.status(RequestStatus.OK).send(filtered_results);
   })
 };
@@ -381,55 +381,4 @@ async function getWatchedIds(mediasIds) {
     queries++;
     if (queries == mediasIds.length) return ids;
   });
-}
-
-function filterWatchedMedia(mediasList, query) {
-  let filteredMediaList = mediasList;
-  
-  if (query.month || query.year) {
-    let jsMonthOffset = 1;
-    filteredMediaList = filterWatchedMediaByTime(filteredMediaList, query.month - jsMonthOffset, query.year);
-  }
-  
-  if (query.media_type) {
-    filteredMediaList = filterWatchedMediaByMediaType(filteredMediaList, query.media_type);
-  }
-  
-  return filteredMediaList;
-}
-
-function filterWatchedMediaByTime(mediasList, month, year) {
-  let filteredMediaList;
-  
-  if (!year) {
-    return mediasList;
-    
-  } else if (month && year) {
-    filteredMediaList = mediasList.filter( function(watchedMedia) {
-      let watchDate = watchedMedia.date;
-      return watchDate.getMonth() === Number(month) && watchDate.getFullYear() === Number(year);
-    } );
-    
-  } else if (!month) {
-    filteredMediaList = mediasList.filter( function(watchedMedia) {
-      console.log(typeof watchedMedia.date.getFullYear());
-      return watchedMedia.date.getFullYear() === Number(year);
-    } );
-  }
-  
-  return filteredMediaList;
-}
-
-function filterWatchedMediaByMediaType(mediasList, mediaType) {
-  return mediasList.filter( function(watchedMedia) {
-    let media = watchedMedia._media;
-    
-    if (mediaType === "movie") {
-      return media.__t === MediaType.MOVIE;
-    
-    } else if (mediaType === "tvshow") {
-      return media.__t === MediaType.EPISODE || media.__t === MediaType.SEASON || media.__t === MediaType.TVSHOW
-    }
-    
-  } );
 }
