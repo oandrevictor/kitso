@@ -11,11 +11,23 @@ exports.index = async function(req, res) {
   let following_list;
   try {
     following_list = await FollowsPage.find({_user: user_id}).exec();
-    promises = following_list.map(getFollowedFromFollow);
+
+    if (req.user._id.toString() === user_id.toString()) {
+      // Gets all following pages when user is the owner
+      promises = following_list.map(getFollowedFromFollow);
+    } else {
+      promises = [];
+      // Gets only public following pages when user is the visitor
+      following_list.forEach((following) => {
+        if (!following.is_private) {
+          promises.push(getFollowedFromFollow(following));
+        }
+      });
+    }
 
     Promise.all(promises).then(function(results) {
       res.status(RequestStatus.OK).json(results);
-    })
+    });
   } catch (err) {
     res.status(RequestStatus.BAD_REQUEST).json(err);
   }
