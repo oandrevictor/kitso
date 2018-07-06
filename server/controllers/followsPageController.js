@@ -87,6 +87,10 @@ exports.create = async function(req, res) {
   var follow = new FollowsPage(req.body);
   let user_id = follow._user;
   let action = await DataStoreUtils.createAction(user_id, follow._id, ActionType.FOLLOWED_PAGE);
+  if (follow.is_private) {
+    action.hidden = true;
+    action.save();
+  }
   follow._action = action._id;
   await DataStoreUtils.addActionToUserHistory(user_id, action._id);
   // TODO: add to user._followingpages field
