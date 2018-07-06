@@ -83,8 +83,8 @@ kitso.controller('PersonController',
         }
       }
 
-      $scope.follow = function(person){
-        FollowService.followPage($scope.user._id, person)
+      $scope.follow = function(person, is_private){
+        FollowService.followPage($scope.user._id, person, is_private)
         .then((followed) => {
           $scope.person.followed = followed;
           $scope.person.followed.following_id = followed._id;
