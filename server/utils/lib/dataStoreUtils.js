@@ -381,10 +381,10 @@ exports.deleteFollowsPage = async function(followsId) {
     promises = likedObjs.map((likedObj) => {
       this.deleteLiked(likedObj._id);
     });
+    await Promise.all(promises).then((result) => {
+      console.log('Liked deleted');
+    });
   }
-  await Promise.all(promises).then((result) => {
-    console.log('Liked deleted');
-  });
   await this.deleteAction(actionId);
   await this.deleteActionFromUserHistory(userId, actionId);
   followObj.remove();
@@ -488,7 +488,7 @@ exports.getActivity = async function(activity) {
   action_json = action_obj;
   action_copy._action = action_json;
   action_copy.liked = liked_list;
-  
+
   return action_copy;
 }
 
@@ -506,4 +506,3 @@ exports.findEpisodeByTmdbId = async function(episodeId) {
   let results = await Episode.find({_tmdb_id: episodeId}).exec();
   return results;
 };
-
