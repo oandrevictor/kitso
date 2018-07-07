@@ -607,4 +607,37 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
     }
   }
 
+  $scope.becomeVIP = function (new_vip) {
+    let payload = {
+      _id: $scope.user._id,
+      vip: new_vip
+    }
+    UserService.editUser(payload)
+    // handle success
+    .then(function () {
+      var message = 'You are now a VIP member!';
+      if (!new_vip) {
+        message = "VIP membership cancelled."
+      }
+      UIkit.notification({
+        message: '<span uk-icon=\'icon: check\'></span> ' + message,
+        status: 'success',
+        timeout: 2500
+      });
+    })
+    // handle error
+    .catch(function (error) {
+      UIkit.notification({
+        message: '<span uk-icon=\'icon: check\'></span> Something went wrong...',
+        status: 'danger',
+        timeout: 2500
+      });
+    });
+    $scope.goToProfile();
+  };
+
+  $scope.goToProfile = function () {
+    $location.path('profile');
+  }
+
 }]);

@@ -15,6 +15,7 @@
     </form>
   </div>
   <p class="uk-text-small uk-text-muted uk-text-capitalize" align="center">{{ user.birthday | date}} | {{ user.gender }}</p>
+  <p ng-show="user.vip" class="uk-text-small uk-text-muted uk-text-capitalize" align="center"><span class="uk-label uk-label-danger">VIP</span></p>
   <hr class="uk-divider-icon">
   <div uk-grid>
     <div class="uk-width-1-2">
