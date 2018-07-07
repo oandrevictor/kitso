@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var Media = require('./Media');
+var MediaType =  require('../constants/mediaType');
 
 var SeasonSchema = new Schema({
   number:{type: Number,
@@ -18,8 +19,7 @@ var SeasonSchema = new Schema({
     }
   });
 
-  var Season = Media.discriminator('Season',
-  SeasonSchema);
+  var Season = Media.discriminator(MediaType.SEASON, SeasonSchema);
 
 
   module.exports = Season;

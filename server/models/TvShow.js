@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var Media = require('./Media');
+var MediaType =  require('../constants/mediaType');
 
 var TvShowSchema = new Schema({
   _seasons: { type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Season'}],
@@ -14,6 +15,6 @@ _tmdb_id: {
 }
 });
 
-var TvShow = Media.discriminator('TvShow', TvShowSchema);
+var TvShow = Media.discriminator(MediaType.TVSHOW, TvShowSchema);
 
 module.exports = TvShow;

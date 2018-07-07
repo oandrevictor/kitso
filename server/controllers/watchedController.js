@@ -4,9 +4,10 @@ var RequestStatus = require('../constants/requestStatus');
 var ActionType = require('../constants/actionType');
 var TMDBController = require('../external/TMDBController');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
+var Utils = require('../utils/lib/utils');
 
 exports.index = async function(req, res) {
-  let user_id = req.params.user_id;
+  let user_id = req.query.user;
   var watched_list, promises;
   try {
     watched_list = await DataStoreUtils.getWatchedByUserId(user_id);
@@ -15,7 +16,8 @@ exports.index = async function(req, res) {
     res.status(RequestStatus.BAD_REQUEST).json(err);
   }
   Promise.all(promises).then(function(results) {
-    res.status(RequestStatus.OK).send(results);
+    let filtered_results = Utils.filterWatchedMedia(results, req.query);
+    res.status(RequestStatus.OK).send(filtered_results);
   })
 };
 

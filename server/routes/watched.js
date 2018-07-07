@@ -3,7 +3,8 @@ var router = express.Router();
 
 var watchedController = require('../controllers/watchedController');
 
-router.get('/user/:user_id', watchedController.index);
+//watched?user=user_id&month=march&year=2018media_type=show
+router.get('/', watchedController.index);
 
 //is_watched?user_id=user_id&media_id=media_id
 router.get('/is_watched', watchedController.is_watched);

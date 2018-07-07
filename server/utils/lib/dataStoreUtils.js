@@ -186,8 +186,7 @@ exports.getActionByTypeAndIdWithDetails = async function(type, id) {
     var completeNews = await NewsController.inject_related(news);
     return completeNews;
   } else {
-    console.log(type)
-    let errorMsg = "There is no such action type!";
+    let errorMsg = "There is no such action type: " + type;
     console.log(errorMsg);
   }
 };

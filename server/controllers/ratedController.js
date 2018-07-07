@@ -2,14 +2,12 @@ var Rated = require('../models/Rated');
 var RequestStatus = require('../constants/requestStatus');
 var ActionType = require('../constants/actionType');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
-var redisClient = require('../utils/lib/redisClient');
-const https = require('https');
-
+var Utils = require('../utils/lib/utils');
 var TMDBController = require('../external/TMDBController');
 
 
 exports.index = async function(req, res) {
-  let user_id = req.params.user_id;
+  let user_id = req.query.user;
   let rated_list, promises;
   try {
     rated_list = await findUserRatedList(user_id);
@@ -18,7 +16,8 @@ exports.index = async function(req, res) {
     res.status(RequestStatus.BAD_REQUEST).json(err);
   }
   Promise.all(promises).then(function(results) {
-    res.status(RequestStatus.OK).json(results);
+    let filtered_results = Utils.filterWatchedMedia(results, req.query);
+    res.status(RequestStatus.OK).json(filtered_results);
   })
 };
 
