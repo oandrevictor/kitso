@@ -186,6 +186,9 @@ app.use('/api/related', relatedRoutes);
 var likedRoutes = require('./routes/liked');
 app.use('/api/liked', likedRoutes);
 
+var updateQueueRoutes = require('./routes/updateQueue');
+app.use('/api/updatequeue', updateQueueRoutes);
+
 // start app ===============================================
 // startup our app at http://localhost:8080
 app.listen(port);
