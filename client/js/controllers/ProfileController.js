@@ -493,7 +493,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
           UIkit.notification({
             message: '<span uk-icon=\'icon: check\'></span> User successfully edited.',
             status: 'success',
-            timeout: 150000,
+            timeout: 2500,
             pos: 'bottom-right'
           });
           if ($scope.user.newimage)

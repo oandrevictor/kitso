@@ -1,15 +1,14 @@
 <div class="vip">
-  <div class="uk-background-cover" align="center" style="background-image: url({{ background }})">
-    <div class="uk-width-xxlarge">
-    </div>
+  <div class="uk-background-cover" align="center">
+    <div class="vip-icon"></div>
+    <p class="uk-text-large title">VIP membership</p>
   </div>
 
   <div class="uk-width-xxlarge content">
     <center>
       <article class="uk-article uk-align-center">
-        <h1 class="uk-article-title uk-align-center"><a class="uk-link-reset" href="">Become a VIP member</a></h1>
         <p class="uk-text-lead uk-align-center">Kitso VIP members have exclusive benefits, such as requesting page updates. Join now!</p>
-        <p class="uk-article-meta uk-align-center">VIP membership requires real money transactions.</p>
+        <p ng-hide="user.vip" class="uk-article-meta uk-align-center">VIP membership requires real money transactions.</p>
 
         <div class="uk-grid-small uk-child-width-auto uk-align-center" uk-grid>
           <div>
