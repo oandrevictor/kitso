@@ -38,7 +38,7 @@
         </div>
         <button ng-show="movie.followed.is_following" class="uk-button uk-button-default watch-button watched" ng-click="unfollow(movie)">
             <span uk-icon="icon: rss;"></span> Following </button>
-        <button ng-hide="movie.watched" ng-click="markAsWatched(movie._id)" class="uk-button uk-button-default watch-button">
+        <button ng-hide="movie.watched" ng-click="markAsWatched(movie._id, movie.runtime)" class="uk-button uk-button-default watch-button">
             <span uk-icon="icon: check;"></span> Mark as watched</button>
         <button ng-show="movie.watched" ng-click="markAsNotWatched(movie.watched.watched_id)" class="uk-button uk-button-default watch-button watched">
             <span uk-icon="icon: check;"></span> Watched (undo) </button>
