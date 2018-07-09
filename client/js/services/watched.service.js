@@ -47,7 +47,7 @@ kitso.service('WatchedService', ['$q', '$http', function ($q, $http) {
   }
 
 
-  function markAsWatched(userId, mediaId, timespent, date = moment()) {
+  function markAsWatched(userId, mediaId, timespent, date) {
     var deferred = $q.defer();
 
     var data = {
@@ -73,7 +73,7 @@ kitso.service('WatchedService', ['$q', '$http', function ($q, $http) {
     return deferred.promise;
   }
 
-  function markEntireSeasonAsWatched(userId, seasonId, timespent, date = moment()) {
+  function markEntireSeasonAsWatched(userId, seasonId, timespent, date) {
     var deferred = $q.defer();
 
     var data = {
@@ -98,7 +98,7 @@ kitso.service('WatchedService', ['$q', '$http', function ($q, $http) {
     return deferred.promise;
   }
 
-  function markSeasonAsWatched(userId, seasonId, timespent, date = moment()) {
+  function markSeasonAsWatched(userId, seasonId, timespent, date) {
     var deferred = $q.defer();
 
     var data = {

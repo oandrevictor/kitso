@@ -38,7 +38,7 @@
         </div>
         <button ng-show="movie.followed.is_following" class="uk-button uk-button-default watch-button watched" ng-click="unfollow(movie)">
             <span uk-icon="icon: rss;"></span> Following </button>
-        <button ng-hide="movie.watched" ng-click="markAsWatched(movie._id, movie.runtime)" class="uk-button uk-button-default watch-button">
+        <button ng-hide="movie.watched" uk-toggle="#modal-watchMovie" class="uk-button uk-button-default watch-button">
             <span uk-icon="icon: check;"></span> Mark as watched</button>
         <button ng-show="movie.watched" ng-click="markAsNotWatched(movie.watched.watched_id)" class="uk-button uk-button-default watch-button watched">
             <span uk-icon="icon: check;"></span> Watched (undo) </button>
@@ -168,5 +168,33 @@
     </li>
   </ul>
 
+  </div>
+</div>
+
+<!-- Watched modal -->
+<div id="modal-watchMovie" class="uk-flex-top" uk-modal>
+  <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <h2 class="uk-modal-title">Mark movie as watched</h2>
+
+    <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+      <p>When did you watch this movie?</p>
+      <label><input class="uk-radio" type="radio" value="now" name="radio2" ng-change="movie.validWatchedDate = true" ng-model="movie.watchedTime" ng-checked> Now</label>
+      <label><input class="uk-radio" type="radio" value="another-day" name="radio2" ng-model="movie.watchedTime"> Another Day</label>
+    </div>
+
+    <div class="uk-margin" ng-show="movie.watchedTime == 'another-day'">
+      <label class="uk-form-label" for="date">Select the day you watched</label>
+      <div class="uk-form-controls">
+        <input class="uk-input" type="date" id="date" name="date"
+               ng-model="movie.watchedDate" ng-change="movie.validWatchedDate = true">
+      </div>
+      <label class="uk-text-small uk-text-danger uk-align-right" for="date"
+             ng-show="!(movie.validWatchedDate)" >* Select a valid date</label>
+    </div>
+    <br>
+    <p class="uk-text-right">
+      <button class="uk-button uk-button-danger" type="button"  ng-click="markAsWatched(movie._id, movie.runtime)" ng-disabled="!movie.watchedTime || !movie.validWatchedDate">Watch</button>
+    </p>
   </div>
 </div>
