@@ -82,7 +82,7 @@ exports.timeSpent = async function (req, res) {
 
     if(watched_month == req.body.month && watched_year == req.body.year) {
       if (filter == 'by_month' || (filter == 'by_week' && watched_week == req.body.week)) {
-        timeSpent += watched.time_spent; 
+        timeSpent += watched.time_spent;
       }
     }
 
@@ -133,7 +133,7 @@ exports.update = function (req, res) {
       if (req.body._following) user._following = req.body._following;
       if (req.body._following_pages) user._following_pages = req.body._following_pages;
       if (req.body._followers) user._followers = req.body._followers;
-      if (req.body.vip) user.vip = req.body.vip;
+      if (req.body.vip != undefined) user.vip = req.body.vip;
       if (req.body._watchlist) user._watchlist = req.body._watchlist;
       if (req.body._lists) user._lists = req.body._lists;
       if (req.body._ratings) user._ratings = req.body._ratings;
@@ -141,7 +141,7 @@ exports.update = function (req, res) {
         var image = new Buffer(req.body.image.split(",")[1],"base64");
         user.image = image;
       }
-      if (req.body.settings.autowatch != undefined) user.settings.autowatch = req.body.settings.autowatch;
+      if (req.body.settings) user.settings.autowatch = req.body.settings.autowatch;
 
       user.save(function (err) {
         if (err) {
@@ -236,7 +236,7 @@ exports.delete = function (req, res) {
 Date.prototype.getMonthWeek = function() {
   var firstDay = new Date(this.getFullYear(), this.getMonth(), 1).getDay();
   return Math.ceil((this.getDate() + firstDay)/7);
-} 
+}
 
 var createWatchList = function(userId) {
   let watchListInfo = {
