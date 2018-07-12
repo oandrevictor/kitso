@@ -111,7 +111,7 @@ exports.create = function(req, res) {
       result._id = createdShow._id;
       result._seasons = createdShow._seasons;
       result.__t = createdShow.__t;
-      setTimeout(function(){matchApiSeasonsToDb(result, createdShow);}, 5000);
+      setTimeout(function(){exports.matchApiSeasonsToDb(result, createdShow);}, 5000);
       result._actors = await matchApiCastToDb(createdShow);
       res.setHeader('Content-Type', 'application/json');
       res.status(RequestStatus.OK).send(result);
@@ -157,7 +157,7 @@ exports.delete = async function(req, res) {
 
 // AUXILIARY FUNCTIONS =============================================================================
 
-matchApiSeasonsToDb = function(tvshow, dbtvshow){
+exports.matchApiSeasonsToDb = function(tvshow, dbtvshow){
   var tvshow = JSON.parse(tvshow);
   tvshow.seasons.forEach(async function(season){
     //before create fetch from db
@@ -258,7 +258,7 @@ matchApiCastToDb = async function(dbtvshow){
   });
 };
 
-matchApiEpisodesToDb = function(tvshow, seasonapi, dbseason){
+matchApiEpisodesToDb = function(tvshow, seasonapi, dbseason) {
 
   TMDBController.getSeasonFromAPI(tvshow.id, seasonapi.season_number).then((season)=>{
     var season = JSON.parse(season);

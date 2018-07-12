@@ -12,10 +12,11 @@ const redisClient = RedisClient.createAndAuthClient();
 
 exports.getShowFromTMDB = function(tmdb_id) {
   return new Promise(function(resolve, reject) {
-
-    console.log("Could not get from redis:" + query);
-
+    
     var query = RequestGenerals.TVSHOW_ENDPOINT + tmdb_id;
+  
+    console.log("Could not get from redis:" + query);
+  
     let tmdbQuery = TMDBConstants.TMDB_API_SHOW_ROUTE + tmdb_id + TMDBConstants.TMDB_API_KEY + TMDBConstants.TMDB_API_MEDIA_RECOMMENDATIONS;
     https.get(tmdbQuery,
       (resp) => {
