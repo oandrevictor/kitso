@@ -15,7 +15,6 @@ exports.update = function(req, res) {
 
 let TvShow = require('../models/TvShow');
 let TMDBCtrl = require('../external/TMDBController');
-let Season = require('../models/Season');
 let Episode = require('../models/Episode');
 let RedisClient = require('../utils/lib/redisClient');
 const redisClient = RedisClient.createAndAuthClient();
