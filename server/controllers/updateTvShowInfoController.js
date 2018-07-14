@@ -2,7 +2,7 @@ var RequestStatus = require('../constants/requestStatus');
 var RequestGenerals = require('../constants/requestGenerals');
 
 
-exports.create = function(req, res) {
+exports.update = function(req, res) {
   try {
     of(req.body._tvshow_id);
     res.status(RequestStatus.OK).send();

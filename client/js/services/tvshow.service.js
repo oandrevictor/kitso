@@ -101,7 +101,7 @@ kitso.service('TvShowService', ['$q', '$http', function ($q, $http) {
         "_tvshow_id": tvShowId
       };
       
-      $http.post('/api/updatequeue/', data)
+      $http.put('/api/updatetvshow/', data)
         .then(function (response) {
           if (response.status === 200) {
             deferred.resolve(response.data);

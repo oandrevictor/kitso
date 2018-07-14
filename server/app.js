@@ -190,8 +190,8 @@ app.use('/api/related', relatedRoutes);
 var likedRoutes = require('./routes/liked');
 app.use('/api/liked', likedRoutes);
 
-var updateQueueRoutes = require('./routes/updateQueue');
-app.use('/api/updatequeue', updateQueueRoutes);
+var updateTvShowInfoRoutes = require('./routes/updateTvShowInfo');
+app.use('/api/updatetvshow', updateTvShowInfoRoutes);
 
 // start app ===============================================
 // startup our app at http://localhost:8080
