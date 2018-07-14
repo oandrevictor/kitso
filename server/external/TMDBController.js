@@ -274,3 +274,11 @@ exports.getPersonFromTMDB = function(tmdb_id){
     });
   })
 };
+
+exports.sortEpisodesByEpisodeNumber = function(e1, e2) {
+  if (e1.episode_number < e2.episode_number)
+    return -1;
+  if (e1.episode_number > e2.episode_number)
+    return 1;
+  return 0;
+};
