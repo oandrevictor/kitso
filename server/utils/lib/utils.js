@@ -56,3 +56,19 @@ exports.filterWatchedMediaByMediaType = function(mediasList, mediaType) {
     
   } );
 };
+
+exports.sortSeasonsBySeasonNumber = function(s1, s2) {
+  if (s1.number < s2.number)
+    return -1;
+  if (s1.number > s2.number)
+    return 1;
+  return 0;
+};
+
+exports.sortEpisodesByEpisodeNumber = function(e1, e2) {
+  if (e1.number < e2.number)
+    return -1;
+  if (e1.number > e2.number)
+    return 1;
+  return 0;
+}
