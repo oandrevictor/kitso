@@ -349,7 +349,7 @@ html, body {
     margin-left: auto;
     margin-top: auto;
     margin-bottom: auto;
-    width: 33%;
+    width: 170%;
     color: white;
     text-align: center;
 
@@ -424,13 +424,11 @@ html, body {
   }
 
   .options {
-    margin-left: auto;
     margin-top: auto;
     margin-bottom: auto;
     color: white;
     border: solid 0px;
     float: right;
-    width: 33%;
     a {
       font-style: initial;
       &:hover {

@@ -1,6 +1,6 @@
 var kitso = angular.module('kitso');
 
-kitso.controller('MainController', ['$scope', '$location', '$timeout', 'AuthService', 'FeedService', 'UserListService', 'WatchedService', 'NewsService', function($scope, $location, $timeout, AuthService, FeedService, UserListService, WatchedService, NewsService) {
+kitso.controller('MainController', ['$scope', '$location', '$timeout', 'AuthService', 'FeedService', 'UserListService', 'WatchedService', 'NewsService', 'NotificationService', function($scope, $location, $timeout, AuthService, FeedService, UserListService, WatchedService, NewsService, NotificationService) {
 	$scope.temp_news = {}
 	$scope.logout = function() {
 		AuthService.logout()
@@ -32,6 +32,9 @@ kitso.controller('MainController', ['$scope', '$location', '$timeout', 'AuthServ
     return - moment(a.date).diff(moment(b.date))
   }
 
+	var getUserNotifications = async function() {
+		$scope.notifications = await NotificationService.getNotifications($scope.user._id);
+	}
 
 	$scope.getNewsObject = function(related){
 		if (related.is_media){
@@ -90,6 +93,7 @@ kitso.controller('MainController', ['$scope', '$location', '$timeout', 'AuthServ
 
 	AuthService.getStatus().then(function(){
     $scope.user = AuthService.getUser();
+		getUserNotifications();
   }).catch(function(){});
 
 

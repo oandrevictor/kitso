@@ -67,6 +67,7 @@
   <script src="js/services/feed.service.js"></script>
   <script src="js/services/news.service.js"></script>
   <script src="js/services/liked.service.js"></script>
+  <script src="js/services/notification.service.js"></script>
 
   <script src="js/lib/moment.js"></script>
 </head>
@@ -79,6 +80,16 @@
         <a ng-href="/explore" ><button  class="uk-button uk-button-default explore-icon"></button></a>
         <a ng-href="/home" ><button  class="uk-button uk-button-default home-icon"></button></a>
         <a ng-href="/profile" ><button  class="uk-button uk-button-default profile-icon"></button></a>
+      </div>
+
+      <div class= "options" >
+        <button ng-show="isLogged()" class="uk-button uk-button-default options"><span uk-icon="bell"></span></button>
+        <div uk-dropdown="pos: bottom-right	">
+          {{notifications}}
+          <ul class="uk-nav uk-dropdown-nav" ng-repeat="notification in notifications">
+            <li>{{notification}}</li>
+          </ul>
+        </div>
       </div>
 
       <div class= "options" >

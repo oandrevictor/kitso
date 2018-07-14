@@ -186,6 +186,9 @@ app.use('/api/related', relatedRoutes);
 var likedRoutes = require('./routes/liked');
 app.use('/api/liked', likedRoutes);
 
+var notificationRoutes = require('./routes/notification');
+app.use('/api/notification', notificationRoutes);
+
 // start app ===============================================
 // startup our app at http://localhost:8080
 app.listen(port);
