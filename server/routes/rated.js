@@ -3,7 +3,8 @@ var router = express.Router();
 
 var ratedController = require('../controllers/ratedController');
 
-router.get('/user/:user_id', ratedController.index);
+//rated?user=user_id&month=march&year=2018media_type=show
+router.get('/', ratedController.index);
 
 //is_rated?user_id=user_id&media_id=media_id
 router.get('/is_rated', ratedController.is_rated);
