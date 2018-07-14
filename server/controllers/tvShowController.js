@@ -260,7 +260,7 @@ matchApiCastToDb = async function(dbtvshow){
 
 matchApiEpisodesToDb = function(tvshow, seasonapi, dbseason) {
 
-  TMDBController.getSeasonFromAPI(tvshow.id, seasonapi.season_number).then((season)=>{
+  TMDBController.getSeason(tvshow.id, seasonapi.season_number).then((season)=>{
     var season = JSON.parse(season);
     season.episodes.forEach(async function(episode){
       //before create fetch from db

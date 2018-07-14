@@ -4,7 +4,6 @@ var RedisClient = require('../utils/lib/redisClient');
 var Show = require('../models/TvShow');
 var Movie = require('../models/Movie');
 var Episode = require('../models/Episode');
-var Season = require('../models/Season');
 
 
 const https = require('https');
@@ -14,9 +13,6 @@ exports.getShowFromTMDB = function(tmdb_id) {
   return new Promise(function(resolve, reject) {
     
     var query = RequestGenerals.TVSHOW_ENDPOINT + tmdb_id;
-  
-    console.log("Could not get from redis:" + query);
-  
     let tmdbQuery = TMDBConstants.TMDB_API_SHOW_ROUTE + tmdb_id + TMDBConstants.TMDB_API_KEY + TMDBConstants.TMDB_API_MEDIA_RECOMMENDATIONS;
     https.get(tmdbQuery,
       (resp) => {
@@ -25,7 +21,7 @@ exports.getShowFromTMDB = function(tmdb_id) {
           data += chunk;
         });
         resp.on('end', () => {
-          console.log("Saving result to redis: "+ query);
+          console.log("Saving TMDB result to redis: " + query);
           data.backdrop_path = TMDBConstants.TMDB_BACK_IMAGE_PATH + data.backdrop_path;
           resolve(data)
         });
@@ -36,11 +32,10 @@ exports.getShowFromTMDB = function(tmdb_id) {
     })
   };
 
-exports.getSeasonFromAPI = function(tv_id, season_number){
+exports.getSeason = function(tv_id, season_number){
   return new Promise(function(resolve, reject) {
 
     var query =  RequestGenerals.TVSHOW_ENDPOINT + tv_id + RequestGenerals.SEASON_ENDPOINT + season_number;
-    let tmdbQuery = TMDBConstants.TMDB_API_SHOW_ROUTE + tv_id + RequestGenerals.SEASON_ENDPOINT + season_number + TMDBConstants.TMDB_API_KEY;
     redisClient.exists(query, function(err, reply) {
       if (reply === 1) {
         console.log("got query from redis: " + query)
@@ -57,30 +52,40 @@ exports.getSeasonFromAPI = function(tv_id, season_number){
         });
       }
       else{
-        console.log("GET SEASON| Could not get from redis.")
-        https.get(tmdbQuery,
-          (resp) => {
-            let data = '';
-            resp.on('data', (chunk) => {
-              data += chunk;
-            });
-            resp.on('end', () => {
-              var received_data = JSON.parse(data)
-              if (!(received_data.status_code && received_data.status_code == 25)){
-                console.log("GET SEASON| Saving on redis: " + query)
-                redisClient.set(query, JSON.stringify(data));
-              }
-              resolve(data)
-            });
-          }).on("error", (err) => {
-            console.log("Error: " + err.message);
-
-            reject();
-          });
+        console.log("GET SEASON| Could not get from redis.");
+        exports.getSeasonFromAPI(tv_id, season_number)
+          .then(function (data) {
+            resolve(data);
+          })
         }
       })
     })
   };
+
+exports.getSeasonFromAPI = function (tv_id, season_number) {
+  return new Promise(function(resolve, reject) {
+    let query = RequestGenerals.TVSHOW_ENDPOINT + tv_id + RequestGenerals.SEASON_ENDPOINT + season_number;
+    let tmdbQuery = TMDBConstants.TMDB_API_SHOW_ROUTE + tv_id + RequestGenerals.SEASON_ENDPOINT + season_number + TMDBConstants.TMDB_API_KEY;
+    https.get(tmdbQuery,
+      (resp) => {
+        let data = '';
+        resp.on('data', (chunk) => {
+          data += chunk;
+        });
+        resp.on('end', () => {
+          let received_data = JSON.parse(data);
+          if (!(received_data.status_code && received_data.status_code === 25)) {
+            console.log("GET SEASON| Saving on redis: " + query);
+            redisClient.set(query, JSON.stringify(data));
+          }
+          resolve(data)
+        });
+      }).on("error", (err) => {
+      console.log("Error: " + err.message);
+      reject();
+    });
+  });
+};
 
 exports.getShow = function(tmdb_id){
   return new Promise(function(resolve, reject) {
