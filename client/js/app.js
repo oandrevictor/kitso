@@ -33,6 +33,12 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
             controller: 'HomeController',
             access: { restricted: true }
         })
+        // vip page
+        .when('/vip', {
+            templateUrl: 'views/vip.html',
+            controller: 'ProfileController',
+            access: { restricted: true }
+        })
         //exploring
         .when('/explore', {
             templateUrl: 'views/explore.html',

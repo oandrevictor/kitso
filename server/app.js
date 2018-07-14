@@ -97,6 +97,10 @@ app.get('/profile', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
 
+app.get('/vip', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
 app.get('/user/:id', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
