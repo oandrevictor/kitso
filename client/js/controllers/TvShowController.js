@@ -413,8 +413,7 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
     $scope.updateTvShowInfo = function(tvshowId) {
       TvShowService.updateTvShowInfo(tvshowId)
         .then((response) => {
-          // $scope.tvshow.watched = watched;
-          $scope.tvshow.toUpdateInfo = true;
+          $scope.tvshow.updatingInfo = true;
         })
         .catch((error) => {
         });
