@@ -128,7 +128,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
       .then(function (result) {
         let hours = (result/60).toFixed(2);
 
-        $scope.dataWeek = [[(100*result)/240],[100]];
+        $scope.dataWeek = [[(100*result)/168],[100]];
         if (hours == 1)
           $scope.timeSpentThisWeek = "Time spent this week: " + hours + " hour"
         else

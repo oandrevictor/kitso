@@ -329,6 +329,9 @@ html, body {
         text-decoration: none;
         font-weight: 500; }
 
+.note li {
+  height: 30px; }
+
 .uk-modal-body .uk-form-label {
   margin-bottom: 0px; }
 .uk-modal-body .uk-button-create-list {

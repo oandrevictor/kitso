@@ -4,7 +4,7 @@ var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 var TMDBController = require('../external/TMDBController');
 
 exports.index = function(req, res) {
-  Notification.find({ _user: req.body.user_id })
+  Notification.find({ _user: req.params.user_id })
   .catch((err) => {
     res.status(RequestStatus.BAD_REQUEST).send(err);
   })

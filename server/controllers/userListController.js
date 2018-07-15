@@ -78,6 +78,7 @@ exports.delete = async function(req, res) {
     let userListId = req.params.userlist_id;
     await checkIfUserIsAuthorizedToManipulateList(userId, userListId);
     let deletedList = await removeListFromUserLists(userListId, userId);
+    DataStoreUtils.deleteNotification(userListId);
 
     await UserList.findById(userListId, function (err, userList) {
       let users = userList._followers;
@@ -115,6 +116,11 @@ exports.addItem = async function(req, res) {
     });
     itens.push(newItem);
     await saveUserList(userList);
+
+    userList._followers.forEach(function(follower){
+      DataStoreUtils.createNotification(follower, userListId, "The list " + userList.title + " has a new item.");
+    });
+
     res.status(RequestStatus.OK).json(userList);
   } catch(err) {
     console.log(err);
@@ -138,6 +144,11 @@ exports.removeItem = async function(req, res) {
     }
     removeRankedItemFromList(itemToRemoveRank, itens);
     await saveUserList(userList);
+
+    userList._followers.forEach(function(follower){
+      DataStoreUtils.createNotification(follower, userListId, "The list " + userList.title + " had an item removed.");
+    });
+
     res.status(RequestStatus.OK).json(userList);
   } catch(err) {
     console.log(err);
@@ -158,6 +169,11 @@ exports.changeItemRank = async function(req, res) {
     changeRank(req.body.current_rank, req.body.new_rank, itens);
     userList.markModified('itens');
     await saveUserList(userList);
+
+    userList._followers.forEach(function(follower){
+      DataStoreUtils.createNotification(follower, userListId, "The list " + userList.title + " had changes in its rank.");
+    });
+
     res.status(RequestStatus.OK).json(userList);
   } catch(err) {
     console.log(err);

@@ -4,11 +4,16 @@ var Schema = mongoose.Schema;
 var NotificationSchema = new Schema({
   _user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true
   },
-  _related_id: {
+  _related: {
     type: mongoose.Schema.Types.ObjectId,
     required: false
+  },
+  date: {
+    type: Date,
+    required: true
   },
   content: {
     type: String,

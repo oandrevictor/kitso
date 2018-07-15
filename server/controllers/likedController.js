@@ -53,6 +53,10 @@ exports.create = async function(req, res) {
   var liked = new Liked(req.body);
   let user_id = liked._user;
   let action = await DataStoreUtils.createAction(user_id, liked._id, ActionType.LIKED);
+  let activity = await Action.findById(req.body._activity).exec();
+  let user = await DataStoreUtils.getUserById(liked._user);
+
+  DataStoreUtils.createNotification(activity._user, liked._id, user.username + " liked your post.");
   liked._action = action._id;
   await DataStoreUtils.addActionToUserHistory(user_id, action._id);
   liked.save()
@@ -98,6 +102,7 @@ exports.delete = async function(req, res) {
   let liked_id = req.params.liked_id;
   try {
     await DataStoreUtils.deleteLiked(liked_id);
+    DataStoreUtils.deleteNotification(liked_id);
     res.status(RequestStatus.OK).send('Liked deleted.');
   } catch (err) {
     res.status(RequestStatus.BAD_REQUEST).send(err);

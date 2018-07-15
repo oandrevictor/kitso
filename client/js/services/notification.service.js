@@ -33,7 +33,6 @@ kitso.service('NotificationService', ['$q', '$http', function ($q, $http) {
 
         $http.get('/api/notification/' + user_id)
             .then(function (response) {
-               console.log(response);
                 if (response.status === 200) {
                     deferred.resolve(response.data);
                     user = response.data;

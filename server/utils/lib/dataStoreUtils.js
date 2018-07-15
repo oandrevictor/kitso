@@ -11,6 +11,7 @@ var Rated = require('../../models/Rated');
 var Watched = require('../../models/Watched');
 var Liked = require('../../models/Liked');
 var News = require('../../models/News');
+var Notification = require('../../models/Notification');
 var Related = require('../../models/Related');
 var Utils = require('./utils');
 var UserList = require('../../models/UserList');
@@ -31,6 +32,15 @@ exports.createAction = async function(userId, actionId, actionType) {
   return action.save();
 };
 
+exports.createNotification = async function(userId, relatedId, content) {
+  let notification = new Notification({
+    _user: userId,
+    _related: relatedId,
+    date: new Date(),
+    content: content
+  });
+  return notification.save();
+};
 
 // ADD ============================================================================================
 
@@ -288,6 +298,10 @@ exports.getRatedByUserIdAndMediaId = async function(userId, mediaId) {
 
 
 // DELETE =========================================================================================
+
+exports.deleteNotification = async function(id) {
+  Notification.remove({ _related: id}).exec();
+};
 
 exports.removeMediaFromPerson = async function(mediaId, personId) {
   let person = await this.getPersonObjById(personId);
