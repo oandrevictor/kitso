@@ -1,7 +1,9 @@
 var kitso = angular.module('kitso');
 
-kitso.controller("TvShowController", ['$scope', '$location', '$route', '$timeout', '$routeParams', 'TvShowService',  'WatchedService',  'FollowService', 'RatedService', 'UserListService', 'AuthService', 'NewsService',
-function($scope, $location, $route, $timeout, $routeParams, TvShowService,  WatchedService, FollowService, RatedService, UserListService, AuthService, NewsService) {
+kitso.controller("TvShowController", ['$scope', '$location', '$route', '$timeout', '$routeParams', 'TvShowService',
+  'WatchedService',  'FollowService', 'RatedService', 'UserListService', 'AuthService', 'NewsService',
+function($scope, $location, $route, $timeout, $routeParams, TvShowService,  WatchedService, FollowService,
+         RatedService, UserListService, AuthService, NewsService) {
   $('.full-loading').show();
   $scope.newsbox_toggle = true;
 
@@ -407,4 +409,14 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
         console.log(error);
       });
     }
+    
+    $scope.updateTvShowInfo = function(tvshowId) {
+      TvShowService.updateTvShowInfo(tvshowId)
+        .then((response) => {
+          $scope.tvshow.updatingInfo = true;
+        })
+        .catch((error) => {
+        });
+    }
+    
 }]);
