@@ -15,6 +15,7 @@ var Notification = require('../../models/Notification');
 var Related = require('../../models/Related');
 var Utils = require('./utils');
 var UserList = require('../../models/UserList');
+var TvShow = require('../../models/TvShow');
 var ActionType = require('../../constants/actionType');
 var TMDBController = require('../../external/TMDBController');
 var NewsController = require('../../controllers/newsController');
@@ -296,6 +297,10 @@ exports.getRatedByUserIdAndMediaId = async function(userId, mediaId) {
   return Rated.find({_user: userId, _media: mediaId}).exec();
 };
 
+exports.getTvShowById = async function(tvShowId) {
+  return TvShow.findById(tvShowId).exec();
+};
+
 
 // DELETE =========================================================================================
 
@@ -503,7 +508,7 @@ exports.getActivity = async function(activity) {
   action_copy.liked = liked_list;
 
   return action_copy;
-}
+};
 
 exports.findPersonByTmdbId = async function(personId) {
   let results = await Person.find({_tmdb_id: personId}).exec();
@@ -515,7 +520,17 @@ exports.findSeasonByTmdbId = async function(seasonId) {
   return results;
 };
 
+exports.findSeasonsByTvShowId = async function(tvShowId) {
+  return Season.find({_tvshow_id: tvShowId}).exec();
+};
+
 exports.findEpisodeByTmdbId = async function(episodeId) {
   let results = await Episode.find({_tmdb_id: episodeId}).exec();
   return results;
+};
+
+exports.findEpisodesByTmdbAndSeasonNumber = async function(tvShowId, seasonNumber) {
+  return Episode
+    .find({_tvshow_id: tvShowId, season_number: seasonNumber})
+    .exec();
 };

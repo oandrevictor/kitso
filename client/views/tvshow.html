@@ -67,6 +67,12 @@
               </div>
             </div>
           </div>
+          <button ng-click="updateTvShowInfo(tvshow._id)" ng-show="user.vip && !tvshow.updatingInfo" class="uk-button uk-button-default watch-button">
+            <span uk-icon="icon: history;"></span> Update info
+          </button>
+          <button ng-show="user.vip && tvshow.updatingInfo" class="uk-button uk-button-default watch-button watched disabled">
+            <span uk-icon="icon: clock;"></span> Updating info
+          </button>
           </div>
           <div class="uk-width-3-4">
             <div class="rating" ng-style="(tvshow.name.length > 22) && {'margin-top':'-120px'}">

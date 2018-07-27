@@ -343,7 +343,7 @@ var injectDataFromTmdb = async function(item) {
     itemJson._media = await TMDBController.getShow(mediaObj._tmdb_id);
   } if (mediaObj.__t == "Season") {
     tv_show = await DataStoreUtils.getMediaObjById(mediaObj._tvshow_id);
-    response = await TMDBController.getSeasonFromAPI(tv_show._tmdb_id, mediaObj.number);
+    response = await TMDBController.getSeason(tv_show._tmdb_id, mediaObj.number);
     itemJson._media = JSON.parse(response)
   }
   itemJson._media.__t = mediaObj.__t;

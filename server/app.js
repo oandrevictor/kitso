@@ -16,7 +16,7 @@ var RedisClient = require('./utils/lib/redisClient');
 
 let client = RedisClient.createAndAuthClient();
 
-// configuration ===========================================
+//  ===========================================
 
 // config files
 var db = require('./config/db');
