@@ -177,8 +177,16 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
     });
   }
 
+  $scope.notAFutureDate = function(date) {
+      return moment(date) <= moment();
+  }
+
     $scope.markAsWatched = function(movieId, runtime){
-      if ($scope.movie.watchedDate) {
+      if($scope.movie.watchedTime === 'now') {
+          $scope.movie.watchedDate = new Date(moment());
+      }
+
+      if ($scope.movie.watchedDate && $scope.notAFutureDate($scope.movie.watchedDate)) {
         $scope.movie.validWatchedDate = true;
 
         WatchedService.markAsWatched($scope.user._id, movieId, runtime, $scope.movie.watchedDate)

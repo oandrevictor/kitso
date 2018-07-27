@@ -118,7 +118,10 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
         });
 
     $scope.markEntireTvshowAsWatched = function (tvshowId, runtime) {
-      if ($scope.tvshow.watchedDate) {
+      if($scope.tvshow.watchedTime === 'now') {
+        $scope.tvshow.watchedDate = new Date(moment());
+      }
+      if ($scope.tvshow.watchedDate && $scope.notAFutureDate($scope.tvshow.watchedDate)) {
         $scope.tvshow.validWatchedDate = true;
 
         $scope.watchAction = true;
@@ -141,7 +144,10 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
     };
 
     $scope.markTvshowAsWatched = function (tvshowId, runtime) {
-      if ($scope.tvshow.watchedDate) {
+      if($scope.tvshow.watchedTime === 'now') {
+        $scope.tvshow.watchedDate = new Date(moment());
+      }
+      if ($scope.tvshow.watchedDate && $scope.notAFutureDate($scope.tvshow.watchedDate)) {
         $scope.tvshow.validWatchedDate = true;
 
         $scope.watchAction = true;
@@ -177,8 +183,16 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
             });
         };
 
+
+    $scope.notAFutureDate = function(date) {
+        return moment(date) <= moment();
+    }
+
     $scope.markAsWatched = function(tvshowId, runtime){
-      if ($scope.tvshow.watchedDate) {
+      if($scope.tvshow.watchedTime === 'now') {
+        $scope.tvshow.watchedDate = new Date(moment());
+      }
+      if ($scope.tvshow.watchedDate  && $scope.notAFutureDate($scope.tvshow.watchedDate)) {
         $scope.tvshow.validWatchedDate = true;
 
         WatchedService.markAsWatched($scope.user._id, tvshowId, runtime, $scope.tvshow.watchedDate)

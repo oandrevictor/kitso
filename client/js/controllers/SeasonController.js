@@ -193,32 +193,42 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
       });
     };
 
-    $scope.markEntireSeasonAsWatched = function () {
-      if ($scope.season.watchedDate) {
-        $scope.season.validWatchedDate = true;
-
-        $scope.watchAction = true;
-
-        WatchedService.markEntireSeasonAsWatched($scope.user._id, $scope.season._id, $scope.tvshow.episode_run_time[0], $scope.season.watchedDate)
-          .then((result) => {
-            $scope.watchAction = false;
-            $route.reload();
-            UIkit.modal('#modal-watchSeason').hide();
-          })
-          .catch((error) => {
-            UIkit.notification({
-              message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
-              status: 'danger',
-              timeout: 2500
-            });
-          });
-      } else {
-        $scope.season.validWatchedDate = false;
+      $scope.notAFutureDate = function(date) {
+          return moment(date) <= moment();
       }
+
+      $scope.markEntireSeasonAsWatched = function () {
+        if($scope.season.watchedTime === 'now') {
+          $scope.season.watchedDate = new Date(moment());
+        }
+        if ($scope.season.watchedDate  && $scope.notAFutureDate($scope.season.watchedDate)) {
+          $scope.season.validWatchedDate = true;
+
+          $scope.watchAction = true;
+
+          WatchedService.markEntireSeasonAsWatched($scope.user._id, $scope.season._id, $scope.tvshow.episode_run_time[0], $scope.season.watchedDate)
+            .then((result) => {
+              $scope.watchAction = false;
+              $route.reload();
+              UIkit.modal('#modal-watchSeason').hide();
+            })
+            .catch((error) => {
+              UIkit.notification({
+                message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                status: 'danger',
+                timeout: 2500
+              });
+            });
+        } else {
+          $scope.season.validWatchedDate = false;
+        }
     };
 
     $scope.markSeasonAsWatched = function () {
-      if ($scope.season.watchedDate) {
+      if($scope.season.watchedTime === 'now') {
+          $scope.season.watchedDate = new Date(moment());
+      }
+      if ($scope.season.watchedDate && $scope.notAFutureDate($scope.season.watchedDate)) {
         $scope.season.validWatchedDate = true;
 
         $scope.watchAction = true;
@@ -264,7 +274,10 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
     };
 
     $scope.markAsWatched = function () {
-      if ($scope.season.watchedDate) {
+      if($scope.season.watchedTime === 'now') {
+          $scope.season.watchedDate = new Date(moment());
+      }
+      if ($scope.season.watchedDate && $scope.notAFutureDate($scope.season.watchedDate)) {
         $scope.season.validWatchedDate = true;
 
         var episodeId = $scope.episode._id;
