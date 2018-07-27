@@ -271,6 +271,13 @@ html, body {
   padding: 15px;
 
 }
+
+.icon-actor-missing {
+  background: url("/images/icon/actor-missing.svg") left no-repeat;
+  background-size: 25px;
+  padding: 15px;
+}
+
 .full-loading {
   background: url('/images/icon/loading.svg') no-repeat center center, linear-gradient(155deg, #9730a0 0%, #7c1b7a 51%, #502274 75%);;
   height: 100%;
@@ -1186,6 +1193,17 @@ html, body {
       .cast-name {
         margin-top: 10px;
       }
+    }
+
+    .cast-not-found {
+      width: 70%;
+      height: 30vh;
+
+      .title {
+        color: #773095;
+        width: 100%;
+      }
+
     }
   }
 
