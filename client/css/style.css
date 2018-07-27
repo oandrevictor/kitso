@@ -611,6 +611,7 @@ html, body {
     background-position: center;
     overflow-y: visible !important;
     height: 30vh;
+    min-height: 279px;
     display: block;
     color: #ffffff !important;
     padding-bottom: 0px !important;

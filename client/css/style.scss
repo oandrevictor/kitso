@@ -9,13 +9,16 @@ html, body {
 .uk-input:focus, .uk-select:focus, .uk-textarea:focus {
   border-color: #773095 !important;
 }
+
 .uk-tab>.uk-active>a {
   font-weight: 400;
   border-color: #db2399 !important;
 }
+
 .uk-tab {
   margin-top: -2px;
 }
+
 .news-box-wrapper{
   display: inline-block;
 }
@@ -830,6 +833,7 @@ html, body {
     background-position: center;
     overflow-y: visible !important;
     height: 30vh;
+    min-height: 279px;
     display: block;
     color: #ffffff !important;
     padding-bottom: 0px !important;
