@@ -442,6 +442,13 @@ html, body {
 .note{
   li {
     height: 30px;
+    color: white;
+
+    button {
+      float: right;
+      padding-left: 10px;
+      color: white;
+    }
   }
 }
 

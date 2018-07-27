@@ -85,8 +85,12 @@
       <div class= "options" >
         <button ng-show="isLogged()" class="uk-button uk-button-default options"><span uk-icon="bell"></span></button>
         <div uk-dropdown="pos: bottom-right	">
-          <ul class="uk-nav uk-dropdown-nav note" ng-repeat="notification in notifications">
-            <li>{{notification.content}}</li>
+          <ul class="uk-nav uk-dropdown-nav note">
+            <li ng-repeat="notification in notifications">
+              {{notification.content}}
+              <button  class="uk-button uk-button-text" uk-icon="icon: close; ratio: 0.5" ng-click="deleteNotification(notification)"></button>
+              <button  class="uk-button uk-button-text" uk-icon="icon: ban; ratio: 0.5" ng-click="viewNotification(notification)"></button>
+            </li>
           </ul>
         </div>
       </div>

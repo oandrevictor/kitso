@@ -114,6 +114,16 @@ kitso.controller('MainController', ['$scope', '$location', '$timeout', 'AuthServ
 			});
 	}
 
+	$scope.viewNotification = function(notification) {
+		console.log(notification);
+		NotificationService.setViewed(notification);
+	}
+
+	$scope.deleteNotification = function(notification) {
+		console.log("delete")
+		console.log(notification);
+	}
+
 	$scope.removeFromList = function(activity, userListId) {
 		item = $scope.getMediaFromActivity(activity);
 		id = item._id;

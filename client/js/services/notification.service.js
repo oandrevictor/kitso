@@ -53,6 +53,7 @@ kitso.service('NotificationService', ['$q', '$http', function ($q, $http) {
 
         $http.put('/api/notification/' + notification._id, notification)
             .then(function (response) {
+                console.log(response)
                 if (response.status === 200) {
                     deferred.resolve();
                 } else {
