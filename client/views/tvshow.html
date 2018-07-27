@@ -199,15 +199,34 @@
           </ul>
           </div>
         </div>
-                <!-- Watched modal -->
+
+<!--  Watched Tvshow modal -->
 <div id="modal-watchTvshow" class="uk-flex-top" uk-modal>
   <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
-      <button class="uk-modal-close-default" type="button" uk-close></button>
-      <h2 class="uk-modal-title">Mark tvshow as watched</h2>
+    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <h2 class="uk-modal-title">Mark tvshow as watched</h2>
+    <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+      <p>When did you watch this tvshow?</p>
+      <label><input class="uk-radio" type="radio" value="now" name="radio2" ng-change="tvshow.validWatchedDate = true" ng-model="tvshow.watchedTime" ng-checked=> Now</label>
+      <label><input class="uk-radio" type="radio" value="another-day" name="radio2" ng-model="tvshow.watchedTime"> Another Day</label>
+    </div>
+
+    <div class="uk-margin" ng-show="tvshow.watchedTime == 'another-day'">
+      <label class="uk-form-label" for="date">Select the day you watched</label>
+      <div class="uk-form-controls">
+        <input class="uk-input" type="date" id="date" name="date"
+               ng-model="tvshow.watchedDate" ng-change="tvshow.validWatchedDate = true">
+      </div>
+      <label class="uk-text-small uk-text-danger uk-align-right" for="date"
+             ng-show="!(tvshow.validWatchedDate)" >* Select a valid date</label>
+    </div>
+
+    <div ng-hide="!tvshow.watchedTime || !tvshow.validWatchedDate">
       <p>Mark <span class="uk-text-bold uk-text-danger">all</span> episodes as watched or <strong>only</strong> the unwatched episodes?</p>
       <p class="uk-text-right">
-          <button class="uk-button uk-button-danger uk-modal-close" type="button" ng-click="markEntireTvshowAsWatched(tvshow._id, tvshow.episode_run_time[0])" ng-disabled="watchAction">All episodes</button>
-          <button class="uk-button uk-button uk-modal-close" type="button" ng-click="markTvshowAsWatched(tvshow._id, tvshow.episode_run_time[0])" ng-disabled="watchAction || tvshow.watched"><span class="uk-text-danger">Unwatched episodes</span></button>
+        <button class="uk-button uk-button-danger" type="button" ng-click="markEntireTvshowAsWatched(tvshow._id, tvshow.episode_run_time[0])" ng-disabled="watchAction">All episodes</button>
+        <button class="uk-button uk-button" type="button" ng-click="markTvshowAsWatched(tvshow._id, tvshow.episode_run_time[0])" ng-disabled="watchAction || tvshow.watched"><span class="uk-text-danger">Unwatched episodes</span></button>
       </p>
+    </div>
   </div>
 </div>
