@@ -96,6 +96,7 @@ exports.followed_activity = async function(req, res) {
     news_actions = await Action.find({ "_id": { "$in": news_actions_ids } }).sort({date: -1}).skip(page * 10).limit(10);
 
     actions = actions.concat(news_actions);
+    actions = onlyUnique(actions);
     promises = actions.map(DataStoreUtils.getActivity);
     Promise.all(promises).then(function(results) {
       all_activitys = all_activitys.concat(results);
@@ -106,6 +107,19 @@ exports.followed_activity = async function(req, res) {
     res.status(RequestStatus.BAD_REQUEST).json(err);
   }
 };
+
+onlyUnique = function(array) {
+  filtered = []
+  ids = []
+  array.forEach(function(action){
+    id = action._id.toString();
+    if (!(ids.includes(id))){
+      ids.push(id);
+      filtered.push(action);
+    }
+  })
+  return filtered;
+}
 
 exports.create = async function(req, res) {
   var follow = new Follows(req.body);
