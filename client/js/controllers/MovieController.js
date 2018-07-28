@@ -11,6 +11,8 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
             $scope.user = AuthService.getUser();
             $scope.movie = MovieService.getMovie();
             $scope.release_date_formated = moment($scope.movie.release_date).format('YYYY');
+            $scope.movie.watchedDate = new Date(moment());
+            $scope.movie.validWatchedDate = true;
 
             WatchedService.isWatched($scope.user._id , $scope.movie._id).then((watched) => {
                 $scope.movie.watched = watched;
@@ -175,19 +177,34 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
     });
   }
 
+  $scope.notAFutureDate = function(date) {
+      return moment(date) <= moment();
+  }
+
     $scope.markAsWatched = function(movieId, runtime){
-        WatchedService.markAsWatched($scope.user._id, movieId, runtime)
-        .then((watched) => {
+      if($scope.movie.watchedTime === 'now') {
+          $scope.movie.watchedDate = new Date(moment());
+      }
+
+      if ($scope.movie.watchedDate && $scope.notAFutureDate($scope.movie.watchedDate)) {
+        $scope.movie.validWatchedDate = true;
+
+        WatchedService.markAsWatched($scope.user._id, movieId, runtime, $scope.movie.watchedDate)
+          .then((watched) => {
             $scope.movie.watched = watched;
-        })
-        .catch((error) => {
+            UIkit.modal('#modal-watchMovie').hide();
+          })
+          .catch((error) => {
             UIkit.notification({
-                message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
-                status: 'danger',
-                timeout: 2500
+              message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+              status: 'danger',
+              timeout: 2500
             });
-        });
-    }
+          });
+      } else {
+        $scope.movie.validWatchedDate = false;
+      }
+    };
 
     $scope.follow = function(movie, is_private){
         FollowService.followPage($scope.user._id, movie, is_private)

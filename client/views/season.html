@@ -97,7 +97,7 @@
                     <div>
                       <div class="episode-details">
                         <h3 class="uk-card-title episode-title">{{episode.name}}</h3>
-                        <button ng-hide="episode.watched" ng-click="markAsWatched(episode)" class="uk-button uk-button-default episode-button">
+                        <button ng-hide="episode.watched" ng-click="openWatchEpisodeModal(episode)" class="uk-button uk-button-default episode-button">
                           <span uk-icon="icon: history;"></span> {{watchedSeasons}}Mark as watched</button>
                           <button ng-show="episode.watched" ng-click="markAsNotWatched(episode)" class="uk-button uk-button-default episode-button active">
                             <span uk-icon="icon: clock;"></span> Watched (undo) </button>
@@ -144,15 +144,60 @@
               </div>
             </div>
 
-<!-- This is the modal -->
+<!--  Watched Season modal -->
 <div id="modal-watchSeason" class="uk-flex-top" uk-modal>
   <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
       <button class="uk-modal-close-default" type="button" uk-close></button>
       <h2 class="uk-modal-title">Mark season as watched</h2>
-      <p>Mark <span class="uk-text-bold uk-text-danger">all</span> episodes as watched or <strong>only</strong> the unwatched episodes?</p>
-      <p class="uk-text-right">
-          <button class="uk-button uk-button-danger uk-modal-close" type="button" ng-click="markEntireSeasonAsWatched()" ng-disabled="watchAction">All episodes</button>
-          <button class="uk-button uk-button uk-modal-close" type="button" ng-click="markSeasonAsWatched()" ng-disabled="watchAction || season.progress.ratio == 1"><span class="uk-text-danger">Unwatched episodes</span></button>
-      </p>
+      <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+        <p>When did you watch this season?</p>
+        <label><input class="uk-radio" type="radio" value="now" name="radio2" ng-change="season.validWatchedDate = true" ng-model="season.watchedTime" ng-checked=> Now</label>
+        <label><input class="uk-radio" type="radio" value="another-day" name="radio2" ng-model="season.watchedTime"> Another Day</label>
+      </div>
+
+      <div class="uk-margin" ng-show="season.watchedTime == 'another-day'">
+        <label class="uk-form-label" for="date">Select the day you watched</label>
+        <div class="uk-form-controls">
+          <input class="uk-input" type="date" id="date" name="date"
+                 ng-model="season.watchedDate" ng-change="season.validWatchedDate = true">
+        </div>
+        <label class="uk-text-small uk-text-danger uk-align-right" for="date"
+               ng-show="!(season.validWatchedDate)" >* Select a valid date</label>
+      </div>
+
+      <div ng-hide="!season.watchedTime || !season.validWatchedDate">
+        <p>Mark <span class="uk-text-bold uk-text-danger">all</span> episodes as watched or <strong>only</strong> the unwatched episodes?</p>
+        <p class="uk-text-right">
+          <button class="uk-button uk-button-danger" type="button" ng-click="markEntireSeasonAsWatched()" ng-disabled="watchAction">All episodes</button>
+          <button class="uk-button uk-button" type="button" ng-click="markSeasonAsWatched()" ng-disabled="watchAction || season.progress.ratio == 1"><span class="uk-text-danger">Unwatched episodes</span></button>
+        </p>
+      </div>
+  </div>
+</div>
+
+<!-- Watched Episode modal -->
+<div id="modal-watchEpisode" class="uk-flex-top" uk-modal>
+  <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <h2 class="uk-modal-title">Mark episode as watched</h2>
+    <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+      <p>When did you watch this episode?</p>
+      <label><input class="uk-radio" type="radio" value="now" name="episode-radio" ng-change="season.validWatchedDate = true" ng-model="season.watchedTime" ng-checked> Now</label>
+      <label><input class="uk-radio" type="radio" value="another-day" name="episode-radio" ng-model="season.watchedTime"> Another Day</label>
+    </div>
+
+    <div class="uk-margin" ng-show="season.watchedTime == 'another-day'">
+      <label class="uk-form-label" for="date">Select the day you watched</label>
+      <div class="uk-form-controls">
+        <input class="uk-input" type="date" id="dateEpisode" name="date"
+               ng-model="season.watchedDate" ng-change="season.validWatchedDate = true">
+      </div>
+      <label class="uk-text-small uk-text-danger uk-align-right" for="date"
+             ng-show="!(season.validWatchedDate)" >* Select a valid date</label>
+    </div>
+    <br>
+    <p class="uk-text-right">
+      <button class="uk-button uk-button-danger" type="button"  ng-click="markAsWatched()" ng-disabled="!season.watchedTime || !season.validWatchedDate">Watch</button>
+    </p>
   </div>
 </div>
