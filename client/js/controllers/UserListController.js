@@ -50,11 +50,11 @@ function($scope, $location, $timeout, UserListService, MovieService, $routeParam
     var img_path;
 
     if (media.__t === 'Episode') {
-      img_path = media.still_path;
+      img_path = 'https://image.tmdb.org/t/p/w500/' + media.still_path;
     } else {
       img_path = media.poster_path;
     }
-    return 'https://image.tmdb.org/t/p/w500/' + img_path;
+    return img_path;
   }
 
   $scope.removeFromList = function(userListId, ranked) {
