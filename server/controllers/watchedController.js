@@ -253,7 +253,7 @@ var injectMediaJsonInWatched = async function(watchedObj) {
     var value = await TMDBController.getMovie(mediaObj._tmdb_id).then((movie) => {
       var watched_with_full_media = watchedObj;
       watched_with_full_media._media = mediaObj;
-      watched_with_full_media._media.helper = movie;
+      watched_with_full_media._media.helper = JSON.stringify(movie);
       return watched_with_full_media;
     });
     return value;
