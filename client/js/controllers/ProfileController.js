@@ -386,7 +386,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
           return 'https://image.tmdb.org/t/p/w227_and_h127_bestv2/' + first.still_path;
         }
       } else {
-        return "/images/default.jpeg";
+        return "/images/default.jpg";
       }
     }
 
