@@ -35,12 +35,11 @@
         </div>
     </article>
     <br >
-    <button  class="uk-button uk-button-default episode-button">
+    <button  class="uk-button uk-button-default episode-button" ng-click="toggleLike(activity)">
       <span class="hearted" ng-show="activity.liked_by_me"></span>
-      <p ng-show="activity.liked_by_me">DEI LIKE</p>
-      <p ng-hide="activity.liked_by_me">Ñ DEI LIKE</p>
       <span uk-icon="heart" ng-hide="activity.liked_by_me"></span> {{getLikes(activity)}} likes
     </button>
     <hr>
   </div>
+  <div class="bubble-loading"></div>
 </div>

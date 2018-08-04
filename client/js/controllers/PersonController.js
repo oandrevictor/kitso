@@ -25,14 +25,14 @@ kitso.controller('PersonController',
                   });
               });
 
+              $('.bubble-loading').show();
               NewsService.getRelatedNews($scope.person._id).then(async function(news){
-                console.log($scope)
                 newsPromises = news.map((news) => {
                   isLiked(news);
                 });
                 Promise.all(newsPromises).then((result) => {
                   $scope.news = news;
-                  console.log('terminou')
+                  $('.bubble-loading').hide();
                 });
               });
 
@@ -60,7 +60,6 @@ kitso.controller('PersonController',
               }
 
             }).catch((error) => {
-              console.log($scope.mediasPersonAppears);
               UIkit.notification({
                 message: '<span uk-icon=\'icon: check\'></span> ' + 'Something went wrong. Try to reload the page.',
                 status: 'danger',
