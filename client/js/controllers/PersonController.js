@@ -1,8 +1,8 @@
 kitso = angular.module('kitso');
 
 kitso.controller('PersonController',
-  ['$scope', '$location', '$timeout', '$route', '$routeParams', 'PersonService', 'AuthService', 'FollowService', 'NewsService',
-    function ($scope, $location, $timeout, $route, $routeParams, PersonService, AuthService, FollowService, NewsService) {
+  ['$scope', '$location', '$timeout', '$route', '$routeParams', 'PersonService', 'AuthService', 'FollowService', 'NewsService', 'LikedService',
+    function ($scope, $location, $timeout, $route, $routeParams, PersonService, AuthService, FollowService, NewsService, LikedService) {
       $scope.newsbox_toggle = true;
 
       PersonService.loadPerson($routeParams.person_id)
@@ -25,8 +25,15 @@ kitso.controller('PersonController',
                   });
               });
 
-              NewsService.getRelatedNews($scope.person._id).then(function(news){
-                $scope.news = news;
+              NewsService.getRelatedNews($scope.person._id).then(async function(news){
+                console.log($scope)
+                newsPromises = news.map((news) => {
+                  isLiked(news);
+                });
+                Promise.all(newsPromises).then((result) => {
+                  $scope.news = news;
+                  console.log('terminou')
+                });
               });
 
               FollowService.countFollowers($routeParams.person_id)
@@ -142,6 +149,42 @@ kitso.controller('PersonController',
         ratings.push(i+1)
       }
       return ratings;
+    }
+
+    var like = function(activity){
+      LikedService.like($scope.user._id, activity._id).then(function(success){
+        activity.liked.push($scope.user._id);
+        activity.liked_by_me = true;
+        activity.liked_info = success.data;
+      })
+    }
+    var undoLike = function(activity){
+      LikedService.undoLike(activity.liked_info).then(function(success){
+        var remove_index = activity.liked.indexOf($scope.user._id);
+        activity.liked.splice(remove_index, 1)
+        activity.liked_by_me = false;
+      })
+    }
+
+    var isLiked = async function(activity){
+      var liked = await LikedService.isLiked($scope.user._id, activity._id);
+      activity.liked_by_me = liked.is_liked;
+      if (liked.is_liked)
+        activity.liked_info = liked;
+      return liked;
+    }
+
+    $scope.toggleLike = function(activity){
+      if (activity.liked_by_me){
+        undoLike(activity)
+      }
+      else{
+        like(activity)
+      }
+    }
+
+    $scope.getLikes = function(activity){
+      return activity.liked.length;
     }
 
     }]);
