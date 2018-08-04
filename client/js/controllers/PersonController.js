@@ -26,13 +26,17 @@ kitso.controller('PersonController',
               });
 
               $('.bubble-loading').show();
-              NewsService.getRelatedNews($scope.person._id).then(async function(news){
-                newsPromises = news.map((news) => {
-                  isLiked(news);
-                });
-                Promise.all(newsPromises).then((result) => {
-                  $scope.news = news;
-                  $('.bubble-loading').hide();
+              NewsService.getRelatedNews($scope.person._id).then( function(newsResult){
+                let n_news = newsResult.length;
+
+                newsResult.forEach(async (news, index) => {
+                  let liked = await isLiked(news);
+                  likeActivity(news, liked);
+
+                  if (index + 1 == n_news) {
+                    $scope.news = newsResult;
+                    $('.bubble-loading').hide();
+                  }
                 });
               });
 
@@ -165,12 +169,15 @@ kitso.controller('PersonController',
       })
     }
 
-    var isLiked = async function(activity){
-      var liked = await LikedService.isLiked($scope.user._id, activity._id);
+    var isLiked = function(activity){
+      var liked = LikedService.isLiked($scope.user._id, activity._id);
+      return liked;
+    }
+
+    var likeActivity = function(activity, liked) {
       activity.liked_by_me = liked.is_liked;
       if (liked.is_liked)
         activity.liked_info = liked;
-      return liked;
     }
 
     $scope.toggleLike = function(activity){
