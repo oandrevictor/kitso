@@ -9,4 +9,6 @@ router.post('/', notificationController.create);
 
 router.put('/:notification_id', notificationController.setViewed);
 
+router.delete('/:notification_id', notificationController.delete);
+
 module.exports = router;

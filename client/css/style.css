@@ -329,9 +329,13 @@ html, body {
         text-decoration: none;
         font-weight: 500; }
 
+.note .viewed {
+  filter: blur(1px);
+  background-color: #91519261; }
 .note li {
-  height: 30px;
-  color: white; }
+  height: 25px;
+  color: white;
+  font-style: normal; }
   .note li button {
     float: right;
     padding-left: 10px;

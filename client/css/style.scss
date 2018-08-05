@@ -440,9 +440,15 @@ html, body {
 }
 
 .note{
+  .viewed {
+    filter: blur(1px);
+    background-color: #91519261;
+  }
+
   li {
-    height: 30px;
+    height: 25px;
     color: white;
+    font-style: normal;
 
     button {
       float: right;

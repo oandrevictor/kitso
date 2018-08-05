@@ -6,10 +6,10 @@ kitso.service('NotificationService', ['$q', '$http', function ($q, $http) {
         getNotifications: getNotifications,
         create: create,
         setViewed: setViewed,
+        deleteNotification: deleteNotification
     });
 
     function create(notification) {
-        // create a new instance of deferred
         var deferred = $q.defer();
 
         $http.post('/api/notification/', notification)
@@ -49,21 +49,45 @@ kitso.service('NotificationService', ['$q', '$http', function ($q, $http) {
     }
 
     function setViewed(notification) {
-        var deferred = $q.defer();
+      var deferred = $q.defer();
 
-        $http.put('/api/notification/' + notification._id, notification)
-            .then(function (response) {
-                console.log(response)
-                if (response.status === 200) {
-                    deferred.resolve();
-                } else {
-                    deferred.reject();
-                }
-            })
-            .catch(function (error) {
-                deferred.reject(error.data);
-            });
+      $http.put('/api/notification/' + notification._id, { "viewed": true })
+          .then(function (response) {
+              if (response.status === 200) {
+                  deferred.resolve();
+              } else {
+                  deferred.reject();
+              }
+          })
+          .catch(function (error) {
+              deferred.reject(error.data);
+          });
 
-        return deferred.promise;
+      return deferred.promise;
+    }
+
+    function deleteNotification(notification) {
+      var deferred = $q.defer();
+      var req = {
+        method: 'DELETE',
+        url: '/api/notification/' + notification._id,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+
+      $http(req)
+        .then((response) => {
+          if (response.status === 200) {
+            deferred.resolve(response.data);
+          } else {
+            deferred.reject();
+          }
+        })
+        .catch((error) => {
+          deferred.reject(error.data);
+        });
+
+      return deferred.promise;
     }
 }]);

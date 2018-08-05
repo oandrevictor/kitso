@@ -42,3 +42,13 @@ exports.setViewed = function(req, res) {
     });
   });
 };
+
+exports.delete = async function(req, res) {
+  Notification.remove({ _id: req.params.notification_id })
+  .catch((err) => {
+    res.status(RequestStatus.BAD_REQUEST).send(err);
+  })
+  .then((deletedNotification) => {
+    res.status(RequestStatus.OK).json(deletedNotification);
+  });
+};

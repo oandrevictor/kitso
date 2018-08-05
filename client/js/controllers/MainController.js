@@ -115,13 +115,23 @@ kitso.controller('MainController', ['$scope', '$location', '$timeout', 'AuthServ
 	}
 
 	$scope.viewNotification = function(notification) {
-		console.log(notification);
 		NotificationService.setViewed(notification);
+		$scope.$evalAsync(function(){
+			getUserNotifications();
+		});
 	}
 
+	$scope.getClass = function getClass(idx, list) {
+	  return {
+	    "viewed": list[idx].viewed
+	  };
+	};
+
 	$scope.deleteNotification = function(notification) {
-		console.log("delete")
-		console.log(notification);
+		NotificationService.deleteNotification(notification);
+		$scope.$evalAsync(function(){
+			getUserNotifications();
+		});
 	}
 
 	$scope.removeFromList = function(activity, userListId) {
