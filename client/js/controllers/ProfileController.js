@@ -19,6 +19,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
           loadUserWatchedInfo();
           loadUserWatchedHours();
           loadUserWatchedGenres();
+          loadUserTopRated();
           loadUserLists();
           FollowService.isFollowingUser($scope.logged_user._id, $scope.user._id).then((followed) => {
             $scope.user.followed = followed;
@@ -143,6 +144,11 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
     $scope.labels = ["Comedy", "Horror"];
     $scope.data = [40, 60];
     $scope.optionsGenres = { legend: { display: true, position: 'bottom'}};
+  }
+
+  var loadUserTopRated = function() {
+    $scope.topRatedMovies = ["Vikings", "The big bang theory", "Dr. House"];
+    $scope.topRatedSeries = ["Vikings", "The big bang theory", "Dr. House"];
   }
 
   var loadTab = function(){

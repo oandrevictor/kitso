@@ -115,6 +115,62 @@ exports.getMediaRateAvarege = async function(req, res) {
   }
 };
 
+function SortByRating(x,y) {
+  return ((x['rating']  == y['rating']) ? 0 : ((x['rating']> y['rating']) ? -1 : 1 ));
+}
+
+exports.getTopRated = async function(req, res) {
+  let user_id = req.query.user_id;
+  let limit = req.query.limit;
+  let type = req.query.type;
+  Rated.find({ _user: user_id})
+  .catch((err) => {
+    res.status(RequestStatus.BAD_REQUEST).send(err);
+  })
+  .then(async function(rateds) {
+    rateds.sort(SortByRating);
+    if (type == 'show'){
+      result = [];
+      i = 0;
+      while (rateds.length > i && result.length <= limit) {
+        media = await DataStoreUtils.getMediaObjById(rateds[i]._media);
+        if (media.__t == 'TvShow') {
+          var tmdb_id = media._tmdb_id;
+          var tvshow_complete = await TMDBController.getShow(tmdb_id);
+          if (typeof tvshow_complete === 'string' || tvshow_complete instanceof String)
+            tvshow_complete = JSON.parse(tvshow_complete)
+
+          result.push({ media: tvshow_complete.name, rating: rateds[i].rating})
+        }
+
+        i++;
+      }
+
+      res.status(200).send(result);
+    } else if (type == 'movie') {
+      result = [];
+      i = 0;
+      while (rateds.length > i && result.length <= limit) {
+        media = await DataStoreUtils.getMediaObjById(rateds[i]._media);
+        if (media.__t == 'Movie') {
+          var tmdb_id = media._tmdb_id;
+          var movie_complete = await TMDBController.getMovie(tmdb_id);
+          if (typeof movie_complete === 'string' || movie_complete instanceof String)
+            movie_complete = JSON.parse(movie_complete)
+
+          result.push({ media: movie_complete.title, rating: rateds[i].rating})
+        }
+
+        i++;
+      }
+
+      res.status(200).send(result);
+    } else {
+      res.status(500).send('The type is missing.');
+    }
+  });
+};
+
 // TODO: move to DataStoreUtils
 var findRatedObj = async function(rated_id) {
   return Rated.findById(rated_id).exec();
