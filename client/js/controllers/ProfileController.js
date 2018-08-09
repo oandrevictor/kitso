@@ -42,6 +42,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
           loadUserWatchedInfo();
           loadUserWatchedHours();
           loadUserWatchedGenres();
+          loadUserTopRated();
           loadUserLists();
         }
       });
@@ -147,8 +148,26 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
   }
 
   var loadUserTopRated = function() {
-    $scope.topRatedMovies = ["Vikings", "The big bang theory", "Dr. House"];
-    $scope.topRatedSeries = ["Vikings", "The big bang theory", "Dr. House"];
+    $scope.topRatedSeries = [];
+    $scope.topRatedMovies = [];
+
+    RatedService.topRated($scope.user._id, 'show')
+      .then((ratings) => {
+        $scope.topRatedSeries = ratings;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    setTimeout(function(){
+      RatedService.topRated($scope.user._id, 'movie')
+        .then((ratings) => {
+          $scope.topRatedMovies = ratings;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }, 2000);
   }
 
   var loadTab = function(){

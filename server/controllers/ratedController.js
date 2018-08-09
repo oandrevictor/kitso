@@ -133,14 +133,16 @@ exports.getTopRated = async function(req, res) {
       result = [];
       i = 0;
       while (rateds.length > i && result.length <= limit) {
-        media = await DataStoreUtils.getMediaObjById(rateds[i]._media);
+        rated = rateds[i];
+        console.log(rated)
+        media = await DataStoreUtils.getMediaObjById(rated._media);
         if (media.__t == 'TvShow') {
           var tmdb_id = media._tmdb_id;
           var tvshow_complete = await TMDBController.getShow(tmdb_id);
           if (typeof tvshow_complete === 'string' || tvshow_complete instanceof String)
             tvshow_complete = JSON.parse(tvshow_complete)
 
-          result.push({ media: tvshow_complete.name, rating: rateds[i].rating})
+          result.push({ media: tvshow_complete.name, rating: rated.rating})
         }
 
         i++;
@@ -151,14 +153,16 @@ exports.getTopRated = async function(req, res) {
       result = [];
       i = 0;
       while (rateds.length > i && result.length <= limit) {
-        media = await DataStoreUtils.getMediaObjById(rateds[i]._media);
+        rated = rateds[i];
+        console.log(rated)
+        media = await DataStoreUtils.getMediaObjById(rated._media);
         if (media.__t == 'Movie') {
           var tmdb_id = media._tmdb_id;
           var movie_complete = await TMDBController.getMovie(tmdb_id);
           if (typeof movie_complete === 'string' || movie_complete instanceof String)
             movie_complete = JSON.parse(movie_complete)
 
-          result.push({ media: movie_complete.title, rating: rateds[i].rating})
+          result.push({ media: movie_complete.title, rating: rated.rating})
         }
 
         i++;

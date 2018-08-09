@@ -2,7 +2,7 @@
     <p class="uk-text-medium bold">Top 5: Best Rated Tv Shows</p>
     <ul class="uk-list uk-list-large">
         <li ng-repeat="show in topRatedSeries">
-          {{show}}
+          {{show.media}} - {{show.rating}}
         </li>
     </ul>
 </div>
@@ -10,8 +10,8 @@
 <div>
     <p class="uk-text-medium bold">Top 5: Best Rated Movies</p>
     <ul class="uk-list uk-list-large">
-        <li ng-repeat="show in topRatedSeries">
-          {{show}}
+        <li ng-repeat="movie in topRatedMovies">
+          {{movie.media}} - {{movie.rating}}
         </li>
     </ul>
 </div>
