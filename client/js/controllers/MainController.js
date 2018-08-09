@@ -157,8 +157,6 @@ kitso.controller('MainController', ['$scope', '$location', '$timeout', 'AuthServ
         });
     }
 
-    $scope.goToProfile = function()
-
     $scope.range = function (count) {
         var ratings = [];
         for (var i = 0; i < count; i++) {
