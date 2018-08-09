@@ -86,6 +86,7 @@
         <button ng-show="isLogged()" class="uk-button uk-button-default options"><span uk-icon="bell"></span></button>
         <div uk-dropdown="pos: bottom-right">
           <ul class="uk-nav uk-dropdown-nav note">
+            <li ng-show="notifications.$$state.value.length == 0"> You have no notifications.</li>
             <li ng-repeat="notification in notifications.$$state.value" ng-class="getClass($index, notifications.$$state.value)">
               {{isViewed(notification)}}
               {{notification.content}}
