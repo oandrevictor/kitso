@@ -359,7 +359,7 @@ html, body {
     margin-left: auto;
     margin-top: auto;
     margin-bottom: auto;
-    width: 33%;
+    width: 170%;
     color: white;
     text-align: center;
 
@@ -434,19 +434,37 @@ html, body {
   }
 
   .options {
-    margin-left: auto;
     margin-top: auto;
     margin-bottom: auto;
     color: white;
     border: solid 0px;
     float: right;
-    width: 33%;
+    padding-left: 0px;
     a {
       font-style: initial;
       &:hover {
         text-decoration: none;
         font-weight: 500;
       }
+    }
+  }
+}
+
+.note{
+  .viewed {
+    filter: blur(1px);
+    background-color: #91519261;
+  }
+
+  li {
+    height: 25px;
+    color: white;
+    font-style: normal;
+
+    button {
+      float: right;
+      padding-left: 10px;
+      color: white;
     }
   }
 }

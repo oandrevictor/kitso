@@ -16,7 +16,7 @@ var RedisClient = require('./utils/lib/redisClient');
 
 let client = RedisClient.createAndAuthClient();
 
-// configuration ===========================================
+//  ===========================================
 
 // config files
 var db = require('./config/db');
@@ -190,8 +190,8 @@ app.use('/api/related', relatedRoutes);
 var likedRoutes = require('./routes/liked');
 app.use('/api/liked', likedRoutes);
 
-var updateTvShowInfoRoutes = require('./routes/updateTvShowInfo');
-app.use('/api/updatetvshow', updateTvShowInfoRoutes);
+var notificationRoutes = require('./routes/notification');
+app.use('/api/notification', notificationRoutes);
 
 // start app ===============================================
 // startup our app at http://localhost:8080

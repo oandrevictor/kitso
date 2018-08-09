@@ -124,7 +124,9 @@ onlyUnique = function(array) {
 exports.create = async function(req, res) {
   var follow = new Follows(req.body);
   let user_id = follow._user;
+  let user = await DataStoreUtils.getUserById(user_id);
   let action = await DataStoreUtils.createAction(user_id, follow._id, ActionType.FOLLOWED_USER);
+  DataStoreUtils.createNotification(follow._following, follow._id, user.username + " followed you.");
   follow._action = action._id;
   await DataStoreUtils.addActionToUserHistory(user_id, action._id);
 
@@ -147,6 +149,7 @@ exports.delete = async function(req, res) {
       let user_id = followed._user;
       let action_id = followed._action;
       delete_action(action_id);
+      DataStoreUtils.deleteNotification(follow_id);
       delete_action_from_user_history(user_id, action_id);
 
       Follows.remove({ _id: follow_id})

@@ -267,7 +267,7 @@ html, body {
     margin-left: auto;
     margin-top: auto;
     margin-bottom: auto;
-    width: 33%;
+    width: 170%;
     color: white;
     text-align: center; }
     .toolbar .exploring .explore-icon {
@@ -323,18 +323,29 @@ html, body {
     padding-right: 10px;
     width: 32%; }
   .toolbar .options {
-    margin-left: auto;
     margin-top: auto;
     margin-bottom: auto;
     color: white;
     border: solid 0px;
     float: right;
-    width: 33%; }
+    padding-left: 0px; }
     .toolbar .options a {
       font-style: initial; }
       .toolbar .options a:hover {
         text-decoration: none;
         font-weight: 500; }
+
+.note .viewed {
+  filter: blur(1px);
+  background-color: #91519261; }
+.note li {
+  height: 25px;
+  color: white;
+  font-style: normal; }
+  .note li button {
+    float: right;
+    padding-left: 10px;
+    color: white; }
 
 .uk-modal-body .uk-form-label {
   margin-bottom: 0px; }
