@@ -23,8 +23,12 @@ exports.index = async function(req, res) {
     partial = {}
     result.forEach(function(person){
       partial = JSON.stringify(person);
-      partial = JSON.parse(partial)
-      partial.profile_path = 'https://image.tmdb.org/t/p/w500' + person.image_url;
+      partial = JSON.parse(partial);
+      if (person.image_url != null) {
+          partial.profile_path = 'https://image.tmdb.org/t/p/w500' + person.image_url;
+      } else {
+          partial.profile_path = "/images/default-person.jpg";
+      }
       complete_people.push(partial)
     })
     res.status(RequestStatus.OK).send(complete_people);
