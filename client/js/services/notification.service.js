@@ -4,6 +4,7 @@ kitso.service('NotificationService', ['$q', '$http', function ($q, $http) {
     // return available functions for use in the controllers
     return ({
         getNotifications: getNotifications,
+        getNotificationsRequest: getNotificationsRequest,
         create: create,
         setViewed: setViewed,
         deleteNotification: deleteNotification
@@ -27,14 +28,14 @@ kitso.service('NotificationService', ['$q', '$http', function ($q, $http) {
         return deferred.promise;
     }
 
-    function getNotifications(user_id) {
+    function getNotificationsRequest(user_id) {
         // create a new instance of deferred
         var deferred = $q.defer();
 
         $http.get('/api/notification/' + user_id)
             .then(function (response) {
                 if (response.status === 200) {
-                    console.log(response.data);
+                    this.notifications = response.data;
                     deferred.resolve(response.data);
                 } else {
                     deferred.reject();
@@ -46,6 +47,10 @@ kitso.service('NotificationService', ['$q', '$http', function ($q, $http) {
             });
 
         return deferred.promise;
+    }
+
+    function getNotifications() {
+      return this.notifications;
     }
 
     function setViewed(notification) {

@@ -67,7 +67,11 @@ var notificationRelated = async function(notification) {
   notification_copy.date = notification.date;
   notification_copy.viewed = notification.viewed;
   notification_copy.content = notification.content;
-  notification_copy._related = await DataStoreUtils.getActionByTypeAndIdWithDetails(action.action_type, action._action);
+  if (action) {
+    notification_copy._related = await DataStoreUtils.getActionByTypeAndIdWithDetails(action.action_type, action._action);
+  } else {
+    notification_copy._related = notification.related;
+  }
   notification_copy._user = notification._user;
   return notification_copy;
 }

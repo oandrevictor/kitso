@@ -1,6 +1,6 @@
 var kitso = angular.module('kitso');
 
-kitso.controller('MainController', ['$scope', '$location', '$timeout', 'AuthService', 'FeedService', 'UserListService', 'WatchedService', 'NewsService', 'NotificationService', function($scope, $location, $timeout, AuthService, FeedService, UserListService, WatchedService, NewsService, NotificationService) {
+kitso.controller('MainController', ['$rootScope', '$scope', '$location', '$timeout', 'AuthService', 'FeedService', 'UserListService', 'WatchedService', 'NewsService', 'NotificationService', function($rootScope, $scope, $location, $timeout, AuthService, FeedService, UserListService, WatchedService, NewsService, NotificationService) {
     $scope.temp_news = {}
     $scope.logout = function() {
         AuthService.logout()
