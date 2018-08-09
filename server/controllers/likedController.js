@@ -56,7 +56,7 @@ exports.create = async function(req, res) {
   let activity = await Action.findById(req.body._activity).exec();
   let user = await DataStoreUtils.getUserById(liked._user);
 
-  DataStoreUtils.createNotification(activity._user, liked._id, user.username + " liked your post.");
+  DataStoreUtils.createNotification(activity._user, liked._activity, user.username + " liked your post.");
   liked._action = action._id;
   await DataStoreUtils.addActionToUserHistory(user_id, action._id);
   liked.save()

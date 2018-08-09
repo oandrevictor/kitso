@@ -111,7 +111,7 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
 
 }]);
 
-angular.module('kitso').run(function ($rootScope, $location, $route, AuthService) {
+angular.module('kitso').run(function ($rootScope, $location, $route, AuthService, NotificationService) {
     $rootScope.$on('$routeChangeStart', function (event, next, current) {
       $('.full-loading').show();
         AuthService.getStatus()
@@ -128,6 +128,11 @@ angular.module('kitso').run(function ($rootScope, $location, $route, AuthService
             } else if (!next.access.restricted && AuthService.isLogged()) {
                 $location.path('/home');
                 $route.reload();
+            }
+
+            if (AuthService.isLogged()) {
+                $rootScope.notifications = NotificationService.getNotifications(AuthService.getUser()._id);
+                console.log($rootScope)
             }
         });
     });

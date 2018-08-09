@@ -1,4 +1,5 @@
 var Notification = require('../models/Notification');
+var Action = require('../models/Action');
 var RequestStatus = require('../constants/requestStatus');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 var TMDBController = require('../external/TMDBController');
@@ -8,8 +9,15 @@ exports.index = function(req, res) {
   .catch((err) => {
     res.status(RequestStatus.BAD_REQUEST).send(err);
   })
-  .then((notification) => {
-    res.status(RequestStatus.OK).json(notification);
+  .then(async (notificationsObj) => {
+    let notifications = notificationsObj.map(async (notification) => {
+      return notificationRelated(notification);
+    });
+
+    await Promise.all(notifications).then((result) => {
+      notificationsObj = result;
+      res.status(RequestStatus.OK).json(notificationsObj);
+    });
   });
 };
 
@@ -52,3 +60,14 @@ exports.delete = async function(req, res) {
     res.status(RequestStatus.OK).json(deletedNotification);
   });
 };
+
+var notificationRelated = async function(notification) {
+  let action = await Action.findById(notification._related);
+  let notification_copy = {date: '', viewed: '', content: '', _related: '', _user: ''};   
+  notification_copy.date = notification.date;
+  notification_copy.viewed = notification.viewed;
+  notification_copy.content = notification.content;
+  notification_copy._related = await DataStoreUtils.getActionByTypeAndIdWithDetails(action.action_type, action._action);
+  notification_copy._user = notification._user;
+  return notification_copy;
+}
