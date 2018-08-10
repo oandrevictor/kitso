@@ -19,7 +19,22 @@
           </div>
         </div>
         <div class="uk-width-1-4">
-          <button class="uk-button" ng-show="userlist.deletable">Delete List</button>
+          <button class="uk-button uk-button-save-changes" ng-show="userlist.deletable" ng-if="canEdit(user, userlist)" ng-click="editionMode()">
+            <span uk-icon="icon: pencil;"></span> Edit List</button>
+
+          <button class="uk-button uk-button-follow" ng-hide="userlist.isfollowed" ng-if="!canEdit(user, userlist)" href="#notifications-modal-center" uk-toggle> Follow</button>
+          <div id="notifications-modal-center" class="uk-flex-top" uk-modal>
+            <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+              <button class="uk-modal-close-default" type="button" uk-close></button>
+              <center>
+                <h3>Do you wish to receive notifications about new contents added to this list?</h3>
+                <button class="uk-button uk-button-default watch-button uk-modal-close" ng-click="followList(userlist, true)"> Yes </button>
+                <button class="uk-button uk-button-default watch-button uk-modal-close" ng-click="followList(userlist, false)"> No </button>
+              </center>
+            </div>
+          </div>
+
+          <button class="uk-button uk-button-save-changes" ng-show="userlist.isfollowed" ng-if="!canEdit(user, userlist)" ng-click="unfollowList(userlist)"> Unfollow</button>
         </div>
       </div>
     </div>

@@ -9,9 +9,13 @@ kitso.service('FeedService', ['$q','$http', function ($q, $http) {
         getFollowingUsersActivity: getFollowingUsersActivity,
     });
 
-    function getFollowingUsersActivity(userId){
+    function getFollowingUsersActivity(userId, page){
       var deferred = $q.defer();
-      $http.get(FOLLOWING_FEED_BASE + userId)
+      var page_query = "";
+      if (page){
+        page_query = "?page=" + page;
+      }
+      $http.get(FOLLOWING_FEED_BASE + userId + page_query)
           .then((response) => {
               if (response.status === 200) {
                   deferred.resolve(response.data);

@@ -13,47 +13,26 @@ const redisClient = RedisClient.createAndAuthClient();
 
 // CRUD PERSON ====================================================================================
 
-exports.index = function(req, res) {
+exports.index = async function(req, res) {
   Person.find({})
   .catch((err) => {
     res.status(RequestStatus.BAD_REQUEST).send(err);
   })
-  .then((result) => {
-    var waiting_time = [500];
-    var total_waiting = 500;
-    var final_result = [];
-    result.forEach((person, index)=> {
-      waiting_time.push(total_waiting + 500);
-      var tmdb_id = person._tmdb_id;
-      var query = 'person/' + tmdb_id;
-      redisClient.exists(query, function(err, reply) {
-        if (reply === 1) {
-          redisClient.get(query, async function(err,data) {
-            if(err)
-            console.log(err)
-            else{
-              console.log('got query from redis: ' + query);
-              var parsed_result = JSON.parse(data);
-              parsed_result._id = person._id;
-              final_result.push(parsed_result);
+  .then(async (result) => {
+    var complete_people = ['a'];
+    partial = {}
+    result.forEach(function(person){
+      partial = JSON.stringify(person);
+      partial = JSON.parse(partial);
+      if (person.image_url != null) {
+          partial.profile_path = 'https://image.tmdb.org/t/p/w500' + person.image_url;
+      } else {
+          partial.profile_path = "/images/default-person.jpg";
+      }
+      complete_people.push(partial)
+    })
+    res.status(RequestStatus.OK).send(complete_people);
 
-              if (index == result.length -1) res.status(RequestStatus.OK).send(final_result);
-            }
-          });
-        } else {
-          total_waiting += 500;
-          setTimeout(function() {
-            TMDBController.getPersonFromTMDB(tmdb_id).then(async function(data) {
-              data = JSON.parse(data);
-              data.profile_path = "https://image.tmdb.org/t/p/w500/" + data.profile_path;
-              data._id = person._id;
-              final_result.push(data);
-              redisClient.set(query, JSON.stringify(data));
-              if (index == result.length -1) res.status(RequestStatus.OK).send(final_result);
-            })}, waiting_time[index]);
-          }
-        });
-      });
     })
   };
 

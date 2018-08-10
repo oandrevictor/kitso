@@ -38,7 +38,7 @@
         </div>
         <button ng-show="movie.followed.is_following" class="uk-button uk-button-default watch-button watched" ng-click="unfollow(movie)">
             <span uk-icon="icon: rss;"></span> Following </button>
-        <button ng-hide="movie.watched" ng-click="markAsWatched(movie._id)" class="uk-button uk-button-default watch-button">
+        <button ng-hide="movie.watched" uk-toggle="#modal-watchMovie" class="uk-button uk-button-default watch-button">
             <span uk-icon="icon: check;"></span> Mark as watched</button>
         <button ng-show="movie.watched" ng-click="markAsNotWatched(movie.watched.watched_id)" class="uk-button uk-button-default watch-button watched">
             <span uk-icon="icon: check;"></span> Watched (undo) </button>
@@ -46,9 +46,9 @@
             <span uk-icon="icon: list;"></span> UserLists</button>
         <div uk-dropdown="pos: right-center; mode: hover; delay-hide: 100; offset: 20; animation: uk-animation-slide-right-medium" style="z-index: 999">
             <div ng-repeat="list in user.lists" ng-init="markAsAdded(movie._id, list._id)">
-                <button ng-show="!movieAdded" ng-click="addToList(movie._id, list._id)" class="uk-button uk-button-default watch-button">
+                <button ng-show="!list.movieAdded" ng-click="addToList(movie._id, list._id)" class="uk-button uk-button-default watch-button">
                     <span uk-icon="icon: plus;"></span> {{list.title}} </button>
-                <button ng-show="movieAdded" ng-click="removeFromList(movie._id, list._id)" class="uk-button uk-button-default watch-button watched">
+                <button ng-show="list.movieAdded" ng-click="removeFromList(movie._id, list._id)" class="uk-button uk-button-default watch-button watched">
                     <span uk-icon="icon: minus;"></span> {{list.title}} (undo) </button>
             </div>
         </div>
@@ -70,6 +70,26 @@
             </div>
         </div>
     </div>
+    <div class="uk-width-3-4">
+      <div class="rating" ng-style="(movie.name.length > 22) && {'margin-top':'-120px'}">
+        <div>
+          <div class="is-rated-star" ng-show="movie.rated"></div>
+          <a ng-hide="movie.rated" uk-icon="icon: star; ratio: 2"></a>
+        </div>
+        <div class="rate-dropdown" uk-dropdown="pos: bottom-center; mode: hover" style="z-index: 999">
+          <center>
+            <ul class="uk-iconnav">
+              <div ng-repeat="n in range('10')">
+                <a ng-if="n <= movie.rating" class="rating-star" ng-click="rate(movie._id, n)"></a>
+                <a ng-if="n > movie.rating" uk-icon="icon: star; ratio: .5" ng-click="rate(movie._id, n)"></a>
+              </div>
+            </ul>
+          </center>
+        </div>
+        <div class="rating-value"> {{movie.vote_average}}</div>
+      </div>
+    </div>
+
     <ul class="uk-tab" data-uk-tab="{connect:'#tab-id'}">
       <li>
         <a>About</a>
@@ -78,44 +98,26 @@
         <a>News</a>
       </li>
     </ul>
+
     <ul id="tab-id" class="uk-switcher uk-margin">
       <li>
-      <div class="uk-width-3-4">
-        <b>Directed by</b> Directors
-        Genres:
-        <b ng-repeat="genre in movie.genres">{{ genre.name }}; </b>
-        <div class="rating">
-          <div>
-            <div class="is-rated-star" ng-show="movie.rated"></div>
-            <a ng-hide="movie.rated" uk-icon="icon: star; ratio: 2"></a>
-          </div>
-          <div class="rate-dropdown" uk-dropdown="pos: bottom-center; mode: hover" style="z-index: 999">
-            <center>
-              <ul class="uk-iconnav">
-                <div ng-repeat="n in range('10')">
-                  <a ng-if="n <= movie.rating" class="rating-star" ng-click="rate(movie._id, n)"></a>
-                  <a ng-if="n > movie.rating" uk-icon="icon: star; ratio: .5" ng-click="rate(movie._id, n)"></a>
-                </div>
-              </ul>
-            </center>
-          </div>
-          <div class="rating-value"> {{movie.vote_average}} </div>
+        <div class="uk-width-3-4">
+          <div class="section sinopsis">
+        <div class="section-title">
+          Sinopse
         </div>
+        <p>
+          {{movie.overview}}
+        </p>
       </div>
-    <div class="section sinopsis">
-      <div class="section-title">
-        Sinopse
-      </div>
-      <p>
-        {{movie.overview}}
-      </p>
     </div>
+
     <div class="section">
       <div class="section-title">
         Cast
       </div>
 
-      <div uk-slider>
+      <div uk-slider ng-show="movie._actors.length > 0">
         <div class="uk-position-relative uk-visible-toggle uk-light">
           <ul class="uk-slider-items uk-child-width-1-5@s">
             <li ng-repeat="person in movie._actors">
@@ -133,6 +135,17 @@
           <li ng-repeat="n in range(movie._actors.length / 5)"><a href="#" uk-slider-item="{{(n-1) * 5}}" >{{n}}</a></li>
         </ul>
       </div>
+      <div class="cast-not-found" ng-show="movie._actors.length == 0">
+        <div class="uk-card uk-card-default uk-grid-collapse uk-child-width-1-2@s uk-margin" uk-grid>
+          <div>
+            <div class="uk-card-body">
+              <h3 class="uk-card-title title">Not found &nbsp<span class="icon-actor-missing"></span></h3>
+              <p>Actors not found in our database for this media.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <div class="section">
@@ -160,11 +173,39 @@
       </div>
     </div>
   </li>
-  <li>
-    <h4><span uk-icon="pencil"></span> Share a news </h4>
-    <ng-include src="'views/news/_newsfeed.html'"></ng-include>
-  </li>
-</ul>
+    <li>
+      <h4><span uk-icon="pencil"></span> Share a news </h4>
+      <ng-include src="'views/news/_newsfeed.html'"></ng-include>
+    </li>
+  </ul>
 
+  </div>
+</div>
+
+<!-- Watched modal -->
+<div id="modal-watchMovie" class="uk-flex-top" uk-modal>
+  <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <h2 class="uk-modal-title">Mark movie as watched</h2>
+
+    <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+      <p>When did you watch this movie?</p>
+      <label><input class="uk-radio" type="radio" value="now" name="radio2" ng-change="movie.validWatchedDate = true" ng-model="movie.watchedTime" ng-checked> Now</label>
+      <label><input class="uk-radio" type="radio" value="another-day" name="radio2" ng-model="movie.watchedTime"> Another Day</label>
+    </div>
+
+    <div class="uk-margin" ng-show="movie.watchedTime == 'another-day'">
+      <label class="uk-form-label" for="date">Select the day you watched</label>
+      <div class="uk-form-controls">
+        <input class="uk-input" type="date" id="date" name="date"
+               ng-model="movie.watchedDate" ng-change="movie.validWatchedDate = true">
+      </div>
+      <label class="uk-text-small uk-text-danger uk-align-right" for="date"
+             ng-show="!(movie.validWatchedDate)" >* Select a valid date</label>
+    </div>
+    <br>
+    <p class="uk-text-right">
+      <button class="uk-button uk-button-danger" type="button"  ng-click="markAsWatched(movie._id, movie.runtime)" ng-disabled="!movie.watchedTime || !movie.validWatchedDate">Watch</button>
+    </p>
   </div>
 </div>

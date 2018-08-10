@@ -2,14 +2,12 @@ var Rated = require('../models/Rated');
 var RequestStatus = require('../constants/requestStatus');
 var ActionType = require('../constants/actionType');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
-var redisClient = require('../utils/lib/redisClient');
-const https = require('https');
-
+var Utils = require('../utils/lib/utils');
 var TMDBController = require('../external/TMDBController');
 
 
 exports.index = async function(req, res) {
-  let user_id = req.params.user_id;
+  let user_id = req.query.user;
   let rated_list, promises;
   try {
     rated_list = await findUserRatedList(user_id);
@@ -18,7 +16,8 @@ exports.index = async function(req, res) {
     res.status(RequestStatus.BAD_REQUEST).json(err);
   }
   Promise.all(promises).then(function(results) {
-    res.status(RequestStatus.OK).json(results);
+    let filtered_results = Utils.filterWatchedMedia(results, req.query);
+    res.status(RequestStatus.OK).json(filtered_results);
   })
 };
 
@@ -103,6 +102,19 @@ exports.delete = async function(req, res) {
   }
 };
 
+exports.getMediaRateAvarege = async function(req, res) {
+  let media_id = req.query.media_id;
+  try {
+    let vote_average = await DataStoreUtils.getMediaVoteAverage(media_id);
+    res_json = {
+      "vote_average": vote_average
+    }
+    res.status(RequestStatus.OK).json(res_json);
+  } catch (err) {
+    res.status(RequestStatus.BAD_REQUEST).json(err);
+  }
+};
+
 // TODO: move to DataStoreUtils
 var findRatedObj = async function(rated_id) {
   return Rated.findById(rated_id).exec();
@@ -117,10 +129,10 @@ var injectMediaJsonInRated = async function(rated_obj) {
   var media_id = rated_obj._media;
   var media_obj = await DataStoreUtils.getMediaObjById(media_id);
   if (media_obj.__t == 'Episode' && media_obj._tmdb_tvshow_id){
-    var value = await TMDBController.getSeasonFromAPI(media_obj._tmdb_tvshow_id, media_obj.season_number).then((season)=>{
+    var value = await TMDBController.getSeason(media_obj._tmdb_tvshow_id, media_obj.season_number).then((season)=>{
       var rated_with_full_media = rated_obj;
       rated_with_full_media._media = media_obj
-      rated_with_full_media._media.helper = season;
+      rated_with_full_media._media.helper = JSON.stringify(season);
       return rated_with_full_media;
     });
     return value;
@@ -134,10 +146,10 @@ var injectMediaJsonInRated = async function(rated_obj) {
     });
     return value;
   } else if (media_obj.__t == 'Movie' && media_obj._tmdb_id) {
-    var value = await TMDBController.getMovieFromTMDB(media_obj._tmdb_id).then((movie) => {
+    var value = await TMDBController.getMovie(media_obj._tmdb_id).then((movie) => {
       var watched_with_full_media = rated_obj;
       watched_with_full_media._media = media_obj;
-      watched_with_full_media._media.helper = movie;
+      watched_with_full_media._media.helper = JSON.stringify(movie);
       return watched_with_full_media;
     });
     return value;

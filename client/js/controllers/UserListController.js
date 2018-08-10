@@ -18,6 +18,13 @@ function($scope, $location, $timeout, UserListService, MovieService, $routeParam
   var loadUserList = function () {
     UserListService.loadUserList($routeParams.userlist_id).then(() => {
       $scope.userlist = UserListService.getUserList();
+
+      UserListService.isFollowed($scope.userlist._id).then((response) => {
+        $scope.userlist.isfollowed = response.followed;
+      }).catch((error) => {
+        console.log(error);
+      });
+
       loadUserListBackground();
     }).catch((error) => {
       UIkit.notification({
@@ -43,11 +50,11 @@ function($scope, $location, $timeout, UserListService, MovieService, $routeParam
     var img_path;
 
     if (media.__t === 'Episode') {
-      img_path = media.still_path;
+      img_path = 'https://image.tmdb.org/t/p/w500/' + media.still_path;
     } else {
       img_path = media.poster_path;
     }
-    return 'https://image.tmdb.org/t/p/w500/' + img_path;
+    return img_path;
   }
 
   $scope.removeFromList = function(userListId, ranked) {
@@ -84,7 +91,7 @@ function($scope, $location, $timeout, UserListService, MovieService, $routeParam
       } else {
         img_path = first_media.poster_path;
       }
-      $scope.background = 'https://image.tmdb.org/t/p/w500/' + img_path;
+      $scope.background = 'https://image.tmdb.org/t/p/original/' + img_path;
     } else {
       $scope.background = '/images/coco.jpg';
     }
@@ -129,7 +136,59 @@ function($scope, $location, $timeout, UserListService, MovieService, $routeParam
     } return ranked;
   }
 
-  $scope.canEdit = function(user){
-    return ($scope.user._id.toString() === $scope.userlist._user.toString());
+  $scope.followList = function (userlist, notifications_enabled) {
+    UserListService.followUserList(userlist, notifications_enabled)
+      .then((response) => {
+        UIkit.notification({
+          message: '<span uk-icon=\'icon: check\'></span> List Followed!',
+          status: 'success',
+          timeout: 1500
+        });
+
+        $scope.userlist.isfollowed = true;
+      })
+      .catch((error) => {
+        UIkit.notification({
+          message: '<span uk-icon=\'icon: check\'></span> ' + error,
+          status: 'danger',
+          timeout: 2500
+        });
+      });
+    ;
+  }
+
+  $scope.unfollowList = function (userlist) {
+    UserListService.unfollowUserList(userlist)
+      .then((response) => {
+        UIkit.notification({
+          message: '<span uk-icon=\'icon: check\'></span> List Unfollowed!',
+          status: 'success',
+          timeout: 1500
+        });
+
+        $scope.userlist.isfollowed = false;
+      })
+      .catch((error) => {
+        UIkit.notification({
+          message: '<span uk-icon=\'icon: check\'></span> ' + error,
+          status: 'danger',
+          timeout: 2500
+        });
+      });
+    ;
+  }
+
+  $scope.canEdit = function(user, userlist){
+    if (user !== undefined && userlist !== undefined) {
+      return (user._id.toString() === userlist._user.toString());
+    }
+  }
+
+  $scope.editionMode = function () {
+    $location.path('/list/edit/' + $scope.userlist._id);
+  }
+
+  $scope.goToProfile = function () {
+    $location.path('profile');
   }
 }]);

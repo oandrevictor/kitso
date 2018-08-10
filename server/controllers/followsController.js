@@ -71,6 +71,11 @@ var getAction = function(news){
 exports.followed_activity = async function(req, res) {
   let user_id = req.params.user_id;
   let following_list;
+  let page;
+  if (req.query.page)
+    page = parseInt(req.query.page);
+  else
+    page = 0;
   try {
     following_list = await Follows.find({_user: user_id}).exec();
     following_list2 = await FollowsPage.find({_user: user_id}).exec();
@@ -79,18 +84,19 @@ exports.followed_activity = async function(req, res) {
     following_list.push(user_id);
 
     all_activitys = []
-    actions = await Action.find({ "_user": { "$in": following_list } }).sort({date: -1}).limit(10);
+    actions = await Action.find({ "_user": { "$in": following_list }, "action_type": { $ne: "liked" } }).sort({date: -1}).skip(page * 10).limit(10);
 
-    media_related = await Related.find({ "_media": { "$in": following_list } }).sort({date: -1}).limit(10);
-    person_related = await Related.find({ "_person": { "$in": following_list } }).sort({date: -1}).limit(10);
+    media_related = await Related.find({ "_media": { "$in": following_list } }).sort({date: -1});
+    person_related = await Related.find({ "_person": { "$in": following_list } }).sort({date: -1});
     relateds = media_related.concat(person_related);
     relateds_ids = relateds.map(getRelatedId);
 
-    news = await News.find({ "_related": { "$in": relateds_ids } }).sort({date: -1}).limit(10);
+    news = await News.find({ "_related": { "$in": relateds_ids } }).sort({date: -1}).skip(page * 10).limit(10);
     news_actions_ids = news.map(getAction);
-    news_actions = await Action.find({ "_id": { "$in": news_actions_ids } }).sort({date: -1}).limit(10);
+    news_actions = await Action.find({ "_id": { "$in": news_actions_ids } }).sort({date: -1}).skip(page * 10).limit(10);
 
     actions = actions.concat(news_actions);
+    actions = onlyUnique(actions);
     promises = actions.map(DataStoreUtils.getActivity);
     Promise.all(promises).then(function(results) {
       all_activitys = all_activitys.concat(results);
@@ -102,11 +108,25 @@ exports.followed_activity = async function(req, res) {
   }
 };
 
+onlyUnique = function(array) {
+  filtered = []
+  ids = []
+  array.forEach(function(action){
+    id = action._id.toString();
+    if (!(ids.includes(id))){
+      ids.push(id);
+      filtered.push(action);
+    }
+  })
+  return filtered;
+}
 
 exports.create = async function(req, res) {
   var follow = new Follows(req.body);
   let user_id = follow._user;
+  let user = await DataStoreUtils.getUserById(user_id);
   let action = await DataStoreUtils.createAction(user_id, follow._id, ActionType.FOLLOWED_USER);
+  DataStoreUtils.createNotification(follow._following, follow._id, user.username + " followed you.");
   follow._action = action._id;
   await DataStoreUtils.addActionToUserHistory(user_id, action._id);
 
@@ -129,6 +149,7 @@ exports.delete = async function(req, res) {
       let user_id = followed._user;
       let action_id = followed._action;
       delete_action(action_id);
+      DataStoreUtils.deleteNotification(follow_id);
       delete_action_from_user_history(user_id, action_id);
 
       Follows.remove({ _id: follow_id})

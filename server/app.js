@@ -16,27 +16,35 @@ var RedisClient = require('./utils/lib/redisClient');
 
 let client = RedisClient.createAndAuthClient();
 
-// configuration ===========================================
+//  ===========================================
 
 // config files
 var db = require('./config/db');
 
 // set our port
 var port = process.env.PORT || 8080;
-
+var ENV = process.env.ENVIROMENT || 'development'
+var db_url;
+if(ENV == 'production'){
+  db_url = db.url;
+}
+else {
+  db_url = db.local_url;
+}
 // connect to our mongoDB database
 // (uncomment after you enter in your own credentials in config/db.js)
-mongoose.connect(db.url);
+mongoose.connect(db_url);
 
 // Passport and sessions
 require('./config/passport')(passport);
-
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(session({
   store: new MongoStore({
     mongooseConnection: mongoose.connection,
     ttl: 30 * 60 // = 30 minutos de sessão
   }),
-  secret: process.env.SESSION_SECRET, // Colocar nas variaveis de ambiente do heroku em producao (process.env.nomeDaVariavel)
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false
 }));
@@ -89,11 +97,19 @@ app.get('/profile', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
 
+app.get('/vip', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
 app.get('/user/:id', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
 
-app.get('/user/list/:userlist_id', function (req, res) {
+app.get('/list/:userlist_id', function (req, res) {
+  res.sendfile(path.resolve('client/index.html'));
+});
+
+app.get('/list/edit/:userlist_id', function (req, res) {
   res.sendfile(path.resolve('client/index.html'));
 });
 
@@ -170,6 +186,12 @@ app.use('/api/news', newsRoutes);
 
 var relatedRoutes = require('./routes/related');
 app.use('/api/related', relatedRoutes);
+
+var likedRoutes = require('./routes/liked');
+app.use('/api/liked', likedRoutes);
+
+var notificationRoutes = require('./routes/notification');
+app.use('/api/notification', notificationRoutes);
 
 // start app ===============================================
 // startup our app at http://localhost:8080

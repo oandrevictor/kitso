@@ -6,13 +6,64 @@ kitso.service('UserListService', ['$q','$http', function ($q, $http) {
 
     // return available functions for use in the controllers
     return ({
+        createList: createList,
+        deleteList: deleteList,
         addItem: addItem,
         deleteItem: deleteItem,
         loadUserList: loadUserList,
         getUserList: getUserList,
+        followUserList: followUserList,
+        unfollowUserList: unfollowUserList,
+        isFollowed: isFollowed,
         updateUserList: updateUserList,
         updateRank: updateRank
     });
+
+    function createList(listInfo) {
+      var deferred = $q.defer();
+
+      $http.post('/api/userlist/', listInfo)
+          .then((response) => {
+              if (response.status === 200) {
+                response.data.list_id = response.data._id
+                  deferred.resolve(response.data);
+              } else {
+                  deferred.reject();
+              }
+          })
+          .catch((error) => {
+              deferred.reject(error.data);
+          });
+
+      return deferred.promise;
+    }
+
+    function deleteList(userlistId, userId) {
+      var deferred = $q.defer();
+      var req = {
+        method: 'DELETE',
+        url: '/api/userlist/' + userlistId,
+        headers: {
+          'Content-Type': 'application/json',
+          'user_id': userId
+        }
+      }
+
+      $http(req)
+        .then((response) => {
+          if (response.status === 200) {
+            response.data.list_id = response.data._id
+            deferred.resolve(response.data);
+          } else {
+            deferred.reject();
+          }
+        })
+        .catch((error) => {
+          deferred.reject(error.data);
+        });
+
+      return deferred.promise;
+    }
 
     function addItem(userlistId, mediaId, userId, date) {
       var deferred = $q.defer();
@@ -113,6 +164,64 @@ kitso.service('UserListService', ['$q','$http', function ($q, $http) {
 
       return deferred.promise;
     }
+
+  function followUserList(userlist, enable_notifications) {
+    var deferred = $q.defer();
+
+    let data = {
+      "userlist": userlist,
+       "notifications_enabled": enable_notifications
+    }
+
+    $http.put('/api/userlist/' + userlist._id + '/follow', data)
+      .then(function (response) {
+        if (response.status === 200) {
+          deferred.resolve(response);
+        } else {
+          deferred.reject();
+        }
+      })
+      .catch(function (error) {
+        deferred.reject(error.data);
+      });
+
+    return deferred.promise;
+  }
+
+  function unfollowUserList(userlist) {
+    var deferred = $q.defer();
+
+    $http.delete('/api/userlist/' + userlist._id + '/unfollow')
+      .then(function (response) {
+        if (response.status === 200) {
+          deferred.resolve(response);
+        } else {
+          deferred.reject();
+        }
+      })
+      .catch(function (error) {
+        deferred.reject(error.data);
+      });
+
+    return deferred.promise;
+  }
+
+  function isFollowed(userListId) {
+    var deferred = $q.defer();
+    $http.get('/api/userlist/follows?userlist_id='+ userListId)
+      .then((response) => {
+        if (response.status === 200) {
+          deferred.resolve(response.data);
+        } else {
+          deferred.reject();
+        }
+      })
+      .catch((error) => {
+        deferred.reject(error.data);
+      });
+
+    return deferred.promise;
+  }
 
   function updateRank(userlistId, userId, currentRank, newRank) {
     var deferred = $q.defer();

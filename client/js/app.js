@@ -1,4 +1,4 @@
-angular.module('kitso', ['ngRoute', 'appRoutes', 'ngSanitize']);
+angular.module('kitso', ['ngRoute', 'appRoutes', 'ngSanitize', "chart.js"]);
 angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
 
     $routeProvider
@@ -33,6 +33,12 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
             controller: 'HomeController',
             access: { restricted: true }
         })
+        // vip page
+        .when('/vip', {
+            templateUrl: 'views/vip.html',
+            controller: 'ProfileController',
+            access: { restricted: true }
+        })
         //exploring
         .when('/explore', {
             templateUrl: 'views/explore.html',
@@ -50,9 +56,14 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
             controller: 'ProfileController',
             access: { restricted: true }
         })
-        .when('/user/list/:userlist_id', {
+        .when('/list/:userlist_id', {
             templateUrl: 'views/userlist.html',
             controller: 'UserListController',
+            access: { restricted: true }
+        })
+        .when('/list/edit/:userlist_id', {
+            templateUrl: 'views/userlist-edit.html',
+            controller: 'UserListEditController',
             access: { restricted: true }
         })
         .when('/tvshow/:tvshow_id', {
@@ -100,7 +111,7 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
 
 }]);
 
-angular.module('kitso').run(function ($rootScope, $location, $route, AuthService) {
+angular.module('kitso').run(function ($rootScope, $location, $route, AuthService, NotificationService) {
     $rootScope.$on('$routeChangeStart', function (event, next, current) {
       $('.full-loading').show();
         AuthService.getStatus()
@@ -118,11 +129,15 @@ angular.module('kitso').run(function ($rootScope, $location, $route, AuthService
                 $location.path('/home');
                 $route.reload();
             }
+
+            if (AuthService.isLogged()) {
+                $rootScope.notifications = NotificationService.getNotificationsRequest(AuthService.getUser()._id);
+            }
         });
     });
 
     $rootScope.$on('$routeChangeSuccess',function() {
-        $("html, body").animate({ scrollTop: 0 }, 500); 
+        $("html, body").animate({ scrollTop: 0 }, 500);
     });
 
 });

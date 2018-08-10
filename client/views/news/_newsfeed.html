@@ -1,5 +1,5 @@
 <div news-postbox></div>
-  <div class="feed">
+<div class="feed">
   <h4><span uk-icon="rss"></span> Shared News </h4>
   <div ng-repeat="activity in news" ng-hide="acitivy.hidden" >
     <article class="uk-comment uk-visible-toggle" >
@@ -35,9 +35,11 @@
         </div>
     </article>
     <br >
-    <button  class="uk-button uk-button-default episode-button">
-      <span uk-icon="heart"></span> Like (74 likes)
+    <button  class="uk-button uk-button-default episode-button" ng-click="toggleLike(activity)">
+      <span class="hearted" ng-show="activity.liked_by_me"></span>
+      <span uk-icon="heart" ng-hide="activity.liked_by_me"></span> {{getLikes(activity)}} likes
     </button>
     <hr>
   </div>
+  <div class="bubble-loading"></div>
 </div>

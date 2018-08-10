@@ -1,34 +1,13 @@
 var kitso = angular.module('kitso');
 
-kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthService', 'FeedService', 'UserListService', 'WatchedService', 'NewsService', function($scope, $location, $timeout, AuthService, FeedService, UserListService, WatchedService, NewsService) {
+kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthService', 'FeedService', 'UserListService', 'WatchedService', 'NewsService', 'LikedService', function($scope, $location, $timeout, AuthService, FeedService, UserListService, WatchedService, NewsService, LikedService) {
 	$('.full-loading').show();
 	$scope.temp_news = {}
-	$scope.logout = function() {
-		AuthService.logout()
-                // handle success
-                .then(function () {
-                    UIkit.notification({
-                        message: '<span uk-icon=\'icon: check\'></span> Logged out! Redirecting...',
-                        status: 'success',
-                        timeout: 1500
-                    });
+	loading_feed = 0;
+	current_page = 0;
+	stop_loading = false;
+	$scope.feed = [];
 
-                    $timeout(function() {
-                        $location.path('/');
-                        }, 1500);
-                })
-                // handle error
-                .catch(function (error) {
-                	console.log(error);
-                    var dangerMessage = "Something went wrong...";
-
-                    UIkit.notification({
-                        message: '<span uk-icon=\'icon: check\'></span> ' + dangerMessage,
-                        status: 'danger',
-                        timeout: 2500
-                    });
-                });
-	};
 	var compareDates = function(a,b){
     return - moment(a.date).diff(moment(b.date))
   }
@@ -91,7 +70,7 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 
 	AuthService.getStatus().then(function(){
     $scope.user = AuthService.getUser();
-		loadFeed($scope.user._id);
+		loadFeed($scope.user._id,0);
 		loadUserLists();
 
   }).catch(function(){});
@@ -161,15 +140,20 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 		return false;
 	}
 
-	var loadFeed = function(userId){
-		FeedService.getFollowingUsersActivity(userId).then(function(result){
-			$scope.feed = result;
+	var loadFeed = function(userId, page){
+		$('.bubble-loading').show();
+		loading_feed = true;
+		FeedService.getFollowingUsersActivity(userId, page).then(function(result){
+			var newFeedPage = result;
+			if (newFeedPage.length == 0)
+				stop_loading = true
 
-			$scope.feed.forEach(function(activity, index){
-				$scope.feed[index].listed = {}
+			newFeedPage.forEach(function(activity, index){
+				newFeedPage[index].listed = {}
 				if(['watched', 'rated', 'news'].includes(activity.action_type)){
 					activity.open = true;
 				}
+				isLiked(activity);
 
 				var media = $scope.getMediaFromActivity(activity);
 				if (media && media._id){
@@ -188,20 +172,33 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 				}
 			}
 		)
-		$scope.feed = $scope.feed.sort(compareDates)
+		if (page && page >=1 ){
+			$scope.$applyAsync(function(){
+				$scope.feed = $scope.feed.concat(newFeedPage).sort(compareDates);
+			});
+		}
+		else {
+			$scope.feed = newFeedPage.sort(compareDates);
+		}
+		loading_feed = false;
 		$('.full-loading').hide();
+		$('.bubble-loading').hide();
+
 		})
 		.catch(
 			function(result){
-				console.log(result)
+				loading_feed = false;
+				$('.bubble-loading').hide();
+
 			}
 		)
 	}
 
 
   $scope.markAsWatched = function (activity) {
-    var mediaId = $scope.getMediaFromActivity(activity)._id;
-    WatchedService.markAsWatched($scope.user._id, mediaId)
+		var media = $scope.getMediaFromActivity(activity);
+    var mediaId = media._id;
+    WatchedService.markAsWatched($scope.user._id, mediaId, media)
       .then((watched) => {
         activity.watched = watched;
       })
@@ -216,7 +213,7 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 
   $scope.markAsNotWatched = function (activity) {
 		var media = $scope.getMediaFromActivity(activity)
-    var watchedId = media.watched.watched_id;
+    var watchedId = activity.watched.watched_id;
     WatchedService.markAsNotWatched(watchedId)
       .then(() => {
         activity.watched = false;
@@ -246,6 +243,20 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 			return activity.action_type;
 		}
 	}
+
+	getMorePosts = function(page){
+
+	}
+
+	$( "body" ).scroll(function() {
+		if($("body").scrollTop() + $("body").height() >= $(document).height() - 100) {
+        if (!loading_feed && !stop_loading){
+					current_page = current_page + 1;
+					loadFeed($scope.user._id, current_page);
+				}
+
+    }
+	});
 
 	$scope.getSeasonInfo = function(activity){
 		episode = activity._action._media;
@@ -384,6 +395,42 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 
 	$scope.getActivityUser = function(activity){
 		return activity._user;
+	}
+
+	var like = function(activity){
+		LikedService.like($scope.user._id, activity._id).then(function(success){
+			activity.liked.push($scope.user._id);
+			activity.liked_by_me = true;
+			activity.liked_info = success.data;
+		})
+	}
+	var undoLike = function(activity){
+		LikedService.undoLike(activity.liked_info).then(function(success){
+			var remove_index = activity.liked.indexOf($scope.user._id);
+			activity.liked.splice(remove_index, 1)
+			activity.liked_by_me = false;
+		})
+	}
+
+	var isLiked = async function(activity){
+		var liked = await LikedService.isLiked($scope.user._id, activity._id);
+		activity.liked_by_me = liked.is_liked;
+		if (liked.is_liked)
+			activity.liked_info = liked;
+		return liked;
+	}
+
+	$scope.toggleLike = function(activity){
+		if (activity.liked_by_me){
+			undoLike(activity)
+		}
+		else{
+			like(activity)
+		}
+	}
+
+	$scope.getLikes = function(activity){
+		return activity.liked.length;
 	}
 
 

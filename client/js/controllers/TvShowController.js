@@ -1,7 +1,9 @@
 var kitso = angular.module('kitso');
 
-kitso.controller("TvShowController", ['$scope', '$location', '$route', '$timeout', '$routeParams', 'TvShowService',  'WatchedService',  'FollowService', 'RatedService', 'UserListService', 'AuthService', 'NewsService',
-function($scope, $location, $route, $timeout, $routeParams, TvShowService,  WatchedService, FollowService, RatedService, UserListService, AuthService, NewsService) {
+kitso.controller("TvShowController", ['$scope', '$location', '$route', '$timeout', '$routeParams', 'TvShowService',
+  'WatchedService',  'FollowService', 'RatedService', 'UserListService', 'AuthService', 'NewsService',
+function($scope, $location, $route, $timeout, $routeParams, TvShowService,  WatchedService, FollowService,
+         RatedService, UserListService, AuthService, NewsService) {
   $('.full-loading').show();
   $scope.newsbox_toggle = true;
 
@@ -11,6 +13,8 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
             $scope.user = AuthService.getUser();
             $scope.tvshow = TvShowService.getTvShow();
             $scope.tvshow.air_date = new Date($scope.tvshow.first_air_date);
+            $scope.tvshow.watchedDate = new Date(moment());
+            $scope.tvshow.validWatchedDate = true;
 
             WatchedService.tvshowProgress($scope.user._id ,$scope.tvshow._id)
              .then((progress) => {
@@ -28,16 +32,22 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
           var lists = [];
           $scope.user._lists.forEach((listId) => {
               UserListService.loadUserList(listId).then( function(){
-                  lists.push(UserListService.getUserList());
+                var list = UserListService.getUserList();
+                list.itens.forEach(function(item){
+                  if (item._media._id == $scope.tvshow._id) {
+                    list.tvshowAdded = true;
+                  }
+                })
+                lists.push(list);
               }).catch(function(error){
                   console.log(error);
               })
           });
+          $scope.user.lists = lists;
 
           NewsService.getRelatedNews($scope.tvshow._id).then(function(news){
             $scope.news = news;
           });
-          $scope.user.lists = lists;
 
             RatedService.isRated($scope.user._id ,$scope.tvshow._id).then((rated) => {
                 $scope.tvshow.rated = rated;
@@ -63,6 +73,12 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
                 });
             });
 
+            RatedService.getVoteAverage($scope.tvshow._id).then((response) => {
+              $scope.tvshow.vote_average = response.vote_average;
+            }).catch((error) => {
+              console.log(error);
+            });
+
             FollowService.isFollowingPage($scope.user._id ,$scope.tvshow._id).then((followed) => {
               $scope.tvshow.followed = followed;
             }).catch((error) => {
@@ -72,7 +88,7 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
                   timeout: 2500
               });
             });
-            
+
             FollowService.countFollowers($scope.tvshow._id).then((count) => {
               $scope.tvshow.followers = count;
             }).catch((error) => {
@@ -103,39 +119,57 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
             $location.path('/explore');
         });
 
-    $scope.markEntireTvshowAsWatched = function (tvshowId) {
-        $scope.watchAction = true;
-        WatchedService.markEntireTvshowAsWatched($scope.user._id, tvshowId)
-            .then((result) => {
-                $scope.watchAction = false;
-                $route.reload();
-                UIkit.modal('#modal-watchTvshow').hide();
-            })
-            .catch((error) => {
-                UIkit.notification({
-                    message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
-                    status: 'danger',
-                    timeout: 2500
-                });
-            });
-        };
+    $scope.markEntireTvshowAsWatched = function (tvshowId, runtime) {
+      if($scope.tvshow.watchedTime === 'now') {
+        $scope.tvshow.watchedDate = new Date(moment());
+      }
+      if ($scope.tvshow.watchedDate && $scope.notAFutureDate($scope.tvshow.watchedDate)) {
+        $scope.tvshow.validWatchedDate = true;
 
-    $scope.markTvshowAsWatched = function (tvshowId) {
         $scope.watchAction = true;
-        WatchedService.markTvshowAsWatched($scope.user._id, tvshowId)
-            .then((result) => {
-                $scope.watchAction = false;
-                $route.reload();
-                UIkit.modal('#modal-watchTvshow').hide();
-            })
-            .catch((error) => {
-                UIkit.notification({
-                    message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
-                    status: 'danger',
-                    timeout: 2500
-                });
+        WatchedService.markEntireTvshowAsWatched($scope.user._id, tvshowId, runtime, $scope.tvshow.watchedDate)
+          .then((result) => {
+            UIkit.modal('#modal-watchTvshow').hide();
+            $scope.watchAction = false;
+            $route.reload();
+          })
+          .catch((error) => {
+            UIkit.notification({
+              message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+              status: 'danger',
+              timeout: 2500
             });
-        };
+          });
+      } else {
+        $scope.tvshow.validWatchedDate = false;
+      }
+    };
+
+    $scope.markTvshowAsWatched = function (tvshowId, runtime) {
+      if($scope.tvshow.watchedTime === 'now') {
+        $scope.tvshow.watchedDate = new Date(moment());
+      }
+      if ($scope.tvshow.watchedDate && $scope.notAFutureDate($scope.tvshow.watchedDate)) {
+        $scope.tvshow.validWatchedDate = true;
+
+        $scope.watchAction = true;
+        WatchedService.markTvshowAsWatched($scope.user._id, tvshowId, runtime, $scope.tvshow.watchedDate)
+          .then((result) => {
+            UIkit.modal('#modal-watchTvshow').hide();
+            $scope.watchAction = false;
+            $route.reload();
+          })
+          .catch((error) => {
+            UIkit.notification({
+              message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+              status: 'danger',
+              timeout: 2500
+            });
+          });
+      } else {
+        $scope.tvshow.validWatchedDate = false;
+      }
+    };
 
     $scope.markTvshowAsNotWatched = function () {
         WatchedService.markTvshowAsNotWatched($scope.tvshow._seasons, $scope.user._id)
@@ -151,19 +185,34 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
             });
         };
 
-    $scope.markAsWatched = function(tvshowId){
-        WatchedService.markAsWatched($scope.user._id, tvshowId)
-        .then((watched) => {
-            $scope.tvshow.watched = watched;
-        })
-        .catch((error) => {
-            UIkit.notification({
-                message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
-                status: 'danger',
-                timeout: 2500
-            });
-        });
+
+    $scope.notAFutureDate = function(date) {
+        return moment(date) <= moment();
     }
+
+    $scope.markAsWatched = function(tvshowId, runtime){
+      if($scope.tvshow.watchedTime === 'now') {
+        $scope.tvshow.watchedDate = new Date(moment());
+      }
+      if ($scope.tvshow.watchedDate  && $scope.notAFutureDate($scope.tvshow.watchedDate)) {
+        $scope.tvshow.validWatchedDate = true;
+
+        WatchedService.markAsWatched($scope.user._id, tvshowId, runtime, $scope.tvshow.watchedDate)
+          .then((watched) => {
+            $scope.tvshow.watched = watched;
+            UIkit.modal('#modal-watchTvshow').hide();
+          })
+          .catch((error) => {
+            UIkit.notification({
+              message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+              status: 'danger',
+              timeout: 2500
+            });
+          });
+      } else {
+        $scope.tvshow.validWatchedDate = false;
+      }
+    };
 
     $scope.markAsNotWatched = function(watchedId){
         WatchedService.markAsNotWatched(watchedId)
@@ -182,7 +231,7 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
   $scope.addToList = function(tvshowId, userListId){
     UserListService.addItem(userListId, tvshowId, $scope.user._id, date = moment())
       .then((added) => {
-        $scope.tvshowAdded = true;
+        updateAdded(true, userListId);
       })
       .catch((error) => {
         UIkit.notification({
@@ -199,7 +248,7 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
         if (item['_media']['_id'] == tvshowId) {
           UserListService.deleteItem(userListId, $scope.user._id, item['ranked'])
             .then((deleted) => {
-              $scope.tvshowAdded = false;
+              updateAdded(false, userListId);
             })
             .catch((error) => {
               UIkit.notification({
@@ -211,6 +260,14 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
         }
       });
     });
+  }
+
+  var updateAdded = function(added, listId) {
+    $scope.user.lists.forEach(function(list){
+      if (list._id == listId) {
+        list.tvshowAdded = added;
+      }
+    })
   }
 
   $scope.markAsAdded = function(tvshowId, userListId) {
@@ -278,7 +335,7 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
     }
 
     $scope.rate = function(tvshowId, rating){
-      if ($scope.tvshow.rated) {
+      if ($scope.tvshow.rated && $scope.tvshow.rating !== 0) {
           if (rating !== $scope.tvshow.rating) {
             $scope.updateRated($scope.tvshow.rated.rated_id, rating);
             $scope.updateRating(rating);
@@ -342,11 +399,14 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
           "rating" : rating,
           "_id" : ratedId
       };
-      RatedService.updateRated(ratedObj);
+      RatedService.updateRated(ratedObj).then((response) => {
+        $scope.updateVoteAverage();
+      });
     }
 
     $scope.updateRating = function(rating){
       $scope.tvshow.rating = rating;
+      $scope.updateVoteAverage();
     }
 
     $scope.range = function(count){
@@ -376,4 +436,22 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
 
         return episodesIds;
     }
+
+    $scope.updateVoteAverage = function() {
+      RatedService.getVoteAverage($scope.tvshow._id).then((rated) => {
+        $scope.tvshow.vote_average = rated.vote_average;
+      }).catch((error) => {
+        console.log(error);
+      });
+    }
+    
+    $scope.updateTvShowInfo = function(tvshowId) {
+      TvShowService.updateTvShowInfo(tvshowId)
+        .then((response) => {
+          $scope.tvshow.updatingInfo = true;
+        })
+        .catch((error) => {
+        });
+    }
+    
 }]);

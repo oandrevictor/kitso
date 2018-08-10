@@ -1,8 +1,8 @@
 kitso = angular.module('kitso');
 
 kitso.controller('PersonController',
-  ['$scope', '$location', '$timeout', '$route', '$routeParams', 'PersonService', 'AuthService', 'FollowService', 'NewsService',
-    function ($scope, $location, $timeout, $route, $routeParams, PersonService, AuthService, FollowService, NewsService) {
+  ['$scope', '$location', '$timeout', '$route', '$routeParams', 'PersonService', 'AuthService', 'FollowService', 'NewsService', 'LikedService',
+    function ($scope, $location, $timeout, $route, $routeParams, PersonService, AuthService, FollowService, NewsService, LikedService) {
       $scope.newsbox_toggle = true;
 
       PersonService.loadPerson($routeParams.person_id)
@@ -25,8 +25,19 @@ kitso.controller('PersonController',
                   });
               });
 
-              NewsService.getRelatedNews($scope.person._id).then(function(news){
-                $scope.news = news;
+              $('.bubble-loading').show();
+              NewsService.getRelatedNews($scope.person._id).then( function(newsResult){
+                let n_news = newsResult.length;
+
+                newsResult.forEach(async (news, index) => {
+                  let liked = await isLiked(news);
+                  likeActivity(news, liked);
+
+                  if (index + 1 == n_news) {
+                    $scope.news = newsResult;
+                    $('.bubble-loading').hide();
+                  }
+                });
               });
 
               FollowService.countFollowers($routeParams.person_id)
@@ -53,7 +64,6 @@ kitso.controller('PersonController',
               }
 
             }).catch((error) => {
-              console.log($scope.mediasPersonAppears);
               UIkit.notification({
                 message: '<span uk-icon=\'icon: check\'></span> ' + 'Something went wrong. Try to reload the page.',
                 status: 'danger',
@@ -83,8 +93,8 @@ kitso.controller('PersonController',
         }
       }
 
-      $scope.follow = function(person){
-        FollowService.followPage($scope.user._id, person)
+      $scope.follow = function(person, is_private){
+        FollowService.followPage($scope.user._id, person, is_private)
         .then((followed) => {
           $scope.person.followed = followed;
           $scope.person.followed.following_id = followed._id;
@@ -142,6 +152,45 @@ kitso.controller('PersonController',
         ratings.push(i+1)
       }
       return ratings;
+    }
+
+    var like = function(activity){
+      LikedService.like($scope.user._id, activity._id).then(function(success){
+        activity.liked.push($scope.user._id);
+        activity.liked_by_me = true;
+        activity.liked_info = success.data;
+      })
+    }
+    var undoLike = function(activity){
+      LikedService.undoLike(activity.liked_info).then(function(success){
+        var remove_index = activity.liked.indexOf($scope.user._id);
+        activity.liked.splice(remove_index, 1)
+        activity.liked_by_me = false;
+      })
+    }
+
+    var isLiked = function(activity){
+      var liked = LikedService.isLiked($scope.user._id, activity._id);
+      return liked;
+    }
+
+    var likeActivity = function(activity, liked) {
+      activity.liked_by_me = liked.is_liked;
+      if (liked.is_liked)
+        activity.liked_info = liked;
+    }
+
+    $scope.toggleLike = function(activity){
+      if (activity.liked_by_me){
+        undoLike(activity)
+      }
+      else{
+        like(activity)
+      }
+    }
+
+    $scope.getLikes = function(activity){
+      return activity.liked.length;
     }
 
     }]);

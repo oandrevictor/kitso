@@ -4,10 +4,10 @@ var RequestStatus = require('../constants/requestStatus');
 var ActionType = require('../constants/actionType');
 var TMDBController = require('../external/TMDBController');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
-var RedisClient = require('../utils/lib/redisClient');
+var Utils = require('../utils/lib/utils');
 
 exports.index = async function(req, res) {
-  let user_id = req.params.user_id;
+  let user_id = req.query.user;
   var watched_list, promises;
   try {
     watched_list = await DataStoreUtils.getWatchedByUserId(user_id);
@@ -16,7 +16,8 @@ exports.index = async function(req, res) {
     res.status(RequestStatus.BAD_REQUEST).json(err);
   }
   Promise.all(promises).then(function(results) {
-    res.status(RequestStatus.OK).send(results);
+    let filtered_results = Utils.filterWatchedMedia(results, req.query);
+    res.status(RequestStatus.OK).send(filtered_results);
   })
 };
 
@@ -58,11 +59,12 @@ exports.create = async function(req, res) {
 exports.watchEntireSeason = async function(req, res) {
   var seasonId = req.body.seasonId;
   var userId = req.body.userId;
+  var timeSpent = req.body.time_spent;
   var date = req.body.date;
   var season = await DataStoreUtils.getMediaObjById(seasonId);
   var episodesIds = getSeasonsEpisodesIds([season]);
   // watched episodes
-  watch_season_episodes(episodesIds[0], userId, date, function (result) {
+  watch_season_episodes(episodesIds[0], timeSpent, userId, date, function (result) {
     res.status(RequestStatus.OK).json(result);
   });
 }
@@ -71,13 +73,14 @@ exports.watchSeason = async function(req, res) {
   var seasonId = req.body.seasonId;
   var userId = req.body.userId;
   var date = req.body.date;
+  var timeSpent = req.body.time_spent;
   var season = await DataStoreUtils.getMediaObjById(seasonId);
   var episodesIds = getSeasonsEpisodesIds([season]);
   var watchedMediasIds = await getMediasIdsFromWatchedObjects(episodesIds, userId);
   var nonWatchedEpisodes = episodesIds[0].map((episode) => {
     if (!watchedMediasIds.includes(episode)) return episode;
   });
-  watch_season_episodes(nonWatchedEpisodes, userId, date, function (result) {
+  watch_season_episodes(nonWatchedEpisodes, timeSpent, userId, date, function (result) {
     res.status(RequestStatus.OK).json(result);
   });
 }
@@ -96,11 +99,12 @@ exports.watchEntireTvshow = async function(req, res) {
   var seasons = await Season.find({_tvshow_id: req.body.tvshowId});
   let userId = req.body.userId;
   var date = req.body.date;
+  var timeSpent = req.body.time_spent;
   let seasonsEpisodesIds = getSeasonsEpisodesIds(seasons);
   var result = [];
   seasonsEpisodesIds.forEach(async (episodesIds) => {
     episodesIds = Array.from(new Set(episodesIds));
-    watch_season_episodes(episodesIds, userId, date, function (response) {
+    watch_season_episodes(episodesIds, timeSpent, userId, date, function (response) {
       result.push(response);
     });
   });
@@ -114,6 +118,7 @@ exports.watchTvshow = async function(req, res) {
   var seasons = await Season.find({_tvshow_id: req.body.tvshowId});
   let userId = req.body.userId;
   var date = req.body.date;
+  var timeSpent = req.body.time_spent;
   let seasonsEpisodesIds = getSeasonsEpisodesIds(seasons);
   var result = [];
   seasonsEpisodesIds.forEach(async (seasonEpisodeIds) => {
@@ -122,7 +127,7 @@ exports.watchTvshow = async function(req, res) {
     let nonWatchedEpisodes = seasonEpisodeIds[0].map((episode) => {
       if (!watchedMediasIds.includes(episode)) return episode;
     });
-    watch_season_episodes(nonWatchedEpisodes, userId, date, function (response) {
+    watch_season_episodes(nonWatchedEpisodes, timeSpent, userId, date, function (response) {
       result.push(response);
     });
   });
@@ -237,7 +242,7 @@ var injectMediaJsonInWatched = async function(watchedObj) {
   let mediaId = watchedObj._media;
   let mediaObj = await DataStoreUtils.getMediaObjById(mediaId);
   if (mediaObj.__t == 'Episode' && mediaObj._tmdb_tvshow_id){
-    var value = await TMDBController.getSeasonFromAPI(mediaObj._tmdb_tvshow_id, mediaObj.season_number).then((season) => {
+    var value = await TMDBController.getSeason(mediaObj._tmdb_tvshow_id, mediaObj.season_number).then((season) => {
       var watched_with_full_media = watchedObj;
       watched_with_full_media._media = mediaObj;
       watched_with_full_media._media.helper = season;
@@ -245,10 +250,10 @@ var injectMediaJsonInWatched = async function(watchedObj) {
     });
     return value;
   } else if (mediaObj.__t == 'Movie' && mediaObj._tmdb_id) {
-    var value = await TMDBController.getMovieFromTMDB(mediaObj._tmdb_id).then((movie) => {
+    var value = await TMDBController.getMovie(mediaObj._tmdb_id).then((movie) => {
       var watched_with_full_media = watchedObj;
       watched_with_full_media._media = mediaObj;
-      watched_with_full_media._media.helper = movie;
+      watched_with_full_media._media.helper = JSON.stringify(movie);
       return watched_with_full_media;
     });
     return value;
@@ -325,7 +330,7 @@ function getSeasonsIds(seasons) {
   return seasonsIds;
 }
 
-async function watch_season_episodes(episodesIds, user_id, date, done) {
+async function watch_season_episodes(episodesIds, timeSpent, user_id, date, done) {
   var requests = 0;
   var payload = episodesIds.length;
   var response = [];
@@ -335,6 +340,7 @@ async function watch_season_episodes(episodesIds, user_id, date, done) {
       watched._media = episode;
       watched._user = user_id;
       watched.date = date;
+      watched.time_spent = timeSpent;
       let action = await DataStoreUtils.createAction(user_id, watched._id, ActionType.WATCHED);
       watched._action = action._id;
       await DataStoreUtils.addActionToUserHistory(user_id, action._id);

@@ -9,16 +9,24 @@ html, body {
 .uk-input:focus, .uk-select:focus, .uk-textarea:focus {
   border-color: #773095 !important;
 }
+
 .uk-tab>.uk-active>a {
   font-weight: 400;
   border-color: #db2399 !important;
 }
+
 .uk-tab {
   margin-top: -2px;
 }
+
 .news-box-wrapper{
   display: inline-block;
 }
+
+.uk-notification-message-success {
+    color: #f8f8f8 !important;
+    background: #773095 !important;
+  }
 .dark-purple-button {
   padding: 0%;
   background: #773095 !important;
@@ -260,6 +268,19 @@ html, body {
 }
 .kitso-content{
 }
+.hearted {
+  background: url("/images/icon/hearted.svg") left no-repeat;
+  background-size: 25px;
+  padding: 15px;
+
+}
+
+.icon-actor-missing {
+  background: url("/images/icon/actor-missing.svg") left no-repeat;
+  background-size: 25px;
+  padding: 15px;
+}
+
 .full-loading {
   background: url('/images/icon/loading.svg') no-repeat center center, linear-gradient(155deg, #9730a0 0%, #7c1b7a 51%, #502274 75%);;
   height: 100%;
@@ -268,6 +289,16 @@ html, body {
   display: none;
   z-index: 999;
 }
+
+.bubble-loading {
+  background: url('/images/icon/loading_bubbles.svg') no-repeat center center;
+  height: 20px;
+  background-size: 60px;
+  width: 100%;
+  padding-bottom: 60px;
+  display: none;
+}
+
 .home {
   font-family: 'Roboto', sans-serif;
   background: black;
@@ -328,7 +359,7 @@ html, body {
     margin-left: auto;
     margin-top: auto;
     margin-bottom: auto;
-    width: 33%;
+    width: 170%;
     color: white;
     text-align: center;
 
@@ -403,13 +434,12 @@ html, body {
   }
 
   .options {
-    margin-left: auto;
     margin-top: auto;
     margin-bottom: auto;
     color: white;
     border: solid 0px;
     float: right;
-    width: 33%;
+    padding-left: 0px;
     a {
       font-style: initial;
       &:hover {
@@ -417,6 +447,49 @@ html, body {
         font-weight: 500;
       }
     }
+  }
+}
+
+.note{
+  .viewed {
+    filter: blur(1px);
+    background-color: #91519261;
+  }
+
+  li {
+    height: 25px;
+    color: white;
+    font-style: normal;
+
+    button {
+      float: right;
+      padding-left: 10px;
+      color: white;
+    }
+  }
+}
+
+.uk-modal-body {
+  .uk-form-label {
+    margin-bottom: 0px;
+  }
+
+  .uk-button-create-list {
+    //margin-top: 30px !important;
+    margin-left: 30px;
+    margin-right: 3px;
+  }
+
+  .uk-button-changes {
+    background-color: #502274 !important;
+    color: #ffffff !important;
+    font-weight: bold;
+    //margin-top: 30px !important;
+  }
+
+  .invalid-label {
+    margin-bottom: 0px;
+    margin-left: 0px;
   }
 }
 
@@ -718,6 +791,11 @@ html, body {
       padding: 10px;
     }
   }
+
+  .uk-label {
+    background-color: #502274;
+  }
+
   .uk-iconnav>* {
     padding-left: 3px !important;
   }
@@ -748,7 +826,7 @@ html, body {
     background: #502274;
     background-repeat:no-repeat;
     background-size:cover;
-    width: 300px;
+    width: 360px;
     height: 150px;
     cursor: pointer;
   }
@@ -780,6 +858,7 @@ html, body {
     background-position: center;
     overflow-y: visible !important;
     height: 30vh;
+    min-height: 279px;
     display: block;
     color: #ffffff !important;
     padding-bottom: 0px !important;
@@ -804,6 +883,13 @@ html, body {
     margin-top: -50px;
     margin-bottom: auto;
     font-weight: 300;
+    width: 900px;
+
+    .new-list-button {
+      text-align: right;
+      margin-bottom: 30px;
+      }
+    }
 
     .uk-checkbox:checked {
       background-color: #502279 !important;
@@ -844,7 +930,6 @@ html, body {
     .uk-width-1-2{
       p{
         margin-bottom: 0px;
-        width: 300px
       }
     }
 
@@ -877,11 +962,11 @@ html, body {
     .following-link {
       color: #db2399 !important
     }
-  }
 
   .profile-image {
     border-style: solid;
     display: block;
+    height: 140px;
   }
 
   .profile-name {
@@ -921,6 +1006,43 @@ html, body {
       height: 12px;
       width: 12px;
       padding: 0px;
+    }
+  }
+
+  .sub-text  {
+    float: right;
+  }
+
+  .section {
+    margin-top: 8px;
+    margin-bottom: 4px;
+
+    .list-info {
+      .list-image {
+        display:block;
+        background: #502274;
+        background-repeat:no-repeat;
+        background-size:cover;
+        width: 191px;
+        height: 183px;
+        overflow:hidden;
+        box-shadow: 0 0px 10px rgba(0,0,0,0.1);
+        border: 4px solid white;
+      }
+      .list-name {
+        margin-top: 10px;
+      }
+    }
+
+    .slider-button-list {
+      background: rgba(0, 0, 0, 0.31);
+      padding-top: 77px;
+      padding-bottom: 74px;
+      padding-right:  3px;
+      padding-left:  3px;
+      margin-top: 4px;
+      margin-left: 5px;
+      margin-right: 5px;
     }
   }
 }
@@ -1015,7 +1137,7 @@ html, body {
 
   .rating {
     float: right;
-    margin-top: -160px;
+    margin-top: -100px;
     color: white;
     font-size: 28px;
     font-weight: 100;
@@ -1097,6 +1219,17 @@ html, body {
       .cast-name {
         margin-top: 10px;
       }
+    }
+
+    .cast-not-found {
+      width: 70%;
+      height: 30vh;
+
+      .title {
+        color: #773095;
+        width: 100%;
+      }
+
     }
   }
 
@@ -1526,6 +1659,8 @@ html, body {
 
 .userlist{
   font-family: 'Roboto' !important;
+  height: 100%;
+  overflow-y: -webkit-paged-y;
   .uk-background-cover {
     z-index: -1;
     background: url("/images/It-Follows-background.jpg");
@@ -1539,6 +1674,34 @@ html, body {
     padding-bottom: 0px !important;
     padding-top: 4%;
     position: relative;
+  }
+
+  .uk-checkbox:checked {
+    background-color: #502279 !important;
+    border-color: transparent;
+  }
+
+  .uk-button-save-list {
+    margin-top: 30px !important;
+  }
+
+  .uk-button-save-changes {
+    background-color: #502274 !important;
+    color: #ffffff !important;
+    font-weight: bold;
+    margin-top: 30px !important;
+  }
+
+  .uk-button-follow {
+    background-color: #ffffff !important;
+    color: #502274 !important;
+    font-weight: bold;
+    margin-top: 30px !important;
+  }
+
+  .invalid-label {
+    margin-bottom: 0px;
+    margin-left: 0px;
   }
 
   .purple-bar {
@@ -1693,5 +1856,36 @@ html, body {
 
   .save-button {
     width: 90%;
+  }
+}
+
+.vip {
+  .uk-background-cover {
+    text-shadow: 1px 0px 5px #333333e3;
+    background: url("/images/hela.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    overflow-y: auto !important;
+    height: 30vh;
+    display: block;
+    color: #ffffff !important;
+    padding-bottom: 0px !important;
+    padding-top: 4%;
+
+    .vip-icon {
+      background: url("/images/icon/vip.svg") center no-repeat;
+      background-size: 80px;
+      height: 80px;
+      width: 80px;
+      border: 0px;
+      padding: 0px;
+      margin: 0px;
+    }
+
+    .title {
+      margin-top: 0px;
+      font-size: 2.5rem;
+    }
   }
 }

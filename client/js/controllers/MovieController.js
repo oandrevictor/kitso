@@ -11,6 +11,8 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
             $scope.user = AuthService.getUser();
             $scope.movie = MovieService.getMovie();
             $scope.release_date_formated = moment($scope.movie.release_date).format('YYYY');
+            $scope.movie.watchedDate = new Date(moment());
+            $scope.movie.validWatchedDate = true;
 
             WatchedService.isWatched($scope.user._id , $scope.movie._id).then((watched) => {
                 $scope.movie.watched = watched;
@@ -50,6 +52,13 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
                   timeout: 2500
               });
             });
+
+            RatedService.getVoteAverage($scope.movie._id).then((response) => {
+              $scope.movie.vote_average = response.vote_average;
+            }).catch((error) => {
+              console.log(error);
+            });
+
             FollowService.isFollowingPage($scope.user._id ,$scope.movie._id).then((followed) => {
               $scope.movie.followed = followed;
             }).catch((error) => {
@@ -86,7 +95,13 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
             var lists = [];
             $scope.user._lists.forEach((listId) => {
               UserListService.loadUserList(listId).then( function(){
-                lists.push(UserListService.getUserList());
+                var list = UserListService.getUserList();
+                list.itens.forEach(function(item){
+                  if (item._media._id == $scope.movie._id) {
+                    list.movieAdded = true;
+                  }
+                })
+                lists.push(list);
               }).catch(function(error){
                 console.log(error);
               })
@@ -112,7 +127,7 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
     $scope.addToList = function(movieId, userListId){
         UserListService.addItem(userListId, movieId, $scope.user._id, date = moment())
         .then((added) => {
-            $scope.movieAdded = true;
+          updateAdded(true, userListId);
         })
         .catch((error) => {
             UIkit.notification({
@@ -125,11 +140,12 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
 
     $scope.removeFromList = function(movieId, userListId) {
       UserListService.loadUserList(userListId).then( function() {
-        UserListService.getUserList()['itens'].forEach(function(item){
+        var list = UserListService.getUserList();
+        list['itens'].forEach(function(item){
           if (item['_media']['_id'] == movieId) {
-                   UserListService.deleteItem(userListId, $scope.user._id, item['ranked'])
+            UserListService.deleteItem(userListId, $scope.user._id, item['ranked'])
               .then((deleted) => {
-                $scope.movieAdded = false;
+                updateAdded(false, userListId);
               })
               .catch((error) => {
                 UIkit.notification({
@@ -143,6 +159,14 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
       });
     }
 
+    var updateAdded = function(added, listId) {
+      $scope.user.lists.forEach(function(list){
+        if (list._id == listId) {
+          list.movieAdded = added;
+        }
+      })
+    }
+
   $scope.markAsAdded = function(movieId, userListId) {
     UserListService.loadUserList(userListId).then( function() {
       UserListService.getUserList()['itens'].forEach(function(item){
@@ -153,19 +177,34 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
     });
   }
 
-    $scope.markAsWatched = function(movieId){
-        WatchedService.markAsWatched($scope.user._id, movieId)
-        .then((watched) => {
+  $scope.notAFutureDate = function(date) {
+      return moment(date) <= moment();
+  }
+
+    $scope.markAsWatched = function(movieId, runtime){
+      if($scope.movie.watchedTime === 'now') {
+          $scope.movie.watchedDate = new Date(moment());
+      }
+
+      if ($scope.movie.watchedDate && $scope.notAFutureDate($scope.movie.watchedDate)) {
+        $scope.movie.validWatchedDate = true;
+
+        WatchedService.markAsWatched($scope.user._id, movieId, runtime, $scope.movie.watchedDate)
+          .then((watched) => {
             $scope.movie.watched = watched;
-        })
-        .catch((error) => {
+            UIkit.modal('#modal-watchMovie').hide();
+          })
+          .catch((error) => {
             UIkit.notification({
-                message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
-                status: 'danger',
-                timeout: 2500
+              message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+              status: 'danger',
+              timeout: 2500
             });
-        });
-    }
+          });
+      } else {
+        $scope.movie.validWatchedDate = false;
+      }
+    };
 
     $scope.follow = function(movie, is_private){
         FollowService.followPage($scope.user._id, movie, is_private)
@@ -237,7 +276,7 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
   }
 
   $scope.rate = function(movieId, rating){
-    if ($scope.movie.rated) {
+    if ($scope.movie.rated && $scope.movie.rating !== 0) {
         if (rating !== $scope.movie.rating) {
           $scope.updateRated($scope.movie.rated.rated_id, rating);
           $scope.updateRating(rating);
@@ -255,7 +294,6 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
             timeout: 1500
           });
         }
-
     } else {
         $scope.markAsRated(movieId, rating);
         $scope.updateRating(rating);
@@ -304,11 +342,14 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
           "rating" : rating,
           "_id" : ratedId
       };
-      RatedService.updateRated(ratedObj);
+      RatedService.updateRated(ratedObj).then((response) => {
+        $scope.updateVoteAverage();
+      });
     }
 
     $scope.updateRating = function(rating){
       $scope.movie.rating = rating;
+      $scope.updateVoteAverage();
     }
 
     $scope.range = function(count){
@@ -317,5 +358,13 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
             ratings.push(i+1)
         }
         return ratings;
+    }
+
+    $scope.updateVoteAverage = function() {
+      RatedService.getVoteAverage($scope.movie._id).then((rated) => {
+        $scope.movie.vote_average = rated.vote_average;
+      }).catch((error) => {
+        console.log(error);
+      });
     }
 }]);

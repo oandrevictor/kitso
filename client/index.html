@@ -23,11 +23,16 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.42/js/uikit.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.42/js/uikit-icons.min.js"></script>
 
+  <!-- Chart JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/angular.chartjs/latest/angular-chart.min.js"></script>
+
   <!-- ANGULAR CUSTOM -->
   <script src="js/app.js"></script>
 
   <!-- Directives -->
   <script src="js/directives/newsPostbox.directive.js"> </script>
+  <script src="js/directives/appFilereader.directive.js"> </script>
 
   <!-- Controllers -->
   <script src="js/controllers/MainController.js"></script>
@@ -42,6 +47,7 @@
   <script src="js/controllers/MovieEditController.js"></script>
   <script src="js/controllers/UserController.js"></script>
   <script src="js/controllers/UserListController.js"></script>
+  <script src="js/controllers/UserListEditController.js"></script>
   <script src="js/controllers/PersonController.js"></script>
   <script src="js/controllers/PersonEditController.js"></script>
   <script src="js/controllers/SeasonController.js"></script>
@@ -60,11 +66,13 @@
   <script src="js/services/rated.service.js"></script>
   <script src="js/services/feed.service.js"></script>
   <script src="js/services/news.service.js"></script>
+  <script src="js/services/liked.service.js"></script>
+  <script src="js/services/notification.service.js"></script>
 
   <script src="js/lib/moment.js"></script>
 </head>
 <div class="full-loading"></div>
-<body ng-app="kitso" ng-controller="HomeController">
+<body ng-app="kitso" ng-controller="MainController">
   <div class="kitso-wrapper">
     <div class="toolbar">
       <a href="/"class="logo"> Kitso</a>
@@ -75,11 +83,28 @@
       </div>
 
       <div class= "options" >
+        <button ng-show="isLogged()" class="uk-button uk-button-default options"><span uk-icon="bell"></span></button>
+        <div uk-dropdown="pos: bottom-right">
+          <ul class="uk-nav uk-dropdown-nav note">
+            <li ng-show="notifications.$$state.value.length == 0"> You have no notifications.</li>
+            <li ng-repeat="notification in notifications.$$state.value" ng-class="getClass($index, notifications.$$state.value)">
+              {{isViewed(notification)}}
+              {{notification.content}}
+              <button  class="uk-button uk-button-text" uk-icon="icon: close; ratio: 0.5" ng-click="deleteNotification(notification)"></button>
+              <button  class="uk-button uk-button-text" uk-icon="icon: ban; ratio: 0.5" ng-click="viewNotification(notification)"></button>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class= "options" >
         <button ng-show="isLogged()" class="uk-button uk-button-default options"><span uk-icon="menu"></span></button>
 
         <div uk-dropdown="pos: bottom-right	">
           <ul class="uk-nav uk-dropdown-nav">
             <li><a href="/profile">Profile</a></li>
+            <li><a href="/profile?settings">Settings</a></li>
+            <li><a href="/vip">VIP</a></li>
             <li class="uk-nav-divider"></li>
             <li><a ng-click="logout()">Logout</a></li>
           </ul>

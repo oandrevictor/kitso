@@ -1,23 +1,29 @@
 var redis = require('redis');
 var RedisClientConstants = require('../../constants/redisClient');
 
-var redisClient = null;
+let redisClient = null;
+var ENV = process.env.ENVIROMENT || 'development'
 
 exports.createAndAuthClient = function() {
 
-  if (redisClient && redisClient.connected)
-  return redisClient;
+  if (redisClient)
+    return redisClient;
 
-  // if (redisClient)
-  //     redisClient.quit();
-
-  redisClient = redis.createClient(
-    RedisClientConstants.PORT,
-    RedisClientConstants.SERVER,
-    RedisClientConstants.OPTIONS);
+  if(ENV == 'production'){
+    redisClient = redis.createClient(
+      RedisClientConstants.PORT,
+      RedisClientConstants.SERVER,
+      RedisClientConstants.OPTIONS
+    );
     redisClient.auth(RedisClientConstants.ACCESS_TOKEN, function (err) {
       if (err) throw err;
     });
+  }
+  else {
+    redisClient = redis.createClient();
+  }
 
-    return redisClient;
-  };
+
+
+  return redisClient;
+};
