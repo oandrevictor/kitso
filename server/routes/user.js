@@ -12,8 +12,9 @@ router.get('/logout', authController.logout);
 
 router.get('/query', userController.findby);
 
-router.post('/:user_id/timespent', userController.timeSpent);
+router.get('/:user_id/genrewatched', userController.genreWatched);
 
+router.post('/:user_id/timespent', userController.timeSpent);
 
 router.get('/:user_id', userController.show);
 

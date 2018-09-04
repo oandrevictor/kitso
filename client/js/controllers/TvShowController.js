@@ -127,7 +127,7 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
         $scope.tvshow.validWatchedDate = true;
 
         $scope.watchAction = true;
-        WatchedService.markEntireTvshowAsWatched($scope.user._id, tvshowId, runtime, $scope.tvshow.watchedDate)
+        WatchedService.markEntireTvshowAsWatched($scope.user._id, tvshowId, runtime, $scope.tvshow.genres, $scope.tvshow.watchedDate)
           .then((result) => {
             UIkit.modal('#modal-watchTvshow').hide();
             $scope.watchAction = false;
@@ -153,7 +153,7 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
         $scope.tvshow.validWatchedDate = true;
 
         $scope.watchAction = true;
-        WatchedService.markTvshowAsWatched($scope.user._id, tvshowId, runtime, $scope.tvshow.watchedDate)
+        WatchedService.markTvshowAsWatched($scope.user._id, tvshowId, runtime, $scope.tvshow.watchedDate, $scope.tvshow.genres)
           .then((result) => {
             UIkit.modal('#modal-watchTvshow').hide();
             $scope.watchAction = false;
@@ -197,7 +197,7 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
       if ($scope.tvshow.watchedDate  && $scope.notAFutureDate($scope.tvshow.watchedDate)) {
         $scope.tvshow.validWatchedDate = true;
 
-        WatchedService.markAsWatched($scope.user._id, tvshowId, runtime, $scope.tvshow.watchedDate)
+        WatchedService.markAsWatched($scope.user._id, tvshowId, runtime, $scope.tvshow.genres, $scope.tvshow.watchedDate)
           .then((watched) => {
             $scope.tvshow.watched = watched;
             UIkit.modal('#modal-watchTvshow').hide();
@@ -444,7 +444,7 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
         console.log(error);
       });
     }
-    
+
     $scope.updateTvShowInfo = function(tvshowId) {
       TvShowService.updateTvShowInfo(tvshowId)
         .then((response) => {
@@ -453,5 +453,5 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
         .catch((error) => {
         });
     }
-    
+
 }]);

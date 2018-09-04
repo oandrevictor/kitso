@@ -189,7 +189,7 @@ function($scope, $location, $timeout, MovieService, WatchedService, FollowServic
       if ($scope.movie.watchedDate && $scope.notAFutureDate($scope.movie.watchedDate)) {
         $scope.movie.validWatchedDate = true;
 
-        WatchedService.markAsWatched($scope.user._id, movieId, runtime, $scope.movie.watchedDate)
+        WatchedService.markAsWatched($scope.user._id, movieId, runtime, $scope.movie.genres, $scope.movie.watchedDate)
           .then((watched) => {
             $scope.movie.watched = watched;
             UIkit.modal('#modal-watchMovie').hide();

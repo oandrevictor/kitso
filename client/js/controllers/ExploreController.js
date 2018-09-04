@@ -62,7 +62,7 @@ function($scope, $location, $timeout, MovieService, TvShowService, WatchedServic
         });
 
     $scope.markAsWatched = function(movieId, runtime){
-        WatchedService.markAsWatched($scope.user._id, movieId, runtime)
+        WatchedService.markAsWatched($scope.user._id, movieId, runtime, $scope.movie.genres)
         .then((watched) => {
             $scope.movie.watched = watched;
         })

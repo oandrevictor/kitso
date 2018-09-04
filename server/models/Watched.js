@@ -15,6 +15,11 @@ var WatchedSchema = new Schema({
     required: true,
     default: false
   },
+  genres: {
+    type: Array,
+    required: true,
+    default: Array.new
+  },
   _media: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Media',

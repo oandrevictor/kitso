@@ -61,10 +61,11 @@ exports.watchEntireSeason = async function(req, res) {
   var userId = req.body.userId;
   var timeSpent = req.body.time_spent;
   var date = req.body.date;
+  var genres = req.body.genres;
   var season = await DataStoreUtils.getMediaObjById(seasonId);
   var episodesIds = getSeasonsEpisodesIds([season]);
   // watched episodes
-  watch_season_episodes(episodesIds[0], timeSpent, userId, date, function (result) {
+  watch_season_episodes(episodesIds[0], timeSpent, genres, userId, date, function (result) {
     res.status(RequestStatus.OK).json(result);
   });
 }
@@ -74,13 +75,14 @@ exports.watchSeason = async function(req, res) {
   var userId = req.body.userId;
   var date = req.body.date;
   var timeSpent = req.body.time_spent;
+  var genres = req.body.genres;
   var season = await DataStoreUtils.getMediaObjById(seasonId);
   var episodesIds = getSeasonsEpisodesIds([season]);
   var watchedMediasIds = await getMediasIdsFromWatchedObjects(episodesIds, userId);
   var nonWatchedEpisodes = episodesIds[0].map((episode) => {
     if (!watchedMediasIds.includes(episode)) return episode;
   });
-  watch_season_episodes(nonWatchedEpisodes, timeSpent, userId, date, function (result) {
+  watch_season_episodes(nonWatchedEpisodes, timeSpent, genres, userId, date, function (result) {
     res.status(RequestStatus.OK).json(result);
   });
 }
@@ -100,15 +102,16 @@ exports.watchEntireTvshow = async function(req, res) {
   let userId = req.body.userId;
   var date = req.body.date;
   var timeSpent = req.body.time_spent;
+  var genres = req.body.genres;
   let seasonsEpisodesIds = getSeasonsEpisodesIds(seasons);
   var result = [];
   seasonsEpisodesIds.forEach(async (episodesIds) => {
     episodesIds = Array.from(new Set(episodesIds));
-    watch_season_episodes(episodesIds, timeSpent, userId, date, function (response) {
+    watch_season_episodes(episodesIds, timeSpent, genres, userId, date, function (response) {
       result.push(response);
     });
   });
-  
+
   await Promise.all(result).then(() => {
     res.status(RequestStatus.OK).json("Tvshow watched.");
   });
@@ -119,6 +122,7 @@ exports.watchTvshow = async function(req, res) {
   let userId = req.body.userId;
   var date = req.body.date;
   var timeSpent = req.body.time_spent;
+  var genres = req.body.genres;
   let seasonsEpisodesIds = getSeasonsEpisodesIds(seasons);
   var result = [];
   seasonsEpisodesIds.forEach(async (seasonEpisodeIds) => {
@@ -127,7 +131,7 @@ exports.watchTvshow = async function(req, res) {
     let nonWatchedEpisodes = seasonEpisodeIds[0].map((episode) => {
       if (!watchedMediasIds.includes(episode)) return episode;
     });
-    watch_season_episodes(nonWatchedEpisodes, timeSpent, userId, date, function (response) {
+    watch_season_episodes(nonWatchedEpisodes, timeSpent, genres, userId, date, function (response) {
       result.push(response);
     });
   });
@@ -201,7 +205,7 @@ exports.seasonWatchedProgress = async function(req, res) {
     }
   });
   seasonProgress.ratio = seasonProgress.episodes_watched / seasonProgress.total_episodes;
-  
+
   res.status(RequestStatus.OK).json(seasonProgress);
 }
 
@@ -278,7 +282,7 @@ async function getMediasIdsFromWatchedObjects(episodesIds, userId) {
   await Promise.all(watchedPromises).then((result) => {
     watcheds = result;
   });
-  
+
   var watchedMediasIds = watcheds[0].map(function (watched) {
     return watched._media.toString();
   });
@@ -330,7 +334,7 @@ function getSeasonsIds(seasons) {
   return seasonsIds;
 }
 
-async function watch_season_episodes(episodesIds, timeSpent, user_id, date, done) {
+async function watch_season_episodes(episodesIds, timeSpent, genres, user_id, date, done) {
   var requests = 0;
   var payload = episodesIds.length;
   var response = [];
@@ -341,6 +345,7 @@ async function watch_season_episodes(episodesIds, timeSpent, user_id, date, done
       watched._user = user_id;
       watched.date = date;
       watched.time_spent = timeSpent;
+      watched.genres = genres;
       let action = await DataStoreUtils.createAction(user_id, watched._id, ActionType.WATCHED);
       watched._action = action._id;
       await DataStoreUtils.addActionToUserHistory(user_id, action._id);
