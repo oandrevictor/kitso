@@ -4,7 +4,7 @@ var ActionType = require('../constants/actionType');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 var Utils = require('../utils/lib/utils');
 var TMDBController = require('../external/TMDBController');
-
+var RequestMsgs = require('../constants/requestMsg');
 
 exports.index = async function(req, res) {
   let user_id = req.query.user;
@@ -54,6 +54,11 @@ exports.show = function(req, res) {
 exports.create = async function(req, res) {
   var rated = new Rated(req.body);
   let user_id = rated._user;
+
+  if (!(req.user && req.user._id.toString() === user_id.toString())) {
+    return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);
+  }
+
   let action = await DataStoreUtils.createAction(user_id, rated._id, ActionType.RATED);
   rated._action = action._id;
   await DataStoreUtils.addActionToUserHistory(user_id, action._id);
@@ -75,6 +80,11 @@ exports.update = async function(req, res) {
     res.status(RequestStatus.BAD_REQUEST).send(err);
   }
 
+  let user_id = rated._user;
+  if (!(req.user && req.user._id.toString() === user_id.toString())) {
+    return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);
+  }
+
   if (req.body.date) {
     rated.date = req.body.date;
   }
@@ -94,6 +104,13 @@ exports.update = async function(req, res) {
 
 exports.delete = async function(req, res) {
   let ratedId = req.params.rated_id;
+  let rated = await DataStoreUtils.getRatedById(ratedId);
+
+  let user_id = rated._user;
+  if (!(req.user && req.user._id.toString() === user_id.toString())) {
+    return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);
+  }
+
   try {
     await DataStoreUtils.deleteRated(ratedId);
     res.status(RequestStatus.OK);

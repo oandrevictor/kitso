@@ -44,6 +44,11 @@ exports.is_watched = async function(req, res) {
 exports.create = async function(req, res) {
   var watched = new Watched(req.body);
   let user_id = watched._user;
+
+  if (!(req.user && req.user._id.toString() === user_id.toString())) {
+    return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);
+  }
+
   let action = await DataStoreUtils.createAction(user_id, watched._id, ActionType.WATCHED);
   watched._action = action._id;
   await DataStoreUtils.addActionToUserHistory(user_id, action._id);
@@ -59,6 +64,11 @@ exports.create = async function(req, res) {
 exports.watchEntireSeason = async function(req, res) {
   var seasonId = req.body.seasonId;
   var userId = req.body.userId;
+
+  if (!(req.user && req.user._id.toString() === userId.toString())) {
+    return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);
+  }
+
   var timeSpent = req.body.time_spent;
   var date = req.body.date;
   var season = await DataStoreUtils.getMediaObjById(seasonId);
@@ -72,6 +82,11 @@ exports.watchEntireSeason = async function(req, res) {
 exports.watchSeason = async function(req, res) {
   var seasonId = req.body.seasonId;
   var userId = req.body.userId;
+
+  if (!(req.user && req.user._id.toString() === userId.toString())) {
+    return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);
+  }
+
   var date = req.body.date;
   var timeSpent = req.body.time_spent;
   var season = await DataStoreUtils.getMediaObjById(seasonId);
@@ -88,6 +103,11 @@ exports.watchSeason = async function(req, res) {
 exports.unwatchSeason = async function(req, res) {
   var episodesIds = req.body.episodesIds;
   var userId = req.body.userId;
+
+  if (!(req.user && req.user._id.toString() === userId.toString())) {
+    return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);
+  }
+
   var watchedsIds = await getWatchedIdsFromEpisodesIds(episodesIds, userId);
   var deleteWatchedPromises = watchedsIds.map(DataStoreUtils.deleteWatched);
   await Promise.all(deleteWatchedPromises).then((result) => {
@@ -98,6 +118,11 @@ exports.unwatchSeason = async function(req, res) {
 exports.watchEntireTvshow = async function(req, res) {
   var seasons = await Season.find({_tvshow_id: req.body.tvshowId});
   let userId = req.body.userId;
+
+  if (!(req.user && req.user._id.toString() === userId.toString())) {
+    return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);
+  }
+
   var date = req.body.date;
   var timeSpent = req.body.time_spent;
   let seasonsEpisodesIds = getSeasonsEpisodesIds(seasons);
@@ -117,6 +142,11 @@ exports.watchEntireTvshow = async function(req, res) {
 exports.watchTvshow = async function(req, res) {
   var seasons = await Season.find({_tvshow_id: req.body.tvshowId});
   let userId = req.body.userId;
+
+  if (!(req.user && req.user._id.toString() === userId.toString())) {
+    return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);
+  }
+
   var date = req.body.date;
   var timeSpent = req.body.time_spent;
   let seasonsEpisodesIds = getSeasonsEpisodesIds(seasons);
@@ -138,6 +168,12 @@ exports.watchTvshow = async function(req, res) {
 }
 
 exports.unwatchTvshow = async function(req, res) {
+  let userId = req.body.userId;
+
+  if (!(req.user && req.user._id.toString() === userId.toString())) {
+    return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);
+  }
+
   let seasons = removeDuplicatedSeasons(req.body.seasons);
   var seasonsEpisodesIds = getSeasonsEpisodesIds(seasons);
   var deleteWatchedPromises = [];
@@ -155,6 +191,12 @@ exports.unwatchTvshow = async function(req, res) {
 
 exports.update = async function(req, res) {
   let watched_id = req.params.watched_id;
+  let watched = DataStoreUtils.getWatchedById(watched_id);
+
+  if (!(req.user && req.user._id.toString() === watched._user.toString())) {
+    return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);
+  }
+
   try {
     var watched = await DataStoreUtils.getWatchedById(watched_id);
   } catch (err) {
@@ -177,6 +219,12 @@ exports.update = async function(req, res) {
 
 exports.delete = async function(req, res) {
   let watchedId = req.params.watched_id;
+  let watched = DataStoreUtils.getWatchedById(watchedId);
+
+  if (!(req.user && req.user._id.toString() === watched._user.toString())) {
+    return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);
+  }
+  
   try {
     let deletedWatched = await DataStoreUtils.deleteWatched(watchedId);
     res.status(RequestStatus.OK).json(deletedWatched);
