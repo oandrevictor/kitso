@@ -15,6 +15,8 @@ function($scope, $location, $timeout, MovieService, TvShowService, WatchedServic
         return - moment(a.release_date).diff(moment(b.release_date))
     }
 
+    $scope.gridExhibitionMode = true;
+
     MovieService.getAllMovies()
         .then((allMovies) => {
             $scope.allMovies = allMovies;
@@ -92,6 +94,14 @@ function($scope, $location, $timeout, MovieService, TvShowService, WatchedServic
       }
       if(media.title){
         return media.title;
+      }
+    }
+
+    $scope.changeExhibitionMode = function(mode) {
+      if (mode === 'grid') {
+        $scope.gridExhibitionMode = true;
+      } else {
+        $scope.gridExhibitionMode = false;
       }
     }
 

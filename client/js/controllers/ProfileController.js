@@ -221,6 +221,8 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
       var lists = [];
       var lists_followed = [];
 
+      $scope.gridExhibitionMode = true;
+
       // Load additional lists
       $scope.user._lists.forEach((listId) => {
         UserListService.loadUserList(listId).then( function(){
@@ -280,6 +282,46 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
           $scope.user.following.splice($scope.user.following.indexOf(unfollowedUser),1);
         }
       })
+    }
+
+    $scope.unfollow_list = function (userlist) {
+      UserListService.unfollowUserList(userlist)
+        .then((response) => {
+          UIkit.notification({
+            message: '<span uk-icon=\'icon: check\'></span> List Unfollowed!',
+            status: 'success',
+            timeout: 1500
+          });
+
+          UserService.getUser($scope.user._id).then((updatedUser)=> {
+            $scope.user = updatedUser;
+
+            var lists_followed = [];
+
+            $scope.user._following_lists.forEach((listObj) => {
+              UserListService.loadUserList(listObj.userListId).then( function(){
+                let following_lists = UserListService.getUserList();
+                if (!$scope.isEmpty(following_lists)) {
+                  lists_followed.push(following_lists);
+                }
+              }).catch(function(error){
+                console.log(error);
+              })
+            });
+
+            $scope.user.following_lists = lists_followed;
+          }).catch((error)=>{
+            $location.path('/profile');
+          })
+        })
+        .catch((error) => {
+          UIkit.notification({
+            message: '<span uk-icon=\'icon: check\'></span> ' + error,
+            status: 'danger',
+            timeout: 2500
+          });
+        });
+      ;
     }
 
     $scope.unfollow_page = function(unfollowedPage){
@@ -386,6 +428,14 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         }
       } else {
         return "/images/default.jpg";
+      }
+    }
+
+    $scope.changeExhibitionMode = function(mode) {
+      if (mode === 'grid') {
+        $scope.gridExhibitionMode = true;
+      } else {
+        $scope.gridExhibitionMode = false;
       }
     }
 
