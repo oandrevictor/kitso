@@ -70,6 +70,11 @@ var getAction = function(news){
 }
 exports.followed_activity = async function(req, res) {
   let user_id = req.params.user_id;
+
+  if (!(req.user && req.user._id.toString() === user_id.toString())) {
+    return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);
+  }
+
   let following_list;
   let page;
   if (req.query.page)
@@ -124,6 +129,11 @@ onlyUnique = function(array) {
 exports.create = async function(req, res) {
   var follow = new Follows(req.body);
   let user_id = follow._user;
+
+  if (!(req.user && req.user._id.toString() === user_id.toString())) {
+    return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);
+  }
+
   let user = await DataStoreUtils.getUserById(user_id);
   let action = await DataStoreUtils.createAction(user_id, follow._id, ActionType.FOLLOWED_USER);
   DataStoreUtils.createNotification(follow._following, follow._id, user.username + " followed you.");
@@ -147,6 +157,11 @@ exports.delete = async function(req, res) {
       res.status(RequestStatus.BAD_REQUEST).send("Follow inexistente");
     } else {
       let user_id = followed._user;
+      
+      if (!(req.user && req.user._id.toString() === user_id.toString())) {
+        return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);
+      }
+
       let action_id = followed._action;
       delete_action(action_id);
       DataStoreUtils.deleteNotification(follow_id);

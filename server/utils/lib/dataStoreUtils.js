@@ -253,6 +253,10 @@ exports.getFollowsPage = async function(followingId, isMedia) {
   return FollowsPage.find({_following: followingId, is_media: isMedia}).exec();
 };
 
+exports.getFollowsPageById = async function(followingId, isMedia) {
+  return FollowsPage.findById(followingId).exec();
+};
+
 exports.getWatchedById = async function(watchedId) {
   return Watched.findById(watchedId).exec();
 };

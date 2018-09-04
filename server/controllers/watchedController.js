@@ -191,17 +191,16 @@ exports.unwatchTvshow = async function(req, res) {
 
 exports.update = async function(req, res) {
   let watched_id = req.params.watched_id;
-  let watched = DataStoreUtils.getWatchedById(watched_id);
-
-  if (!(req.user && req.user._id.toString() === watched._user.toString())) {
-    return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);
-  }
 
   try {
     var watched = await DataStoreUtils.getWatchedById(watched_id);
   } catch (err) {
     // if there is no watched with informed id
     res.status(RequestStatus.BAD_REQUEST).send(err);
+  }
+
+  if (!(req.user && req.user._id.toString() === watched._user.toString())) {
+    return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);
   }
 
   if (req.body.date) {
@@ -219,7 +218,7 @@ exports.update = async function(req, res) {
 
 exports.delete = async function(req, res) {
   let watchedId = req.params.watched_id;
-  let watched = DataStoreUtils.getWatchedById(watchedId);
+  let watched = await DataStoreUtils.getWatchedById(watchedId);
 
   if (!(req.user && req.user._id.toString() === watched._user.toString())) {
     return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);

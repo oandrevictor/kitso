@@ -2,6 +2,7 @@ var FollowsPage = require('../models/FollowsPage');
 var Media = require('../models/Media');
 var Person = require('../models/Person');
 var RequestStatus = require('../constants/requestStatus');
+var RequestMsg = require('../constants/requestMsg');
 var ActionType = require('../constants/actionType');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 var bcrypt = require('bcryptjs');
@@ -86,6 +87,11 @@ exports.following_me = async function(req, res) {
 exports.create = async function(req, res) {
   var follow = new FollowsPage(req.body);
   let user_id = follow._user;
+
+  if (!(req.user && req.user._id.toString() === user_id.toString())) {
+    return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);
+  }
+
   let action = await DataStoreUtils.createAction(user_id, follow._id, ActionType.FOLLOWED_PAGE);
   if (follow.is_private) {
     action.hidden = true;
@@ -104,6 +110,12 @@ exports.create = async function(req, res) {
 
 exports.delete = async function(req, res) {
   let followId = req.params.followsPage_id;
+  let follow = await DataStoreUtils.getFollowsPageById(followId);
+
+  if (!(req.user && req.user._id.toString() === follow._user.toString())) {
+    return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);
+  }
+
   try {
     let deletedFollowedPage = await DataStoreUtils.deleteFollowsPage(followId);
     res.status(RequestStatus.OK).json(deletedFollowedPage);
