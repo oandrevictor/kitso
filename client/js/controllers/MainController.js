@@ -98,10 +98,10 @@ kitso.controller('MainController', ['$rootScope', '$scope', '$location', '$timeo
     .catch(() => {});
 
 
-    $scope.addToList = function(activity, userListId){
+    $scope.addToList = function(activity, userListId, friend){
         item = $scope.getMediaFromActivity(activity);
         id = item._id;
-        UserListService.addItem(userListId, id, $scope.user._id, date = moment())
+        UserListService.addItem(userListId, id, $scope.user._id, date = moment(), friend)
             .then((added) => {
                 activity.listed[userListId] = true;
             })

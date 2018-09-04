@@ -65,7 +65,7 @@ kitso.service('UserListService', ['$q','$http', function ($q, $http) {
       return deferred.promise;
     }
 
-    function addItem(userlistId, mediaId, userId, date) {
+    function addItem(userlistId, mediaId, userId, date, friend) {
       var deferred = $q.defer();
 
       var req = {
@@ -77,7 +77,8 @@ kitso.service('UserListService', ['$q','$http', function ($q, $http) {
         },
         data: {
           "_media": mediaId,
-          "date": date
+          "date": date,
+          "addedFrom": friend
           }
       }
 

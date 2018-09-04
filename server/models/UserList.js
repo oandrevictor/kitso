@@ -13,6 +13,10 @@ var ListItemSchema = new Schema({
   _media: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Media',
+  },
+  addedFrom: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
   }
 });
 

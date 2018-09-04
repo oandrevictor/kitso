@@ -63,7 +63,7 @@
       <div uk-dropdown="bottom-center; mode: hover" style="z-index: 999">
         <center>
           <div ng-repeat="list in user.lists">
-            <button ng-hide="itemIsListed(list._id, activity)" ng-click="addToList(activity, list._id)" class="uk-button uk-button-default episode-button">
+            <button ng-hide="itemIsListed(list._id, activity)" ng-click="addToList(activity, list._id, getActivityUser(activity))" class="uk-button uk-button-default episode-button">
               <span uk-icon="icon: plus;"></span> {{list.title}} </button>
             <button ng-show="itemIsListed(list._id, activity)" ng-click="removeFromList(activity, list._id)" class="uk-button uk-button-default episode-button ">
               <span uk-icon="icon: minus;"></span> {{list.title}} (undo) </button>

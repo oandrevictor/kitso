@@ -112,7 +112,8 @@ exports.addItem = async function(req, res) {
     let newItem = new ListItem({
       date: req.body.date,
       ranked: lastListIndex + 1,
-      _media: req.body._media
+      _media: req.body._media,
+      addedFrom: req.body.addedFrom
     });
     itens.push(newItem);
     await saveUserList(userList);
