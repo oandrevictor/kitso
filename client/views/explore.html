@@ -17,16 +17,18 @@
         <li class="uk-disabled"><a>Lists</a></li>
         <li class="uk-disabled"><a>Users</a></li>
       </ul>
+
       <ul id="tab-id" class="uk-switcher uk-margin">
         <li><a href="#" id="overview" data-uk-switcher-item="next"></a>
           <p class="uk-text-large">Newest Tv Shows & Movies
           </p>
           <div uk-switcher="animation: uk-animation-fade" class="button-switcher">
-            <button class="uk-button uk-button-default" type="button" uk-icon="grid"></button>
+            <button class="uk-button uk-button-default" type="button" uk-icon="grid" ng-click="changeExhibitionMode('grid')"></button>
+            <button class="uk-button uk-button-default" type="button" uk-icon="list" ng-click="changeExhibitionMode('list')"></button>
           </div>
           <ul class="uk-switcher uk-margin">
             <li>
-              <div class="uk-child-width-1-3@m" uk-grid>
+              <div class="uk-child-width-1-3@m" ng-show="gridExhibitionMode" uk-grid>
                 <div ng-repeat="media in allMedias" class="uk-card uk-card-primary">
                   <div class="uk-card-media-top">
                     <div class="uk-visible-toggle">
@@ -42,17 +44,33 @@
               </div>
             </li>
           </ul>
+          <ul class="uk-list uk-list-divider">
+            <li ng-repeat="media in allMedias" ng-show="!gridExhibitionMode" uk-grid>
+              <div class="friendImage">
+                <img class="uk-border-circle poster-list" style="background-image: url({{getPoster(media)}})" />
+              </div>
+              <div class="uk-width-auto title-list">
+                <a ng-href="/{{media.__t.toLowerCase()}}/{{media._id}}" class="link">
+                  {{getName(media)}}</a>
+                <p class="uk-text uk-text-small uk-text-muted">
+                  {{media.overview | limitTo: 80}}{{media.overview.length > 80 ? '&hellip;' : ''}}
+                </p>
+              </div>
+            </li>
+          </ul>
         </li>
+
         <li>
           <p class="uk-text-large">Newest Movies
           </p>
           <div uk-switcher="animation: uk-animation-fade" class="button-switcher">
-            <button class="uk-button uk-button-default" type="button" uk-icon="grid"></button>
+            <button class="uk-button uk-button-default" type="button" uk-icon="grid" ng-click="changeExhibitionMode('grid')"></button>
+            <button class="uk-button uk-button-default" type="button" uk-icon="list" ng-click="changeExhibitionMode('list')"></button>
           </div>
 
           <ul class="uk-switcher uk-margin">
             <li>
-              <div class="uk-child-width-1-3@m" uk-grid>
+              <div class="uk-child-width-1-3@m" ng-show="gridExhibitionMode" uk-grid>
                 <div ng-repeat="movie in allMovies" class="uk-card uk-card-primary">
                   <div class="uk-card-media-top">
                     <div class="uk-visible-toggle">
@@ -68,17 +86,35 @@
               </div>
             </li>
           </ul>
+
+          <ul class="uk-list uk-list-divider">
+            <li ng-repeat="movie in allMovies" ng-show="!gridExhibitionMode" uk-grid>
+              <div class="friendImage">
+                <img class="uk-border-circle poster-list" style="background-image: url({{ movie.poster_path }})" />
+              </div>
+              <div class="uk-width-auto title-list">
+                <a ng-href="/movie/{{movie._id}}" class="link">
+                  {{ movie.title }}
+                </a>
+                <p class="uk-text uk-text-small uk-text-muted">
+                  {{ movie.overview | limitTo: 80}}{{movie.overview.length > 80 ? '&hellip;' : '' }}
+                </p>
+              </div>
+            </li>
+          </ul>
         </li>
+
         <li>
           <p class="uk-text-large">Newest Tv Shows
           </p>
           <div uk-switcher="animation: uk-animation-fade" class="button-switcher">
-            <button class="uk-button uk-button-default" type="button" uk-icon="grid"></button>
+            <button class="uk-button uk-button-default" type="button" uk-icon="grid" ng-click="changeExhibitionMode('grid')"></button>
+            <button class="uk-button uk-button-default" type="button" uk-icon="list" ng-click="changeExhibitionMode('list')"></button>
           </div>
 
           <ul class="uk-switcher uk-margin">
             <li>
-              <div class="uk-child-width-1-3@m" uk-grid>
+              <div class="uk-child-width-1-3@m" ng-show="gridExhibitionMode" uk-grid>
                 <div ng-repeat="tvshow in allShows" class="uk-card uk-card-primary">
                   <div class="uk-card-media-top">
                     <div class="uk-visible-toggle">
@@ -94,17 +130,33 @@
               </div>
             </li>
           </ul>
+          <ul class="uk-list uk-list-divider">
+            <li ng-repeat="tvshow in allShows" ng-show="!gridExhibitionMode" uk-grid>
+              <div class="friendImage">
+                <img class="uk-border-circle poster-list" style="background-image: url({{ tvshow.poster_path }})" />
+              </div>
+              <div class="uk-width-auto title-list">
+                <a ng-href="/movie/{{tvshow._id}}" class="link">
+                  {{ tvshow.name }}
+                </a>
+                <p class="uk-text uk-text-small uk-text-muted">
+                  {{ tvshow.overview | limitTo: 80}}{{tvshow.overview.length > 80 ? '&hellip;' : '' }}
+                </p>
+              </div>
+            </li>
+          </ul>
         </li>
         <li>
           <p class="uk-text-large">Newest People
           </p>
           <div uk-switcher="animation: uk-animation-fade" class="button-switcher">
-            <button class="uk-button uk-button-default" type="button" uk-icon="grid"></button>
+            <button class="uk-button uk-button-default" type="button" uk-icon="grid" ng-click="changeExhibitionMode('grid')"></button>
+            <button class="uk-button uk-button-default" type="button" uk-icon="list" ng-click="changeExhibitionMode('list')"></button>
           </div>
 
           <ul class="uk-switcher uk-margin">
             <li>
-              <div class="uk-child-width-1-3@m" uk-grid>
+              <div class="uk-child-width-1-3@m" ng-show="gridExhibitionMode" uk-grid>
                 <div ng-repeat="person in allPeople" class="uk-card uk-card-primary">
                   <div class="uk-card-media-top">
                     <div class="uk-visible-toggle">
@@ -117,6 +169,18 @@
                     <p class="uk-text">{{person.name}}</p>
                   </div>
                 </div>
+              </div>
+            </li>
+          </ul>
+          <ul class="uk-list uk-list-divider">
+            <li ng-repeat="person in allPeople" ng-show="!gridExhibitionMode" uk-grid>
+              <div class="friendImage">
+                <img class="uk-border-circle poster-list" style="background-image: url({{ person.profile_path }})" />
+              </div>
+              <div class="uk-width-auto title-list" style="padding-top: 10px">
+                <a ng-href="/person/{{person._id}}" class="link">
+                  {{ person.name }}
+                </a>
               </div>
             </li>
           </ul>

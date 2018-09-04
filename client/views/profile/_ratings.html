@@ -1,13 +1,14 @@
 <li>
   <div uk-switcher="animation: uk-animation-fade" class="button-switcher">
-    <button class="uk-button uk-button-default" type="button" uk-icon="grid"></button>
+    <button class="uk-button uk-button-default" type="button" uk-icon="grid" ng-click="changeExhibitionMode('grid')"></button>
+    <button class="uk-button uk-button-default" type="button" uk-icon="list" ng-click="changeExhibitionMode('list')"></button>
   </div>
   <ul class="uk-switcher uk-margin">
     <li>
       <div ng-if="user.ratings.length == 0">
         You have not rated anything yet, start exploring now!
       </div>
-      <div class="uk-child-width-1-3@m" uk-grid>
+      <div class="uk-child-width-1-3@m" uk-grid ng-show="gridExhibitionMode">
         <div class="uk-card uk-card-primary" ng-repeat="rated in user.ratings">
           <div class="uk-card-media-top">
             <div class="uk-inline uk-dark">
@@ -46,4 +47,39 @@
       </div>
     </li>
   </ul>
+
+  <ul class="uk-list uk-list-divider">
+    <li ng-repeat="rated in user.ratings" ng-show="!gridExhibitionMode" uk-grid>
+      <div class="friendImage">
+        <img class="uk-border-circle poster-list" style="background-image: url({{ getPoster(rated._media) }})" />
+      </div>
+      <div class="uk-width-expand title-list">
+        <a ng-click="goToMedia(rated._media)" class="following-link">
+          {{rated._media.name}}
+        </a>
+
+        <div class="uk-align-right" ng-if="canEdit()">
+          <div class="follow-button">
+            <span uk-icon="icon: pencil; ratio: 1"></span></div>
+
+          <div id="rated-{{rated._id}}" uk-dropdown="pos: bottom-center; mode: click" style="z-index: 999">
+            <center>
+              <ul class="uk-iconnav rating" style="padding-left: 0">
+                <div ng-repeat="n in range('10')">
+                  <a ng-if="n <= rated.rating" class="rating-star" ng-click="updateRated(rated,n)"></a>
+                  <a ng-if="n > rated.rating" uk-icon="icon: star; ratio: .6" ng-click="updateRated(rated,n)"></a>
+                </div>
+              </ul>
+            </center>
+          </div>
+        </div>
+        <p class="uk-text uk-text-small uk-text-muted card-rated">
+          <uk-text-bold style="color: #502274"> {{rated.rating}}
+            <span class="rating-star"></span>
+          </uk-text-bold>| {{formatDate(rated.date)}}</p>
+      </div>
+    </li>
+  </ul>
+
+   
 </li>
