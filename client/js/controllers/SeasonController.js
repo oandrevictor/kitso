@@ -281,7 +281,7 @@ kitso.controller("SeasonController", ['$scope', '$location', '$route', '$timeout
         $scope.season.validWatchedDate = true;
 
         var episodeId = $scope.episode._id;
-        WatchedService.markAsWatched($scope.user._id, episodeId, $scope.tvshow.episode_run_time[0], $scope.season.watchedDate)
+        WatchedService.markAsWatched($scope.user._id, episodeId, $scope.tvshow.episode_run_time[0], $scope.season.watchedDate, $scope.tvshow.genres)
           .then((watched) => {
             $scope.episode.watched = watched;
             $scope.updateProgress($scope.season.progress, 1);

@@ -68,6 +68,22 @@ exports.findByEmail = function (req, res) {
   });
 }
 
+exports.genreWatched = async function (req, res) {
+  let user_id = req.params.user_id;
+  let all_watched = await Watched.find({ _user: user_id }).exec();
+
+  let percentage = {}
+  all_watched.forEach(function(watched) {
+    if (watched.genres && watched.genres.length > 0) {
+      watched.genres.forEach(function(genre) {
+        percentage[genre.name] = percentage[genre.name]? percentage[genre.name] + 1: 1;
+      });
+    }
+  });
+
+  res.status(RequestStatus.OK).json(percentage);
+}
+
 //{ filter: , month: , week: , year: }
 exports.timeSpent = async function (req, res) {
   let user_id = req.params.user_id;

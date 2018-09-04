@@ -47,14 +47,15 @@ kitso.service('WatchedService', ['$q', '$http', function ($q, $http) {
   }
 
 
-  function markAsWatched(userId, mediaId, timespent, date) {
+  function markAsWatched(userId, mediaId, timespent, genres, date) {
     var deferred = $q.defer();
 
     var data = {
       "_user": userId,
       "_media": mediaId,
       "date": date,
-      "time_spent": timespent
+      "time_spent": timespent,
+      "genres": genres
     };
 
     $http.post('/api/watched/', data)
@@ -146,14 +147,15 @@ kitso.service('WatchedService', ['$q', '$http', function ($q, $http) {
     return deferred.promise;
   }
 
-  function markEntireTvshowAsWatched(userId, tvshowId, timespent, date = moment()) {
+  function markEntireTvshowAsWatched(userId, tvshowId, timespent, date = moment(), genres) {
     var deferred = $q.defer();
 
     var data = {
       "userId": userId,
       "tvshowId": tvshowId,
       "date": date,
-      "time_spent": timespent
+      "time_spent": timespent,
+      "genres": genres
     };
 
     $http.post('/api/watched/entireTvshow', data)
@@ -171,13 +173,14 @@ kitso.service('WatchedService', ['$q', '$http', function ($q, $http) {
     return deferred.promise;
   }
 
-  function markTvshowAsWatched(userId, tvshowId, timespent, date = moment()) {
+  function markTvshowAsWatched(userId, tvshowId, timespent, date = moment(), genres) {
     var deferred = $q.defer();
 
     var data = {
       "userId": userId,
       "tvshowId": tvshowId,
       "date": date,
+      "genres": genres,
       "time_spent": timespent
     };
 

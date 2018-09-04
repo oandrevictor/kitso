@@ -197,8 +197,9 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 
   $scope.markAsWatched = function (activity) {
 		var media = $scope.getMediaFromActivity(activity);
+		var genres = media.genres? media.genres : [];
     var mediaId = media._id;
-    WatchedService.markAsWatched($scope.user._id, mediaId, media)
+    WatchedService.markAsWatched($scope.user._id, mediaId, media, genres)
       .then((watched) => {
         activity.watched = watched;
       })
