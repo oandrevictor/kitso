@@ -140,9 +140,18 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
   }
 
   var loadUserWatchedGenres = function() {
-    $scope.labels = ["Comedy", "Horror"];
-    $scope.data = [40, 60];
+    $scope.labels = [];
+    $scope.data = [];
     $scope.optionsGenres = { legend: { display: true, position: 'bottom'}};
+
+    UserService.getGenresWatched($scope.user._id)
+      .then(function (result) {
+        $scope.labels = Object.keys(result);
+        $scope.data = Object.values(result);
+      })
+      .catch(function (error) {
+        console.log(error)
+      });
   }
 
   var loadTab = function(){
