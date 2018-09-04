@@ -6,6 +6,7 @@
     "body-parser": "~1.4.2",
     "cheerio": "^1.0.0-rc.2",
     "connect-mongo": "^2.0.1",
+    "cron": "^1.4.1",
     "dotenv": "^5.0.1",
     "express": "~4.5.1",
     "express-session": "^1.15.6",

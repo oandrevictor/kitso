@@ -112,7 +112,7 @@ exports.create = function(req, res) {
       result._seasons = createdShow._seasons;
       result.__t = createdShow.__t;
       setTimeout(function(){exports.matchApiSeasonsToDb(result, createdShow);}, 5000);
-      result._actors = await matchApiCastToDb(createdShow);
+      result._actors = await exports.matchApiCastToDb(createdShow);
       res.setHeader('Content-Type', 'application/json');
       res.status(RequestStatus.OK).send(result);
     })
@@ -211,7 +211,7 @@ getCastFromAPI = function(tv_id){
   })
 };
 
-matchApiCastToDb = async function(dbtvshow){
+exports.matchApiCastToDb = async function(dbtvshow){
   getCastFromAPI(dbtvshow._tmdb_id).then(function(credits){
     var credits = JSON.parse(credits);
     var cast = credits.cast;
@@ -247,7 +247,7 @@ matchApiCastToDb = async function(dbtvshow){
       }
       else {
         // person already exists
-        await createAppearsIn(hasPerson[0]._id, dbmovieshow._id);
+        await createAppearsIn(hasPerson[0]._id, dbtvshow._id);
         console.log("Person Updated:" + name);
       }
     });
@@ -306,7 +306,7 @@ createAppearsIn = async function(personId, mediaId) {
   let appearsInId = appearsIn._id;
   let isDuplicated = await DataStoreUtils.alreadyExistsAppearsInByKeys(personId, mediaId);
   if (isDuplicated) {
-    throw new Error(RequestMsg.DUPLICATED_ENTITY);
+    console.log(RequestMsg.DUPLICATED_ENTITY);
   } else {
     await saveAppearsIn(appearsIn);
     await DataStoreUtils.addAppearsInToPerson(personId, appearsInId);
