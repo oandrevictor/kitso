@@ -74,13 +74,14 @@ kitso.service('WatchedService', ['$q', '$http', function ($q, $http) {
     return deferred.promise;
   }
 
-  function markEntireSeasonAsWatched(userId, seasonId, timespent, date) {
+  function markEntireSeasonAsWatched(userId, seasonId, timespent, date, genres) {
     var deferred = $q.defer();
 
     var data = {
       "userId": userId,
       "seasonId": seasonId,
       "date": date,
+      "genres": genres,
       "time_spent": timespent
     };
 
@@ -99,13 +100,14 @@ kitso.service('WatchedService', ['$q', '$http', function ($q, $http) {
     return deferred.promise;
   }
 
-  function markSeasonAsWatched(userId, seasonId, timespent, date) {
+  function markSeasonAsWatched(userId, seasonId, timespent, date, genres) {
     var deferred = $q.defer();
 
     var data = {
       "userId": userId,
       "seasonId": seasonId,
       "date": date,
+      "genres": genres,
       "time_spent": timespent
     };
 
@@ -147,7 +149,7 @@ kitso.service('WatchedService', ['$q', '$http', function ($q, $http) {
     return deferred.promise;
   }
 
-  function markEntireTvshowAsWatched(userId, tvshowId, timespent, date = moment(), genres) {
+  function markEntireTvshowAsWatched(userId, tvshowId, timespent, genres, date = moment()) {
     var deferred = $q.defer();
 
     var data = {

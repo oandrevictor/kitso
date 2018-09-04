@@ -127,7 +127,7 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
         $scope.tvshow.validWatchedDate = true;
 
         $scope.watchAction = true;
-        WatchedService.markEntireTvshowAsWatched($scope.user._id, tvshowId, runtime, $scope.tvshow.watchedDate, $scope.tvshow.genres)
+        WatchedService.markEntireTvshowAsWatched($scope.user._id, tvshowId, runtime, $scope.tvshow.genres, $scope.tvshow.watchedDate)
           .then((result) => {
             UIkit.modal('#modal-watchTvshow').hide();
             $scope.watchAction = false;
@@ -197,7 +197,7 @@ function($scope, $location, $route, $timeout, $routeParams, TvShowService,  Watc
       if ($scope.tvshow.watchedDate  && $scope.notAFutureDate($scope.tvshow.watchedDate)) {
         $scope.tvshow.validWatchedDate = true;
 
-        WatchedService.markAsWatched($scope.user._id, tvshowId, runtime, $scope.tvshow.watchedDate, $scope.tvshow.genres)
+        WatchedService.markAsWatched($scope.user._id, tvshowId, runtime, $scope.tvshow.genres, $scope.tvshow.watchedDate)
           .then((watched) => {
             $scope.tvshow.watched = watched;
             UIkit.modal('#modal-watchTvshow').hide();

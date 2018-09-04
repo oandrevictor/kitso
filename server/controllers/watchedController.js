@@ -65,7 +65,7 @@ exports.watchEntireSeason = async function(req, res) {
   var season = await DataStoreUtils.getMediaObjById(seasonId);
   var episodesIds = getSeasonsEpisodesIds([season]);
   // watched episodes
-  watch_season_episodes(episodesIds[0], timeSpent, userId, date, function (result) {
+  watch_season_episodes(episodesIds[0], timeSpent, genres, userId, date, function (result) {
     res.status(RequestStatus.OK).json(result);
   });
 }
@@ -75,13 +75,14 @@ exports.watchSeason = async function(req, res) {
   var userId = req.body.userId;
   var date = req.body.date;
   var timeSpent = req.body.time_spent;
+  var genres = req.body.genres;
   var season = await DataStoreUtils.getMediaObjById(seasonId);
   var episodesIds = getSeasonsEpisodesIds([season]);
   var watchedMediasIds = await getMediasIdsFromWatchedObjects(episodesIds, userId);
   var nonWatchedEpisodes = episodesIds[0].map((episode) => {
     if (!watchedMediasIds.includes(episode)) return episode;
   });
-  watch_season_episodes(nonWatchedEpisodes, timeSpent, userId, date, function (result) {
+  watch_season_episodes(nonWatchedEpisodes, timeSpent, genres, userId, date, function (result) {
     res.status(RequestStatus.OK).json(result);
   });
 }
