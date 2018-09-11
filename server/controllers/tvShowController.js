@@ -39,62 +39,35 @@ exports.index = async function(req, res) {
 };
 
 exports.show = function(req, res) {
+  let is_tmdb = false;
   var tvshow;
   if (mongoose.Types.ObjectId.isValid(req.params.show_id)) {
     tvshow = Show.findById(req.params.show_id);
   } else {
+    is_tmdb = true;
     tvshow = Show.findOne({_tmdb_id: req.params.show_id});
   }
 
   tvshow.catch((err) => {
     res.status(RequestStatus.BAD_REQUEST).send(err);
   })
-  .then((result) => {
-    if (result) {
-      var tmdb_id = result._tmdb_id;
-      var query = 'tvshow/' + tmdb_id;
-      redisClient.exists('tvshow/' + tmdb_id, function(err, reply) {
-        if (reply === 1) {
-          redisClient.get(query, async function(err,data) {
-            if(err)
-            console.log(err);
-            else{
-              var parsed_result = JSON.parse(data);
-              promises = await result._seasons.map(inject_seasons);
-              var actors = result._actors;
-              let actorsPromises = actors.map(injectPersonJson);
-
-              Promise.all(promises).then(async function(results) {
-                parsed_result._seasons = results;
-                parsed_result._id = result._id;
-                parsed_result.__t = result.__t;
-                await Promise.all(actorsPromises).then(function(nested_actors) {
-                  parsed_result._actors = nested_actors;
-                  res.setHeader('Content-Type', 'application/json');
-                  res.status(RequestStatus.OK).send(parsed_result);
-                });
-
-              })
-            }
-          });
-        } else {
-          TMDBController.getShowFromTMDB(tmdb_id).then(async function(data) {
-            var data = JSON.parse(data)
-            var promises = await result._seasons.map(inject_seasons);
-
-            Promise.all(promises).then(function(results) {
-              data._seasons = results;
-              data._id = result._id;
-              data.__t = result.__t;
-              data.poster_path = "https://image.tmdb.org/t/p/w500/" + data.poster_path;
-              data.backdrop_path = "https://image.tmdb.org/t/p/original/" + data.backdrop_path;
-              res.status(RequestStatus.OK).send(data);
-            })
-          })
-        }
-      });
+  .then(async(tvshowResult) => {
+    if (tvshowResult) {
+      show_tvshow(tvshowResult, res);
     } else {
-      res.status(RequestStatus.NOT_FOUND).send('Media not found.');
+      if (is_tmdb) {
+        let show = new Show({name: "relatedShow (" + req.params.show_id + ")", _tmdb_id: req.params.show_id});
+
+        show.save()
+        .catch((err) => {
+          res.status(RequestStatus.BAD_REQUEST).send(err);
+        })
+        .then(async(createdShow) => {
+          show_tvshow(createdShow, res);
+        });
+      } else {
+        res.status(RequestStatus.NOT_FOUND).send('Media not found.');
+      }
     }
   });
 };
@@ -106,16 +79,15 @@ exports.create = function(req, res) {
   .catch((err) => {
     res.status(RequestStatus.BAD_REQUEST).send(err);
   })
-  .then((createdShow) => {
+  .then(async(createdShow) => {
     TMDBController.getShowFromTMDB(createdShow._tmdb_id).then( async (result)=> {
       result._id = createdShow._id;
       result._seasons = createdShow._seasons;
       result.__t = createdShow.__t;
       setTimeout(function(){exports.matchApiSeasonsToDb(result, createdShow);}, 5000);
       result._actors = await exports.matchApiCastToDb(createdShow);
-      res.setHeader('Content-Type', 'application/json');
-      res.status(RequestStatus.OK).send(result);
-    })
+      res.status(RequestStatus.OK).json(result);
+    });
   });
 };
 
@@ -327,3 +299,57 @@ injectPersonJson = async function(personId) {
 inject_seasons = function(season) {
   return Season.findById(season).exec();
 };
+
+createTMDBShow = function(createdShow) {
+  TMDBController.getShowFromTMDB(createdShow._tmdb_id).then( async (result)=> {
+    result._id = createdShow._id;
+    result._seasons = createdShow._seasons;
+    result.__t = createdShow.__t;
+    setTimeout(function(){exports.matchApiSeasonsToDb(result, createdShow);}, 5000);
+    result._actors = await exports.matchApiCastToDb(createdShow);
+  });
+};
+
+show_tvshow = function(result, res) {
+  var tmdb_id = result._tmdb_id;
+  var query = 'tvshow/' + tmdb_id;
+  redisClient.exists('tvshow/' + tmdb_id, function(err, reply) {
+    if (reply === 1) {
+      redisClient.get(query, async function(err,data) {
+        if(err) {
+          return {redis: false, result: err};
+        } else {
+          var parsed_result = JSON.parse(data);
+          promises = await result._seasons.map(inject_seasons);
+          var actors = result._actors;
+          let actorsPromises = actors.map(injectPersonJson);
+
+          Promise.all(promises).then(async function(results) {
+            parsed_result._seasons = results;
+            parsed_result._id = result._id;
+            parsed_result.__t = result.__t;
+            await Promise.all(actorsPromises).then(function(nested_actors) {
+              parsed_result._actors = nested_actors;
+              res.status(RequestStatus.OK).json(parsed_result);
+            });
+
+          })
+        }
+      });
+    } else {
+      TMDBController.getShowFromTMDB(tmdb_id).then(async function(data) {
+        var data = JSON.parse(data)
+        var promises = await result._seasons.map(inject_seasons);
+
+        Promise.all(promises).then(function(results) {
+          data._seasons = results;
+          data._id = result._id;
+          data.__t = result.__t;
+          data.poster_path = "https://image.tmdb.org/t/p/w500/" + data.poster_path;
+          data.backdrop_path = "https://image.tmdb.org/t/p/original/" + data.backdrop_path;
+          res.status(RequestStatus.OK).json(data);
+        })
+      })
+    }
+  });
+}

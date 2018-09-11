@@ -35,29 +35,39 @@ exports.index = async function(req, res) {
 };
 
 exports.show = function(req, res) {
+  let is_tmdb = false;
   var movie;
   if (mongoose.Types.ObjectId.isValid(req.params.movie_id)) {
     movie = Movie.findById(req.params.movie_id);
   } else {
+    is_tmdb = true;
     movie = Movie.findOne({_tmdb_id: req.params.movie_id});
   }
 
   movie.catch((err) => {
-    res.status(400).send(err);
+    res.status(RequestStatus.BAD_REQUEST).send(err);
   })
-  .then(async function(result) {
-    if (result) {
-      var tmdb_id = result._tmdb_id;
-      let movie_complete = await TMDBController.getMovie(tmdb_id);
-      var actors = result._actors;
-      let actorsPromises = actors.map(injectPersonJson);
-      await Promise.all(actorsPromises).then(function(nested_actors) {
-        movie_complete._actors = nested_actors;
-      });
-      res.setHeader('Content-Type', 'application/json');
-      res.status(RequestStatus.OK).send(movie_complete);
+  .then(async(movieResult) => {
+    if (movieResult) {
+      show_movie(movieResult, res);
     } else {
-      res.status(RequestStatus.NOT_FOUND).send('Media not found.');
+      if (is_tmdb) {
+        let movie = new Movie({name: "relatedMovie (" + req.params.movie_id + ")", _tmdb_id: req.params.movie_id});
+
+        movie.save()
+        .catch((err) => {
+          res.status(RequestStatus.BAD_REQUEST).json(err);
+        })
+        .then(async(createdMovie) => {
+          console.log('antes', createdMovie)
+          let actors = await matchApiMovieCastToDb(createdMovie);
+          createdMovie._actors = actors;
+          console.log('depois', actors)
+          show_movie(createdMovie, res);
+        });
+      } else {
+        res.status(RequestStatus.NOT_FOUND).send('Media not found.');
+      }
     }
   });
 };
@@ -67,18 +77,16 @@ exports.create = function(req, res) {
 
   movie.save()
   .catch((err) => {
-    res.status(400).send(err);
+    res.status(RequestStatus.BAD_REQUEST).json(err);
   })
-  .then((createdMovie) => {
-    console.log("Created movie: " + createdMovie.name);
+  .then(async (createdMovie) => {
     TMDBController.getMovieFromTMDB(createdMovie._tmdb_id).then( async (result)=> {
       result._id = createdMovie._id;
       result._seasons = createdMovie._seasons;
       result.__t = createdMovie.__t;
       result._actors = await matchApiMovieCastToDb(createdMovie);
-      res.setHeader('Content-Type', 'application/json');
-      res.status(200).send(result);
-    })
+      res.status(RequestStatus.OK).json(result);
+    });
   });
 };
 
@@ -188,3 +196,14 @@ injectPersonJson = async function(personId) {
     let personObj = await DataStoreUtils.getPersonObjById(personId);
     return personObj;
 };
+
+show_movie = async function(result, res) {
+  var tmdb_id = result._tmdb_id;
+  let movie_complete = await TMDBController.getMovie(tmdb_id);
+  var actors = result._actors;
+  let actorsPromises = actors.map(injectPersonJson);
+  await Promise.all(actorsPromises).then(function(nested_actors) {
+    movie_complete._actors = nested_actors;
+  });
+  res.status(RequestStatus.OK).json(movie_complete);
+}
