@@ -68,6 +68,7 @@
   <script src="js/services/news.service.js"></script>
   <script src="js/services/liked.service.js"></script>
   <script src="js/services/notification.service.js"></script>
+  <script src="js/services/search.service.js"></script>
 
   <script src="js/lib/moment.js"></script>
 </head>
@@ -76,10 +77,19 @@
   <div class="kitso-wrapper">
     <div class="toolbar">
       <a href="/"class="logo"> Kitso</a>
-      <div  ng-show="isLogged()" class="exploring">
+      <div ng-show="isLogged()" class="exploring">
         <a ng-href="/explore" ><button  class="uk-button uk-button-default explore-icon"></button></a>
         <a ng-href="/home" ><button  class="uk-button uk-button-default home-icon"></button></a>
         <a ng-href="/profile" ><button  class="uk-button uk-button-default profile-icon"></button></a>
+      </div>
+
+      <div class="search">
+        <button ng-show="isLogged()" class="uk-button uk-button-default search uk-navbar-toggle"><span uk-icon="search"></span></button>
+        <div class="uk-drop search" uk-drop="mode: click; pos: left-center; offset: -100">
+          <form name="searchForm" class="uk-search uk-search-navbar uk-width-1-1" ng-submit="search()">
+            <input class="uk-search-input search-input" type="search" ng-model="searchField" name="searchField" placeholder="Search..." autofocus>
+          </form>
+        </div>
       </div>
 
       <div class= "options" >

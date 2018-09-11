@@ -433,6 +433,25 @@ html, body {
     width: 32%;
   }
 
+  .search {
+    margin-top: auto;
+    color: white;
+    border: solid 0px;
+    float: right;
+    padding-left: 0px;
+    padding-right: 15px;
+    padding-bottom: 20px !important;
+    margin-bottom: 20px !important;
+    .search-input {
+      font-size: 1rem;
+      color: white;
+    }
+    &:hover {
+      text-decoration: none;
+      font-weight: 500;
+    }
+  }
+
   .options {
     margin-top: auto;
     margin-bottom: auto;
