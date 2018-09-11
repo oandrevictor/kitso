@@ -13,7 +13,8 @@ kitso.service('RatedService', ['$q','$http', function ($q, $http) {
       markAsRated: markAsRated,
       markAsNotRated: markAsNotRated,
       isRated: isRated,
-      updateRated: updateRated
+      updateRated: updateRated,
+      topRated: topRated
     });
 
     function getAllRated(userId){
@@ -161,6 +162,23 @@ kitso.service('RatedService', ['$q','$http', function ($q, $http) {
             });
 
         return deferred.promise;
+    }
+
+    function topRated(userId, type) {
+      var deferred = $q.defer();
+      $http.get('/api/rated/top_rated?user_id=' + userId + "&type=" + type + "&limit=5")
+          .then((response) => {
+            if (response.status === 200) {
+                  deferred.resolve(response.data);
+              } else {
+                  deferred.reject(response.data);
+              }
+          })
+          .catch((error) => {
+              deferred.reject(error.data);
+          });
+
+      return deferred.promise;
     }
 
 }]);
