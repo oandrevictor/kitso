@@ -1,6 +1,6 @@
 var kitso = angular.module('kitso');
 
-kitso.controller('MainController', ['$rootScope', '$scope', '$location', '$timeout', 'AuthService', 'FeedService', 'UserListService', 'WatchedService', 'NewsService', 'NotificationService', function($rootScope, $scope, $location, $timeout, AuthService, FeedService, UserListService, WatchedService, NewsService, NotificationService) {
+kitso.controller('MainController', ['$rootScope', '$scope', '$location', '$timeout', 'AuthService', 'FeedService', 'UserListService', 'WatchedService', 'NewsService', 'NotificationService', 'SearchService', function($rootScope, $scope, $location, $timeout, AuthService, FeedService, UserListService, WatchedService, NewsService, NotificationService, SearchService) {
     $scope.temp_news = {}
     $scope.logout = function() {
         AuthService.logout()
@@ -374,5 +374,23 @@ kitso.controller('MainController', ['$rootScope', '$scope', '$location', '$timeo
         return activity._user;
     }
 
+    $scope.searchForm = {
+      searchField: ''
+    }
+
+    $scope.search = function(){
+      SearchService.search('media', $scope.searchForm.searchField.$modelValue)
+          .then((results) => {
+              console.log(results);
+          })
+          .catch((error) => {
+              console.log(error)
+              UIkit.notification({
+                  message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
+                  status: 'danger',
+                  timeout: 2500
+              });
+          });
+    }
 
 }]);

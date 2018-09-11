@@ -534,3 +534,29 @@ exports.findEpisodesByTmdbAndSeasonNumber = async function(tvShowId, seasonNumbe
     .find({_tvshow_id: tvShowId, season_number: seasonNumber})
     .exec();
 };
+
+// SEARCH FUNCTIONS =====================================================================
+
+exports.searchMediaByName = async function(search) {
+  let results = await Media.find({name: new RegExp(search, "i")}).exec();
+
+  return results;
+};
+
+exports.searchPersonByName = async function(search) {
+  let results = await Person.find({name: new RegExp(search, "i")}).exec();
+
+  return results;
+};
+
+exports.searchUserByName = async function(search) {
+  let results = await User.find({name: new RegExp(search, "i")}).exec();
+
+  return results;
+};
+
+exports.searchUserByUsername = async function(search) {
+  let results = await User.find({username: new RegExp(search, "i")}).exec();
+
+  return results;
+};
