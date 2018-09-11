@@ -55,29 +55,7 @@ exports.show = function(req, res) {
     if (tvshowResult) {
       show_tvshow(tvshowResult, res);
     } else {
-      if (is_tmdb) {
-        let show = new Show({name: "relatedShow (" + req.params.show_id + ")", _tmdb_id: req.params.show_id});
-
-        show.save()
-        .catch((err) => {
-          res.status(RequestStatus.BAD_REQUEST).send(err);
-        })
-        .then(async(createdShow) => {
-          TMDBController.getShowFromTMDB(createdShow._tmdb_id).then( async (result)=> {
-            let promises = [];
-            result._id = createdShow._id;
-            result._seasons = createdShow._seasons;
-            result.__t = createdShow.__t;
-            promises.push(exports.matchApiSeasonsToDb(result, createdShow));
-            promises.push(exports.matchApiCastToDb(createdShow));
-            await Promise.all(promises).then((result) => {
-              show_tvshow(createdShow, res);
-            });
-          });
-        });
-      } else {
-        res.status(RequestStatus.NOT_FOUND).send('Media not found.');
-      }
+      res.status(RequestStatus.NOT_FOUND).send('Media not found.');
     }
   });
 };
@@ -91,11 +69,15 @@ exports.create = function(req, res) {
   })
   .then(async(createdShow) => {
     TMDBController.getShowFromTMDB(createdShow._tmdb_id).then( async (result)=> {
+      result = JSON.parse(result);
       result._id = createdShow._id;
       result._seasons = createdShow._seasons;
       result.__t = createdShow.__t;
       setTimeout(function(){exports.matchApiSeasonsToDb(result, createdShow);}, 5000);
       result._actors = await exports.matchApiCastToDb(createdShow);
+      result.recommendations.results.forEach((recShow) => {
+        exports.saveRelatedShow(recShow.name, recShow.id);
+      });
       res.status(RequestStatus.OK).json(result);
     });
   });
@@ -139,10 +121,9 @@ exports.delete = async function(req, res) {
 
 // AUXILIARY FUNCTIONS =============================================================================
 
-exports.matchApiSeasonsToDb = async function(tvshow, dbtvshow){
-  var tvshow = JSON.parse(tvshow);
-  var promises = tvshow.seasons.map( async (season) => {
-     //before create fetch from db
+exports.matchApiSeasonsToDb = function(tvshow, dbtvshow){
+  tvshow.seasons.forEach(async function(season){
+    //before create fetch from db
     var tmdb_id = season.id;
     var name = season.name;
     var db_season;
@@ -163,20 +144,14 @@ exports.matchApiSeasonsToDb = async function(tvshow, dbtvshow){
     db_season.save().then((created) =>{
       matchApiEpisodesToDb(tvshow, season, created);
       dbtvshow._seasons.push(created._id);
-      return dbtvshow.save();
+      dbtvshow.save().then((tvshow)=>{
+      }).catch((err)=>{
+        console.log(err);
+      })
     }).catch((err)=>{
       console.log(err);
-    });
-  });
-
-  await Promise.all(promises).then((result) => {
-    console.log('resolveu')
-    return Promise.resolve();
+    })
   })
-  .catch((error) => {
-    console.log('rejeitou')
-    return Promise.reject();
-  });
 };
 
 // TODO: move to TMDBController
@@ -189,7 +164,8 @@ getCastFromAPI = function(tv_id){
         data += chunk;
       });
       resp.on('end', () => {
-        resolve(data)
+        data = JSON.parse(data);
+        resolve(data);
       });
 
     }).on("error", (err) => {
@@ -200,11 +176,14 @@ getCastFromAPI = function(tv_id){
 };
 
 exports.matchApiCastToDb = async function(dbtvshow){
-  getCastFromAPI(dbtvshow._tmdb_id).then(async function(credits){
-    var credits = JSON.parse(credits);
+  console.log('dbtvshow', dbtvshow);
+  getCastFromAPI(dbtvshow._tmdb_id).then(function(credits){
     var cast = credits.cast;
+    var castSize = cast.length;
+    var nCast = 0;
+    var castIds = [];
 
-    let promises = cast.map(async(person) => {
+    cast.forEach(async function(person, i){
       var tmdb_id = person.id;
       var name = person.name;
       var character = person.character;
@@ -222,30 +201,33 @@ exports.matchApiCastToDb = async function(dbtvshow){
         db_person.image_url = picture;
         db_person.description = description;
         db_person.save().then(async (created_db_person)=>{
+          nCast++;
+          castIds[i] = created_db_person._id;
+          await createAppearsIn(created_db_person._id, dbtvshow._id);
+          if (nCast === castSize)
+            done();
           console.log("Person Created:" + name);
-          return createAppearsIn(created_db_person._id, dbtvshow._id);
         }).catch((err)=>{console.log(err)});
       }
       else {
         // person already exists
+        await createAppearsIn(hasPerson[0]._id, dbtvshow._id);
         console.log("Person Updated:" + name);
-        return createAppearsIn(hasPerson[0]._id, dbtvshow._id);
       }
     });
 
-    await Promise.all(promises).then((result) => {
-      return Promise.resolve();
-    })
-    .catch((err) => {
-      return Promise.reject();
-    });
+    function done() {
+      return castIds;
+    }
   });
 };
 
 matchApiEpisodesToDb = function(tvshow, seasonapi, dbseason) {
 
   TMDBController.getSeason(tvshow.id, seasonapi.season_number).then((season)=>{
-    var season = JSON.parse(season);
+    console.log('antes',season.episodes);
+    season = JSON.parse(season);
+    console.log('depois',season.episodes);
     season.episodes.forEach(async function(episode){
       //before create fetch from db
       var tmdb_id = episode.id;
@@ -292,13 +274,12 @@ createAppearsIn = async function(personId, mediaId) {
   if (isDuplicated) {
     console.log(RequestMsg.DUPLICATED_ENTITY);
   } else {
-    let promises = [];
-    promises.push(saveAppearsIn(appearsIn));
-    promises.push(DataStoreUtils.addAppearsInToPerson(personId, appearsInId));
-    promises.push(DataStoreUtils.addPersonToMediaCast(personId, mediaId));
-    return Promise.all(promises);
+    await saveAppearsIn(appearsIn);
+    await DataStoreUtils.addAppearsInToPerson(personId, appearsInId);
+    await DataStoreUtils.addPersonToMediaCast(personId, mediaId);
   }
 };
+
 
 saveAppearsIn = function(appearsIn) {
   return appearsIn.save();
@@ -312,16 +293,6 @@ injectPersonJson = async function(personId) {
 
 inject_seasons = function(season) {
   return Season.findById(season).exec();
-};
-
-createTMDBShow = function(createdShow) {
-  TMDBController.getShowFromTMDB(createdShow._tmdb_id).then( async (result)=> {
-    result._id = createdShow._id;
-    result._seasons = createdShow._seasons;
-    result.__t = createdShow.__t;
-    setTimeout(function(){exports.matchApiSeasonsToDb(result, createdShow);}, 5000);
-    result._actors = await exports.matchApiCastToDb(createdShow);
-  });
 };
 
 show_tvshow = function(result, res) {
@@ -366,4 +337,23 @@ show_tvshow = function(result, res) {
       })
     }
   });
+}
+
+exports.saveRelatedShow = function(name, tmdb_id) {
+  let show = new Show({name: name, _tmdb_id: tmdb_id});
+
+  Show.findOneAndUpdate({_tmdb_id: show._tmdb_id}, show, { upsert: true, new: true })
+    .then((savedShow) => {
+      TMDBController.getShowFromTMDB(savedShow._tmdb_id, false).then( async (result)=> {
+        result = JSON.parse(result);
+        result._id = savedShow._id;
+        result._seasons = savedShow._seasons;
+        result.__t = savedShow.__t;
+        setTimeout(function(){exports.matchApiSeasonsToDb(result, savedShow);}, 5000);
+        result._actors = await exports.matchApiCastToDb(savedShow);
+      });
+    })
+    .catch((error) => {
+      console.log('error recommendations', error);
+    });
 }

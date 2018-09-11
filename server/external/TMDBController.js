@@ -9,11 +9,15 @@ var Episode = require('../models/Episode');
 const https = require('https');
 const redisClient = RedisClient.createAndAuthClient();
 
-exports.getShowFromTMDB = function(tmdb_id) {
+exports.getShowFromTMDB = function(tmdb_id, with_recommendations = true) {
   return new Promise(function(resolve, reject) {
     
     var query = RequestGenerals.TVSHOW_ENDPOINT + tmdb_id;
-    let tmdbQuery = TMDBConstants.TMDB_API_SHOW_ROUTE + tmdb_id + TMDBConstants.TMDB_API_KEY + TMDBConstants.TMDB_API_MEDIA_RECOMMENDATIONS;
+    let tmdbQuery = TMDBConstants.TMDB_API_SHOW_ROUTE + tmdb_id + TMDBConstants.TMDB_API_KEY;
+    if (with_recommendations) {
+      tmdbQuery += TMDBConstants.TMDB_API_MEDIA_RECOMMENDATIONS;
+    }
+
     https.get(tmdbQuery,
       (resp) => {
         let data = '';
@@ -29,8 +33,8 @@ exports.getShowFromTMDB = function(tmdb_id) {
         console.log("Error: " + err.message);
         reject();
       });
-    })
-  };
+  })
+};
 
 exports.getSeason = function(tv_id, season_number){
   return new Promise(function(resolve, reject) {
@@ -108,7 +112,7 @@ exports.getShow = function(tmdb_id){
         } else {
           console.log("GET SHOW | could not get from redis: " + query);
           exports.getShowFromTMDB(tmdb_id).then(async function(data) {
-            var data = JSON.parse(data);
+            //var data = JSON.parse(data);
             data._id = result._id;
             data.__t = result.__t;
             data.poster_path = TMDBConstants.TMDB_POSTER_IMAGE_PATH + data.poster_path;
