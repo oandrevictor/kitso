@@ -9,7 +9,9 @@ html, body {
 .uk-input:focus, .uk-select:focus, .uk-textarea:focus {
   border-color: #773095 !important;
 }
-
+.inline-text {
+  display: inline-block;
+}
 .uk-tab>.uk-active>a {
   font-weight: 400;
   border-color: #db2399 !important;
@@ -845,14 +847,13 @@ html, body {
     background-repeat:no-repeat;
     background-size:cover;
     width: 360px;
-    height: 150px;
+    height: 186px;
     cursor: pointer;
   }
 
   .favorite-movie-title {
     cursor: pointer;
-    background: #773095 !important;
-    color: white;
+    margin-top: 15px !important;
   }
 
   .uk-overlay {

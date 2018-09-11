@@ -20,6 +20,8 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
           loadUserWatchedHours();
           loadUserWatchedGenres();
           loadUserLists();
+          loadUserWatchedProgress();
+          loadUserLists();
           FollowService.isFollowingUser($scope.logged_user._id, $scope.user._id).then((followed) => {
             $scope.user.followed = followed;
           }).catch((error) => {
@@ -41,6 +43,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
           loadUserWatchedInfo();
           loadUserWatchedHours();
           loadUserWatchedGenres();
+          loadUserWatchedProgress();
           loadUserLists();
         }
       });
@@ -103,6 +106,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
 
     UserService.getTimespent($scope.user._id, data)
       .then(function (result) {
+        result = result['total'];
         let hours = (result/60).toFixed(2);
 
         $scope.dataMonth = [[(100*result)/7300],[100]];
@@ -126,6 +130,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
 
     UserService.getTimespent($scope.user._id, data)
       .then(function (result) {
+        result = result['total']
         let hours = (result/60).toFixed(2);
 
         $scope.dataWeek = [[(100*result)/168],[100]];
@@ -138,6 +143,75 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         console.log(error)
       });
   }
+
+  var loadUserWatchedProgress = function() {
+    $scope.user_progress_labels = [];
+    $scope.user_progress_data = [];
+    $scope.u_p_override_colors = [{
+        fill: true,
+        backgroundColor: [
+          "#773095"
+        ]
+      }]
+    $scope.user_progress_options = {
+            scales: {
+                xAxes: [{
+                    gridLines: {
+                        display: false
+                    }
+        }],
+                yAxes: [{
+                    gridLines: {
+                        display: false
+                    }
+        }]
+            }
+        };
+    let date = new Date();
+    month = date.getMonth() + 1
+    week = date.getMonthWeek()
+    year = date.getFullYear()
+    let data = {
+      filter: "by_month",
+      month: month,
+      year: year
+    }
+    UserService.getTimespent($scope.user._id, data)
+      .then(function (result) {
+        $scope.user_progress_labels = getDays(result, year, month);
+        $scope.user_progress_data = getDailyValues(result, year, month);
+
+      })
+      .catch(function (error) {
+        console.log(error)
+      });
+
+  }
+
+  var getDays = function(result, year, month) {
+    $scope.u_p_colors = []
+    labels = []
+    var i = 1;
+    while(i < 31){
+       $scope.u_p_colors.push('#773095')
+      labels.push(i)
+      i += 1
+    }
+    return labels
+  }
+
+  var getDailyValues = function(result, year, month){
+    values = []
+    for (day in result[year][month]){
+      while (day > values.length + 1 ){
+        values.push(0)
+      }
+      if (day != "total")
+        values.push(result[year][month][day].total)
+    }
+    return values
+  }
+
 
   var loadUserWatchedGenres = function() {
     $scope.labels = [];
@@ -177,7 +251,16 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         watched = watched.sort(compareDates);
         $scope.user.watched = watched;
         loaded++;
-        checkFinishedLoading();
+        $scope.user.watched_episodes = $scope.user.watched.filter((watched) => watched._media.__t == "Episode")
+        $scope.user.watched_movies = $scope.user.watched.filter((watched) => watched._media.__t == "Movie")
+        $scope.user.watched_tv_shows = []
+        $scope.user.watched_episodes.map(function(watched){
+          var id = watched._media._season_id;
+          if (!$scope.user.watched_tv_shows.includes(id))
+            $scope.user.watched_tv_shows.push(id)
+          }
+          )
+          checkFinishedLoading();
 
         }).catch(function (error) {
         loaded++;

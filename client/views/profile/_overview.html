@@ -25,37 +25,19 @@
       <div class="uk-inline" ng-show="userFavoriteMovie">
         <img class="favorite-movie" ng-click="goToMedia(userFavoriteMovie)" style="background-image: url({{ getBackground(userFavoriteMovie) }})"
         />
-        <div class="uk-overlay uk-overlay-primary uk-position-bottom">
-          <p align="center">{{userFavoriteMovie.name}}</p>
-        </div>
+          <p class="favorite-movie-title " align="center">{{userFavoriteMovie.name}}</p>
       </div>
       <p class="following-link" align="center" ng-show="!userFavoriteMovie">You don't have a favorite movie yet
         <br> Try rating a movie</p>
     </div>
-    <div class="uk-width-1-2">
-      Watched Hours
-      <canvas class="chart chart-horizontal-bar" height="70" chart-type="bar" chart-data="dataMonth" chart-labels="labelsWatchedHours"
-      chart-options="options" chart-colors="colors" chart-dataset-override="datasetOverride"></canvas>
-      <div class="sub-text">{{timeSpentThisMonth}}</div>
-      <canvas class="chart chart-horizontal-bar" height="70" chart-type="bar" chart-data="dataWeek" chart-labels="labelsWatchedHours"
-      chart-options="options" chart-colors="colors" chart-dataset-override="datasetOverride"></canvas>
-      <div class="sub-text">{{timeSpentThisWeek}}</div>
-    </div>
-    <div class="uk-width-1-2">
-      <p>Watched Genres</p>
-      <br>
-      <canvas id="doughnut" class="chart chart-doughnut round-chart" chart-data="data" chart-colors="colors" chart-options="optionsGenres" chart-labels="labels"></canvas>
-    </div>
-  </div>
-  <hr class="uk-divider-icon">
-  <div class="section">
+  <div class="section uk-width-1-2">
     <div class="section-title" style="padding-bottom: 10px">
       {{user.name}}'s Lists
     </div>
 
     <div uk-slider>
       <div class="uk-position-relative uk-visible-toggle uk-light">
-        <ul class="uk-slider-items uk-child-width-1-6@s">
+        <ul class="uk-slider-items">
           <li ng-repeat="list in user.lists">
             <div class="uk-card uk-grid-match uk-card-default uk-card-hover list-info" >
               <a ng-href="/list/{{list._id}}"> <img class="list-image" style="background-image: url({{ getListPoster(list) }})" /></a>
@@ -72,4 +54,25 @@
       </ul>
     </div>
   </div>
+    <div class="uk-width-2-2">
+      Watched Time
+      <canvas class="chart chart-bar" height="70" chart-type="bar" chart-data="user_progress_data" chart-labels="user_progress_labels"
+      chart-options="user_progress_options" chart-colors="u_p_colors" chart-dataset-override="u_p_override_colors"></canvas>
+    </div>
+    <div class="uk-width-1-2">
+      <p>Watched Genres</p>
+      <br>
+      <canvas id="doughnut" class="chart chart-doughnut round-chart" chart-data="data" chart-colors="colors" chart-options="optionsGenres" chart-labels="labels"></canvas>
+    </div>
+    <div class="uk-width-1-2">
+      General Statistics <br />
+      <h1 class="inline-text">{{user.watched_episodes.length}}</h1> episodes out of  <h1 class="inline-text">{{user.watched_tv_shows.length}}</h1> tv shows. <br/>
+      <h1 class="inline-text">{{user.watched_movies.length}}</h1> movies.
+    </div>
+  </div>
+
+  <hr class="uk-divider-icon">
+</div>
+
+
 </li>
