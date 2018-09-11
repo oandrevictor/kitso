@@ -166,6 +166,9 @@ app.use('/api/watched', watchedRoutes);
 var ratedRoutes = require('./routes/rated');
 app.use('/api/rated', ratedRoutes);
 
+var searchRoutes = require('./routes/search');
+app.use('/api/search', searchRoutes);
+
 var tvShowRoutes = require('./routes/tvShow');
 app.use('/api/tvShow', tvShowRoutes);
 
