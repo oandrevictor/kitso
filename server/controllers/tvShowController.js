@@ -63,7 +63,17 @@ exports.show = function(req, res) {
           res.status(RequestStatus.BAD_REQUEST).send(err);
         })
         .then(async(createdShow) => {
-          show_tvshow(createdShow, res);
+          TMDBController.getShowFromTMDB(createdShow._tmdb_id).then( async (result)=> {
+            let promises = [];
+            result._id = createdShow._id;
+            result._seasons = createdShow._seasons;
+            result.__t = createdShow.__t;
+            promises.push(exports.matchApiSeasonsToDb(result, createdShow));
+            promises.push(exports.matchApiCastToDb(createdShow));
+            await Promise.all(promises).then((result) => {
+              show_tvshow(createdShow, res);
+            });
+          });
         });
       } else {
         res.status(RequestStatus.NOT_FOUND).send('Media not found.');
@@ -129,10 +139,10 @@ exports.delete = async function(req, res) {
 
 // AUXILIARY FUNCTIONS =============================================================================
 
-exports.matchApiSeasonsToDb = function(tvshow, dbtvshow){
+exports.matchApiSeasonsToDb = async function(tvshow, dbtvshow){
   var tvshow = JSON.parse(tvshow);
-  tvshow.seasons.forEach(async function(season){
-    //before create fetch from db
+  var promises = tvshow.seasons.map( async (season) => {
+     //before create fetch from db
     var tmdb_id = season.id;
     var name = season.name;
     var db_season;
@@ -153,14 +163,20 @@ exports.matchApiSeasonsToDb = function(tvshow, dbtvshow){
     db_season.save().then((created) =>{
       matchApiEpisodesToDb(tvshow, season, created);
       dbtvshow._seasons.push(created._id);
-      dbtvshow.save().then((tvshow)=>{
-      }).catch((err)=>{
-        console.log(err);
-      })
+      return dbtvshow.save();
     }).catch((err)=>{
       console.log(err);
-    })
+    });
+  });
+
+  await Promise.all(promises).then((result) => {
+    console.log('resolveu')
+    return Promise.resolve();
   })
+  .catch((error) => {
+    console.log('rejeitou')
+    return Promise.reject();
+  });
 };
 
 // TODO: move to TMDBController
@@ -184,14 +200,11 @@ getCastFromAPI = function(tv_id){
 };
 
 exports.matchApiCastToDb = async function(dbtvshow){
-  getCastFromAPI(dbtvshow._tmdb_id).then(function(credits){
+  getCastFromAPI(dbtvshow._tmdb_id).then(async function(credits){
     var credits = JSON.parse(credits);
     var cast = credits.cast;
-    var castSize = cast.length;
-    var nCast = 0;
-    var castIds = [];
 
-    cast.forEach(async function(person, i){
+    let promises = cast.map(async(person) => {
       var tmdb_id = person.id;
       var name = person.name;
       var character = person.character;
@@ -209,24 +222,23 @@ exports.matchApiCastToDb = async function(dbtvshow){
         db_person.image_url = picture;
         db_person.description = description;
         db_person.save().then(async (created_db_person)=>{
-          nCast++;
-          castIds[i] = created_db_person._id;
-          await createAppearsIn(created_db_person._id, dbtvshow._id);
-          if (nCast === castSize)
-            done();
           console.log("Person Created:" + name);
+          return createAppearsIn(created_db_person._id, dbtvshow._id);
         }).catch((err)=>{console.log(err)});
       }
       else {
         // person already exists
-        await createAppearsIn(hasPerson[0]._id, dbtvshow._id);
         console.log("Person Updated:" + name);
+        return createAppearsIn(hasPerson[0]._id, dbtvshow._id);
       }
     });
 
-    function done() {
-      return castIds;
-    }
+    await Promise.all(promises).then((result) => {
+      return Promise.resolve();
+    })
+    .catch((err) => {
+      return Promise.reject();
+    });
   });
 };
 
@@ -280,9 +292,11 @@ createAppearsIn = async function(personId, mediaId) {
   if (isDuplicated) {
     console.log(RequestMsg.DUPLICATED_ENTITY);
   } else {
-    await saveAppearsIn(appearsIn);
-    await DataStoreUtils.addAppearsInToPerson(personId, appearsInId);
-    await DataStoreUtils.addPersonToMediaCast(personId, mediaId);
+    let promises = [];
+    promises.push(saveAppearsIn(appearsIn));
+    promises.push(DataStoreUtils.addAppearsInToPerson(personId, appearsInId));
+    promises.push(DataStoreUtils.addPersonToMediaCast(personId, mediaId));
+    return Promise.all(promises);
   }
 };
 
