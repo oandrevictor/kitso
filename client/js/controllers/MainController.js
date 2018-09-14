@@ -374,23 +374,29 @@ kitso.controller('MainController', ['$rootScope', '$scope', '$location', '$timeo
         return activity._user;
     }
 
-    $scope.searchForm = {
-      searchField: ''
+    $scope.search = function(){
+      if ($scope.searchField){
+  			NewsService.getAutoComplete($scope.searchField).then(function(suggestions){
+  				$scope.searchSuggestions = suggestions.data})
+  		}
+  		else {
+  			$scope.searchSuggestions = null;
+  		}
+      console.log($scope.searchSuggestions)
     }
 
-    $scope.search = function(){
-      SearchService.search('media', $scope.searchForm.searchField.$modelValue)
-          .then((results) => {
-              console.log(results);
-          })
-          .catch((error) => {
-              console.log(error)
-              UIkit.notification({
-                  message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
-                  status: 'danger',
-                  timeout: 2500
-              });
-          });
+    $scope.goToPage = function (obj) {
+      if (obj.hasOwnProperty('__t')) {
+        if (obj.__t === 'TvShow') {
+          $location.path('tvshow/' + obj._id);
+        } else if (obj.__t === "Movie") {
+          $location.path('movie/' + obj._id);
+        }
+      } else {
+        $location.path('person/' + obj._id);
+      }
     }
+
+
 
 }]);

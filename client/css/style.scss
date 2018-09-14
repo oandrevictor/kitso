@@ -450,6 +450,34 @@ html, body {
       text-decoration: none;
       font-weight: 500;
     }
+
+    .suggestions-box {
+      border: #e5e5e5 solid 1px;
+      margin-top: -10px;
+      padding-top: 10px;
+      font-size: 14px;
+      color: #9f9f9f;
+      display: none;
+      margin-left: 76px;
+      background: #fff;
+
+      &.show {
+        display: block;
+      }
+
+      .suggestion-item {
+        border-bottom: #ebebeb solid 1px;
+        padding-bottom: 4px;
+        padding-top: 4px;
+        padding-left: 10px;
+        cursor: pointer;
+
+        &:hover {
+          background: #773095;
+          color: white;
+        }
+      }
+    }
   }
 
   .options {
