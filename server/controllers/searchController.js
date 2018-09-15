@@ -6,8 +6,21 @@ exports.index = async function(req, res) {
   let search = req.query.search;
   try {
     if (type === 'media') {
-      let searched_item = await DataStoreUtils.searchMediaByName(search);
-      res.status(RequestStatus.OK).json(searched_item);
+      let searchedMedia = await DataStoreUtils.searchMediaByName(search);
+
+      var mediasWithInfoFromDBPromisses = [];
+
+      searchedMedia.forEach((media) => {
+        mediasWithInfoFromDBPromisses.push(DataStoreUtils.getMediaWithInfoFromDB(media));
+      });
+
+      var medias = [];
+      await Promise.all(mediasWithInfoFromDBPromisses).then((result) => {
+        medias = result;
+      });
+
+      res.status(RequestStatus.OK).json(medias);
+
     } else if (type === 'person') {
       let searched_item = await DataStoreUtils.searchPersonByName(search);
       res.status(RequestStatus.OK).json(searched_item);
