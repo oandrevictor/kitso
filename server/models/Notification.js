@@ -19,6 +19,9 @@ var NotificationSchema = new Schema({
     type: String,
     required: true
   },
+  action_type: {
+    type: String
+  },
   viewed: {
     type: Boolean,
     default: false

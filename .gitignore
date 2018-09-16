@@ -71,3 +71,5 @@ typings/
 client/css/.sass-cache/
 
 client/css/style.css.map
+
+package-lock.json

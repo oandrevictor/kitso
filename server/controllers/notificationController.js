@@ -11,7 +11,7 @@ exports.index = function(req, res) {
   })
   .then(async (notificationsObj) => {
     let notifications = notificationsObj.map(async (notification) => {
-      return notificationRelated(notification);
+      return notificationDetails(notification);
     });
 
     await Promise.all(notifications).then((result) => {
@@ -61,17 +61,19 @@ exports.delete = async function(req, res) {
   });
 };
 
-var notificationRelated = async function(notification) {
+var notificationDetails = async function(notification) {
   let action = await Action.findById(notification._related);
-  let notification_copy = {date: '', viewed: '', content: '', _related: '', _user: ''};   
+  let notification_copy = {_id: '', date: '', viewed: '', content: '', _related: '', _user: ''};   
+  notification_copy._id = notification._id;
   notification_copy.date = notification.date;
   notification_copy.viewed = notification.viewed;
   notification_copy.content = notification.content;
+  notification_copy._user = notification._user
   if (action) {
     notification_copy._related = await DataStoreUtils.getActionByTypeAndIdWithDetails(action.action_type, action._action);
+    notification_copy.action_type = action.action_type;
   } else {
-    notification_copy._related = notification.related;
+    notification_copy._related = notification._related;
   }
-  notification_copy._user = notification._user;
   return notification_copy;
 }

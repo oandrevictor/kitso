@@ -194,6 +194,7 @@ exports.followUserList = async function(req, res) {
 
     await addListToFollowingUserLists(userListId, req.user._id, notifications_enabled);
     await addFollowerToUserList(userListId, req.user._id);
+    DataStoreUtils.createNotification(req.user._id, userListId, req.user.username + " followed you.", 'followUserList');
 
     res.status(RequestStatus.OK).json();
   } catch(err) {

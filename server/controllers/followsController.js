@@ -126,7 +126,7 @@ exports.create = async function(req, res) {
   let user_id = follow._user;
   let user = await DataStoreUtils.getUserById(user_id);
   let action = await DataStoreUtils.createAction(user_id, follow._id, ActionType.FOLLOWED_USER);
-  DataStoreUtils.createNotification(follow._following, follow._id, user.username + " followed you.");
+  DataStoreUtils.createNotification(follow._following, follow._id, user.username + " followed you.", 'follow');
   follow._action = action._id;
   await DataStoreUtils.addActionToUserHistory(user_id, action._id);
 
