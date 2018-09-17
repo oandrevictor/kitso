@@ -53,9 +53,13 @@ kitso.service('MovieService', ['$q','$http', function ($q, $http) {
       return deferred.promise;
     }
 
-    function getAllMovies(){
+    function getAllMovies(page){
       var deferred = $q.defer();
-      $http.get('/api/movie/')
+      var page_query = "";
+      if (page){
+        page_query = "?page=" + page;
+      }
+      $http.get('/api/movie/' + page_query)
           .then((response) => {
               if (response.status === 200) {
                   deferred.resolve(response.data);
@@ -67,7 +71,5 @@ kitso.service('MovieService', ['$q','$http', function ($q, $http) {
               deferred.reject(error.data);
           });
       return deferred.promise;
-
     }
-
 }]);

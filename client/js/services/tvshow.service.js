@@ -116,9 +116,13 @@ kitso.service('TvShowService', ['$q', '$http', function ($q, $http) {
       return deferred.promise;
     }
     
-    function getAllShows(){
+    function getAllShows(page){
       var deferred = $q.defer();
-      $http.get('/api/tvshow/')
+      var page_query = "";
+      if (page){
+        page_query = "?page=" + page;
+      }
+      $http.get('/api/tvshow/' + page_query)
           .then((response) => {
               if (response.status === 200) {
                   deferred.resolve(response.data);
@@ -131,5 +135,4 @@ kitso.service('TvShowService', ['$q', '$http', function ($q, $http) {
           });
       return deferred.promise;
     }
-
 }]);
