@@ -255,7 +255,6 @@ kitso.controller('HomeController', ['$scope', '$location', '$timeout', 'AuthServ
 					current_page = current_page + 1;
 					loadFeed($scope.user._id, current_page);
 				}
-
     }
 	});
 

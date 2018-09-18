@@ -7,10 +7,18 @@ var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 var Utils = require('../utils/lib/utils');
 
 exports.index = async function(req, res) {
+  let page;
+
   let user_id = req.query.user;
+
+  if (req.query.page)
+    page = parseInt(req.query.page);
+  else
+    page = 0;
+
   var watched_list, promises;
   try {
-    watched_list = await DataStoreUtils.getWatchedByUserId(user_id);
+    watched_list = await DataStoreUtils.getWatchedByUserId(user_id, page);
     promises = await watched_list.map(injectMediaJsonInWatched);
   } catch (err) {
     res.status(RequestStatus.BAD_REQUEST).json(err);

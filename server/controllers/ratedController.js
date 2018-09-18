@@ -9,8 +9,15 @@ var TMDBController = require('../external/TMDBController');
 exports.index = async function(req, res) {
   let user_id = req.query.user;
   let rated_list, promises;
+
+  let page;
+  if (req.query.page)
+    page = parseInt(req.query.page);
+  else
+    page = 0;
+
   try {
-    rated_list = await findUserRatedList(user_id);
+    rated_list = await findUserRatedList(user_id, page);
     promises = rated_list.map(injectMediaJsonInRated);
   } catch (err) {
     res.status(RequestStatus.BAD_REQUEST).json(err);
@@ -121,8 +128,8 @@ var findRatedObj = async function(rated_id) {
 };
 
 // TODO: move to DataStoreUtils
-var findUserRatedList = async function(user_id) {
-  return Rated.find({_user: user_id}).exec();
+var findUserRatedList = async function(user_id, page) {
+  return Rated.find({_user: user_id}).skip(page * 9).limit(9).exec();
 };
 
 var injectMediaJsonInRated = async function(rated_obj) {
