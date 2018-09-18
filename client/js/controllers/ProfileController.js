@@ -11,11 +11,15 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
   followedlists_current_page = 0;
   watched_current_page = 0;
   rated_current_page = 0;
+  followers_current_page = 0;
+  following_current_page = 0;
 
   stop_loading_mylists = false;
   stop_loading_followedlists = false;
   stop_loading_watched = false;
   stop_loading_rated = false;
+  stop_loading_followers = false;
+  stop_loading_following = false;
 
   $scope.mylists = [];
   $scope.watchedListAux = [];
@@ -33,7 +37,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         UserService.getUser($routeParams.user_id).then((user)=> {
           $scope.user = user;
           loadUserRatedInfo(0);
-          loadUserFollowInfo();
+          loadUserFollowInfo(0);
           loadUserWatchedInfo(0);
           loadUserWatchedHours();
           loadUserWatchedGenres();
@@ -56,7 +60,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         else{
           $scope.logged_user = $scope.user;
           loadUserRatedInfo(0);
-          loadUserFollowInfo();
+          loadUserFollowInfo(0);
           loadUserWatchedInfo(0);
           loadUserWatchedHours();
           loadUserWatchedGenres();
@@ -353,24 +357,63 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
       )
   };
 
-    var loadUserFollowInfo = function(){
-      FollowService.getUsersFollowing($scope.user._id).then( function(following){
-        $scope.user.following = following
-      }).catch(function(error){
-        console.log(error);
-      })
+    var loadUserFollowInfo = function(page){
+        loadFollowersInfo(page);
+        loadFollowingInfo(page);
+    }
 
-      FollowService.getPagesFollowing($scope.user._id).then( function(following_pages){
-        $scope.user.following_pages = following_pages
-      }).catch(function(error){
-        console.log(error);
-      })
+    var loadFollowersInfo = function(page) {
+        $('.bubble-loading').show();
+        loading_feed = true;
 
-      FollowService.getUsersFollowers($scope.user._id).then( function(followers){
-        $scope.user.followers = followers;
-      }).catch(function(error){
-        console.log(error);
-      })
+        FollowService.getUsersFollowers($scope.user._id, page).then( function(followers){
+            if (followers.length === 0)
+                stop_loading_followers = true;
+
+            if (page && page >=1 ){
+                $scope.$applyAsync(function(){
+                    $scope.user.followers = $scope.user.followers.concat(followers);
+                });
+            } else {
+                $scope.user.followers = followers;
+            }
+
+            loading_feed = false;
+            $('.full-loading').hide();
+            $('.bubble-loading').hide();
+        }).catch(function(error){
+            console.log(error);
+        })
+    }
+
+    var loadFollowingInfo = function(page) {
+        $('.bubble-loading').show();
+        loading_feed = true;
+
+        FollowService.getUsersFollowing($scope.user._id, page).then( function(following){
+            FollowService.getPagesFollowing($scope.user._id, page).then( function(following_pages){
+                if (following.length === 0 && following_pages.length === 0)
+                    stop_loading_following = true;
+                if (page && page >=1 ){
+                    $scope.$applyAsync(function(){
+                        $scope.user.following = $scope.user.following.concat(following);
+                        $scope.user.following_pages = $scope.user.following_pages.concat(following_pages);
+                    });
+                } else {
+                    $scope.user.following = following;
+                    $scope.user.following_pages = following_pages;
+                }
+
+                loading_feed = false;
+                $('.full-loading').hide();
+                $('.bubble-loading').hide();
+            }).catch(function(error){
+                console.log(error);
+            })
+
+        }).catch(function(error){
+            console.log(error);
+        })
     }
 
     var loadMyLists = function(page) {
@@ -919,13 +962,20 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
         else if (($('#profile-history')[0] !== undefined) && $('#profile-rated')[0] !== undefined &&
           $('#profile-history')[0].parentElement.className === 'ng-scope uk-active' &&
           $('#profile-rated')[0].parentElement.className === 'ng-scope uk-active' && !stop_loading_rated) {
-          rated_current_page = rated_current_page + 1;
-          loadUserRatedInfo(rated_current_page);
+            rated_current_page = rated_current_page + 1;
+            loadUserRatedInfo(rated_current_page);
+        }
+        // FOLLOWERS TAB
+        else if ($('#profile-following')[0] !== undefined &&
+            $('#profile-following')[0].parentElement.className === 'ng-scope uk-active' && !stop_loading_following) {
+            following_current_page = following_current_page + 1;
+            loadFollowingInfo(following_current_page);
         }
         // FOLLOWERS TAB
         else if ($('#profile-followers')[0] !== undefined &&
-          $('#profile-followers')[0].parentElement.className === 'ng-scope uk-active' && !stop_loading_rated) {
-          console.log('poccccc');
+          $('#profile-followers')[0].parentElement.className === 'ng-scope uk-active' && !stop_loading_followers) {
+            followers_current_page = followers_current_page + 1;
+            loadFollowersInfo(followers_current_page);
         }
       }
     }

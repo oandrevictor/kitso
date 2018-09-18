@@ -9,8 +9,14 @@ var bcrypt = require('bcryptjs');
 exports.index = async function(req, res) {
   let user_id = req.params.user_id;
   let following_list;
+  let page;
+
+  if (req.query.page)
+      page = parseInt(req.query.page);
+  else
+      page = 0;
   try {
-    following_list = await FollowsPage.find({_user: user_id}).exec();
+    following_list = await FollowsPage.find({_user: user_id}).skip(page * 9).limit(9).exec();
 
     if (req.user._id.toString() === user_id.toString()) {
       // Gets all following pages when user is the owner
