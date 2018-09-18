@@ -34,4 +34,3 @@ exports.index = async function(req, res) {
     res.status(RequestStatus.BAD_REQUEST).json(err);
   }
 };
-

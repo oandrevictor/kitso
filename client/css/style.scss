@@ -445,6 +445,8 @@ html, body {
     .search-input {
       font-size: 1rem;
       color: white;
+      margin-bottom: 10px;
+      margin-top: 10px;
     }
     &:hover {
       text-decoration: none;
@@ -453,12 +455,10 @@ html, body {
 
     .suggestions-box {
       border: #e5e5e5 solid 1px;
-      margin-top: -10px;
-      padding-top: 10px;
       font-size: 14px;
       color: #9f9f9f;
       display: none;
-      margin-left: 76px;
+      margin-right: 50px;
       background: #fff;
 
       &.show {

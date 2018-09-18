@@ -333,18 +333,18 @@ html, body {
     margin-bottom: 20px !important; }
     .toolbar .search .search-input {
       font-size: 1rem;
-      color: white; }
+      color: white;
+      margin-bottom: 10px;
+      margin-top: 10px; }
     .toolbar .search:hover {
       text-decoration: none;
       font-weight: 500; }
     .toolbar .search .suggestions-box {
       border: #e5e5e5 solid 1px;
-      margin-top: -10px;
-      padding-top: 10px;
       font-size: 14px;
       color: #9f9f9f;
       display: none;
-      margin-left: 76px;
+      margin-right: 50px;
       background: #fff; }
       .toolbar .search .suggestions-box.show {
         display: block; }

@@ -382,7 +382,6 @@ kitso.controller('MainController', ['$rootScope', '$scope', '$location', '$timeo
   		else {
   			$scope.searchSuggestions = null;
   		}
-      console.log($scope.searchSuggestions)
     }
 
     $scope.goToPage = function (obj) {
@@ -395,6 +394,7 @@ kitso.controller('MainController', ['$rootScope', '$scope', '$location', '$timeo
       } else {
         $location.path('person/' + obj._id);
       }
+      $scope.searchField = ''
     }
 
 

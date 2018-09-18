@@ -91,6 +91,7 @@
           </form>
           <div class="suggestions-box" ng-class="{show:searchField}" ng-show="show_suggestions" ng-mouseleave="show_suggestions = false">
             <div ng-repeat="suggestion in searchSuggestions" class="suggestion-item" ng-click="goToPage(suggestion)">
+              <img src="/images/default.jpg" width="50" height="70">
               {{suggestion.name}}
            </div>
           </div>
