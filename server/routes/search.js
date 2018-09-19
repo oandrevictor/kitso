@@ -8,4 +8,6 @@ var searchController = require('../controllers/searchController');
 // api/search?type=user&search=user_name
 router.get('/', searchController.index);
 
+router.post('/getTaggable', searchController.getTaggable);
+
 module.exports = router;

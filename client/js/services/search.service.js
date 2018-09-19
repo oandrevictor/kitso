@@ -4,7 +4,8 @@ kitso.service('SearchService', ['$q','$http', function ($q, $http) {
 
     // return available functions for use in the controllers
     return ({
-      search: search
+      search: search,
+      getAutoComplete: getAutoComplete
     });
 
     function search(type, search){
@@ -23,6 +24,24 @@ kitso.service('SearchService', ['$q','$http', function ($q, $http) {
               deferred.reject(error.data);
           });
 
+      return deferred.promise;
+    }
+
+    function getAutoComplete(name){
+      var deferred = $q.defer();
+      var info = {name: name}
+
+      $http.post('/api/search/getTaggable', info)
+          .then(function (data) {
+              if (data.status === 200) {
+                  deferred.resolve(data);
+              } else {
+                  deferred.reject(data);
+              }
+          })
+          .catch(function (error) {
+              deferred.reject(error.data);
+          });
       return deferred.promise;
     }
 

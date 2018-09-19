@@ -74,6 +74,7 @@ var getMedias = async function(name) {
   .then((result) => {
     return(result)
   });
+
   return medias;
 
 }
