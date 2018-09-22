@@ -33,7 +33,7 @@ kitso.controller('MainController', ['$rootScope', '$scope', '$location', '$timeo
   }
 
     var getUserNotifications = async function() {
-        $scope.notifications = await NotificationService.getNotifications($scope.user._id);
+        $scope.notifications = NotificationService.getNotifications($scope.user._id);
     }
 
     $scope.getNewsObject = function(related){

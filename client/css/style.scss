@@ -116,6 +116,33 @@ html, body {
     }
   }
 
+  .notification-box {
+    border: #e5e5e5 solid 1px;
+    margin-top: -10px;
+    padding-top: 10px;
+    font-size: 14px;
+    color: #9f9f9f;
+    display: none;
+    margin-left: 76px;
+
+    &.show {
+      display: block;
+    }
+
+    .notification-item {
+      border-bottom: #ebebeb solid 1px;
+      padding-bottom: 4px;
+      padding-top: 4px;
+      padding-left: 10px;
+      cursor: pointer;
+
+      &:hover {
+        background: #773095;
+        color: white;
+      }
+    }
+  }
+
   .related-box {
     .related-item {
       border: purple solid 1px;
@@ -454,6 +481,20 @@ html, body {
     }
   }
 
+  .notification {
+    margin-top: auto;
+    margin-bottom: auto;
+    color: white;
+    border: solid 0px;
+    float: right;
+    padding-left: 0px;
+
+    &:hover {
+      text-decoration: none;
+      font-weight: 500;
+    }
+  }
+
   .options {
     margin-top: auto;
     margin-bottom: auto;
@@ -469,6 +510,7 @@ html, body {
       }
     }
   }
+
 }
 
 .note{

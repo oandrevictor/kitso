@@ -86,6 +86,25 @@ html, body {
     .news-post-area .suggestions-box .suggestion-item:hover {
       background: #773095;
       color: white; }
+.news-post-area .notification-box {
+  border: #e5e5e5 solid 1px;
+  margin-top: -10px;
+  padding-top: 10px;
+  font-size: 14px;
+  color: #9f9f9f;
+  display: none;
+  margin-left: 76px; }
+  .news-post-area .notification-box.show {
+    display: block; }
+  .news-post-area .notification-box .notification-item {
+    border-bottom: #ebebeb solid 1px;
+    padding-bottom: 4px;
+    padding-top: 4px;
+    padding-left: 10px;
+    cursor: pointer; }
+    .news-post-area .notification-box .notification-item:hover {
+      background: #773095;
+      color: white; }
 .news-post-area .related-box .related-item {
   border: purple solid 1px;
   padding: 2px;
@@ -338,6 +357,16 @@ html, body {
       font-size: 1rem;
       color: white; }
     .toolbar .search:hover {
+      text-decoration: none;
+      font-weight: 500; }
+  .toolbar .notification {
+    margin-top: auto;
+    margin-bottom: auto;
+    color: white;
+    border: solid 0px;
+    float: right;
+    padding-left: 0px; }
+    .toolbar .notification:hover {
       text-decoration: none;
       font-weight: 500; }
   .toolbar .options {

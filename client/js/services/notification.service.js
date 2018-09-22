@@ -55,6 +55,7 @@ kitso.service('NotificationService', ['$q', '$http', function ($q, $http) {
 
     function setViewed(notification) {
       var deferred = $q.defer();
+      console.log('setViewed', notification);
 
       $http.put('/api/notification/' + notification._id, { "viewed": true })
           .then(function (response) {
