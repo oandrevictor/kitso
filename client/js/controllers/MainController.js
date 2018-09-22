@@ -374,23 +374,60 @@ kitso.controller('MainController', ['$rootScope', '$scope', '$location', '$timeo
         return activity._user;
     }
 
-    $scope.searchForm = {
-      searchField: ''
+    $scope.search = function(){
+      if ($scope.searchField){
+  			SearchService.getAutoComplete($scope.searchField).then(function(suggestions){
+  				$scope.searchSuggestions = suggestions.data})
+  		}
+  		else {
+  			$scope.searchSuggestions = null;
+  		}
     }
 
-    $scope.search = function(){
-      SearchService.search('media', $scope.searchForm.searchField.$modelValue)
-          .then((results) => {
-              console.log(results);
-          })
-          .catch((error) => {
-              console.log(error)
-              UIkit.notification({
-                  message: '<span uk-icon=\'icon: check\'></span> ' + error.errmsg,
-                  status: 'danger',
-                  timeout: 2500
-              });
-          });
+    $scope.goToPage = function (obj) {
+      if (obj.hasOwnProperty('__t')) {
+        if (obj.__t === 'TvShow') {
+          $location.path('tvshow/' + obj._id);
+        } else if (obj.__t === "Movie") {
+          $location.path('movie/' + obj._id);
+        }
+      } else if (obj.hasOwnProperty('__v') && obj.__v == 1) {
+        $location.path('person/' + obj._id);
+      } else {
+        $location.path('user/' + obj._id);
+      }
+      $scope.searchField = ''
     }
+
+    $scope.getName = function(suggestion){
+      if(suggestion.name){
+        return suggestion.name;
+      }
+      if(suggestion.title){
+        return suggestion.title;
+      }
+    }
+
+    $scope.getPoster = function(suggestion){
+      if (suggestion.poster_path){
+        return suggestion.poster_path;
+      }
+      if(suggestion.images && suggestion.images.poster){
+        return suggestion.images.poster;
+      }
+      if(suggestion.helper && suggestion.helper.poster_path){
+        return 'https://image.tmdb.org/t/p/w500/' + suggestion.helper.poster_path;
+      }
+      if (suggestion.image){
+        return "data:image/png;base64," + suggestion.image;
+      }
+      if (suggestion.image_url) {
+        return 'https://image.tmdb.org/t/p/w500/' + suggestion.image_url;
+      } else {
+        return 'images/default.jpg'
+      }
+    }
+
+
 
 }]);

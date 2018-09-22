@@ -474,10 +474,38 @@ html, body {
     .search-input {
       font-size: 1rem;
       color: white;
+      margin-bottom: 10px;
+      margin-top: 10px;
     }
     &:hover {
       text-decoration: none;
       font-weight: 500;
+    }
+
+    .suggestions-box {
+      border: #e5e5e5 solid 1px;
+      font-size: 14px;
+      color: #9f9f9f;
+      display: none;
+      margin-right: 50px;
+      background: #fff;
+
+      &.show {
+        display: block;
+      }
+
+      .suggestion-item {
+        border-bottom: #ebebeb solid 1px;
+        padding-bottom: 4px;
+        padding-top: 4px;
+        padding-left: 10px;
+        cursor: pointer;
+
+        &:hover {
+          background: #773095;
+          color: white;
+        }
+      }
     }
   }
 
@@ -492,6 +520,31 @@ html, body {
     &:hover {
       text-decoration: none;
       font-weight: 500;
+    }
+
+    .notification-box {
+      border: #e5e5e5 solid 1px;
+      font-size: 14px;
+      color: #9f9f9f;
+      display: none;
+      margin-right: 50px;
+      background: #fff;
+
+      &.show {
+        display: block;
+      }
+
+      .notification-item {
+        border-bottom: #ebebeb solid 1px;
+        padding-bottom: 4px;
+        padding-top: 4px;
+        padding-left: 10px;
+
+        &:hover {
+          background: #773095;
+          color: white;
+        }
+      }
     }
   }
 
