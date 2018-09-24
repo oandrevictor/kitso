@@ -22,6 +22,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
           loadUserLists();
           loadUserWatchedProgress();
           loadUserLists();
+          getMatch();
           FollowService.isFollowingUser($scope.logged_user._id, $scope.user._id).then((followed) => {
             $scope.user.followed = followed;
           }).catch((error) => {
@@ -138,6 +139,16 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
           $scope.timeSpentThisWeek = "Time spent this week: " + hours + " hour"
         else
           $scope.timeSpentThisWeek = "Time spent this week: " + hours + " hours"
+      })
+      .catch(function (error) {
+        console.log(error)
+      });
+  }
+
+  var getMatch = function(){
+    UserService.getMatch($scope.user._id)
+      .then(function (result) {
+        console.log(result)
       })
       .catch(function (error) {
         console.log(error)

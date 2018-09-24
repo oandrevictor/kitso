@@ -16,6 +16,8 @@ router.get('/:user_id/genrewatched', userController.genreWatched);
 
 router.post('/:user_id/timespent', userController.timeSpent);
 
+router.get('/:user_id/match', userController.getMatch);
+
 router.get('/:user_id', userController.show);
 
 router.post('/', userController.create);

@@ -84,6 +84,54 @@ exports.genreWatched = async function (req, res) {
   res.status(RequestStatus.OK).json(percentage);
 }
 
+var getMainId = function(watched){
+  if (watched._media.__t == "Episode")
+    return watched._media._tvshow_id.toString();
+  else
+    return watched._media._id.toString();
+}
+
+exports.getMatch = async function(req,res){
+  var first_user = req.user._id;
+  var second_user = req.params.user_id;
+  console.log(first_user, second_user)
+  var first_user_watched = await Watched.find({ _user: first_user }).exec();
+  first_user_watched = await first_user_watched.map(await DataStoreUtils.injectMediaJsonInWatched);
+  var second_user_watched = await Watched.find({ _user: second_user }).exec();
+  second_user_watched = await second_user_watched.map(await DataStoreUtils.injectMediaJsonInWatched);
+
+  Promise.all(first_user_watched) .then(function(result) {
+    var first_user_watched_ids = result.map(getMainId);
+    first_user_watched_ids = [...new Set(first_user_watched_ids)]
+    Promise.all(second_user_watched).then(function(result2) {
+      var second_user_watched_ids = result2.map(getMainId);
+      second_user_watched_ids = [...new Set(second_user_watched_ids)]
+
+      console.log(first_user_watched_ids)
+      console.log(second_user_watched_ids)
+
+      var intersection = second_user_watched_ids.filter(element => first_user_watched_ids.includes(element));
+      var not_intersection = second_user_watched_ids.filter(element => !(first_user_watched_ids.includes(element)));
+      var match_result = {
+        total: second_user_watched_ids.length,
+        match: intersection.length,
+        both: intersection,
+        missing: not_intersection
+      }
+      res.status(RequestStatus.OK).json(match_result);
+    })
+.catch((err)=> res.status(RequestStatus.BAD_REQUEST).send(err))
+ })
+ .catch(function (err) {
+   console.log(err)
+  res.status(RequestStatus.BAD_REQUEST).send(err);
+ });
+
+
+
+
+}
+
 //{ filter: , month: , week: , year: }
 exports.timeSpent = async function (req, res) {
   let user_id = req.params.user_id;

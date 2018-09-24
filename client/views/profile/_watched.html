@@ -13,7 +13,7 @@
           <div class="uk-card-media-top">
             <div class="uk-inline uk-dark">
               <div class="uk-visible-toggle">
-                <a class="page-link" ng-href="/{{watched._media.__t.toLowerCase()}}/{{watched._media._id}}">
+                <a class="page-link" ng-click="goToMedia(watched._media)">
                   <img ng-src="{{getPoster(watched._media)}}" style="z-index:-1" alt="">
                 </a>
                 <div ng-if="canEdit()" class="uk-hidden-hover uk-overlay-default uk-position-cover">

@@ -9,7 +9,8 @@ kitso.service('UserService', ['$q', '$http', function ($q, $http) {
         editUser: editUser,
         getUser: getUser,
         getTimespent: getTimespent,
-        getGenresWatched: getGenresWatched
+        getGenresWatched: getGenresWatched,
+        getMatch: getMatch
     });
 
     function getUser(userId){
@@ -40,6 +41,23 @@ kitso.service('UserService', ['$q', '$http', function ($q, $http) {
               var user = response.data;
               user.birthday = new Date(user.birthday);
                   deferred.resolve(user);
+              } else {
+                  deferred.reject();
+              }
+          })
+          .catch((error) => {
+              deferred.reject(error.data);
+          });
+        return deferred.promise;
+    }
+
+    function getMatch(userId){
+      var deferred = $q.defer();
+      $http.get('/api/user/' + userId + '/match')
+          .then((response) => {
+            if (response.status === 200) {
+              var match = response.data;
+                  deferred.resolve(match);
               } else {
                   deferred.reject();
               }

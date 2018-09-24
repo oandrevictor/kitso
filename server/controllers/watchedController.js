@@ -11,7 +11,7 @@ exports.index = async function(req, res) {
   var watched_list, promises;
   try {
     watched_list = await DataStoreUtils.getWatchedByUserId(user_id);
-    promises = await watched_list.map(injectMediaJsonInWatched);
+    promises = await watched_list.map(DataStoreUtils.injectMediaJsonInWatched);
   } catch (err) {
     res.status(RequestStatus.BAD_REQUEST).json(err);
   }
@@ -241,33 +241,6 @@ exports.tvshowWatchedProgress = async function(req, res) {
     res.status(RequestStatus.OK).json(tvshowProgress);
   }
 }
-
-var injectMediaJsonInWatched = async function(watchedObj) {
-  let mediaId = watchedObj._media;
-  let mediaObj = await DataStoreUtils.getMediaObjById(mediaId);
-  if (mediaObj.__t == 'Episode' && mediaObj._tmdb_tvshow_id){
-    var value = await TMDBController.getSeason(mediaObj._tmdb_tvshow_id, mediaObj.season_number).then((season) => {
-      var watched_with_full_media = watchedObj;
-      watched_with_full_media._media = mediaObj;
-      watched_with_full_media._media.helper = season;
-      return watched_with_full_media;
-    });
-    return value;
-  } else if (mediaObj.__t == 'Movie' && mediaObj._tmdb_id) {
-    var value = await TMDBController.getMovie(mediaObj._tmdb_id).then((movie) => {
-      var watched_with_full_media = watchedObj;
-      watched_with_full_media._media = mediaObj;
-      watched_with_full_media._media.helper = JSON.stringify(movie);
-      return watched_with_full_media;
-    });
-    return value;
-  }
-  else {
-    let watched_with_full_media = watchedObj;
-    watched_with_full_media._media = mediaObj;
-    return watched_with_full_media;
-  }
-};
 
 var user_has_watched = async function(user_id, media_id) {
   return Watched.find({_user: user_id, _media: media_id}).exec();
