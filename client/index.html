@@ -87,9 +87,15 @@
       <div class="search">
         <button ng-show="isLogged()" class="uk-button uk-button-default search uk-navbar-toggle"><span uk-icon="search"></span></button>
         <div class="uk-drop search" uk-drop="mode: click; pos: left-center; offset: -100">
-          <form name="searchForm" class="uk-search uk-search-navbar uk-width-1-1" ng-submit="search()">
-            <input class="uk-search-input search-input" type="search" ng-model="searchField" name="searchField" placeholder="Search..." autofocus>
+          <form name="searchForm" class="uk-search uk-search-navbar uk-width-1-1">
+            <input class="uk-search-input search-input" type="search" ng-mouseenter="show_suggestions = true" ng-model="searchField" placeholder="Search..." ng-change="search()" autofocus>
           </form>
+          <div class="suggestions-box" ng-class="{show:searchField}" ng-show="show_suggestions" ng-mouseleave="show_suggestions = false">
+            <div ng-repeat="suggestion in searchSuggestions" class="suggestion-item" ng-click="goToPage(suggestion)">
+              <img ng-src="{{getPoster(suggestion)}}" width="50" height="70">
+              {{getName(suggestion)}}
+           </div>
+          </div>
         </div>
       </div>
 

@@ -48,10 +48,10 @@ exports.show = function(req, res) {
 
 exports.getTaggable = async function(req, res) {
   var all = []
-  var name = req.body.name;
+  var name = req.body.name.toLowerCase();
   var medias = await getMedias(name)
 
-  var persons = await Person.find({ "name": { $regex: '.*' + name + '.*' }} ).limit(4)
+  var persons = await Person.find({ "name": { $regex: '.*' + name + '.*', $options: 'i' }} ).limit(4)
   .catch((err) => {
     console.log("Error catching in Media:" + name)
     return []
@@ -65,7 +65,7 @@ exports.getTaggable = async function(req, res) {
 }
 
 var getMedias = async function(name) {
-  var medias = await Media.find({ $and: [ {"name": { $regex: '.*' + name + '.*' }}, { __t: { $ne: 'Episode' }}]} ).limit(4)
+  var medias = await Media.find({ $and: [ {"name": { $regex: '.*' + name + '.*', $options: 'i' }}, { __t: { $ne: 'Episode' }}]} ).limit(4)
   .catch((err) => {
     console.log("Error catching in Media:" + name)
     console.log(err)
@@ -74,6 +74,7 @@ var getMedias = async function(name) {
   .then((result) => {
     return(result)
   });
+
   return medias;
 
 }

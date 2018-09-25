@@ -336,10 +336,30 @@ html, body {
     margin-bottom: 20px !important; }
     .toolbar .search .search-input {
       font-size: 1rem;
-      color: white; }
+      color: white;
+      margin-bottom: 10px;
+      margin-top: 10px; }
     .toolbar .search:hover {
       text-decoration: none;
       font-weight: 500; }
+    .toolbar .search .suggestions-box {
+      border: #e5e5e5 solid 1px;
+      font-size: 14px;
+      color: #9f9f9f;
+      display: none;
+      margin-right: 50px;
+      background: #fff; }
+      .toolbar .search .suggestions-box.show {
+        display: block; }
+      .toolbar .search .suggestions-box .suggestion-item {
+        border-bottom: #ebebeb solid 1px;
+        padding-bottom: 4px;
+        padding-top: 4px;
+        padding-left: 10px;
+        cursor: pointer; }
+        .toolbar .search .suggestions-box .suggestion-item:hover {
+          background: #773095;
+          color: white; }
   .toolbar .options {
     margin-top: auto;
     margin-bottom: auto;
