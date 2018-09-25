@@ -14,12 +14,18 @@ const redisClient = RedisClient.createAndAuthClient();
 // CRUD PERSON ====================================================================================
 
 exports.index = async function(req, res) {
-  Person.find({})
+  let page;
+  if (req.query.page)
+    page = parseInt(req.query.page);
+  else
+    page = 0;
+
+  Person.find({}).sort({date: -1}).skip(page * 9).limit(9)
   .catch((err) => {
     res.status(RequestStatus.BAD_REQUEST).send(err);
   })
   .then(async (result) => {
-    var complete_people = ['a'];
+    var complete_people = [];
     partial = {}
     result.forEach(function(person){
       partial = JSON.stringify(person);

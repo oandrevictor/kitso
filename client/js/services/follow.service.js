@@ -22,9 +22,14 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
         friendsRatingMedia: friendsRatingMedia
     });
 
-    function getFollowing(userId, url){
+    function getFollowing(userId, url, page){
       var deferred = $q.defer();
-      $http.get(url +'user/' + userId)
+      var page_query = "";
+      if (page){
+        page_query = "?page=" + page;
+      }
+
+      $http.get(url +'user/' + userId + page_query)
           .then((response) => {
               if (response.status === 200) {
                   following = response.data;
@@ -40,9 +45,13 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
 
     }
 
-    function getFollowers(userId, url){
+    function getFollowers(userId, url, page){
       var deferred = $q.defer();
-      $http.get(url + 'following_me?user_id=' + userId)
+        var page_query = "";
+        if (page){
+            page_query = "&page=" + page;
+        }
+      $http.get(url + 'following_me?user_id=' + userId + page_query)
           .then((response) => {
               if (response.status === 200) {
                   following = response.data;
@@ -58,9 +67,9 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
 
     }
 
-    function getUsersFollowers(userId) {
+    function getUsersFollowers(userId, page) {
       var deferred = $q.defer();
-      getFollowers(userId, USERS_FOLLOW_URL)
+      getFollowers(userId, USERS_FOLLOW_URL, page)
           .then((response) => {
             following = response;
             if (response) {
@@ -77,9 +86,9 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
         return deferred.promise;
     }
 
-    function getUsersFollowing(userId) {
+    function getUsersFollowing(userId, page) {
       var deferred = $q.defer();
-      getFollowing(userId, USERS_FOLLOW_URL)
+      getFollowing(userId, USERS_FOLLOW_URL, page)
           .then((response) => {
             following = response;
             if (response) {
@@ -96,9 +105,9 @@ kitso.service('FollowService', ['$q','$http', function ($q, $http) {
         return deferred.promise;
     }
 
-    function getPagesFollowing(userId) {
+    function getPagesFollowing(userId, page) {
       var deferred = $q.defer();
-      getFollowing(userId, PAGES_FOLLOW_URL)
+      getFollowing(userId, PAGES_FOLLOW_URL, page)
           .then((response) => {
             if (response) {
                 following = response;
