@@ -1,0 +1,16 @@
+<li>
+  <div class="uk-child-width-1-5@m" uk-grid>
+    <div class="uk-card uk-card-primary" ng-repeat="rec_movie in recommendedMovies">
+      <div class="uk-card-media-top">
+        <div class="uk-inline uk-dark">
+          <div class="uk-visible-toggle">
+            <a class="page-link" ng-href="/movie/{{rec_movie.id}}">
+              <img ng-src="{{rec_movie.poster_path}}" style="z-index:-1" alt="">
+              <p class="uk-align-center uk-text-uppercase cast-name" align="center"> {{rec_movie.title}}</p>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</li>

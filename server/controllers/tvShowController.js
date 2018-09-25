@@ -15,7 +15,13 @@ var mongoose       = require('mongoose');
 // CRUD FUNCTIONS =================================================================================
 
 exports.index = async function(req, res) {
-  Show.find({})
+  let page;
+  if (req.query.page)
+    page = parseInt(req.query.page);
+  else
+    page = 0;
+
+  Show.find({}).sort({date: -1}).skip(page * 9).limit(9)
   .catch((err) => {
     res.status(RequestStatus.BAD_REQUEST).send(err);
   })

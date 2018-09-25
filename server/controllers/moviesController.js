@@ -12,7 +12,13 @@ var mongoose       = require('mongoose');
 const redisClient = RedisClient.createAndAuthClient();
 
 exports.index = async function(req, res) {
-  Movie.find({})
+  let page;
+  if (req.query.page)
+    page = parseInt(req.query.page);
+  else
+    page = 0;
+
+  Movie.find({}).sort({date: -1}).skip(page * 9).limit(9)
   .catch((err) => {
     res.status(400).send(err);
   })

@@ -11,8 +11,14 @@ var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 exports.index = async function(req, res) {
   let user_id = req.params.user_id;
   let following_list;
+  let page;
+  if (req.query.page)
+      page = parseInt(req.query.page);
+  else
+      page = 0;
+
   try {
-    following_list = await Follows.find({_user: user_id}).exec();
+    following_list = await Follows.find({_user: user_id}).skip(page * 9).limit(9).exec();
     promises = following_list.map(getFollowedFromFollow);
 
     Promise.all(promises).then(function(results) {
@@ -48,9 +54,16 @@ exports.is_following = async function(req, res) {
 exports.following_me = async function(req, res) {
   let user_id = req.query.user_id;
   let following_me_list;
+  let page;
+
+  if (req.query.page)
+      page = parseInt(req.query.page);
+  else
+      page = 0;
+
   try {
-    following_me_list = await Follows.find({_following: user_id}).exec();
-    promises = following_me_list.map(getFollowFromFollowed);
+    following_me_list = await Follows.find({_following: user_id}).skip(page * 9).limit(9).exec();
+      promises = following_me_list.map(getFollowFromFollowed);
 
     Promise.all(promises).then(function(results) {
       res.status(RequestStatus.OK).json(results);
@@ -59,6 +72,7 @@ exports.following_me = async function(req, res) {
     res.status(RequestStatus.BAD_REQUEST).json(err);
   }
 };
+
 var getId = function(following){
   return following._following;
 }
@@ -84,7 +98,7 @@ exports.followed_activity = async function(req, res) {
     following_list.push(user_id);
 
     all_activitys = []
-    actions = await Action.find({ "_user": { "$in": following_list }, "action_type": { $ne: "liked" } }).sort({date: -1}).skip(page * 10).limit(10);
+    actions = await Action.find({ "_user": { "$in": following_list },  "action_type": { $ne: "liked" } }).sort({date: -1}).skip(page * 10).limit(10);
 
     media_related = await Related.find({ "_media": { "$in": following_list } }).sort({date: -1});
     person_related = await Related.find({ "_person": { "$in": following_list } }).sort({date: -1});

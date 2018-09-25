@@ -262,8 +262,8 @@ exports.getWatchedByMediaId = async function(mediaId) {
   return Watched.find({_media: mediaId}).exec();
 };
 
-exports.getWatchedByUserId = async function(userId) {
-  return Watched.find({_user: userId}).exec();
+exports.getWatchedByUserId = async function(userId, page) {
+  return Watched.find({_user: userId}).skip(page * 9).limit(9).exec();
 };
 
 exports.getWatchedByUserIdAndMediaId = async function(userId, mediaId) {

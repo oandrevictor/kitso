@@ -19,7 +19,7 @@
       </ul>
 
       <ul id="tab-id" class="uk-switcher uk-margin">
-        <li><a href="#" id="overview" data-uk-switcher-item="next"></a>
+        <li id="all"><a href="#" id="overview" data-uk-switcher-item="next"></a>
           <p class="uk-text-large">Newest Tv Shows & Movies
           </p>
           <div uk-switcher="animation: uk-animation-fade" class="button-switcher">
@@ -60,7 +60,7 @@
           </ul>
         </li>
 
-        <li>
+        <li id="movie">
           <p class="uk-text-large">Newest Movies
           </p>
           <div uk-switcher="animation: uk-animation-fade" class="button-switcher">
@@ -104,7 +104,7 @@
           </ul>
         </li>
 
-        <li>
+        <li id="tvshow">
           <p class="uk-text-large">Newest Tv Shows
           </p>
           <div uk-switcher="animation: uk-animation-fade" class="button-switcher">
@@ -146,7 +146,7 @@
             </li>
           </ul>
         </li>
-        <li>
+        <li id="person">
           <p class="uk-text-large">Newest People
           </p>
           <div uk-switcher="animation: uk-animation-fade" class="button-switcher">
@@ -193,4 +193,6 @@
     </div>
 
   </div>
+
+  <div class="bubble-loading"></div>
 </div>
