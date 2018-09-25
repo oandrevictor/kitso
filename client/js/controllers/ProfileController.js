@@ -785,11 +785,9 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
   }
   
   let loadRecommendations = function () {
-    //RecommenderService.getRecommendations($scope.user._id)
-    RecommenderService.getRecommendations("5ba844046d41060014d4f6ea")
+    RecommenderService.getRecommendations($scope.user._id)
       .then((recommendedMovies) => {
         $scope.recommendedMovies = recommendedMovies;
-        console.log(recommendedMovies);
       })
       .catch(function (error) {
         console.log(error);
