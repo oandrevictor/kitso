@@ -482,6 +482,45 @@ html, body {
     }
   }
 
+  .notification {
+    margin-top: auto;
+    margin-bottom: auto;
+    color: white;
+    border: solid 0px;
+    float: right;
+    padding-left: 0px;
+
+    &:hover {
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .notification-box {
+      border: #e5e5e5 solid 1px;
+      font-size: 14px;
+      color: #9f9f9f;
+      display: none;
+      margin-right: 50px;
+      background: #fff;
+
+      &.show {
+        display: block;
+      }
+
+      .notification-item {
+        border-bottom: #ebebeb solid 1px;
+        padding-bottom: 4px;
+        padding-top: 4px;
+        padding-left: 10px;
+
+        &:hover {
+          background: #773095;
+          color: white;
+        }
+      }
+    }
+  }
+
   .options {
     margin-top: auto;
     margin-bottom: auto;
@@ -497,18 +536,20 @@ html, body {
       }
     }
   }
+
 }
 
 .note{
   .viewed {
-    filter: blur(1px);
-    background-color: #91519261;
+    text-decoration: line-through;
+    font-style: italic;
   }
 
   li {
-    height: 25px;
+    max-height: 250px;
     color: white;
     font-style: normal;
+    display: list-item;
 
     button {
       float: right;

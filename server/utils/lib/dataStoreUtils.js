@@ -33,12 +33,13 @@ exports.createAction = async function(userId, actionId, actionType) {
   return action.save();
 };
 
-exports.createNotification = async function(userId, relatedId, content) {
+exports.createNotification = async function(userId, relatedId, content, action_type = '') {
   let notification = new Notification({
     _user: userId,
     _related: relatedId,
     date: new Date(),
-    content: content
+    content: content,
+    action_type: action_type
   });
   return notification.save();
 };

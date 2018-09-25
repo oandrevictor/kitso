@@ -360,6 +360,33 @@ html, body {
         .toolbar .search .suggestions-box .suggestion-item:hover {
           background: #773095;
           color: white; }
+  .toolbar .notification {
+    margin-top: auto;
+    margin-bottom: auto;
+    color: white;
+    border: solid 0px;
+    float: right;
+    padding-left: 0px; }
+    .toolbar .notification:hover {
+      text-decoration: none;
+      font-weight: 500; }
+    .toolbar .notification .notification-box {
+      border: #e5e5e5 solid 1px;
+      font-size: 14px;
+      color: #9f9f9f;
+      display: none;
+      margin-right: 50px;
+      background: #fff; }
+      .toolbar .notification .notification-box.show {
+        display: block; }
+      .toolbar .notification .notification-box .notification-item {
+        border-bottom: #ebebeb solid 1px;
+        padding-bottom: 4px;
+        padding-top: 4px;
+        padding-left: 10px; }
+        .toolbar .notification .notification-box .notification-item:hover {
+          background: #773095;
+          color: white; }
   .toolbar .options {
     margin-top: auto;
     margin-bottom: auto;
@@ -374,12 +401,13 @@ html, body {
         font-weight: 500; }
 
 .note .viewed {
-  filter: blur(1px);
-  background-color: #91519261; }
+  text-decoration: line-through;
+  font-style: italic; }
 .note li {
-  height: 25px;
+  max-height: 250px;
   color: white;
-  font-style: normal; }
+  font-style: normal;
+  display: list-item; }
   .note li button {
     float: right;
     padding-left: 10px;
