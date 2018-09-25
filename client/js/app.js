@@ -134,7 +134,6 @@ angular.module('kitso').run(function ($rootScope, $location, $route, AuthService
                 NotificationService.getNotificationsRequest(AuthService.getUser()._id)
                     .then((notifications) => {
                         $rootScope.notifications = notifications;
-                        console.log('app.js - rootscope', $rootScope);
                     });
             }
         });

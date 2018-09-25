@@ -33,7 +33,17 @@ kitso.controller('MainController', ['$rootScope', '$scope', '$location', '$timeo
   }
 
     var getUserNotifications = async function() {
-        $scope.notifications = NotificationService.getNotifications($scope.user._id);
+        NotificationService.getNotificationsRequest(AuthService.getUser()._id)
+            .then((result) => {
+                $rootScope.notifications = result;
+            })
+            .catch((error) => {
+                UIkit.notification({
+                    message: "<span uk-icon=\'icon: check\'></span> " + "Can't get user notifications",
+                    status: 'danger',
+                    timeout: 2500
+                });
+            })
     }
 
     $scope.getNewsObject = function(related){
@@ -115,9 +125,26 @@ kitso.controller('MainController', ['$rootScope', '$scope', '$location', '$timeo
             });
     }
 
+    $scope.getNotificationContent = (notification) => {
+        let aux = notification.content.split(' ');
+        let name = aux[0] + ' ' + aux[1];
+        if (notification.action_type) {
+            switch (notification.action_type) {
+                case "rated":
+                    return name + ' that you rated ' + notification._related._media.name;
+                case "watched":
+                    return name + ' that you watched ' + notification._related._media.name;
+                case "followed":
+                    return name + ' that you followed ' + notification._related._following.name;
+            }
+        } else {
+            return notification.content;
+        }
+    }
+
     $scope.viewNotification = function(notification) {
         NotificationService.setViewed(notification);
-        $scope.$evalAsync(function(){
+        $rootScope.$evalAsync(function(){
             getUserNotifications();
         });
     }

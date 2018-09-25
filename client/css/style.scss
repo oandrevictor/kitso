@@ -116,33 +116,6 @@ html, body {
     }
   }
 
-  .notification-box {
-    border: #e5e5e5 solid 1px;
-    margin-top: -10px;
-    padding-top: 10px;
-    font-size: 14px;
-    color: #9f9f9f;
-    display: none;
-    margin-left: 76px;
-
-    &.show {
-      display: block;
-    }
-
-    .notification-item {
-      border-bottom: #ebebeb solid 1px;
-      padding-bottom: 4px;
-      padding-top: 4px;
-      padding-left: 10px;
-      cursor: pointer;
-
-      &:hover {
-        background: #773095;
-        color: white;
-      }
-    }
-  }
-
   .related-box {
     .related-item {
       border: purple solid 1px;
@@ -568,14 +541,15 @@ html, body {
 
 .note{
   .viewed {
-    filter: blur(1px);
-    background-color: #91519261;
+    text-decoration: line-through;
+    font-style: italic;
   }
 
   li {
-    height: 25px;
+    max-height: 250px;
     color: white;
     font-style: normal;
+    display: list-item;
 
     button {
       float: right;
