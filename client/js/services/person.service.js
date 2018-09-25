@@ -73,9 +73,13 @@ kitso.service('PersonService', ['$q','$http', function ($q, $http) {
       return deferred.promise;
     }
 
-    function getAllPeople(){
+    function getAllPeople(page){
         var deferred = $q.defer();
-        $http.get('/api/person/')
+        var page_query = "";
+        if (page){
+          page_query = "?page=" + page;
+        }
+        $http.get('/api/person/' + page_query)
             .then((response) => {
                 if (response.status === 200) {
                     deferred.resolve(response.data);
