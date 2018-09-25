@@ -1,7 +1,9 @@
 var kitso = angular.module('kitso');
 
-kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$routeParams', 'AuthService', 'UserService', 'FollowService', 'WatchedService', 'RatedService', 'UserListService',
-function ($scope, $location, $timeout, $routeParams, AuthService, UserService, FollowService, WatchedService, RatedService, UserListService) {
+kitso.controller('ProfileController', ['$scope', '$location', '$timeout', '$routeParams', 'AuthService', 'UserService',
+  'FollowService', 'WatchedService', 'RatedService', 'UserListService', 'RecommenderService',
+function ($scope, $location, $timeout, $routeParams, AuthService, UserService, FollowService, WatchedService, RatedService,
+          UserListService, RecommenderService) {
 
   $('.full-loading').show();
 
@@ -66,6 +68,7 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
           loadUserWatchedGenres();
           loadUserWatchedProgress();
           loadUserLists(0);
+          loadRecommendations();
         }
       });
 
@@ -934,6 +937,18 @@ function ($scope, $location, $timeout, $routeParams, AuthService, UserService, F
 
   $scope.goToProfile = function () {
     $location.path('profile');
+  }
+  
+  let loadRecommendations = function () {
+    RecommenderService.getRecommendations($scope.user._id)
+      .then((recommendedMovies) => {
+        $scope.recommendedMovies = recommendedMovies;
+      })
+      .catch(function (error) {
+        console.log(error);
+        loaded +=1;
+        checkFinishedLoading();
+      });
   }
 
   $( "body" ).scroll(function() {
