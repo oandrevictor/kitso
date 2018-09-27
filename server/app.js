@@ -207,10 +207,7 @@ console.log('Magic happens on port ' + port);
 // CronJob
 const CronJob = require('cron').CronJob;
 var crawler = require('./utils/crawler');
-const job = new CronJob('0 2 * * *', function() {
-	crawler.getTrending('tv');
-});
-job.start();
+crawler.getTrending('tv');
 
 // expose app
 exports = module.exports = app;
