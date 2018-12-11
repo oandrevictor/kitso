@@ -203,11 +203,5 @@ app.listen(port);
 // shoutout to the user
 console.log('Magic happens on port ' + port);
 
-
-// CronJob
-const CronJob = require('cron').CronJob;
-var crawler = require('./utils/crawler');
-crawler.getTrending('tv');
-
 // expose app
 exports = module.exports = app;
