@@ -2,6 +2,7 @@ var Liked = require('../models/Liked');
 var Action = require('../models/Action');
 var User = require('../models/User');
 var RequestStatus = require('../constants/requestStatus');
+var RequestMsg = require('../constants/requestMsg');
 var ActionType = require('../constants/actionType');
 var DataStoreUtils = require('../utils/lib/dataStoreUtils');
 
@@ -52,6 +53,11 @@ exports.show = function(req, res) {
 exports.create = async function(req, res) {
   var liked = new Liked(req.body);
   let user_id = liked._user;
+
+  if (!(req.user && req.user._id.toString() === user_id.toString())) {
+    return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);
+  }
+
   let action = await DataStoreUtils.createAction(user_id, liked._id, ActionType.LIKED);
   let activity = await Action.findById(req.body._activity).exec();
   let user = await DataStoreUtils.getUserById(liked._user);
@@ -77,6 +83,10 @@ exports.update = async function(req, res) {
     res.status(RequestStatus.BAD_REQUEST).send(err);
   }
 
+  if (!(req.user && req.user._id.toString() === liked._user.toString())) {
+    return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);
+  }
+
   if (req.body.date) {
     liked.date = req.body.date;
   }
@@ -100,6 +110,12 @@ exports.update = async function(req, res) {
 
 exports.delete = async function(req, res) {
   let liked_id = req.params.liked_id;
+  let liked = await DataStoreUtils.getLikedById(liked_id);
+
+  if (!(req.user && req.user._id.toString() === liked._user.toString())) {
+    return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);
+  }
+
   try {
     await DataStoreUtils.deleteLiked(liked_id);
     DataStoreUtils.deleteNotification(liked_id);

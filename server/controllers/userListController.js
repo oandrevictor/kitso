@@ -42,6 +42,11 @@ exports.create = async function(req, res) {
   try {
     let userList = new UserList(req.body);
     let userId = userList._user;
+
+    if (!(req.user && req.user._id.toString() === userId.toString())) {
+      return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);
+    }
+
     await addListToUserLists(userList._id, userId);
     await saveUserList(userList);
     res.status(RequestStatus.OK).json(userList);
@@ -55,6 +60,11 @@ exports.update = async function(req, res) {
   try {
     let userListId = req.params.userlist_id;
     let userList = await DataStoreUtils.getUserListById(userListId);
+
+    if (!(req.user && req.user._id.toString() === userList._user.toString())) {
+      return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);
+    }
+
     if (req.body.description) {
       userList.description = req.body.description;
     }
@@ -76,6 +86,11 @@ exports.delete = async function(req, res) {
   try {
     let userId = req.user._id;
     let userListId = req.params.userlist_id;
+
+    if (!(req.user && req.user._id.toString() === userId.toString())) {
+      return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);
+    }
+
     await checkIfUserIsAuthorizedToManipulateList(userId, userListId);
     let deletedList = await removeListFromUserLists(userListId, userId);
     DataStoreUtils.deleteNotification(userListId);
@@ -104,6 +119,11 @@ exports.delete = async function(req, res) {
 exports.addItem = async function(req, res) {
   try {
     let userId = req.user._id;
+
+    if (!(req.user && req.user._id.toString() === userId.toString())) {
+      return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);
+    }
+
     let userListId = req.params.userlist_id;
     await checkIfUserIsAuthorizedToManipulateList(userId, userListId);
     let userList = await DataStoreUtils.getUserListById(userListId);
@@ -134,6 +154,11 @@ exports.addItem = async function(req, res) {
 exports.removeItem = async function(req, res) {
   try {
     let userId = req.user._id;
+
+    if (!(req.user && req.user._id.toString() === userId.toString())) {
+      return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);
+    }
+
     let userListId = req.params.userlist_id;
     await checkIfUserIsAuthorizedToManipulateList(userId, userListId);
     let userList = await DataStoreUtils.getUserListById(userListId);
@@ -162,6 +187,11 @@ exports.removeItem = async function(req, res) {
 exports.changeItemRank = async function(req, res) {
   try {
     let userId = req.user._id;
+
+    if (!(req.user && req.user._id.toString() === userId.toString())) {
+      return res.status(RequestStatus.UNAUTHORIZED).send(RequestMsgs.UNAUTHORIZED);
+    }
+    
     let userListId = req.params.userlist_id;
     await checkIfUserIsAuthorizedToManipulateList(userId, userListId);
     let userList = await DataStoreUtils.getUserListById(userListId);
